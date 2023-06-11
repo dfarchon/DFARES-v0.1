@@ -1,6 +1,7 @@
 import {
   Artifact,
   ArtifactId,
+  ArtifactType,
   AsteroidRendererType,
   BackgroundRendererType,
   BaseRenderer,
@@ -15,6 +16,8 @@ import {
   GameViewport,
   IRendererConfig,
   LineRendererType,
+  Link,
+  LinkRendererType,
   LocatablePlanet,
   LocationId,
   MineBodyRendererType,
@@ -49,8 +52,6 @@ import {
   VoyageRendererType,
   WorldCoords,
   WorldLocation,
-  Wormhole,
-  WormholeRendererType,
 } from '@darkforest_eth/types';
 import autoBind from 'auto-bind';
 import { AsteroidRenderer } from './Entities/AsteroidRenderer';
@@ -60,6 +61,7 @@ import { BlackDomainRenderer } from './Entities/BlackDomainRenderer';
 import { CaptureZoneRenderer } from './Entities/CaptureZoneRenderer';
 import { CircleRenderer } from './Entities/CircleRenderer';
 import { LineRenderer } from './Entities/LineRenderer';
+import { LinkRenderer } from './Entities/LinkRenderer';
 import { MineBodyRenderer } from './Entities/MineBodyRenderer';
 import { MineRenderer } from './Entities/MineRenderer';
 import { PerlinRenderer } from './Entities/PerlinRenderer';
@@ -77,7 +79,6 @@ import { SpriteRenderer } from './Entities/SpriteRenderer';
 import { TextRenderer } from './Entities/TextRenderer';
 import { UnminedRenderer } from './Entities/UnminedRenderer';
 import { VoyageRenderer } from './Entities/VoyageRenderer';
-import { WormholeRenderer } from './Entities/WormholeRenderer';
 import { Overlay2DRenderer } from './Overlay2DRenderer';
 import {
   isAsteroidRenderer,
@@ -87,6 +88,7 @@ import {
   isCaptureZoneRenderer,
   isCircleRenderer,
   isLineRenderer,
+  isLinkRenderer,
   isMineBodyRenderer,
   isMineRenderer,
   isPerlinRenderer,
@@ -105,7 +107,6 @@ import {
   isUIRendererManager,
   isUnminedRenderer,
   isVoyageRenderer,
-  isWormholeRenderer,
 } from './RendererTypeAssertions';
 import { UIRenderer } from './UIRenderer';
 import { GameGLManager } from './WebGL/GameGLManager';
@@ -118,6 +119,7 @@ export interface RendererGameContext extends DiagnosticUpdater {
   getMouseDownPlanet(): LocatablePlanet | undefined;
   getLocationsAndChunks(): { chunks: Set<Chunk>; cachedPlanets: Map<LocationId, PlanetRenderInfo> };
   getLocationOfPlanet(planetId: LocationId): WorldLocation | undefined;
+  getActiveArtifact(planet: Planet): Artifact | undefined;
   getPlanetWithId(planetId: LocationId | undefined): Planet | undefined;
   getAccount(): EthAddress | undefined;
   getAllVoyages(): QueuedArrival[];
@@ -145,11 +147,13 @@ export interface RendererGameContext extends DiagnosticUpdater {
   getIsFuckingYou(): boolean;
   getIsBombing(): boolean;
   getWormholes(): Iterable<Wormhole>;
+  getLinkSourceArtifactType(): ArtifactType;
+  getLinks(): Iterable<Link>;
   getRadiusOfPlanetLevel(planetRarity: PlanetLevel): number;
   getDistCoords(from: WorldCoords, to: WorldCoords): number;
   isOverOwnPlanet(coords: WorldCoords): Planet | undefined;
   getPlanetWithCoords(coords: WorldCoords | undefined): Planet | undefined;
-  getUnconfirmedWormholeActivations(): Transaction<UnconfirmedActivateArtifact>[];
+  getUnconfirmedLinkActivations(): Transaction<UnconfirmedActivateArtifact>[];
   getAllMinerLocations(): WorldCoords[];
   drawAllRunningPlugins(ctx: CanvasRenderingContext2D): void;
   isSendingShip(planetId: LocationId): boolean;
@@ -213,7 +217,7 @@ export class Renderer {
   uiRenderManager: UIRendererType;
   planetRenderManager: PlanetRenderManagerType;
   voyageRenderManager: VoyageRendererType;
-  wormholeRenderManager: WormholeRendererType;
+  linkRenderManager: LinkRendererType;
 
   private previousRenderTimestamp: number;
   rendererStack: BaseRenderer[];
@@ -274,7 +278,7 @@ export class Renderer {
       new BackgroundRenderer(this.glManager),
 
       new VoyageRenderer(this.glManager),
-      new WormholeRenderer(this.glManager),
+      new LinkRenderer(this.glManager),
       new PlanetRenderManager(this.glManager),
       new UIRenderer(this.glManager),
 
@@ -383,8 +387,8 @@ export class Renderer {
     // queue voyages calls
     this.voyageRenderManager.queueVoyages();
 
-    // queue wormhole calls
-    this.wormholeRenderManager.queueWormholes();
+    // queue link calls
+    this.linkRenderManager.queueLinks();
 
     // queue planets
     this.planetRenderManager.queuePlanets(
@@ -400,7 +404,7 @@ export class Renderer {
     this.lineRenderer.flush();
     this.planetRenderManager.flush();
     this.voyageRenderManager.flush();
-    this.wormholeRenderManager.flush();
+    this.linkRenderManager.flush();
     this.uiRenderManager.flush();
     this.circleRenderer.flush();
     this.rectRenderer.flush();
@@ -509,12 +513,12 @@ export class Renderer {
         console.log('Renderer is not a Voywage Renderer');
         return false;
 
-      case RendererType.Wormhole:
-        if (isWormholeRenderer(renderer)) {
-          this.wormholeRenderManager = renderer;
+      case RendererType.Link:
+        if (isLinkRenderer(renderer)) {
+          this.linkRenderManager = renderer;
           break;
         }
-        console.log('Renderer is not a Wormhole renderer');
+        console.log('Renderer is not a Link renderer');
         return false;
 
       case RendererType.MineBody:

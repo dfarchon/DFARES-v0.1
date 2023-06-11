@@ -1,6 +1,13 @@
 import type { DarkForest } from '@darkforest_eth/contracts/typechain';
-import type { Artifact, ArtifactId, ArtifactPointValues, VoyageId } from '@darkforest_eth/types';
-import { ArtifactRarity, ArtifactType, Biome } from '@darkforest_eth/types';
+import {
+  Artifact,
+  ArtifactId,
+  ArtifactPointValues,
+  ArtifactRarity,
+  ArtifactType,
+  Biome,
+  VoyageId,
+} from '@darkforest_eth/types';
 import bigInt from 'big-integer';
 import type { BigNumber as EthersBN } from 'ethers';
 import { address } from './address';
@@ -61,7 +68,9 @@ export function artifactIdFromEthersBN(artifactId: EthersBN): ArtifactId {
  * representing an artifact's ID
  */
 export function artifactIdToDecStr(artifactId: ArtifactId): string {
-  return bigInt(artifactId, 16).toString(10);
+  let str = artifactId.toLowerCase();
+  if (str[0] === '0' && str[1] === 'x') str = str.slice(2);
+  return bigInt(str, 16).toString(10);
 }
 
 export type RawArtifactPointValues = Awaited<ReturnType<DarkForest['getArtifactPointValues']>>;
@@ -110,7 +119,7 @@ export function decodeArtifact(rawArtifactWithMetadata: RawArtifactWithMetadata)
     lastActivated: artifact.lastActivated.toNumber(),
     lastDeactivated: artifact.lastDeactivated.toNumber(),
     controller: address(artifact.controller),
-    wormholeTo: artifact.wormholeTo.eq(0) ? undefined : locationIdFromEthersBN(artifact.wormholeTo),
+    linkTo: artifact.linkTo.eq(0) ? undefined : locationIdFromEthersBN(artifact.linkTo),
     currentOwner: address(owner),
     upgrade: decodeUpgrade(upgrade),
     timeDelayedUpgrade: decodeUpgrade(timeDelayedUpgrade),

@@ -274,6 +274,7 @@ export function canWithdrawArtifact(account: EthAddress, artifact: Artifact, pla
   return (
     planet &&
     !planet.destroyed &&
+    !planet.frozen &&
     planet.owner === account &&
     planet.planetType === PlanetType.TRADING_POST &&
     !isActivated(artifact) &&
@@ -285,6 +286,7 @@ export function canDepositArtifact(account: EthAddress, artifact: Artifact, plan
   return (
     planet &&
     !planet.destroyed &&
+    !planet.frozen &&
     planet.owner === account &&
     !artifact.onPlanetId &&
     planet.planetType === PlanetType.TRADING_POST

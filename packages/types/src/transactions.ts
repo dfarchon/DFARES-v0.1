@@ -16,6 +16,7 @@ export type ContractMethodName =
   | 'withdrawArtifact'
   | 'activateArtifact'
   | 'deactivateArtifact'
+  | 'buyArtifact'
   | 'withdrawSilver'
   | 'useKey'
   | 'adminUseKey'
@@ -144,7 +145,7 @@ export type UnconfirmedActivateArtifact = TxIntent & {
   methodName: 'activateArtifact';
   locationId: LocationId;
   artifactId: ArtifactId;
-  wormholeTo?: LocationId;
+  linkTo?: LocationId;
 };
 
 /**
@@ -152,6 +153,16 @@ export type UnconfirmedActivateArtifact = TxIntent & {
  */
 export type UnconfirmedDeactivateArtifact = TxIntent & {
   methodName: 'deactivateArtifact';
+  locationId: LocationId;
+  artifactId: ArtifactId;
+  linkTo: LocationId | undefined;
+};
+
+/**
+ * @hidden
+ */
+export type UnconfirmedBuyArtifact = TxIntent & {
+  methodName: 'buyArtifact';
   locationId: LocationId;
   artifactId: ArtifactId;
 };

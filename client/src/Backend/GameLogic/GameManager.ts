@@ -25,6 +25,7 @@ import { getPlanetName } from '@darkforest_eth/procedural';
 import {
   artifactIdToDecStr,
   isUnconfirmedActivateArtifactTx,
+  isUnconfirmedBuyArtifactTx,
   isUnconfirmedBuyHatTx,
   isUnconfirmedCapturePlanetTx,
   isUnconfirmedDeactivateArtifactTx,
@@ -46,12 +47,14 @@ import {
   ArtifactId,
   ArtifactRarity,
   ArtifactType,
+  Biome,
   CaptureZone,
   Chunk,
   ClaimedCoords,
   ClaimedLocation,
   Diagnostics,
   EthAddress,
+  Link,
   LocatablePlanet,
   LocationId,
   NetworkHealthSummary,
@@ -71,6 +74,7 @@ import {
   Transaction,
   TxIntent,
   UnconfirmedActivateArtifact,
+  UnconfirmedBuyArtifact,
   UnconfirmedBuyHat,
   UnconfirmedCapturePlanet,
   UnconfirmedClaimReward,
@@ -90,7 +94,6 @@ import {
   VoyageId,
   WorldCoords,
   WorldLocation,
-  Wormhole,
 } from '@darkforest_eth/types';
 import bigInt, { BigInteger } from 'big-integer';
 import delay from 'delay';
@@ -806,8 +809,15 @@ class GameManager extends EventEmitter {
           await Promise.all([
             gameManager.hardRefreshPlanet(tx.intent.locationId),
             gameManager.hardRefreshArtifact(tx.intent.artifactId),
+            gameManager.hardRefreshPlanet(tx.intent.linkTo),
           ]);
         } else if (isUnconfirmedDeactivateArtifactTx(tx)) {
+          await Promise.all([
+            gameManager.hardRefreshPlanet(tx.intent.locationId),
+            gameManager.hardRefreshArtifact(tx.intent.artifactId),
+            gameManager.hardRefreshPlanet(tx.intent.linkTo),
+          ]);
+        } else if (isUnconfirmedBuyArtifactTx(tx)) {
           await Promise.all([
             gameManager.hardRefreshPlanet(tx.intent.locationId),
             gameManager.hardRefreshArtifact(tx.intent.artifactId),
@@ -890,7 +900,8 @@ class GameManager extends EventEmitter {
     this.entityStore.replacePlanetFromContractData(planet);
   }
 
-  public async hardRefreshPlanet(planetId: LocationId): Promise<void> {
+  public async hardRefreshPlanet(planetId: LocationId | undefined): Promise<void> {
+    if (planetId === undefined) return;
     const planet = await this.contractsAPI.getPlanetById(planetId);
     if (!planet) return;
     const arrivals = await this.contractsAPI.getArrivalsForPlanet(planetId);
@@ -968,8 +979,15 @@ class GameManager extends EventEmitter {
   }
 
   public async hardRefreshArtifact(artifactId: ArtifactId): Promise<void> {
+    const oldArtifact = this.getArtifactWithId(artifactId);
+    if (!oldArtifact) return;
+    if (oldArtifact.artifactType === ArtifactType.IceLink)
+      await this.hardRefreshPlanet(oldArtifact.linkTo);
+
     const artifact = await this.contractsAPI.getArtifactById(artifactId);
     if (!artifact) return;
+    if (oldArtifact.artifactType === ArtifactType.IceLink)
+      await this.hardRefreshPlanet(artifact.linkTo);
     this.entityStore.replaceArtifactFromContractData(artifact);
   }
 
@@ -1545,10 +1563,10 @@ class GameManager extends EventEmitter {
     return this.entityStore.transactions.getTransactions(isUnconfirmedUpgradeTx);
   }
 
-  getUnconfirmedWormholeActivations(): Transaction<UnconfirmedActivateArtifact>[] {
+  getUnconfirmedLinkActivations(): Transaction<UnconfirmedActivateArtifact>[] {
     return this.entityStore.transactions
       .getTransactions(isUnconfirmedActivateArtifactTx)
-      .filter((tx) => tx.intent.wormholeTo !== undefined);
+      .filter((tx) => tx.intent.linkTo !== undefined);
   }
 
   /**
@@ -2393,7 +2411,7 @@ class GameManager extends EventEmitter {
   public async activateArtifact(
     locationId: LocationId,
     artifactId: ArtifactId,
-    wormholeTo: LocationId | undefined,
+    linkTo: LocationId | undefined,
     bypassChecks = false
   ): Promise<Transaction<UnconfirmedActivateArtifact>> {
     try {
@@ -2423,19 +2441,19 @@ class GameManager extends EventEmitter {
         args: Promise.resolve([
           locationIdToDecStr(locationId),
           artifactIdToDecStr(artifactId),
-          wormholeTo ? locationIdToDecStr(wormholeTo) : '0',
+          linkTo ? locationIdToDecStr(linkTo) : '0',
         ]),
         locationId,
         artifactId,
-        wormholeTo,
+        linkTo,
       };
 
       // Always await the submitTransaction so we can catch rejections
       const tx = await this.contractsAPI.submitTransaction(txIntent);
 
-      wormholeTo &&
+      linkTo &&
         tx.confirmedPromise.then(() => {
-          this.hardRefreshPlanet(wormholeTo);
+          this.hardRefreshPlanet(linkTo);
         });
 
       return tx;
@@ -2448,6 +2466,7 @@ class GameManager extends EventEmitter {
   public async deactivateArtifact(
     locationId: LocationId,
     artifactId: ArtifactId,
+    linkTo: LocationId | undefined,
     bypassChecks = false
   ): Promise<Transaction<UnconfirmedDeactivateArtifact>> {
     try {
@@ -2467,6 +2486,7 @@ class GameManager extends EventEmitter {
         args: Promise.resolve([locationIdToDecStr(locationId)]),
         locationId,
         artifactId,
+        linkTo,
       };
 
       // Always await the submitTransaction so we can catch rejections
@@ -2475,6 +2495,83 @@ class GameManager extends EventEmitter {
       return tx;
     } catch (e) {
       this.getNotificationsManager().txInitError('deactivateArtifact', e.message);
+      throw e;
+    }
+  }
+
+  public async buyArtifact(
+    locationId: LocationId,
+    rarity: ArtifactRarity,
+    biome: Biome,
+    type: ArtifactType,
+    bypassChecks = false
+  ): Promise<Transaction<UnconfirmedBuyArtifact>> {
+    try {
+      if (!bypassChecks) {
+        const planet = this.entityStore.getPlanetWithId(locationId);
+        if (!planet) {
+          throw new Error('tried to buy artifact on an unknown planet');
+        }
+      }
+
+      localStorage.setItem(`${this.getAccount()?.toLowerCase()}-buyArtifactOnPlanet`, locationId);
+      localStorage.setItem(
+        `${this.getAccount()?.toLowerCase()}-buyArtifactRarity`,
+        Number(rarity).toString()
+      );
+
+      // localStorage.setItem(`${this.getAccount()?.toLowerCase()}-buyArtifact`, artifactId);
+
+      function random256Id() {
+        const alphabet = '0123456789ABCDEF'.split('');
+        let result = '0x';
+        for (let i = 0; i < 256 / 4; i++) {
+          result += alphabet[Math.floor(Math.random() * alphabet.length)];
+        }
+
+        result = result.toLowerCase();
+        return result;
+      }
+
+      function price() {
+        if (rarity === ArtifactRarity.Common) return 1;
+        else if (rarity === ArtifactRarity.Rare) return 2;
+        else if (rarity === ArtifactRarity.Epic) return 4;
+        else if (rarity === ArtifactRarity.Legendary) return 8;
+        else return 0;
+      }
+      const artifactId: ArtifactId = random256Id() as ArtifactId;
+
+      const args = Promise.resolve([
+        {
+          tokenId: artifactId,
+          discoverer: this.account,
+          planetId: locationIdToDecStr(locationId),
+          rarity,
+          biome,
+          artifactType: type,
+          owner: this.account,
+          controller: '0x0000000000000000000000000000000000000000',
+        },
+      ]);
+
+      const txIntent: UnconfirmedBuyArtifact = {
+        methodName: 'buyArtifact',
+        contract: this.contractsAPI.contract,
+        args: args,
+        locationId,
+        artifactId,
+      };
+
+      // Always await the submitTransaction so we can catch rejections
+      const tx = await this.contractsAPI.submitTransaction(txIntent, {
+        gasLimit: 500000 * 4,
+        value: bigInt(1000000000000000000).multiply(price()).toString(),
+      });
+
+      return tx;
+    } catch (e) {
+      this.getNotificationsManager().txInitError('buyArtifact', e.message);
       throw e;
     }
   }
@@ -3048,7 +3145,7 @@ class GameManager extends EventEmitter {
 
   /**
    * Gets the distance between two planets. Throws an exception if you don't
-   * know the location of either planet. Takes into account wormholes.
+   * know the location of either planet. Takes into account links.
    */
   getDist(fromId: LocationId, toId: LocationId): number {
     const from = this.entityStore.getPlanetWithId(fromId);
@@ -3187,14 +3284,14 @@ class GameManager extends EventEmitter {
 
     if (
       fromActiveArtifact?.artifactType === ArtifactType.Wormhole &&
-      fromActiveArtifact.wormholeTo === toPlanet.locationId
+      fromActiveArtifact.linkTo === toPlanet.locationId
     ) {
       greaterRarity = fromActiveArtifact.rarity;
     }
 
     if (
       toActiveArtifact?.artifactType === ArtifactType.Wormhole &&
-      toActiveArtifact.wormholeTo === fromPlanet.locationId
+      toActiveArtifact.linkTo === fromPlanet.locationId
     ) {
       if (greaterRarity === undefined) {
         greaterRarity = toActiveArtifact.rarity;
@@ -3325,8 +3422,8 @@ class GameManager extends EventEmitter {
     return NotificationManager.getInstance();
   }
 
-  getWormholes(): Iterable<Wormhole> {
-    return this.entityStore.getWormholes();
+  getLinks(): Iterable<Link> {
+    return this.entityStore.getLinks();
   }
 
   /** Return a reference to the planet map */
@@ -3388,7 +3485,7 @@ class GameManager extends EventEmitter {
 
   /**
    * Gets a reference to the game's internal representation of the world state. This includes
-   * voyages, planets, artifacts, and active wormholes,
+   * voyages, planets, artifacts, and active links,
    */
   public getGameObjects(): GameObjects {
     return this.entityStore;

@@ -83,6 +83,11 @@ export function ArtifactActions({
           const targetPlanet = await uiManager.startBombFrom(onPlanet);
           targetPlanetId = targetPlanet?.locationId;
         }
+        
+        if (artifact.artifactType === ArtifactType.IceLink) {
+          const targetPlanet = await uiManager.startIceLinkFrom(onPlanet);
+          targetPlanetId = targetPlanet?.locationId;
+        }
 
         uiManager.activateArtifact(onPlanet.locationId, artifact.id, targetPlanetId);
       }
@@ -92,7 +97,7 @@ export function ArtifactActions({
 
   const deactivate = useCallback(
     (artifact: Artifact) => {
-      onPlanet && uiManager.deactivateArtifact(onPlanet.locationId, artifact.id);
+      onPlanet && uiManager.deactivateArtifact(onPlanet.locationId, artifact.id, artifact.linkTo);
     },
     [onPlanet, uiManager]
   );

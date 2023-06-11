@@ -23,16 +23,17 @@ export const ArtifactType = {
   PhotoidCannon: 7 as ArtifactType,
   BloomFilter: 8 as ArtifactType,
   BlackDomain: 9 as ArtifactType,
-  FuckYou: 10 as ArtifactType,
-  Bomb: 11 as ArtifactType,
-  Doom: 12 as ArtifactType,
-  BlindBox: 13 as ArtifactType,
-  Avatar: 14 as ArtifactType,
-  ShipMothership: 15 as ArtifactType,
-  ShipCrescent: 16 as ArtifactType,
-  ShipWhale: 17 as ArtifactType,
-  ShipGear: 18 as ArtifactType,
-  ShipTitan: 19 as ArtifactType,
+  IceLink: 10 as ArtifactType,
+  FuckYou: 11 as ArtifactType,
+  Bomb: 12 as ArtifactType,
+  Doom: 13 as ArtifactType,
+  BlindBox: 14 as ArtifactType,
+  Avatar: 15 as ArtifactType,
+  ShipMothership: 16 as ArtifactType,
+  ShipCrescent: 17 as ArtifactType,
+  ShipWhale: 18 as ArtifactType,
+  ShipGear: 19 as ArtifactType,
+  ShipTitan: 20 as ArtifactType,
 
   // Don't forget to update MIN_ARTIFACT_TYPE and/or MAX_ARTIFACT_TYPE in the `constants` package
 } as const;
@@ -51,6 +52,7 @@ export const ArtifactTypeNames = {
   [ArtifactType.BlackDomain]: 'Black Domain',
   [ArtifactType.PhotoidCannon]: 'Photoid Cannon',
   [ArtifactType.BloomFilter]: 'Bloom Filter',
+  [ArtifactType.IceLink]: 'Ice Link',
   [ArtifactType.FuckYou]: 'Fuck You',
   [ArtifactType.Bomb]: 'Bomb',
   [ArtifactType.Doom]: 'Doom',
@@ -122,7 +124,7 @@ export type Artifact = {
   upgrade: Upgrade;
   timeDelayedUpgrade: Upgrade;
   currentOwner: EthAddress; // owner of the NFT - can be the contract
-  wormholeTo?: LocationId;
+  linkTo?: LocationId;
   onPlanetId?: LocationId;
   onVoyageId?: VoyageId;
 
@@ -207,7 +209,7 @@ export interface RenderedArtifact extends Partial<Artifact> {
   id: ArtifactId; // for rolls
 }
 
-export type Wormhole = {
+export type Link = {
   from: LocationId;
   to: LocationId;
 };

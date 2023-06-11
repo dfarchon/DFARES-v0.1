@@ -43,7 +43,7 @@ library LibArtifactUtils {
         require(block.number > planet.prospectedBlockNumber, "invalid prospectedBlockNumber");
         require(block.number - planet.prospectedBlockNumber < 256, "planet prospect expired");
         require(!planet.destroyed, "planet is destroyed");
-
+        require(!planet.frozen, "planet is frozen");
         if (gameConstants().SPACESHIPS.GEAR) {
             require(containsGear(locationId), "gear ship must be present on planet");
         }
@@ -131,7 +131,7 @@ library LibArtifactUtils {
     function activateArtifact(
         uint256 locationId,
         uint256 artifactId,
-        uint256 wormholeTo
+        uint256 linkTo
     ) public {
         Planet storage planet = gs().planets[locationId];
         Artifact storage artifact = gs().artifacts[artifactId];
@@ -144,7 +144,7 @@ library LibArtifactUtils {
         if (isSpaceship(artifact.artifactType)) {
             activateSpaceshipArtifact(locationId, artifactId, planet, artifact);
         } else {
-            activateNonSpaceshipArtifact(locationId, artifactId, wormholeTo, planet, artifact);
+            activateNonSpaceshipArtifact(locationId, artifactId, linkTo, planet, artifact);
         }
 
         artifact.activations++;
@@ -191,7 +191,7 @@ library LibArtifactUtils {
     function activateNonSpaceshipArtifact(
         uint256 locationId,
         uint256 artifactId,
-        uint256 wormholeTo,
+        uint256 linkTo,
         Planet storage planet,
         Artifact memory artifact
     ) private {
@@ -204,11 +204,13 @@ library LibArtifactUtils {
             "there is already an active artifact on this planet"
         );
         require(!planet.destroyed, "planet is destroyed");
+        require(!planet.frozen, "planet is frozen");
 
         require(artifact.isInitialized, "this artifact is not on this planet");
 
         // Unknown is the 0th one, Monolith is the 1st, and so on.
         // TODO v0.6: consider photoid canon
+
         uint256[15] memory artifactCooldownsHours = [
             uint256(24),
             0,
@@ -220,6 +222,7 @@ library LibArtifactUtils {
             24,
             24,
             24,
+            0,
             0,
             0,
             0,
@@ -242,13 +245,15 @@ library LibArtifactUtils {
         emit ArtifactActivated(msg.sender, artifactId, locationId);
 
         if (artifact.artifactType == ArtifactType.Wormhole) {
-            require(wormholeTo != 0, "you must provide a wormholeTo to activate a wormhole");
+            require(linkTo != 0, "you must provide a linkTo to activate a wormhole");
             require(
-                gs().planets[wormholeTo].owner == msg.sender,
+                gs().planets[linkTo].owner == msg.sender,
                 "you can only create a wormhole to a planet you own"
             );
-            require(!gs().planets[wormholeTo].destroyed, "planet destroyed");
-            artifact.wormholeTo = wormholeTo;
+            require(!gs().planets[linkTo].destroyed, "planet destroyed");
+            require(!gs().planets[linkTo].frozen, "planet frozen");
+
+            artifact.linkTo = linkTo;
         } else if (artifact.artifactType == ArtifactType.BloomFilter) {
             require(
                 2 * uint256(artifact.rarity) >= planet.planetLevel,
@@ -264,6 +269,31 @@ library LibArtifactUtils {
             );
             planet.destroyed = true;
             shouldDeactivateAndBurn = true;
+        } else if (artifact.artifactType == ArtifactType.IceLink) {
+            require(linkTo != 0, "you must provide a linkTo to activate a icelink");
+            require(
+                gs().planets[linkTo].owner != msg.sender &&
+                    gs().planets[linkTo].owner != address(0),
+                "you can only create a icelink to a planet other own"
+            );
+            require(!gs().planets[linkTo].destroyed, "planet destroyed");
+            require(!gs().planets[linkTo].frozen, "planet frozen");
+            require(
+                planet.planetLevel >= gs().planets[linkTo].planetLevel,
+                "fromPlanetLevel must be >= toPlanetLevel"
+            );
+
+            Artifact memory artifactOnToPlanet = LibGameUtils.getActiveArtifact(linkTo);
+            if (artifactOnToPlanet.artifactType == ArtifactType.PlanetaryShield) {
+                require(
+                    artifact.rarity > artifactOnToPlanet.rarity,
+                    "Ice Link rarity must be higher"
+                );
+            }
+
+            planet.frozen = true;
+            gs().planets[linkTo].frozen = true;
+            artifact.linkTo = linkTo;
         } else if (artifact.artifactType == ArtifactType.FuckYou) {
             require(wormholeTo != 0, "you must provide a wormholeTo to activate a Fuckyou");
             require(!gs().planets[wormholeTo].destroyed, "planet destroyed");
@@ -297,6 +327,7 @@ library LibArtifactUtils {
         } else if (artifact.artifactType == ArtifactType.Avatar) {
             // planet.owner = gs().planets[wormholeTo].owner;
             // gs().planets[wormholeTo].owner = msg.sender;
+
         }
 
         if (shouldDeactivateAndBurn) {
@@ -322,19 +353,27 @@ library LibArtifactUtils {
             "you must own the planet you are deactivating an artifact on"
         );
 
-        require(!gs().planets[locationId].destroyed, "planet is destroyed");
-
+        require(!planet.destroyed, "planet is destroyed");
         Artifact memory artifact = LibGameUtils.getActiveArtifact(locationId);
 
         require(artifact.isInitialized, "this artifact is not activated on this planet");
 
+        if (artifact.artifactType != ArtifactType.IceLink) {
+            require(!planet.frozen, "planet is frozen");
+        } else {
+            Planet storage toPlanet = gs().planets[artifact.linkTo];
+            planet.frozen = false;
+            toPlanet.frozen = false;
+        }
         artifact.lastDeactivated = block.timestamp;
-        artifact.wormholeTo = 0;
+        artifact.linkTo = 0;
         emit ArtifactDeactivated(msg.sender, artifact.id, locationId);
         DFArtifactFacet(address(this)).updateArtifact(artifact);
 
         bool shouldBurn = artifact.artifactType == ArtifactType.PlanetaryShield ||
-            artifact.artifactType == ArtifactType.PhotoidCannon;
+            artifact.artifactType == ArtifactType.PhotoidCannon ||
+            artifact.artifactType == ArtifactType.IceLink;
+
         if (shouldBurn) {
             // burn it after use. will be owned by contract but not on a planet anyone can control
             LibGameUtils._takeArtifactOffPlanet(artifact.id, locationId);
@@ -351,6 +390,8 @@ library LibArtifactUtils {
         Planet storage planet = gs().planets[locationId];
 
         require(!gs().planets[locationId].destroyed, "planet is destroyed");
+        require(!gs().planets[locationId].frozen, "planet is frozen");
+
         require(planet.planetType == PlanetType.TRADING_POST, "can only deposit on trading posts");
         require(
             DFArtifactFacet(address(this)).ownerOf(artifactId) == msg.sender,
@@ -383,6 +424,8 @@ library LibArtifactUtils {
             "can only withdraw from trading posts"
         );
         require(!gs().planets[locationId].destroyed, "planet is destroyed");
+        require(!gs().planets[locationId].frozen, "planet is frozen");
+
         require(planet.owner == msg.sender, "you can only withdraw from a planet you own");
         Artifact memory artifact = LibGameUtils.getPlanetArtifact(locationId, artifactId);
         require(artifact.isInitialized, "this artifact is not on this planet");
@@ -401,6 +444,8 @@ library LibArtifactUtils {
         Planet storage planet = gs().planets[locationId];
 
         require(!planet.destroyed, "planet is destroyed");
+        require(!planet.frozen, "planet is frozen");
+
         require(planet.planetType == PlanetType.RUINS, "you can't find an artifact on this planet");
         require(planet.owner == msg.sender, "you must own this planet");
         require(planet.prospectedBlockNumber == 0, "this planet has already been prospected");

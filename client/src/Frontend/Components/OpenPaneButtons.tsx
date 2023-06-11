@@ -1,6 +1,7 @@
 import { LocationId } from '@darkforest_eth/types';
 import React, { useCallback } from 'react';
 import { BroadcastPane, BroadcastPaneHelpContent } from '../Panes/BroadcastPane';
+import { BuyArtifactPane } from '../Panes/BuyArtifactPane';
 import { HatPane } from '../Panes/HatPane';
 import {
   ManagePlanetArtifactsHelpContent,
@@ -11,6 +12,7 @@ import { PlanetInfoPane } from '../Panes/PlanetInfoPane';
 import { UpgradeDetailsPane, UpgradeDetailsPaneHelpContent } from '../Panes/UpgradeDetailsPane';
 import {
   TOGGLE_BROADCAST_PANE,
+  TOGGLE_BUY_ARTIFACT_PANE,
   TOGGLE_HAT_PANE,
   TOGGLE_PLANET_ARTIFACTS_PANE,
   TOGGLE_PLANET_INFO_PANE,
@@ -66,6 +68,23 @@ export function OpenHatPaneButton({
       title='Hat'
       shortcut={TOGGLE_HAT_PANE}
       element={() => <HatPane modal={modal} initialPlanetId={planetId} />}
+    />
+  );
+}
+
+export function OpenBuyArtifactPaneButton({
+  modal,
+  planetId,
+}: {
+  modal: ModalHandle;
+  planetId: LocationId | undefined;
+}) {
+  return (
+    <OpenPaneButton
+      modal={modal}
+      title='Buy Artifact'
+      shortcut={TOGGLE_BUY_ARTIFACT_PANE}
+      element={() => <BuyArtifactPane modal={modal} initialPlanetId={planetId} />}
     />
   );
 }

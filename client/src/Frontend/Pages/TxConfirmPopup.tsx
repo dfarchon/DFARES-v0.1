@@ -184,6 +184,11 @@ export function TxConfirmPopup({
 
   const withdrawSilverPlanet = localStorage.getItem(`${account}-withdrawSilverPlanet`);
 
+  const buyArtifactOnPlanet = localStorage.getItem(`${account}-buyArtifactOnPlanet`);
+  const buyArtifactRarity = localStorage.getItem(`${account}-buyArtifactRarity`);
+  const buyArtifactCost: number =
+    method === 'buyArtifact' && buyArtifactRarity ? 2 ** (Number(buyArtifactRarity) - 1) : 0;
+
   const revealPlanet = localStorage.getItem(`${account}-revealLocationId`);
 
   return (
@@ -307,6 +312,19 @@ export function TxConfirmPopup({
             </Row>
           </>
         )}
+
+        {method === 'buyArtifact' && (
+          <>
+            <Row>
+              <b>Planet ID</b>
+              <span className='mono'>{buyArtifactOnPlanet}</span>
+            </Row>
+            <Row>
+              <b>Artifact Price </b>
+              <span>({buyArtifactCost} xDAI)</span>
+            </Row>
+          </>
+        )}
         {method === 'withdrawSilver' && (
           <Row>
             <b>Planet ID</b>
@@ -320,10 +338,28 @@ export function TxConfirmPopup({
           <b>Gas Fee</b>
           <span>{weiToGwei(gasFee)} gwei</span>
         </Row>
-        <Row>
-          <b>Gas Limit</b>
-          <span>2000000</span>
-        </Row>
+
+        {method !== 'buyHat' && method !== 'buyArtifact' && (
+          <Row>
+            <b>Gas Limit</b>
+            <span>2000000</span>
+          </Row>
+        )}
+
+        {method === 'buyHat' && (
+          <Row>
+            <b>Gas Limit</b>
+            <span>500000</span>
+          </Row>
+        )}
+
+        {method === 'buyArtifact' && (
+          <Row>
+            <b>Gas Limit</b>
+            <span>2000000</span>
+          </Row>
+        )}
+
         <Row>
           <b>Total Transaction Cost</b>
           <span>{txCost.toFixed(8)} xDAI</span>

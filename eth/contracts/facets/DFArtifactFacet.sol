@@ -17,7 +17,7 @@ import {LibPlanet} from "../libraries/LibPlanet.sol";
 import {WithStorage} from "../libraries/LibStorage.sol";
 
 // Type imports
-import {Artifact, ArtifactType, DFTCreateArtifactArgs, DFPFindArtifactArgs} from "../DFTypes.sol";
+import {Artifact, ArtifactType, ArtifactRarity, DFTCreateArtifactArgs, DFPFindArtifactArgs} from "../DFTypes.sol";
 
 contract DFArtifactFacet is WithStorage, ERC721 {
     using ERC721BaseStorage for ERC721BaseStorage.Layout;
@@ -94,6 +94,34 @@ contract DFArtifactFacet is WithStorage, ERC721 {
         return newArtifact;
     }
 
+     function createArtifactToSell(DFTCreateArtifactArgs memory args) private
+        returns (Artifact memory)
+    {
+        require(args.tokenId >= 1, "artifact id must be positive");
+
+        _mint(args.owner, args.tokenId);
+
+        Artifact memory newArtifact = Artifact(
+            true,
+            args.tokenId,
+            args.planetId,
+            args.rarity,
+            args.biome,
+            block.timestamp,
+            args.discoverer,
+            args.artifactType,
+            0,
+            0,
+            0,
+            0,
+            args.controller
+        );
+
+        gs().artifacts[args.tokenId] = newArtifact;
+
+        return newArtifact;
+    }
+
     function getArtifact(uint256 tokenId) public view returns (Artifact memory) {
         return gs().artifacts[tokenId];
     }
@@ -114,6 +142,14 @@ contract DFArtifactFacet is WithStorage, ERC721 {
     }
 
     function transferArtifact(uint256 tokenId, address newOwner) public onlyAdminOrCore {
+        if (newOwner == address(0)) {
+            _burn(tokenId);
+        } else {
+            _transfer(ownerOf(tokenId), newOwner, tokenId);
+        }
+    }
+
+    function transferArtifactToSell(uint256 tokenId, address newOwner) private {
         if (newOwner == address(0)) {
             _burn(tokenId);
         } else {
@@ -191,15 +227,15 @@ contract DFArtifactFacet is WithStorage, ERC721 {
     function activateArtifact(
         uint256 locationId,
         uint256 artifactId,
-        uint256 wormholeTo
+        uint256 linkTo
     ) public notPaused {
         LibPlanet.refreshPlanet(locationId);
 
-        if (wormholeTo != 0) {
-            LibPlanet.refreshPlanet(wormholeTo);
+        if (linkTo != 0) {
+            LibPlanet.refreshPlanet(linkTo);
         }
 
-        LibArtifactUtils.activateArtifact(locationId, artifactId, wormholeTo);
+        LibArtifactUtils.activateArtifact(locationId, artifactId, linkTo);
         // event is emitted in the above library function
     }
 
@@ -288,6 +324,39 @@ contract DFArtifactFacet is WithStorage, ERC721 {
     function adminGiveArtifact(DFTCreateArtifactArgs memory args) public onlyAdmin {
         Artifact memory artifact = createArtifact(args);
         transferArtifact(artifact.id, address(this));
+        LibGameUtils._putArtifactOnPlanet(artifact.id, args.planetId);
+
+        emit ArtifactFound(args.owner, artifact.id, args.planetId);
+    }
+
+    function buyArtifact(DFTCreateArtifactArgs memory args) public payable notPaused {
+
+        uint256 _location = args.planetId;
+        require(gs().planets[_location].isInitialized == true, "Planet is not initialized");
+        LibPlanet.refreshPlanet(_location);
+
+        require(
+            gs().planets[_location].owner == msg.sender,
+            "Only owner account can perform that operation on planet."
+        );
+
+        require(args.rarity != ArtifactRarity.Unknown,"can't buy Unknown");
+        require(args.rarity != ArtifactRarity.Mythic,"can't buy Mythics");
+
+        uint256 cost =  1 ether;
+
+        if(args.rarity == ArtifactRarity.Common) cost = 1 ether;
+        else if(args.rarity == ArtifactRarity.Rare) cost = 2 ether;
+        else if(args.rarity == ArtifactRarity.Epic) cost = 4 ether;
+        else if(args.rarity == ArtifactRarity.Legendary) cost = 8 ether;
+
+        require(msg.value == cost, "Wrong value sent");
+
+        uint256 id = uint256(keccak256(abi.encodePacked(args.planetId, gs().miscNonce++)));
+        args.tokenId = id;
+
+        Artifact memory artifact = createArtifactToSell(args);
+        transferArtifactToSell(artifact.id, address(this));
         LibGameUtils._putArtifactOnPlanet(artifact.id, args.planetId);
 
         emit ArtifactFound(args.owner, artifact.id, args.planetId);

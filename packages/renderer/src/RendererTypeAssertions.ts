@@ -7,6 +7,7 @@ import {
   CaptureZoneRendererType,
   CircleRendererType,
   LineRendererType,
+  LinkRendererType,
   MineBodyRendererType,
   MineRendererType,
   PerlinRendererType,
@@ -26,7 +27,6 @@ import {
   UIRendererType,
   UnminedRendererType,
   VoyageRendererType,
-  WormholeRendererType,
 } from '@darkforest_eth/types';
 
 export function isPlanetRenderer(renderer: BaseRenderer): renderer is PlanetRendererType {
@@ -75,8 +75,8 @@ export function isVoyageRenderer(renderer: BaseRenderer): renderer is VoyageRend
   return renderer.rendererType === RendererType.Voyager;
 }
 
-export function isWormholeRenderer(renderer: BaseRenderer): renderer is WormholeRendererType {
-  return renderer.rendererType === RendererType.Wormhole;
+export function isLinkRenderer(renderer: BaseRenderer): renderer is LinkRendererType {
+  return renderer.rendererType === RendererType.Link;
 }
 
 export function isMineBodyRenderer(renderer: BaseRenderer): renderer is MineBodyRendererType {

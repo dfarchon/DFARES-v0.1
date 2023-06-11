@@ -183,7 +183,8 @@ contract DFCoreFacet is WithStorage {
             "Can only transfer ownership to initialized players"
         );
 
-        require(!gs().planets[_location].destroyed, "can't transfer a destroyed planet");
+        require(!gs().planets[_location].destroyed, "can't transfer a s planet");
+        require(!gs().planets[_location].frozen, "can't transfer a frozen planet");
 
         gs().planets[_location].owner = _player;
 

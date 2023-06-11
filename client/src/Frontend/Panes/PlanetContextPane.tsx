@@ -7,6 +7,7 @@ import { VerticalSplit } from '../Components/CoreUI';
 import { MineArtifactButton } from '../Components/MineArtifactButton';
 import {
   OpenBroadcastPaneButton,
+  OpenBuyArtifactPaneButton,
   OpenHatPaneButton,
   OpenManagePlanetArtifactsButton,
   OpenPlanetInfoButton,
@@ -62,6 +63,11 @@ function PlanetContextPaneContent({
     hatRow = <OpenHatPaneButton modal={modal} planetId={p?.locationId} />;
   }
 
+  let buyArtifactRow = null;
+  if (!p?.destroyed && owned) {
+    buyArtifactRow = <OpenBuyArtifactPaneButton modal={modal} planetId={p?.locationId} />;
+  }
+
   let withdrawRow = null;
   if (!p?.destroyed && owned && p?.planetType === PlanetType.TRADING_POST) {
     withdrawRow = <WithdrawSilver wrapper={planet} />;
@@ -92,6 +98,7 @@ function PlanetContextPaneContent({
         <>
           <OpenManagePlanetArtifactsButton modal={modal} planetId={p?.locationId} />
           {hatRow}
+          {buyArtifactRow}
         </>
       </VerticalSplit>
       {withdrawRow}

@@ -95,7 +95,7 @@ export function arrive(toPlanet: Planet, arrival: Arrival): Planet {
   // update toPlanet energy and silver right before arrival
   toPlanet = updatePlanetToTime(toPlanet, arrival.arrivalTime);
 
-  if (toPlanet.destroyed) {
+  if (toPlanet.destroyed || toPlanet.frozen) {
     return toPlanet;
   }
 
