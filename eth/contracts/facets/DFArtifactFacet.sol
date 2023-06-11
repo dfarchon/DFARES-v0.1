@@ -94,7 +94,8 @@ contract DFArtifactFacet is WithStorage, ERC721 {
         return newArtifact;
     }
 
-     function createArtifactToSell(DFTCreateArtifactArgs memory args) private
+    function createArtifactToSell(DFTCreateArtifactArgs memory args)
+        private
         returns (Artifact memory)
     {
         require(args.tokenId >= 1, "artifact id must be positive");
@@ -330,7 +331,6 @@ contract DFArtifactFacet is WithStorage, ERC721 {
     }
 
     function buyArtifact(DFTCreateArtifactArgs memory args) public payable notPaused {
-
         uint256 _location = args.planetId;
         require(gs().planets[_location].isInitialized == true, "Planet is not initialized");
         LibPlanet.refreshPlanet(_location);
@@ -340,15 +340,15 @@ contract DFArtifactFacet is WithStorage, ERC721 {
             "Only owner account can perform that operation on planet."
         );
 
-        require(args.rarity != ArtifactRarity.Unknown,"can't buy Unknown");
-        require(args.rarity != ArtifactRarity.Mythic,"can't buy Mythics");
+        require(args.rarity != ArtifactRarity.Unknown, "can't buy Unknown");
+        require(args.rarity != ArtifactRarity.Mythic, "can't buy Mythics");
 
-        uint256 cost =  1 ether;
+        uint256 cost = 1 ether;
 
-        if(args.rarity == ArtifactRarity.Common) cost = 1 ether;
-        else if(args.rarity == ArtifactRarity.Rare) cost = 2 ether;
-        else if(args.rarity == ArtifactRarity.Epic) cost = 4 ether;
-        else if(args.rarity == ArtifactRarity.Legendary) cost = 8 ether;
+        if (args.rarity == ArtifactRarity.Common) cost = 1 ether;
+        else if (args.rarity == ArtifactRarity.Rare) cost = 2 ether;
+        else if (args.rarity == ArtifactRarity.Epic) cost = 4 ether;
+        else if (args.rarity == ArtifactRarity.Legendary) cost = 8 ether;
 
         require(msg.value == cost, "Wrong value sent");
 

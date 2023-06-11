@@ -11,6 +11,9 @@
       "path": "../packages/events/tsconfig.ref.json"
     },
     {
+      "path": "../packages/gamelogic/tsconfig.ref.json"
+    },
+    {
       "path": "../packages/hashing/tsconfig.ref.json"
     },
     {
@@ -36,9 +39,6 @@
     },
     {
       "path": "../packages/types/tsconfig.ref.json"
-    },
-    {
-      "path": "../packages/gamelogic/tsconfig.ref.json"
     },
     {
       "path": "../packages/ui/tsconfig.ref.json"

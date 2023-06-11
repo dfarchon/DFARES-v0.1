@@ -196,6 +196,8 @@ library LibGameUtils {
             artifactType = ArtifactType.BlindBox;
         } else if (lastByteOfSeed < 3328) {
             artifactType = ArtifactType.Avatar;
+        }else if(lastByteOfSeed<3584){
+            artifactType = ArtifactType.IceLink;
         } else {
             if (biome == Biome.Ice) {
                 artifactType = ArtifactType.PlanetaryShield;

@@ -213,7 +213,6 @@ enum ArtifactType {
     Doom,
     BlindBox,
     Avatar,
-    
     ShipMothership,
     ShipCrescent,
     ShipWhale,
