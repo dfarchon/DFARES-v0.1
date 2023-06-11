@@ -183,6 +183,10 @@ export interface ContractConstants {
   TOKEN_MINT_END_SECONDS: number;
 
   MAX_NATURAL_PLANET_LEVEL: number;
+  MAX_ARTIFACT_PER_PLANET: number;
+  MAX_SENDING_PLANET: number;
+  MAX_RECEIVING_PLANET: number;
+
   TIME_FACTOR_HUNDREDTHS: number;
   /**
    * The perlin value at each coordinate determines the space type. There are four space

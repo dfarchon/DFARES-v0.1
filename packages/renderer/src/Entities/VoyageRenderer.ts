@@ -2,6 +2,7 @@ import { EMPTY_ADDRESS } from '@darkforest_eth/constants';
 import { formatNumber, hasOwner } from '@darkforest_eth/gamelogic';
 import { getOwnerColorVec } from '@darkforest_eth/procedural';
 import {
+  ArtifactType,
   LocationId,
   Planet,
   Player,
@@ -57,6 +58,7 @@ export class VoyageRenderer implements VoyageRendererType {
       circleRenderer: cR,
       textRenderer: tR,
       spriteRenderer: sR,
+      planetRenderManager: pRM,
     } = this.renderer;
 
     const fromLoc = gameUIManager.getLocationOfPlanet(voyage.fromPlanet);
@@ -124,7 +126,9 @@ export class VoyageRenderer implements VoyageRendererType {
           const distanceFromCenterOfFleet = fleetRadius * 1.5 + artifactSizePixels;
           const x = distanceFromCenterOfFleet + screenCoords.x;
           const y = screenCoords.y;
-          sR.queueArtifact(artifact, { x, y }, artifactSizePixels);
+          if (artifact.artifactType !== ArtifactType.Avatar)
+            sR.queueArtifact(artifact, { x, y }, artifactSizePixels);
+          else pRM.queueNewHat(viewport.canvasToWorldCoords({ x, y }), 1, artifact);
         }
       }
 

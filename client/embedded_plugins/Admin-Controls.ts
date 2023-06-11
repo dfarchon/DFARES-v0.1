@@ -2,14 +2,17 @@
 import type { EthAddress, LocatablePlanet, LocationId, Planet } from '@darkforest_eth/types';
 import {
   MAX_ARTIFACT_RARITY,
-  MAX_SPACESHIP_TYPE,
   MIN_ARTIFACT_RARITY,
-  MIN_ARTIFACT_TYPE,
-  MIN_SPACESHIP_TYPE,
+  // MIN_ARTIFACT_TYPE,
+  // MIN_SPACESHIP_TYPE,
+  // MAX_SPACESHIP_TYPE,
   MIN_BIOME,
   MAX_BIOME,
   //@ts-ignore
 } from 'https://cdn.skypack.dev/@darkforest_eth/constants';
+const MIN_ARTIFACT_TYPE = 1;
+const MIN_SPACESHIP_TYPE = 15;
+const MAX_SPACESHIP_TYPE = 19;
 //@ts-ignore
 import { getPlanetNameHash } from 'https://cdn.skypack.dev/@darkforest_eth/procedural';
 import {
@@ -20,8 +23,8 @@ import {
 } from 'https://cdn.skypack.dev/@darkforest_eth/serde';
 import {
   ArtifactRarityNames,
-  ArtifactType,
-  ArtifactTypeNames,
+  // ArtifactType,
+  // ArtifactTypeNames,
   BiomeNames,
   Player,
   PlanetType,
@@ -29,6 +32,57 @@ import {
   WorldCoords,
   //@ts-ignore
 } from 'https://cdn.skypack.dev/@darkforest_eth/types';
+enum ArtifactType {
+  Unknown,
+  Monolith,
+  Colossus,
+  Spaceship,
+  Pyramid,
+  Wormhole,
+  PlanetaryShield,
+  PhotoidCannon,
+  BloomFilter,
+  BlackDomain,
+  FuckYou,
+  Bomb,
+  Doom,
+  BlindBox,
+  Avatar,
+  ShipMothership,
+  ShipCrescent,
+  ShipWhale,
+  ShipGear,
+  ShipTitan,
+
+  // Don't forget to update MIN_ARTIFACT_TYPE and/or MAX_ARTIFACT_TYPE in the `constants` package
+}
+
+/**
+ * Mapping from ArtifactType to pretty-printed names.
+ */
+const ArtifactTypeNames = [
+  'Unknown',
+  'Monolith',
+  'Colossus',
+  'Spaceship',
+  'Pyramid',
+  'Wormhole',
+  'Planetary Shield',
+  'Black Domain',
+  'Photoid Cannon',
+  'Bloom Filter',
+  'Fuck You',
+  'Bomb',
+  'Doom',
+  'Blind Box',
+  'Shit Meme',
+  'Mothership',
+  'Crescent',
+  'Whale',
+  'Gear',
+  'Titan',
+];
+
 import {
   html,
   render,
@@ -266,6 +320,7 @@ function shipOptions() {
 
 function artifactOptions() {
   const options = [] as HTMLOptionElement[];
+  console.log(ArtifactTypeNames);
   for (let i = MIN_ARTIFACT_TYPE; i < MIN_SPACESHIP_TYPE; i++) {
     options.push(html`<option value=${i}>${ArtifactTypeNames[i]}</option>`);
   }

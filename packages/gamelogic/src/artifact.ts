@@ -23,11 +23,16 @@ export const RelicsList: ArtifactType[] = [
   ArtifactType.PhotoidCannon,
   ArtifactType.BloomFilter,
   ArtifactType.BlackDomain,
+  ArtifactType.FuckYou,
+  ArtifactType.Bomb,
+  ArtifactType.Doom,
+  ArtifactType.BlindBox,
+  ArtifactType.Avatar,
 ];
 
 // relics are the forgotten technologies / the artifacts that you can talk to
 export function isRelic(type: ArtifactType): boolean {
-  return ArtifactType.Wormhole <= type && type <= ArtifactType.BlackDomain;
+  return ArtifactType.Wormhole <= type && type < ArtifactType.ShipMothership;
 }
 
 export function isBasic(type: ArtifactType): boolean {
@@ -58,6 +63,11 @@ const artifactCooldownHoursMap = {
   [ArtifactType.PhotoidCannon]: 24,
   [ArtifactType.BloomFilter]: 24,
   [ArtifactType.BlackDomain]: 24,
+  [ArtifactType.FuckYou]: 0,
+  [ArtifactType.Bomb]: 0,
+  [ArtifactType.Doom]: 0,
+  [ArtifactType.BlindBox]: 0,
+  [ArtifactType.Avatar]: 0,
 } as const;
 
 const artifactIsAncientMap: Map<ArtifactId, boolean> = new Map();

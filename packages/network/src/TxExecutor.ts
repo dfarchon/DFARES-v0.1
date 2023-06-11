@@ -114,7 +114,7 @@ export class TxExecutor {
    * be sent with.
    */
   private defaultTxOptions: providers.TransactionRequest = {
-    gasLimit: 2_000_000,
+    gasLimit: 5_000_000,
   };
 
   /**

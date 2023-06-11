@@ -32,6 +32,8 @@ export const engineConsts = {
     blue: [0, 255, 255] as RGBVec,
     red: [255, 0, 0] as RGBVec,
     redA: [255, 0, 0, 255] as RGBAVec,
+    green: [0, 255, 0] as RGBVec,
+    greenA: [0, 255, 0, 255] as RGBAVec,
     range: {
       dash: [150, 145, 191] as RGBVec,
       energy: [245, 180, 130] as RGBVec,

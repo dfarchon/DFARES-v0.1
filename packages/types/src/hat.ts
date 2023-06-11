@@ -13,4 +13,9 @@ export const HatType = {
   PopeHat: 'PopeHat' as HatType,
   Squid: 'Squid' as HatType,
   SantaHat: 'SantaHat' as HatType,
+  Doge: 'Doge' as HatType,
+  Wojak: 'Wojak' as HatType,
+  Mike: 'Mike' as HatType,
+  Panda: 'Panda' as HatType,
+  Pepe: 'Pepe' as HatType,
 };

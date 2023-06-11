@@ -23,7 +23,8 @@
     "lint": "yarn workspaces run lint",
     "clean": "yarn workspaces run clean",
     "format": "yarn workspaces run format",
-    "docs": "lerna run --scope @darkforest_eth/* docs"
+    "docs": "lerna run --scope @darkforest_eth/* docs",
+    "start": "concurrently -n contracts,client,watch -c cyan,magenta,blue \"yarn workspace eth start\" \"yarn workspace client start\" \"yarn watch\" "
   },
   "devDependencies": {
     "@monorepo-utils/workspaces-to-typescript-project-references": "^2.7.4",

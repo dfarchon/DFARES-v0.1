@@ -1,6 +1,7 @@
 import { Artifact, LocatablePlanet, PlanetType } from '@darkforest_eth/types';
 import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
+import { Btn } from '../../Components/Btn';
 import { Spacer } from '../../Components/CoreUI';
 import { ModalHandle } from '../../Views/ModalPane';
 import { AllArtifacts } from '../ArtifactsList';
@@ -23,8 +24,13 @@ export function ManageArtifactsPane({
     planet.planetType === PlanetType.TRADING_POST &&
     !planet.destroyed;
   const [viewingDepositList, setViewingDepositList] = useState(false);
+  const [action, setAction] = useState(false);
+  const [composingArtifactList, setComposingArtifactList] = useState<Artifact[]>([]);
 
-  let action;
+  const handleSelectCompseArtifact = (a: Artifact) => {
+    setAction(true);
+    setComposingArtifactList((prev: Artifact[]) => [...prev, a]);
+  };
 
   useEffect(() => {
     setViewingDepositList(false);
@@ -40,6 +46,7 @@ export function ManageArtifactsPane({
             (a) => !!a
           ) as Artifact[]
         }
+        handleSelectCompseArtifact={handleSelectCompseArtifact}
         modal={modal}
         noArtifactsMessage={
           <>
@@ -53,16 +60,21 @@ export function ManageArtifactsPane({
         }
       />
       {action && (
-        <>
-          <Spacer height={8} />
-          {action}
-          <Spacer height={8} />
-        </>
+        <ArtifactActionBtnContainer>
+          <Btn
+            disabled={false}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            Compose
+          </Btn>
+        </ArtifactActionBtnContainer>
       )}
 
       <Spacer height={4} />
 
-      {isMyTradingPost && (
+      {!isMyTradingPost && (
         <SelectArtifactsContainer>
           <SelectArtifactList
             selected={!viewingDepositList}
@@ -99,4 +111,13 @@ const SelectArtifactList = styled.span`
     ${selected && 'text-decoration: underline;'}
     cursor: pointer;
   `}
+`;
+
+const ArtifactActionBtnContainer = styled.span`
+  padding-top: 8px;
+  padding-bottom: 4px;
+  display: flex;
+  justify-content: right;
+  align-items: right;
+  flex-direction: row;
 `;

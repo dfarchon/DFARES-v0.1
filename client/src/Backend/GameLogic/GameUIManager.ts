@@ -101,6 +101,9 @@ class GameUIManager extends EventEmitter {
    */
   private isChoosingTargetPlanet = false;
 
+  private isFuckingYou = false;
+  private isBombing = false;
+
   private onChooseTargetPlanet?: (planet: LocatablePlanet | undefined) => void;
 
   private linkSourceArtifactType = ArtifactType.Unknown;
@@ -463,6 +466,33 @@ class GameUIManager extends EventEmitter {
     return promise;
   }
 
+  public startFuckYouFrom(planet: LocatablePlanet): Promise<LocatablePlanet | undefined> {
+    this.isChoosingTargetPlanet = true;
+    this.isFuckingYou = true;
+    this.mouseDownOverCoords = planet.location.coords;
+    this.mouseDownOverPlanet = planet;
+
+    const { resolve, promise } = deferred<LocatablePlanet | undefined>();
+
+    this.onChooseTargetPlanet = resolve;
+
+    return promise;
+  }
+
+  public startBombFrom(planet: LocatablePlanet): Promise<LocatablePlanet | undefined> {
+    //bomb immediately or wait for arrival?
+    this.isChoosingTargetPlanet = true;
+    this.isBombing = true;
+    this.mouseDownOverCoords = planet.location.coords;
+    this.mouseDownOverPlanet = planet;
+
+    const { resolve, promise } = deferred<LocatablePlanet | undefined>();
+
+    this.onChooseTargetPlanet = resolve;
+
+    return promise;
+  }
+
   public revealLocation(locationId: LocationId) {
     this.gameManager.revealLocation(locationId);
   }
@@ -488,6 +518,13 @@ class GameUIManager extends EventEmitter {
     return this.isChoosingTargetPlanet;
   }
 
+  getIsFuckingYou() {
+    return this.isFuckingYou;
+  }
+
+  getIsBombing() {
+    return this.isBombing;
+  }
   getLinkSourceArtifactType() {
     return this.linkSourceArtifactType;
   }
@@ -500,6 +537,8 @@ class GameUIManager extends EventEmitter {
 
     if (this.getIsChoosingTargetPlanet()) {
       this.isChoosingTargetPlanet = false;
+      this.isFuckingYou = false;
+      this.isBombing = false;
       this.linkSourceArtifactType = ArtifactType.Unknown;
 
       if (this.onChooseTargetPlanet) {
@@ -616,6 +655,9 @@ class GameUIManager extends EventEmitter {
       }
 
       this.isChoosingTargetPlanet = false;
+
+      this.isFuckingYou = false;
+      this.isBombing = false;
       this.linkSourceArtifactType = ArtifactType.Unknown;
     } else {
       uiEmitter.emit(UIEmitterEvent.SendCancelled);

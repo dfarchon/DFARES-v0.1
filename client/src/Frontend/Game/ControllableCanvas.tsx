@@ -1,5 +1,6 @@
 import { Renderer } from '@darkforest_eth/renderer';
 import { CursorState, ModalManagerEvent, Setting } from '@darkforest_eth/types';
+// import * as fabric from 'fabric'; // v6
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useUIManager } from '../Utils/AppHooks';
@@ -45,6 +46,8 @@ export default function ControllableCanvas() {
 
   const evtRef = canvasRef;
 
+  // const [fCanvas, setFCanvas] = useState<fabric.Canvas | null>(null);
+
   const gameUIManager = useUIManager();
 
   const modalManager = gameUIManager.getModalManager();
@@ -84,6 +87,9 @@ export default function ControllableCanvas() {
 
   useEffect(() => {
     if (!gameUIManager) return;
+    // if (!fCanvas && canvasRef.current) {
+    //   // setFCanvas(new fabric.Canvas(canvasRef.current));
+    // }
 
     const uiEmitter: UIEmitter = UIEmitter.getInstance();
 
@@ -98,6 +104,7 @@ export default function ControllableCanvas() {
       uiEmitter.emit(UIEmitterEvent.CanvasScroll, deltaY);
     };
 
+    // const canvas = fCanvas?.getSelectionElement();
     const canvas = evtRef.current;
     if (!canvas || !canvasRef.current || !glRef.current || !bufferRef.current) return;
 
@@ -124,6 +131,7 @@ export default function ControllableCanvas() {
     // We can't attach the wheel event onto the canvas due to:
     // https://www.chromestatus.com/features/6662647093133312
     canvas.addEventListener('wheel', onWheel);
+    // fCanvas.on("mouse:wheel", onWheel);
     window.addEventListener('resize', onResize);
 
     uiEmitter.on(UIEmitterEvent.UIChange, doResize);

@@ -52,6 +52,18 @@ export type LobbyConfigAction =
       type: 'MAX_NATURAL_PLANET_LEVEL';
       value: Initializers['MAX_NATURAL_PLANET_LEVEL'] | undefined;
     }
+  | {
+      type: 'MAX_ARTIFACT_PER_PLANET';
+      value: Initializers['MAX_ARTIFACT_PER_PLANET'] | undefined;
+    }
+  | {
+      type: 'MAX_SENDING_PLANET';
+      value: Initializers['MAX_SENDING_PLANET'] | undefined;
+    }
+  | {
+      type: 'MAX_RECEIVING_PLANET';
+      value: Initializers['MAX_RECEIVING_PLANET'] | undefined;
+    }
   | { type: 'TIME_FACTOR_HUNDREDTHS'; value: Initializers['TIME_FACTOR_HUNDREDTHS'] | undefined }
   | { type: 'PERLIN_THRESHOLD_1'; value: Initializers['PERLIN_THRESHOLD_1'] | undefined }
   | { type: 'PERLIN_THRESHOLD_2'; value: Initializers['PERLIN_THRESHOLD_2'] | undefined }
@@ -180,6 +192,18 @@ export function lobbyConfigReducer(state: LobbyConfigState, action: LobbyAction)
     }
     case 'MAX_NATURAL_PLANET_LEVEL': {
       update = ofMaxNaturalPlanetLevel(action, state);
+      break;
+    }
+    case 'MAX_ARTIFACT_PER_PLANET': {
+      update = ofMaxArtifactPerPlanet(action, state);
+      break;
+    }
+    case 'MAX_SENDING_PLANET': {
+      update = ofMaxSendingPlanet(action, state);
+      break;
+    }
+    case 'MAX_RECEIVING_PLANET': {
+      update = ofMaxReceivingPlanet(action, state);
       break;
     }
     case 'TIME_FACTOR_HUNDREDTHS': {
@@ -453,6 +477,36 @@ export function lobbyConfigInit(startingConfig: LobbyInitializers) {
         break;
       }
       case 'MAX_NATURAL_PLANET_LEVEL': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+      case 'MAX_ARTIFACT_PER_PLANET': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+      case 'MAX_SENDING_PLANET': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+      case 'MAX_RECEIVING_PLANET': {
         const defaultValue = startingConfig[key];
         state[key] = {
           currentValue: defaultValue,
@@ -1057,6 +1111,159 @@ export function ofPerlinLengthScale(
 
 export function ofMaxNaturalPlanetLevel(
   { type, value }: Extract<LobbyConfigAction, { type: 'MAX_NATURAL_PLANET_LEVEL' }>,
+  state: LobbyConfigState
+) {
+  if (value === undefined) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: undefined,
+    };
+  }
+
+  if (typeof value !== 'number') {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be a number`,
+    };
+  }
+
+  if (value < 0) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be a positive integer`,
+    };
+  }
+
+  if (value > 9) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Planets can't naturally be larger than Level 9`,
+    };
+  }
+
+  if (Math.floor(value) !== value) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: 'Value must be an integer',
+    };
+  }
+
+  return {
+    ...state[type],
+    currentValue: value,
+    displayValue: value,
+    warning: undefined,
+  };
+}
+export function ofMaxArtifactPerPlanet(
+  { type, value }: Extract<LobbyConfigAction, { type: 'MAX_ARTIFACT_PER_PLANET' }>,
+  state: LobbyConfigState
+) {
+  if (value === undefined) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: undefined,
+    };
+  }
+
+  if (typeof value !== 'number') {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be a number`,
+    };
+  }
+
+  if (value < 0) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be a positive integer`,
+    };
+  }
+
+  if (value > 9) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Planets can't naturally be larger than Level 9`,
+    };
+  }
+
+  if (Math.floor(value) !== value) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: 'Value must be an integer',
+    };
+  }
+
+  return {
+    ...state[type],
+    currentValue: value,
+    displayValue: value,
+    warning: undefined,
+  };
+}
+export function ofMaxSendingPlanet(
+  { type, value }: Extract<LobbyConfigAction, { type: 'MAX_SENDING_PLANET' }>,
+  state: LobbyConfigState
+) {
+  if (value === undefined) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: undefined,
+    };
+  }
+
+  if (typeof value !== 'number') {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be a number`,
+    };
+  }
+
+  if (value < 0) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be a positive integer`,
+    };
+  }
+
+  if (value > 9) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Planets can't naturally be larger than Level 9`,
+    };
+  }
+
+  if (Math.floor(value) !== value) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: 'Value must be an integer',
+    };
+  }
+
+  return {
+    ...state[type],
+    currentValue: value,
+    displayValue: value,
+    warning: undefined,
+  };
+}
+export function ofMaxReceivingPlanet(
+  { type, value }: Extract<LobbyConfigAction, { type: 'MAX_RECEIVING_PLANET' }>,
   state: LobbyConfigState
 ) {
   if (value === undefined) {

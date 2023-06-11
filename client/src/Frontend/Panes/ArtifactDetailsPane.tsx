@@ -170,6 +170,8 @@ export function ArtifactDetailsBody({
     return null;
   }
 
+  console.log(ArtifactType);
+
   const account = (addr: EthAddress) => {
     const twitter = uiManager?.getTwitter(addr);
     if (twitter) {

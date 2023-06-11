@@ -36,6 +36,10 @@ export const decodeInitializers = decoders.guard(
      * Game configuration
      */
     MAX_NATURAL_PLANET_LEVEL: decoders.number,
+    MAX_ARTIFACT_PER_PLANET: decoders.number,
+    MAX_SENDING_PLANET: decoders.number,
+    MAX_RECEIVING_PLANET: decoders.number,
+
     TIME_FACTOR_HUNDREDTHS: decoders.number,
     PERLIN_THRESHOLD_1: decoders.number,
     PERLIN_THRESHOLD_2: decoders.number,

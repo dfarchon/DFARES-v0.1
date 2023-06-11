@@ -404,6 +404,9 @@ export class ContractsAPI extends EventEmitter {
       WORLD_RADIUS_LOCKED,
       WORLD_RADIUS_MIN,
       MAX_NATURAL_PLANET_LEVEL,
+      MAX_ARTIFACT_PER_PLANET,
+      MAX_SENDING_PLANET,
+      MAX_RECEIVING_PLANET,
       TIME_FACTOR_HUNDREDTHS,
       PERLIN_THRESHOLD_1,
       PERLIN_THRESHOLD_2,
@@ -471,6 +474,9 @@ export class ContractsAPI extends EventEmitter {
       PERLIN_MIRROR_Y,
       TOKEN_MINT_END_SECONDS,
       MAX_NATURAL_PLANET_LEVEL: MAX_NATURAL_PLANET_LEVEL.toNumber(),
+      MAX_ARTIFACT_PER_PLANET: MAX_ARTIFACT_PER_PLANET.toNumber(),
+      MAX_SENDING_PLANET: MAX_SENDING_PLANET.toNumber(),
+      MAX_RECEIVING_PLANET: MAX_RECEIVING_PLANET.toNumber(),
       TIME_FACTOR_HUNDREDTHS: TIME_FACTOR_HUNDREDTHS.toNumber(),
       PERLIN_THRESHOLD_1: PERLIN_THRESHOLD_1.toNumber(),
       PERLIN_THRESHOLD_2: PERLIN_THRESHOLD_2.toNumber(),
@@ -618,6 +624,7 @@ export class ContractsAPI extends EventEmitter {
       ],
     };
 
+    console.log(constants);
     return constants;
   }
 

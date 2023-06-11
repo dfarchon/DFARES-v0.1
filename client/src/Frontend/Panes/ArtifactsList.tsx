@@ -40,12 +40,14 @@ export function ArtifactsList({
   depositOn,
   maxRarity,
   noArtifactsMessage,
+  handleSelectCompseArtifact,
 }: {
   modal: ModalHandle;
   artifacts: Artifact[];
   depositOn?: LocationId;
   maxRarity?: number;
   noArtifactsMessage?: React.ReactElement;
+  handleSelectCompseArtifact?: (a: Artifact) => void;
 }) {
   const uiManager = useUIManager();
   let nonShipArtifacts = artifacts.filter((a) => !isSpaceShip(a.artifactType));
@@ -79,7 +81,11 @@ export function ArtifactsList({
     },
     (artifact: Artifact) => (
       <Sub>
-        <Truncate maxWidth='75px'>{ArtifactTypeNames[artifact.artifactType]}</Truncate>
+        <Truncate maxWidth='75px'>
+          <span onClick={() => handleSelectCompseArtifact?.(artifact)}>
+            {ArtifactTypeNames[artifact.artifactType]}
+          </span>
+        </Truncate>
       </Sub>
     ),
     (artifact: Artifact) => <ArtifactRarityLabelAnim rarity={artifact.rarity} />,
@@ -210,6 +216,7 @@ export function AllArtifacts({
   maxRarity,
   noArtifactsMessage,
   noShipsMessage,
+  handleSelectCompseArtifact,
 }: {
   modal: ModalHandle;
   artifacts: Artifact[];
@@ -217,6 +224,7 @@ export function AllArtifacts({
   maxRarity?: number;
   noArtifactsMessage?: React.ReactElement;
   noShipsMessage?: React.ReactElement;
+  handleSelectCompseArtifact?: (artifact: Artifact) => void;
 }) {
   return (
     <ArtifactsBody>
@@ -232,6 +240,7 @@ export function AllArtifacts({
                 modal={modal}
                 artifacts={artifacts}
                 noArtifactsMessage={noArtifactsMessage}
+                handleSelectCompseArtifact={handleSelectCompseArtifact}
               />
             );
           }

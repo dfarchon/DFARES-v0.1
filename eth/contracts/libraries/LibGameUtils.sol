@@ -161,31 +161,41 @@ library LibGameUtils {
         Biome biome,
         SpaceType spaceType
     ) internal pure returns (ArtifactType, uint256) {
-        uint256 lastByteOfSeed = artifactSeed % 0xFF;
-        uint256 secondLastByteOfSeed = ((artifactSeed - lastByteOfSeed) / 256) % 0xFF;
+        uint256 lastByteOfSeed = artifactSeed % 0xFFF;
+        uint256 secondLastByteOfSeed = ((artifactSeed - lastByteOfSeed) / 0x1000) % 0xFFF;
 
         ArtifactType artifactType = ArtifactType.Pyramid;
 
-        if (lastByteOfSeed < 39) {
+        if (lastByteOfSeed < 256) {
             artifactType = ArtifactType.Monolith;
-        } else if (lastByteOfSeed < 78) {
+        } else if (lastByteOfSeed < 512) {
             artifactType = ArtifactType.Colossus;
         }
         // else if (lastByteOfSeed < 117) {
         //     artifactType = ArtifactType.Spaceship;
         // }
-        else if (lastByteOfSeed < 156) {
+        else if (lastByteOfSeed < 768) {
             artifactType = ArtifactType.Pyramid;
-        } else if (lastByteOfSeed < 171) {
+        } else if (lastByteOfSeed < 1024) {
             artifactType = ArtifactType.Wormhole;
-        } else if (lastByteOfSeed < 186) {
+        } else if (lastByteOfSeed < 1280) {
             artifactType = ArtifactType.PlanetaryShield;
-        } else if (lastByteOfSeed < 201) {
+        } else if (lastByteOfSeed < 1536) {
             artifactType = ArtifactType.PhotoidCannon;
-        } else if (lastByteOfSeed < 216) {
+        } else if (lastByteOfSeed < 1792) {
             artifactType = ArtifactType.BloomFilter;
-        } else if (lastByteOfSeed < 231) {
+        } else if (lastByteOfSeed < 2048) {
             artifactType = ArtifactType.BlackDomain;
+        } else if (lastByteOfSeed < 2304) {
+            artifactType = ArtifactType.FuckYou;
+        } else if (lastByteOfSeed < 2560) {
+            artifactType = ArtifactType.Bomb;
+        } else if (lastByteOfSeed < 2816) {
+            artifactType = ArtifactType.Doom;
+        } else if (lastByteOfSeed < 3072) {
+            artifactType = ArtifactType.BlindBox;
+        } else if (lastByteOfSeed < 3328) {
+            artifactType = ArtifactType.Avatar;
         } else {
             if (biome == Biome.Ice) {
                 artifactType = ArtifactType.PlanetaryShield;
@@ -529,6 +539,8 @@ library LibGameUtils {
         uint8 arrivalsFromOwner = 0;
         uint8 arrivalsFromOthers = 0;
 
+        uint8 arrivalArtifacts = 0;
+
         for (uint8 i = 0; i < gs().planetEvents[locationId].length; i++) {
             if (gs().planetEvents[locationId][i].eventType == PlanetEventType.ARRIVAL) {
                 if (
@@ -539,15 +551,37 @@ library LibGameUtils {
                 } else {
                     arrivalsFromOthers++;
                 }
+
+                //pending arrival artifacts count
+                if (
+                    gs().planetArrivals[gs().planetEvents[locationId][i].id].carriedArtifactId != 0
+                ) {
+                    arrivalArtifacts++;
+                }
             }
         }
         if (sender == gs().planets[locationId].owner) {
-            require(arrivalsFromOwner < 6, "Planet is rate-limited");
+            require(
+                arrivalsFromOwner < gameConstants().MAX_RECEIVING_PLANET,
+                "Planet is rate-limited"
+            );
         } else {
-            require(arrivalsFromOthers < 6, "Planet is rate-limited");
+            require(
+                arrivalsFromOthers < gameConstants().MAX_RECEIVING_PLANET,
+                "Planet is rate-limited"
+            );
         }
 
-        require(arrivalsFromOwner + arrivalsFromOthers < 12, "Planet is rate-limited");
+        require(
+            arrivalsFromOwner + arrivalsFromOthers < gameConstants().MAX_RECEIVING_PLANET * 2,
+            "Planet is rate-limited"
+        );
+
+        require(
+            arrivalArtifacts + gs().planetArtifacts[locationId].length <
+                gameConstants().MAX_ARTIFACT_PER_PLANET,
+            "Planet's artifacts are rate-limited"
+        );
     }
 
     function updateWorldRadius() public {

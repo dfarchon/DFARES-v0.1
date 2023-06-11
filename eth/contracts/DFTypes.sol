@@ -208,6 +208,12 @@ enum ArtifactType {
     BloomFilter,
     BlackDomain,
     IceLink,
+    FuckYou,
+    Bomb,
+    Doom,
+    BlindBox,
+    Avatar,
+    
     ShipMothership,
     ShipCrescent,
     ShipWhale,

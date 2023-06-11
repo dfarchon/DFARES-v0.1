@@ -98,6 +98,7 @@ export class Overlay2DRenderer {
     const { ctx } = this;
     const viewport = this.renderer.getViewport();
     const hat = hatFromType(hatType);
+    // const hat = hatFromType(HatType.Doge);
 
     const offY = radius + height / 4;
 
@@ -128,31 +129,92 @@ export class Overlay2DRenderer {
       hoveringPlanet;
 
     // now draw the hat
+    if (hat.legacy) {
+      ctx.save();
+
+      // move to planet center
+      ctx.translate(trueCenter.x, trueCenter.y);
+
+      // extrude out to outside
+      ctx.rotate(rotation);
+      ctx.translate(0, trueOffY);
+
+      // move to svg center
+      ctx.scale(trueWidth / pathWidth, trueHeight / pathHeight);
+      ctx.translate(-pathWidth / 2, -pathHeight / 2);
+
+      ctx.globalAlpha = hovering ? 0.3 : 1;
+
+      ctx.fillStyle = fill1;
+      for (const pathStr of hat.bottomLayer) {
+        ctx.fill(new Path2D(pathStr));
+      }
+
+      ctx.fillStyle = fill2;
+      for (const pathStr of hat.topLayer) {
+        ctx.fill(new Path2D(pathStr));
+      }
+
+      ctx.globalAlpha = 1;
+
+      ctx.restore();
+    }
+  }
+
+  drawNewHat(
+    imgage: HTMLImageElement,
+    center: WorldCoords, // center of planet
+    width: number, // width of hat
+    height: number, // height of hat
+    radius: number, // radius of planet
+    hoveringPlanet: boolean, // whether or not the user is hovering over the given planet
+    hoverCoords: WorldCoords | null = null
+  ) {
+    const { ctx } = this;
+    const viewport = this.renderer.getViewport();
+    // const hat = hatFromType(hatType);
+
+    const offY = radius + height / 4;
+
+    const trueCenter = viewport.worldToCanvasCoords(center);
+    const trueWidth = viewport.worldToCanvasDist(width);
+    const trueHeight = viewport.worldToCanvasDist(height);
+    // const trueOffY = -1 * viewport.worldToCanvasDist(offY);
+
+    // calculate hat hover
+
+    // TODO when we add planet rotation back in we'll need to use sin/cos to calculate hat center...
+    const hatCenter: WorldCoords = {
+      x: center.x,
+      y: center.y + offY,
+    };
+
+    const hatTopLeft = {
+      x: hatCenter.x - width / 2,
+      y: hatCenter.y - height / 2,
+    };
+
+    const hovering =
+      (hoverCoords &&
+        hoverCoords.x > hatTopLeft.x &&
+        hoverCoords.x < hatTopLeft.x + width &&
+        hoverCoords.y > hatTopLeft.y &&
+        hoverCoords.y < hatTopLeft.y + height) ||
+      hoveringPlanet;
 
     ctx.save();
-
-    // move to planet center
-    ctx.translate(trueCenter.x, trueCenter.y);
-
-    // extrude out to outside
-    ctx.rotate(rotation);
-    ctx.translate(0, trueOffY);
-
-    // move to svg center
-    ctx.scale(trueWidth / pathWidth, trueHeight / pathHeight);
-    ctx.translate(-pathWidth / 2, -pathHeight / 2);
-
     ctx.globalAlpha = hovering ? 0.3 : 1;
 
-    ctx.fillStyle = fill1;
-    for (const pathStr of hat.bottomLayer) {
-      ctx.fill(new Path2D(pathStr));
-    }
+    // ctx.arc(trueCenter.x, trueCenter.y, trueWidth / 2, 0, 2 * Math.PI);
+    // ctx.clip();
 
-    ctx.fillStyle = fill2;
-    for (const pathStr of hat.topLayer) {
-      ctx.fill(new Path2D(pathStr));
-    }
+    ctx.drawImage(
+      imgage,
+      trueCenter.x - trueWidth / 2,
+      trueCenter.y - trueHeight / 2,
+      trueWidth,
+      trueHeight
+    );
 
     ctx.globalAlpha = 1;
 

@@ -55,6 +55,9 @@ struct InitArgs {
     uint256 PERLIN_LENGTH_SCALE; // must be a power of two up to 8192
     // Game config
     uint256 MAX_NATURAL_PLANET_LEVEL;
+    uint256 MAX_ARTIFACT_PER_PLANET;
+    uint256 MAX_SENDING_PLANET;
+    uint256 MAX_RECEIVING_PLANET;
     uint256 TIME_FACTOR_HUNDREDTHS; // speedup/slowdown game
     uint256 PERLIN_THRESHOLD_1;
     uint256 PERLIN_THRESHOLD_2;
@@ -188,6 +191,11 @@ contract DFInitialize is WithStorage {
         gameConstants().CAPTURE_ZONES_PER_5000_WORLD_RADIUS = initArgs
             .CAPTURE_ZONES_PER_5000_WORLD_RADIUS;
         gameConstants().SPACESHIPS = initArgs.SPACESHIPS;
+
+        //todo: add to initargs
+        gameConstants().MAX_ARTIFACT_PER_PLANET = initArgs.MAX_ARTIFACT_PER_PLANET;
+        gameConstants().MAX_SENDING_PLANET = initArgs.MAX_SENDING_PLANET;
+        gameConstants().MAX_RECEIVING_PLANET = initArgs.MAX_RECEIVING_PLANET;
 
         gs().nextChangeBlock = block.number + initArgs.CAPTURE_ZONE_CHANGE_BLOCK_INTERVAL;
 

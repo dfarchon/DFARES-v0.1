@@ -210,7 +210,25 @@ library LibArtifactUtils {
 
         // Unknown is the 0th one, Monolith is the 1st, and so on.
         // TODO v0.6: consider photoid canon
-        uint256[11] memory artifactCooldownsHours = [uint256(24), 0, 0, 0, 0, 4, 4, 24, 24, 24, 0];
+
+        uint256[15] memory artifactCooldownsHours = [
+            uint256(24),
+            0,
+            0,
+            0,
+            0,
+            4,
+            4,
+            24,
+            24,
+            24,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ];
 
         require(
             artifact.lastDeactivated +
@@ -260,12 +278,6 @@ library LibArtifactUtils {
             );
             require(!gs().planets[linkTo].destroyed, "planet destroyed");
             require(!gs().planets[linkTo].frozen, "planet frozen");
-
-            require(
-                2 * uint256(artifact.rarity) >= planet.planetLevel,
-                "artifact is not powerful enough to apply effect to this planet level"
-            );
-
             require(
                 planet.planetLevel >= gs().planets[linkTo].planetLevel,
                 "fromPlanetLevel must be >= toPlanetLevel"
@@ -282,6 +294,40 @@ library LibArtifactUtils {
             planet.frozen = true;
             gs().planets[linkTo].frozen = true;
             artifact.linkTo = linkTo;
+        } else if (artifact.artifactType == ArtifactType.FuckYou) {
+            require(wormholeTo != 0, "you must provide a wormholeTo to activate a Fuckyou");
+            require(!gs().planets[wormholeTo].destroyed, "planet destroyed");
+            require(
+                2 * uint256(artifact.rarity) >= planet.planetLevel,
+                "artifact is not powerful enough to apply effect to this planet level"
+            );
+            require(
+                planet.population > (planet.populationCap * 9) / 10,
+                "from planet energy need gt 90%"
+            );
+
+            planet.owner = gs().planets[wormholeTo].owner;
+            gs().planets[wormholeTo].owner = msg.sender;
+            shouldDeactivateAndBurn = true;
+        } else if (artifact.artifactType == ArtifactType.Bomb) {
+            // require(wormholeTo != 0, "you must provide a wormholeTo to activate a Bomb");
+
+            // planet.owner = gs().planets[wormholeTo].owner;
+            // gs().planets[wormholeTo].owner = msg.sender;
+            shouldDeactivateAndBurn = true;
+        } else if (artifact.artifactType == ArtifactType.Doom) {
+            // require(wormholeTo != 0, "you must provide a wormholeTo to activate a Doom");
+            // require(!gs().planets[wormholeTo].destroyed, "planet destroyed");
+            // planet.owner = gs().planets[wormholeTo].owner;
+            // gs().planets[wormholeTo].owner = msg.sender;
+        } else if (artifact.artifactType == ArtifactType.BlindBox) {
+            // planet.owner = gs().planets[wormholeTo].owner;
+            // gs().planets[wormholeTo].owner = msg.sender;
+            // shouldDeactivateAndBurn = true;
+        } else if (artifact.artifactType == ArtifactType.Avatar) {
+            // planet.owner = gs().planets[wormholeTo].owner;
+            // gs().planets[wormholeTo].owner = msg.sender;
+
         }
 
         if (shouldDeactivateAndBurn) {
@@ -360,7 +406,10 @@ library LibArtifactUtils {
         );
         require(!isSpaceship(artifact.artifactType), "cannot deposit spaceships");
 
-        require(gs().planetArtifacts[locationId].length < 5, "too many artifacts on this planet");
+        require(
+            gs().planetArtifacts[locationId].length < gameConstants().MAX_ARTIFACT_PER_PLANET,
+            "too many artifacts on this planet"
+        );
 
         LibGameUtils._putArtifactOnPlanet(artifactId, locationId);
 

@@ -10,6 +10,7 @@ import { getOwnerColorVec, getPlanetCosmetic } from '@darkforest_eth/procedural'
 import { isUnconfirmedMoveTx } from '@darkforest_eth/serde';
 import {
   Artifact,
+  ArtifactType,
   HatType,
   LocatablePlanet,
   LocationId,
@@ -23,6 +24,7 @@ import {
   WorldCoords,
 } from '@darkforest_eth/types';
 import { engineConsts } from '../EngineConsts';
+import { avatarFromId, hats } from '../Hats';
 import { Renderer } from '../Renderer';
 import { GameGLManager } from '../WebGL/GameGLManager';
 const { whiteA, barbsA, gold } = engineConsts.colors;
@@ -36,8 +38,34 @@ export class PlanetRenderManager implements PlanetRenderManagerType {
   renderer: Renderer;
 
   rendererType = RendererType.PlanetManager;
+
+  newHats: Record<HatType, HTMLImageElement> = {};
   constructor(gl: GameGLManager) {
     this.renderer = gl.renderer;
+    this.loadNewHats();
+  }
+
+  loadNewHats(): void {
+    const keys = Object.keys(hats);
+    // for (let i = 0; i < keys.length; ++i) {
+    //   const key = keys[i];
+    //   const hat = hats[key as HatType];
+    //   hat.image &&
+    //     hat.image().then((img) => {
+    //       this.newHats[key as HatType] = img;
+    //     });
+    // }
+    for (let i = 0; i < keys.length; ++i) {
+      const key = keys[i];
+      const hat = hats[key as HatType];
+      if (!hat.legacy) {
+        const img = new Image();
+        img.src = hat.topLayer[0];
+        img.onload = () => {
+          this.newHats[key as HatType] = img;
+        };
+      }
+    }
   }
 
   queueLocation(
@@ -105,7 +133,15 @@ export class PlanetRenderManager implements PlanetRenderManagerType {
     }
 
     if (!disableHats) {
-      this.queueHat(planet, planet.location.coords, renderInfo.radii.radiusWorld);
+      const activatedAvatar = artifacts.find(
+        (a) => a.artifactType === ArtifactType.Avatar && a.lastActivated > a.lastDeactivated
+      );
+
+      if (activatedAvatar) {
+        this.queueNewHat(planet.location.coords, renderInfo.radii.radiusWorld * 2, activatedAvatar);
+      } else {
+        this.queueHat(planet, planet.location.coords, renderInfo.radii.radiusWorld);
+      }
     }
 
     /* draw text */
@@ -171,17 +207,33 @@ export class PlanetRenderManager implements PlanetRenderManagerType {
       const y =
         Math.sin(anglePerArtifact * i + startingAngle + nowAngle) * distanceFromCenterOfPlanet +
         centerW.y;
-
-      this.renderer.spriteRenderer.queueArtifactWorld(
-        artifacts[i],
-        { x, y },
-        artifactSize,
-        alpha,
-        undefined,
-        undefined,
-        undefined,
-        this.renderer.getViewport()
-      );
+      if (
+        artifacts[i].artifactType === ArtifactType.Avatar
+        // && artifacts[i].lastActivated <= artifacts[i].lastDeactivated
+      ) {
+        //draw special hat
+        const avatarType = avatarFromId(artifacts[i].id);
+        this.newHats[avatarType] &&
+          this.renderer.overlay2dRenderer.drawNewHat(
+            this.newHats[avatarType],
+            { x, y },
+            1.2 * radiusW,
+            1.2 * radiusW,
+            radiusW,
+            false
+          );
+      } else if (artifacts[i].artifactType !== ArtifactType.Avatar) {
+        this.renderer.spriteRenderer.queueArtifactWorld(
+          artifacts[i],
+          { x, y },
+          artifactSize,
+          alpha,
+          undefined,
+          undefined,
+          undefined,
+          this.renderer.getViewport()
+        );
+      }
     }
   }
 
@@ -373,6 +425,25 @@ export class PlanetRenderManager implements PlanetRenderManagerType {
         hoverCoords
       );
     }
+  }
+  //public method risk?
+  queueNewHat(center: WorldCoords, radius: number, artifact?: Artifact) {
+    if (!artifact) return;
+    const { context } = this.renderer;
+    const hoveringPlanet = context.getHoveringOverPlanet() !== undefined;
+    const hoverCoords = context.getHoveringOverCoords();
+
+    const avatarType = avatarFromId(artifact.id);
+    this.newHats[avatarType] &&
+      this.renderer.overlay2dRenderer.drawNewHat(
+        this.newHats[avatarType],
+        center,
+        radius === 1 ? 3 : 1.2 * 2 ** (artifact.rarity - 1) * radius,
+        radius === 1 ? 3 : 1.2 * 2 ** (artifact.rarity - 1) * radius,
+        radius === 1 ? 2 : 2 ** (artifact.rarity - 1) * radius,
+        hoveringPlanet,
+        hoverCoords
+      );
   }
 
   private queuePlanetEnergyText(

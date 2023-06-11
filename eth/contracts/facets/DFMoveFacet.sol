@@ -228,7 +228,7 @@ contract DFMoveFacet is WithStorage {
 
         if (args.movedArtifactId != 0) {
             require(
-                gs().planetArtifacts[args.newLoc].length < 5,
+                gs().planetArtifacts[args.newLoc].length < gameConstants().MAX_ARTIFACT_PER_PLANET,
                 "too many artifacts on this planet"
             );
         }

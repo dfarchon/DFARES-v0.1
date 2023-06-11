@@ -7,9 +7,11 @@ To run this project you will need to be on Node 14 OR Node 16.
 ## local development
 
 ### Install dependencies
+
 - We use `yarn` to manage packages. Run `yarn` at the top level to automatically install all dependencies from subfolders. This will also run the monorepo's `prepare` script, which compiles things like TypeScript or Solidity code.
 
 ### Running the project
+
 - Run `yarn workspace eth start` which starts the hardhat blockchain and deploys the game contracts.
 - Run `yarn workspace client start` to load the webclient.
 - Run `yarn watch` to start a typescript watcher to incrementally rebuild changed dependencies.
@@ -46,3 +48,38 @@ If you are modifying anything SNARK-related, you may be interested in rebuilding
 ## Thegraph
 
 To run a local copy of thegraph make sure docker is installed and running, `yarn workspace eth start --subgraph df` OR if you already have your contracts deployed and running run `yarn workspace eth hardhat:dev subgraph:deploy --name df` and find your local hosted explorer at `http://localhost:8000/subgraphs/name/df`
+
+## Add Artifact
+
+- contracts\DFTypes.sol
+- contracts\libraries\LibArtifactUtils.sol
+  artifact logic & cooldown
+- eth\contracts\libraries\LibGameUtils.sol
+  random find
+
+packages modified needed yarn build
+
+- packages\types\src\artifact.ts
+  enum types
+- packages\constants\src\index.ts
+  constants of artifacts
+- packages\renderer\TextureManager.ts
+  artifact icon
+- packages\renderer\src\UIRenderer.ts
+  artifact ui effects
+- packages\renderer\src\Renderer.ts
+  render methods extra artifact properties
+- packages\renderer\src\Overlay2DRenderer.ts
+  render hats
+- packages\gamelogic\src\artifact.ts
+  artifact frontend properties like cooldown
+
+- packages\renderer\src\EngineConsts.ts
+  colors
+
+- client\src\Frontend\Panes\ManagePlanetArtifacts\ArtifactActions.tsx
+  some special activate effects
+- client\src\Backend\GameLogic\GameUIManager.ts
+  activating logic
+- client\src\Backend\GameLogic\GameManager.ts
+  activating artifact tx infos

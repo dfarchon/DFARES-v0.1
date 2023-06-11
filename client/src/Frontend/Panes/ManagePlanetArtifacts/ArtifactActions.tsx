@@ -74,6 +74,16 @@ export function ArtifactActions({
           targetPlanetId = targetPlanet?.locationId;
         }
 
+        if (artifact.artifactType === ArtifactType.FuckYou) {
+          const targetPlanet = await uiManager.startFuckYouFrom(onPlanet);
+          targetPlanetId = targetPlanet?.locationId;
+        }
+
+        if (artifact.artifactType === ArtifactType.Bomb) {
+          const targetPlanet = await uiManager.startBombFrom(onPlanet);
+          targetPlanetId = targetPlanet?.locationId;
+        }
+        
         if (artifact.artifactType === ArtifactType.IceLink) {
           const targetPlanet = await uiManager.startIceLinkFrom(onPlanet);
           targetPlanetId = targetPlanet?.locationId;
