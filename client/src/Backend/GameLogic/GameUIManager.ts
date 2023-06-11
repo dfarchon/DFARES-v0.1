@@ -8,12 +8,15 @@ import { isUnconfirmedMoveTx } from '@darkforest_eth/serde';
 import {
   Artifact,
   ArtifactId,
+  ArtifactRarity,
+  ArtifactType,
   BaseRenderer,
   Biome,
   Chunk,
   CursorState,
   Diagnostics,
   EthAddress,
+  Link,
   LocatablePlanet,
   LocationId,
   PerlinConfig,
@@ -33,7 +36,6 @@ import {
   UpgradeBranchName,
   WorldCoords,
   WorldLocation,
-  Wormhole,
 } from '@darkforest_eth/types';
 import autoBind from 'auto-bind';
 import { BigNumber } from 'ethers';
@@ -94,11 +96,15 @@ class GameUIManager extends EventEmitter {
   private viewportEntities: ViewportEntities;
 
   /**
-   * The Wormhole artifact requires you to choose a target planet. This value
+   * The Link artifact requires you to choose a target planet. This value
    * indicates whether or not the player is currently selecting a target planet.
    */
   private isChoosingTargetPlanet = false;
+
   private onChooseTargetPlanet?: (planet: LocatablePlanet | undefined) => void;
+
+  private linkSourceArtifactType = ArtifactType.Unknown;
+
   // TODO: Remove later and just use minerLocations array
   private minerLocation: WorldCoords | undefined;
   private extraMinerLocations: WorldCoords[] = [];
@@ -378,7 +384,7 @@ class GameUIManager extends EventEmitter {
     this.getPluginManager().drawAllRunningPlugins(ctx);
   }
 
-  public activateArtifact(locationId: LocationId, id: ArtifactId, wormholeTo?: LocationId) {
+  public activateArtifact(locationId: LocationId, id: ArtifactId, linkTo?: LocationId) {
     const confirmationText =
       `Are you sure you want to activate this artifact? ` +
       `You can only have one artifact active at time. After` +
@@ -387,10 +393,14 @@ class GameUIManager extends EventEmitter {
 
     if (!confirm(confirmationText)) return;
 
-    this.gameManager.activateArtifact(locationId, id, wormholeTo);
+    this.gameManager.activateArtifact(locationId, id, linkTo);
   }
 
-  public deactivateArtifact(locationId: LocationId, artifactId: ArtifactId) {
+  public deactivateArtifact(
+    locationId: LocationId,
+    artifactId: ArtifactId,
+    linkTo: LocationId | undefined
+  ) {
     const confirmationText =
       `Are you sure you want to deactivate this artifact? ` +
       `After deactivation, you must wait for a long cooldown` +
@@ -398,7 +408,19 @@ class GameUIManager extends EventEmitter {
 
     if (!confirm(confirmationText)) return;
 
-    this.gameManager.deactivateArtifact(locationId, artifactId);
+    this.gameManager.deactivateArtifact(locationId, artifactId, linkTo);
+  }
+
+  public buyArtifact(
+    locationId: LocationId,
+    rarity: ArtifactRarity,
+    biome: Biome,
+    type: ArtifactType
+  ) {
+    this.terminal.current?.printShellLn(
+      `df.buyArtifact('${locationId}','${rarity}','${biome}','${type}')`
+    );
+    this.gameManager.buyArtifact(locationId, rarity, biome, type);
   }
 
   public withdrawSilver(locationId: LocationId, amount: number) {
@@ -419,6 +441,20 @@ class GameUIManager extends EventEmitter {
     this.isChoosingTargetPlanet = true;
     this.mouseDownOverCoords = planet.location.coords;
     this.mouseDownOverPlanet = planet;
+    this.linkSourceArtifactType = ArtifactType.Wormhole;
+
+    const { resolve, promise } = deferred<LocatablePlanet | undefined>();
+
+    this.onChooseTargetPlanet = resolve;
+
+    return promise;
+  }
+
+  public startIceLinkFrom(planet: LocatablePlanet): Promise<LocatablePlanet | undefined> {
+    this.isChoosingTargetPlanet = true;
+    this.mouseDownOverCoords = planet.location.coords;
+    this.mouseDownOverPlanet = planet;
+    this.linkSourceArtifactType = ArtifactType.IceLink;
 
     const { resolve, promise } = deferred<LocatablePlanet | undefined>();
 
@@ -452,6 +488,10 @@ class GameUIManager extends EventEmitter {
     return this.isChoosingTargetPlanet;
   }
 
+  getLinkSourceArtifactType() {
+    return this.linkSourceArtifactType;
+  }
+
   public onMouseDown(coords: WorldCoords) {
     if (this.sendingPlanet) return;
 
@@ -460,6 +500,8 @@ class GameUIManager extends EventEmitter {
 
     if (this.getIsChoosingTargetPlanet()) {
       this.isChoosingTargetPlanet = false;
+      this.linkSourceArtifactType = ArtifactType.Unknown;
+
       if (this.onChooseTargetPlanet) {
         this.onChooseTargetPlanet(hoveringOverPlanet as LocatablePlanet);
         this.mouseDownOverPlanet = undefined;
@@ -574,6 +616,7 @@ class GameUIManager extends EventEmitter {
       }
 
       this.isChoosingTargetPlanet = false;
+      this.linkSourceArtifactType = ArtifactType.Unknown;
     } else {
       uiEmitter.emit(UIEmitterEvent.SendCancelled);
     }
@@ -1154,16 +1197,20 @@ class GameUIManager extends EventEmitter {
     return this.gameManager.getNextRevealCountdownInfo().currentlyRevealing;
   }
 
-  public getUnconfirmedWormholeActivations(): Transaction<UnconfirmedActivateArtifact>[] {
-    return this.gameManager.getUnconfirmedWormholeActivations();
+  public getUnconfirmedLinkActivations(): Transaction<UnconfirmedActivateArtifact>[] {
+    return this.gameManager.getUnconfirmedLinkActivations();
   }
 
-  public getWormholes(): Iterable<Wormhole> {
-    return this.gameManager.getWormholes();
+  public getLinks(): Iterable<Link> {
+    return this.gameManager.getLinks();
   }
 
   public getLocationOfPlanet(planetId: LocationId): WorldLocation | undefined {
     return this.gameManager.getLocationOfPlanet(planetId);
+  }
+
+  public getActiveArtifact(planet: Planet): Artifact | undefined {
+    return this.gameManager.getActiveArtifact(planet);
   }
 
   public getExploredChunks(): Iterable<Chunk> {

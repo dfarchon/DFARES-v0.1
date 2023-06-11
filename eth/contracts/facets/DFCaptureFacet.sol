@@ -66,6 +66,7 @@ contract DFCaptureFacet is WithStorage {
         Planet memory planet = gs().planets[locationId];
 
         require(!planet.destroyed, "planet is destroyed");
+        require(!planet.frozen, "planet is frozen");
         require(planet.invader == address(0), "planet is already invaded");
         require(planet.capturer == address(0), "planet has already been captured");
         require(planet.owner == msg.sender, "you can only invade planets you own");
@@ -84,6 +85,7 @@ contract DFCaptureFacet is WithStorage {
 
         require(planet.capturer == address(0), "planets can only be captured once");
         require(!planet.destroyed, "planet is destroyed");
+        require(!planet.frozen, "planet is frozen");
         require(planet.owner == msg.sender, "you can only capture planets you own");
         require(planet.invader != address(0), "you must invade the planet before capturing");
         require(

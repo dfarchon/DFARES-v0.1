@@ -119,6 +119,7 @@ export type Planet = {
   hasTriedFindingArtifact: boolean;
   heldArtifactIds: ArtifactId[];
   destroyed: boolean;
+  frozen: boolean;
   prospectedBlockNumber?: number;
   localPhotoidUpgrade?: Upgrade;
 

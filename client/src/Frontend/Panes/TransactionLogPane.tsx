@@ -2,6 +2,7 @@ import { RECOMMENDED_MODAL_WIDTH } from '@darkforest_eth/constants';
 import { getPlanetName } from '@darkforest_eth/procedural';
 import {
   isUnconfirmedActivateArtifactTx,
+  isUnconfirmedBuyArtifactTx,
   isUnconfirmedBuyHatTx,
   isUnconfirmedCapturePlanetTx,
   isUnconfirmedDeactivateArtifactTx,
@@ -211,6 +212,7 @@ const getPlanetFromTransaction = (
   if (isUnconfirmedProspectPlanetTx(tx)) return gameManager.getPlanetWithId(tx.intent.planetId);
   if (isUnconfirmedDeactivateArtifactTx(tx))
     return gameManager.getPlanetWithId(tx.intent.locationId);
+  if (isUnconfirmedBuyArtifactTx(tx)) return gameManager.getPlanetWithId(tx.intent.locationId);
   if (isUnconfirmedWithdrawSilverTx(tx)) return gameManager.getPlanetWithId(tx.intent.locationId);
   if (isUnconfirmedInvadePlanetTx(tx)) return gameManager.getPlanetWithId(tx.intent.locationId);
   if (isUnconfirmedCapturePlanetTx(tx)) return gameManager.getPlanetWithId(tx.intent.locationId);

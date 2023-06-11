@@ -136,8 +136,13 @@ export class PlanetRenderManager implements PlanetRenderManagerType {
       }
     }
 
-    if (isHovering && !isSelected) {
+    if (isHovering && !isSelected && !planet.frozen) {
       this.queueRangeRings(planet);
+    }
+
+    //render Ice Link
+    if (planet.frozen) {
+      this.queueBlackDomain(planet, planet.location.coords, renderInfo.radii.radiusWorld);
     }
   }
 

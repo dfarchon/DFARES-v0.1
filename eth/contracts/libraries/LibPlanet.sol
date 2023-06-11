@@ -196,6 +196,7 @@ library LibPlanet {
         require(_branch < 3, "Upgrade branch not valid");
         require(planet.planetType == PlanetType.PLANET, "Can only upgrade regular planets");
         require(!planet.destroyed, "planet is destroyed");
+        require(!planet.frozen, "planet is frozen");
 
         uint256 totalLevel = planet.upgradeState0 + planet.upgradeState1 + planet.upgradeState2;
         require(
@@ -359,6 +360,8 @@ library LibPlanet {
             "can only withdraw silver from trading posts"
         );
         require(!planet.destroyed, "planet is destroyed");
+        require(!planet.frozen, "planet is frozen");
+
         require(
             planet.silver >= silverToWithdraw,
             "tried to withdraw more silver than exists on planet"

@@ -63,6 +63,7 @@ struct Planet {
     bool hasTriedFindingArtifact;
     uint256 prospectedBlockNumber;
     bool destroyed;
+    bool frozen;
     uint256 spaceJunk;
     uint256 pausers;
     uint256 energyGroDoublers;
@@ -206,6 +207,7 @@ enum ArtifactType {
     PhotoidCannon,
     BloomFilter,
     BlackDomain,
+    IceLink,
     ShipMothership,
     ShipCrescent,
     ShipWhale,
@@ -236,7 +238,7 @@ struct Artifact {
     uint256 activations;
     uint256 lastActivated;
     uint256 lastDeactivated;
-    uint256 wormholeTo; // location id
+    uint256 linkTo; // location id
     address controller; // space ships can be controlled regardless of which planet they're on
 }
 

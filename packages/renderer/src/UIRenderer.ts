@@ -1,6 +1,7 @@
 import { isLocatable } from '@darkforest_eth/gamelogic';
 import { isUnconfirmedMoveTx } from '@darkforest_eth/serde';
 import {
+  ArtifactType,
   Planet,
   RendererType,
   RenderZIndex,
@@ -12,7 +13,7 @@ import { engineConsts } from './EngineConsts';
 import { Renderer } from './Renderer';
 import { GameGLManager } from './WebGL/GameGLManager';
 
-const { orangeA, red, redA, white, whiteA, purpleA } = engineConsts.colors;
+const { orangeA, red, redA, white, whiteA, purpleA, blueA } = engineConsts.colors;
 
 export class UIRenderer implements UIRendererType {
   renderer: Renderer;
@@ -43,8 +44,18 @@ export class UIRenderer implements UIRendererType {
 
     if (mouseDownPlanet && from && to) {
       if (uiManager.getIsChoosingTargetPlanet()) {
-        lR.queueLineWorld(from, to, purpleA, 2, RenderZIndex.Voyages);
-        tR.queueTextWorld(`Wormhole Target`, { x: to.x, y: to.y }, purpleA);
+        const artifactType = uiManager.getLinkSourceArtifactType();
+
+        let showText = `Wormhole Target`;
+        let lineColor = purpleA;
+
+        if (artifactType === ArtifactType.IceLink) {
+          showText = 'IceLink Target';
+          lineColor = blueA;
+        }
+
+        lR.queueLineWorld(from, to, lineColor, 2, RenderZIndex.Voyages);
+        tR.queueTextWorld(showText, { x: to.x, y: to.y }, lineColor);
       } else {
         const myPlanet = uiManager.getPlanetWithCoords(from);
         if (myPlanet && isLocatable(myPlanet) && to !== from) {

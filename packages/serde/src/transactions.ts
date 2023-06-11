@@ -2,6 +2,7 @@ import {
   Transaction,
   TxIntent,
   UnconfirmedActivateArtifact,
+  UnconfirmedBuyArtifact,
   UnconfirmedBuyHat,
   UnconfirmedCapturePlanet,
   UnconfirmedDeactivateArtifact,
@@ -84,6 +85,10 @@ export function isUnconfirmedDeactivateArtifact(
   txIntent: TxIntent
 ): txIntent is UnconfirmedDeactivateArtifact {
   return txIntent.methodName === 'deactivateArtifact';
+}
+
+export function isUnconfirmedBuyArtifact(txIntent: TxIntent): txIntent is UnconfirmedBuyArtifact {
+  return txIntent.methodName === 'buyArtifact';
 }
 
 export function isUnconfirmedWithdrawSilver(
@@ -170,6 +175,12 @@ export function isUnconfirmedDeactivateArtifactTx(
   tx: Transaction
 ): tx is Transaction<UnconfirmedDeactivateArtifact> {
   return isUnconfirmedDeactivateArtifact(tx.intent);
+}
+
+export function isUnconfirmedBuyArtifactTx(
+  tx: Transaction
+): tx is Transaction<UnconfirmedBuyArtifact> {
+  return isUnconfirmedBuyArtifact(tx.intent);
 }
 
 export function isUnconfirmedWithdrawSilverTx(

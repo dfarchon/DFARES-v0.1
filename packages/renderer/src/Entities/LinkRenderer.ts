@@ -1,37 +1,38 @@
 import {
+  ArtifactType,
+  LinkRendererType,
   LocationId,
   RendererType,
   RenderZIndex,
-  WormholeRendererType,
 } from '@darkforest_eth/types';
 import { engineConsts } from '../EngineConsts';
 import { Renderer } from '../Renderer';
 import { GameGLManager } from '../WebGL/GameGLManager';
-const { purpleA } = engineConsts.colors;
+const { purpleA, blueA } = engineConsts.colors;
 
-export class WormholeRenderer implements WormholeRendererType {
+export class LinkRenderer implements LinkRendererType {
   renderer: Renderer;
 
-  rendererType = RendererType.Wormhole;
+  rendererType = RendererType.Link;
 
   constructor(gl: GameGLManager) {
     this.renderer = gl.renderer;
   }
 
-  queueWormholes() {
+  queueLinks() {
     const { context: gameUIManager } = this.renderer;
 
-    for (const unconfirmedWormhole of gameUIManager.getUnconfirmedWormholeActivations()) {
-      if (unconfirmedWormhole.intent.wormholeTo)
+    for (const unconfirmedLink of gameUIManager.getUnconfirmedLinkActivations()) {
+      if (unconfirmedLink.intent.linkTo)
         this.drawVoyagePath(
-          unconfirmedWormhole.intent.locationId,
-          unconfirmedWormhole.intent.wormholeTo,
+          unconfirmedLink.intent.locationId,
+          unconfirmedLink.intent.linkTo,
           false
         );
     }
 
-    for (const wormhole of gameUIManager.getWormholes()) {
-      this.drawVoyagePath(wormhole.from, wormhole.to, true);
+    for (const link of gameUIManager.getLinks()) {
+      this.drawVoyagePath(link.from, link.to, true);
     }
   }
 
@@ -42,14 +43,27 @@ export class WormholeRenderer implements WormholeRendererType {
     const fromPlanet = gameUIManager.getPlanetWithId(from);
     const toLoc = gameUIManager.getLocationOfPlanet(to);
     const toPlanet = gameUIManager.getPlanetWithId(to);
+
     if (!fromPlanet || !fromLoc || !toLoc || !toPlanet) {
       return;
+    }
+
+    const artifact = gameUIManager.getActiveArtifact(fromPlanet);
+
+    if (!artifact) {
+      return;
+    }
+
+    let lineColor = purpleA;
+
+    if (artifact.artifactType === ArtifactType.IceLink) {
+      lineColor = blueA;
     }
 
     this.renderer.lineRenderer.queueLineWorld(
       fromLoc.coords,
       toLoc.coords,
-      purpleA,
+      lineColor,
       confirmed ? 2 : 1,
       RenderZIndex.Voyages,
       confirmed ? false : true

@@ -183,7 +183,7 @@ export const RendererType = {
   BlackDomain: 8 as RendererType,
   Text: 9 as RendererType,
   Voyager: 10 as RendererType,
-  Wormhole: 11 as RendererType,
+  Link: 11 as RendererType,
   MineBody: 12 as RendererType,
   Belt: 13 as RendererType,
   Background: 14 as RendererType,
@@ -467,7 +467,7 @@ export interface VoyageRendererType {
   flush(): void;
 }
 
-export interface WormholeRendererType {
+export interface LinkRendererType {
   rendererType: RendererType;
 
   /**
@@ -478,10 +478,10 @@ export interface WormholeRendererType {
    * GameUIManager.getUnconfirmedWormholeActivations() to get all unconfirmed wormholes
    * GameUIManager.getWormholes() to get all active confirmed wormholes
    */
-  queueWormholes(): void;
+  queueLinks(): void;
 
   /**
-   * Draws all Wormholes.
+   * Draws all Links.
    */
   flush(): void;
 }

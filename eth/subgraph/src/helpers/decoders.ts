@@ -62,6 +62,7 @@ export function refreshPlanetFromContractData(
   planet.planetType = toPlanetType(rawPlanet.planetType);
   planet.spaceType = toSpaceType(rawPlanet.spaceType);
   planet.destroyed = rawPlanet.destroyed;
+  planet.frozen = rawPlanet.frozen;
   planet.isHomePlanet = rawPlanet.isHomePlanet;
   planet.spaceJunk = rawPlanet.spaceJunk.toI32();
   planet.pausers = rawPlanet.pausers.toI32();
@@ -166,10 +167,10 @@ export function refreshArtifactFromContractData(
   artifact.lastActivated = rawArtifact.artifact.lastActivated.toI32();
   artifact.lastDeactivated = rawArtifact.artifact.lastDeactivated.toI32();
   artifact.isActivated = artifact.lastActivated > artifact.lastDeactivated;
-  if (rawArtifact.artifact.wormholeTo.equals(BigInt.fromI32(0))) {
-    artifact.wormholeTo = null;
+  if (rawArtifact.artifact.linkTo.equals(BigInt.fromI32(0))) {
+    artifact.linkTo = null;
   } else {
-    artifact.wormholeTo = hexStringToPaddedUnprefixed(rawArtifact.artifact.wormholeTo);
+    artifact.linkTo = hexStringToPaddedUnprefixed(rawArtifact.artifact.linkTo);
   }
 
   artifact.energyCapMultiplier = rawArtifact.upgrade.popCapMultiplier.toI32();

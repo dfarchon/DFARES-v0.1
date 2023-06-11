@@ -183,7 +183,7 @@ library LibLazyUpdate {
         uint256 earliestEventIndex = 0;
 
         do {
-            if (events.length == 0 || planet.destroyed) {
+            if (events.length == 0 || planet.destroyed || planet.frozen) {
                 break;
             }
 

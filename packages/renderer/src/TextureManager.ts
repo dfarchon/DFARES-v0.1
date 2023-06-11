@@ -127,7 +127,12 @@ const biomeSpriteInfo = (): BiomeSpriteLocations => {
         };
       }
     }
-    result[type] = biomeInfo as BiomeToSprite;
+
+    if (type === ArtifactType.IceLink) {
+      result[type] = result[ArtifactType.Wormhole];
+    } else {
+      result[type] = biomeInfo as BiomeToSprite;
+    }
   }
 
   return result as BiomeSpriteLocations;

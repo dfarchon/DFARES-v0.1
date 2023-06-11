@@ -59,6 +59,7 @@ type Planet @entity {
   planetType: PlanetType!
   spaceType: SpaceType!
   destroyed: Boolean!
+  frozen: Boolean!
   isHomePlanet: Boolean!
   hat: Hat
 
@@ -74,7 +75,7 @@ type Planet @entity {
   artifacts: [Artifact!]! @derivedFrom(field: "onPlanet")
   spaceships: [Spaceship!]! @derivedFrom(field: "onPlanet")
   activatedArtifact: Artifact
-  incomingWormholes: [Artifact!]! @derivedFrom(field: "wormholeTo")
+  incomingWormholes: [Artifact!]! @derivedFrom(field: "linkTo")
 
   # voyages
   voyagesFrom: [Arrival!]! @derivedFrom(field: "fromPlanet")
@@ -192,7 +193,7 @@ type Artifact @entity {
   lastDeactivated: Int!
   isActivated: Boolean!
 
-  wormholeTo: Planet
+  linkTo: Planet
 
   "Modifier applied to natural planet variable. Less than 100 is negative"
   energyCapMultiplier: Int!

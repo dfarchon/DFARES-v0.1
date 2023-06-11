@@ -210,6 +210,11 @@ contract DFMoveFacet is WithStorage {
                 !gs().planets[args.newLoc].destroyed && !gs().planets[args.oldLoc].destroyed,
                 "planet is destroyed"
             );
+
+            require(
+                !gs().planets[args.newLoc].frozen && !gs().planets[args.oldLoc].frozen,
+                "planet is frozen"
+            );
             require(
                 gs().planets[args.oldLoc].owner == msg.sender,
                 "Only owner account can perform that operation on planet."
@@ -290,13 +295,13 @@ contract DFMoveFacet is WithStorage {
         if (
             activeArtifactFrom.isInitialized &&
             activeArtifactFrom.artifactType == ArtifactType.Wormhole &&
-            activeArtifactFrom.wormholeTo == args.newLoc
+            activeArtifactFrom.linkTo == args.newLoc
         ) {
             relevantWormhole = activeArtifactFrom;
         } else if (
             activeArtifactTo.isInitialized &&
             activeArtifactTo.artifactType == ArtifactType.Wormhole &&
-            activeArtifactTo.wormholeTo == args.oldLoc
+            activeArtifactTo.linkTo == args.oldLoc
         ) {
             relevantWormhole = activeArtifactTo;
         }
