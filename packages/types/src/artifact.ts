@@ -214,4 +214,5 @@ export interface RenderedArtifact extends Partial<Artifact> {
 export type Link = {
   from: LocationId;
   to: LocationId;
+  artifactId: ArtifactId;
 };

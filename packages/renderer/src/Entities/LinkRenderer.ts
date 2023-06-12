@@ -1,4 +1,5 @@
 import {
+  ArtifactId,
   ArtifactType,
   LinkRendererType,
   LocationId,
@@ -8,7 +9,7 @@ import {
 import { engineConsts } from '../EngineConsts';
 import { Renderer } from '../Renderer';
 import { GameGLManager } from '../WebGL/GameGLManager';
-const { purpleA, blueA } = engineConsts.colors;
+const { purpleA, blueA, pinkA } = engineConsts.colors;
 
 export class LinkRenderer implements LinkRendererType {
   renderer: Renderer;
@@ -27,16 +28,22 @@ export class LinkRenderer implements LinkRendererType {
         this.drawVoyagePath(
           unconfirmedLink.intent.locationId,
           unconfirmedLink.intent.linkTo,
+          unconfirmedLink.intent.artifactId,
           false
         );
     }
 
     for (const link of gameUIManager.getLinks()) {
-      this.drawVoyagePath(link.from, link.to, true);
+      this.drawVoyagePath(link.from, link.to, link.artifactId, true);
     }
   }
 
-  private drawVoyagePath(from: LocationId, to: LocationId, confirmed: boolean) {
+  private drawVoyagePath(
+    from: LocationId,
+    to: LocationId,
+    artifactId: ArtifactId,
+    confirmed: boolean
+  ) {
     const { context: gameUIManager } = this.renderer;
 
     const fromLoc = gameUIManager.getLocationOfPlanet(from);
@@ -48,7 +55,7 @@ export class LinkRenderer implements LinkRendererType {
       return;
     }
 
-    const artifact = gameUIManager.getActiveArtifact(fromPlanet);
+    const artifact = gameUIManager.getArtifactWithId(artifactId);
 
     if (!artifact) {
       return;
@@ -58,6 +65,10 @@ export class LinkRenderer implements LinkRendererType {
 
     if (artifact.artifactType === ArtifactType.IceLink) {
       lineColor = blueA;
+    }
+
+    if (artifact.artifactType === ArtifactType.FireLink) {
+      lineColor = pinkA;
     }
 
     this.renderer.lineRenderer.queueLineWorld(

@@ -806,17 +806,53 @@ class GameManager extends EventEmitter {
         } else if (isUnconfirmedProspectPlanetTx(tx)) {
           await gameManager.softRefreshPlanet(tx.intent.planetId);
         } else if (isUnconfirmedActivateArtifactTx(tx)) {
-          await Promise.all([
-            gameManager.hardRefreshPlanet(tx.intent.locationId),
-            gameManager.hardRefreshArtifact(tx.intent.artifactId),
-            gameManager.hardRefreshPlanet(tx.intent.linkTo),
-          ]);
+          let refreshFlag = true;
+          const fromPlanet = await gameManager.getPlanetWithId(tx.intent.locationId);
+          if (fromPlanet && fromPlanet.locationId && tx.intent.linkTo) {
+            const toPlanet = await gameManager.getPlanetWithId(tx.intent.linkTo);
+            if (toPlanet) {
+              const activeArtifactOnToPlanet = await gameManager.getActiveArtifact(toPlanet);
+              if (
+                activeArtifactOnToPlanet &&
+                activeArtifactOnToPlanet.artifactType === ArtifactType.IceLink &&
+                activeArtifactOnToPlanet.linkTo
+              ) {
+                const toLinkPlanet = await gameManager.getPlanetWithId(
+                  activeArtifactOnToPlanet.linkTo
+                );
+                if (toLinkPlanet) {
+                  await Promise.all([
+                    gameManager.bulkHardRefreshPlanets([
+                      fromPlanet.locationId,
+                      toPlanet.locationId,
+                      toLinkPlanet.locationId,
+                    ]),
+                    gameManager.hardRefreshArtifact(tx.intent.artifactId),
+                  ]);
+                  refreshFlag = false;
+                }
+              }
+            }
+          }
+
+          if (refreshFlag)
+            await Promise.all([
+              gameManager.hardRefreshPlanet(tx.intent.locationId),
+              gameManager.hardRefreshPlanet(tx.intent.linkTo),
+              gameManager.hardRefreshArtifact(tx.intent.artifactId),
+            ]);
         } else if (isUnconfirmedDeactivateArtifactTx(tx)) {
-          await Promise.all([
-            gameManager.hardRefreshPlanet(tx.intent.locationId),
-            gameManager.hardRefreshArtifact(tx.intent.artifactId),
-            gameManager.hardRefreshPlanet(tx.intent.linkTo),
-          ]);
+          if (tx.intent.linkTo) {
+            await Promise.all([
+              gameManager.bulkHardRefreshPlanets([tx.intent.locationId, tx.intent.linkTo]),
+              gameManager.hardRefreshArtifact(tx.intent.artifactId),
+            ]);
+          } else {
+            await Promise.all([
+              gameManager.hardRefreshPlanet(tx.intent.locationId),
+              gameManager.hardRefreshArtifact(tx.intent.artifactId),
+            ]);
+          }
         } else if (isUnconfirmedBuyArtifactTx(tx)) {
           await Promise.all([
             gameManager.hardRefreshPlanet(tx.intent.locationId),

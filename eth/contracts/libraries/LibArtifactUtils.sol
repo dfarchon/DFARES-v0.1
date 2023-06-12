@@ -424,7 +424,7 @@ library LibArtifactUtils {
     }
 
 
-    function deactivateArtifactWithoutCheckOwner(uint256 locationId) public {
+    function deactivateArtifactWithoutCheckOwner(uint256 locationId) private {
         Planet storage planet = gs().planets[locationId];
 
         require(!planet.destroyed, "planet is destroyed");

@@ -1062,6 +1062,7 @@ export class GameObjects {
         this.links.set(artifact.id, {
           from: artifact.onPlanetId,
           to: artifact.linkTo,
+          artifactId: artifact.id,
         });
       } else {
         this.links.delete(artifact.id);
@@ -1073,6 +1074,19 @@ export class GameObjects {
         this.links.set(artifact.id, {
           from: artifact.onPlanetId,
           to: artifact.linkTo,
+          artifactId: artifact.id,
+        });
+      } else {
+        this.links.delete(artifact.id);
+      }
+    }
+
+    if (artifact.artifactType === ArtifactType.FireLink && artifact.onPlanetId) {
+      if (artifact.linkTo && isActivated(artifact)) {
+        this.links.set(artifact.id, {
+          from: artifact.onPlanetId,
+          to: artifact.linkTo,
+          artifactId: artifact.id,
         });
       } else {
         this.links.delete(artifact.id);
