@@ -835,12 +835,19 @@ class GameManager extends EventEmitter {
             }
           }
 
-          if (refreshFlag)
-            await Promise.all([
-              gameManager.hardRefreshPlanet(tx.intent.locationId),
-              gameManager.hardRefreshPlanet(tx.intent.linkTo),
-              gameManager.hardRefreshArtifact(tx.intent.artifactId),
-            ]);
+          if (refreshFlag) {
+            if (tx.intent.linkTo) {
+              await Promise.all([
+                gameManager.bulkHardRefreshPlanets([tx.intent.locationId, tx.intent.linkTo]),
+                gameManager.hardRefreshArtifact(tx.intent.artifactId),
+              ]);
+            } else {
+              await Promise.all([
+                gameManager.hardRefreshPlanet(tx.intent.locationId),
+                gameManager.hardRefreshArtifact(tx.intent.artifactId),
+              ]);
+            }
+          }
         } else if (isUnconfirmedDeactivateArtifactTx(tx)) {
           if (tx.intent.linkTo) {
             await Promise.all([
