@@ -187,17 +187,19 @@ library LibGameUtils {
         } else if (lastByteOfSeed < 2048) {
             artifactType = ArtifactType.BlackDomain;
         } else if (lastByteOfSeed < 2304) {
-            artifactType = ArtifactType.FuckYou;
-        } else if (lastByteOfSeed < 2560) {
-            artifactType = ArtifactType.Bomb;
-        } else if (lastByteOfSeed < 2816) {
-            artifactType = ArtifactType.Doom;
-        } else if (lastByteOfSeed < 3072) {
-            artifactType = ArtifactType.BlindBox;
-        } else if (lastByteOfSeed < 3328) {
-            artifactType = ArtifactType.Avatar;
-        }else if(lastByteOfSeed<3584){
             artifactType = ArtifactType.IceLink;
+        } else if (lastByteOfSeed < 2560) {
+            artifactType = ArtifactType.FireLink;
+        } else if (lastByteOfSeed < 2816) {
+            artifactType = ArtifactType.SoulSwap;
+        } else if (lastByteOfSeed < 3072) {
+            artifactType = ArtifactType.Bomb;
+        } else if (lastByteOfSeed < 3328) {
+            artifactType = ArtifactType.Doom;
+        } else if (lastByteOfSeed < 3584) {
+            artifactType = ArtifactType.BlindBox;
+        } else if (lastByteOfSeed < 4096) {
+            artifactType = ArtifactType.Avatar;
         } else {
             if (biome == Biome.Ice) {
                 artifactType = ArtifactType.PlanetaryShield;
@@ -214,9 +216,9 @@ library LibGameUtils {
         }
 
         uint256 bonus = 0;
-        if (secondLastByteOfSeed < 4) {
+        if (secondLastByteOfSeed < 64) {
             bonus = 2;
-        } else if (secondLastByteOfSeed < 16) {
+        } else if (secondLastByteOfSeed < 256) {
             bonus = 1;
         }
 

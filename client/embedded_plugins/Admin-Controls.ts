@@ -11,8 +11,8 @@ import {
   //@ts-ignore
 } from 'https://cdn.skypack.dev/@darkforest_eth/constants';
 const MIN_ARTIFACT_TYPE = 1;
-const MIN_SPACESHIP_TYPE = 15;
-const MAX_SPACESHIP_TYPE = 19;
+const MIN_SPACESHIP_TYPE = 17;
+const MAX_SPACESHIP_TYPE = 21;
 //@ts-ignore
 import { getPlanetNameHash } from 'https://cdn.skypack.dev/@darkforest_eth/procedural';
 import {
@@ -43,7 +43,9 @@ enum ArtifactType {
   PhotoidCannon,
   BloomFilter,
   BlackDomain,
-  FuckYou,
+  IceLink,
+  FireLink,
+  SoulSwap,
   Bomb,
   Doom,
   BlindBox,
@@ -71,7 +73,9 @@ const ArtifactTypeNames = [
   'Black Domain',
   'Photoid Cannon',
   'Bloom Filter',
-  'Fuck You',
+  'Ice Link',
+  'Fire Link',
+  'Soul Swap',
   'Bomb',
   'Doom',
   'Blind Box',

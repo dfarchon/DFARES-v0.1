@@ -7,7 +7,7 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types';
 // see DFTypes.sol - ArtifactType
 const artifactOptions = (
   'Monolith,Colossus,Spaceship,Pyramid,Wormhole,' +
-  'PlanetaryShield,PhotoidCannon,BloomFilter,BlackDomain,IceLink,FuckYou'
+  'PlanetaryShield,PhotoidCannon,BloomFilter,BlackDomain,IceLink,SoulSwap'
 ).split(',');
 
 // yarn workspace eth hardhat:dev debug:giveArtifact "0x27fd6eec1e1f3ce4a53b40d5813119d868f7b4e3" PhotoidCannon 5

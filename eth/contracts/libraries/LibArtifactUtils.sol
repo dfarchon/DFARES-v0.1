@@ -270,16 +270,17 @@ library LibArtifactUtils {
             planet.destroyed = true;
             shouldDeactivateAndBurn = true;
         } else if (artifact.artifactType == ArtifactType.IceLink) {
-            require(linkTo != 0, "you must provide a linkTo to activate a icelink");
+            require(linkTo != 0, "you must provide a linkTo to activate a IceLink");
+            Planet storage toPlanet = gs().planets[linkTo];
+
             require(
-                gs().planets[linkTo].owner != msg.sender &&
-                    gs().planets[linkTo].owner != address(0),
+                toPlanet.owner != msg.sender && toPlanet.owner != address(0),
                 "you can only create a icelink to a planet other own"
             );
-            require(!gs().planets[linkTo].destroyed, "planet destroyed");
-            require(!gs().planets[linkTo].frozen, "planet frozen");
+            require(!toPlanet.destroyed, "planet destroyed");
+            require(!toPlanet.frozen, "planet frozen");
             require(
-                planet.planetLevel >= gs().planets[linkTo].planetLevel,
+                planet.planetLevel >= toPlanet.planetLevel,
                 "fromPlanetLevel must be >= toPlanetLevel"
             );
 
@@ -294,9 +295,39 @@ library LibArtifactUtils {
             planet.frozen = true;
             gs().planets[linkTo].frozen = true;
             artifact.linkTo = linkTo;
-        } else if (artifact.artifactType == ArtifactType.FuckYou) {
-            require(linkTo != 0, "you must provide a linkTo to activate a Fuckyou");
+        } else if (artifact.artifactType == ArtifactType.FireLink) {
+            require(linkTo != 0, "you must provide a linkTo to activate a FireLink");
+            Planet storage toPlanet = gs().planets[linkTo];
+
+            require(!toPlanet.destroyed, "planet destroyed");
+
+            require(toPlanet.frozen, "toPlanet must be frozen");
+            require(
+                planet.planetLevel >= toPlanet.planetLevel,
+                "fromPlanetLevel need gte toPlanetLevel"
+            );
+
+            Artifact memory activeArtifactOnToPlanet = LibGameUtils.getActiveArtifact(linkTo);
+
+            require(activeArtifactOnToPlanet.artifactType == ArtifactType.IceLink,"artifact on toPlanet must be IceLink");
+
+            require(artifact.rarity>=activeArtifactOnToPlanet.rarity,"FireLink rarity must gte IceLink rarity");
+
+            artifact.linkTo = linkTo;
+
+            shouldDeactivateAndBurn = true;
+
+            // deactivateArtifact(toPlanet.locationId);
+            deactivateArtifactWithoutCheckOwner(toPlanet.locationId);
+
+
+
+        } else if (artifact.artifactType == ArtifactType.SoulSwap) {
+            require(linkTo != 0, "you must provide a linkTo to activate a SoulSwap");
+
             require(!gs().planets[linkTo].destroyed, "planet destroyed");
+            require(!gs().planets[linkTo].frozen, "planet frozen");
+
             require(
                 2 * uint256(artifact.rarity) >= planet.planetLevel,
                 "artifact is not powerful enough to apply effect to this planet level"
@@ -306,12 +337,23 @@ library LibArtifactUtils {
                 "from planet energy need gt 90%"
             );
 
+            require(
+                // This is dependent on Arrival being the only type of planet event.
+                gs().planetEvents[planet.locationId].length == 0,
+                "fromPlanet has incoming voyages."
+            );
+
+            require(
+                // This is dependent on Arrival being the only type of planet event.
+                gs().planetEvents[linkTo].length == 0,
+                "toPlanet has incoming voyages."
+            );
+
             planet.owner = gs().planets[linkTo].owner;
             gs().planets[linkTo].owner = msg.sender;
             shouldDeactivateAndBurn = true;
         } else if (artifact.artifactType == ArtifactType.Bomb) {
             // require(linkTo != 0, "you must provide a linkTo to activate a Bomb");
-
             // planet.owner = gs().planets[linkTo].owner;
             // gs().planets[linkTo].owner = msg.sender;
             shouldDeactivateAndBurn = true;
@@ -351,6 +393,39 @@ library LibArtifactUtils {
             planet.owner == msg.sender,
             "you must own the planet you are deactivating an artifact on"
         );
+
+        require(!planet.destroyed, "planet is destroyed");
+        Artifact memory artifact = LibGameUtils.getActiveArtifact(locationId);
+
+        require(artifact.isInitialized, "this artifact is not activated on this planet");
+
+        if (artifact.artifactType != ArtifactType.IceLink) {
+            require(!planet.frozen, "planet is frozen");
+        } else {
+            Planet storage toPlanet = gs().planets[artifact.linkTo];
+            planet.frozen = false;
+            toPlanet.frozen = false;
+        }
+        artifact.lastDeactivated = block.timestamp;
+        artifact.linkTo = 0;
+        emit ArtifactDeactivated(msg.sender, artifact.id, locationId);
+        DFArtifactFacet(address(this)).updateArtifact(artifact);
+
+        bool shouldBurn = artifact.artifactType == ArtifactType.PlanetaryShield ||
+            artifact.artifactType == ArtifactType.PhotoidCannon ||
+            artifact.artifactType == ArtifactType.IceLink;
+
+        if (shouldBurn) {
+            // burn it after use. will be owned by contract but not on a planet anyone can control
+            LibGameUtils._takeArtifactOffPlanet(artifact.id, locationId);
+        }
+
+        LibGameUtils._debuffPlanet(locationId, LibGameUtils._getUpgradeForArtifact(artifact));
+    }
+
+
+    function deactivateArtifactWithoutCheckOwner(uint256 locationId) public {
+        Planet storage planet = gs().planets[locationId];
 
         require(!planet.destroyed, "planet is destroyed");
         Artifact memory artifact = LibGameUtils.getActiveArtifact(locationId);

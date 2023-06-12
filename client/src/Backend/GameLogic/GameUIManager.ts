@@ -466,7 +466,20 @@ class GameUIManager extends EventEmitter {
     return promise;
   }
 
-  public startFuckYouFrom(planet: LocatablePlanet): Promise<LocatablePlanet | undefined> {
+  public startFireLinkFrom(planet: LocatablePlanet): Promise<LocatablePlanet | undefined> {
+    this.isChoosingTargetPlanet = true;
+    this.mouseDownOverCoords = planet.location.coords;
+    this.mouseDownOverPlanet = planet;
+    this.linkSourceArtifactType = ArtifactType.FireLink;
+
+    const { resolve, promise } = deferred<LocatablePlanet | undefined>();
+
+    this.onChooseTargetPlanet = resolve;
+
+    return promise;
+  }
+
+  public startSoulSwapFrom(planet: LocatablePlanet): Promise<LocatablePlanet | undefined> {
     this.isChoosingTargetPlanet = true;
     this.isFuckingYou = true;
     this.mouseDownOverCoords = planet.location.coords;

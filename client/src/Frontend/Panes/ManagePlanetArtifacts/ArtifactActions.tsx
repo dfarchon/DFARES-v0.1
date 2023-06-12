@@ -74,8 +74,8 @@ export function ArtifactActions({
           targetPlanetId = targetPlanet?.locationId;
         }
 
-        if (artifact.artifactType === ArtifactType.FuckYou) {
-          const targetPlanet = await uiManager.startFuckYouFrom(onPlanet);
+        if (artifact.artifactType === ArtifactType.SoulSwap) {
+          const targetPlanet = await uiManager.startSoulSwapFrom(onPlanet);
           targetPlanetId = targetPlanet?.locationId;
         }
 
@@ -83,9 +83,14 @@ export function ArtifactActions({
           const targetPlanet = await uiManager.startBombFrom(onPlanet);
           targetPlanetId = targetPlanet?.locationId;
         }
-        
+
         if (artifact.artifactType === ArtifactType.IceLink) {
           const targetPlanet = await uiManager.startIceLinkFrom(onPlanet);
+          targetPlanetId = targetPlanet?.locationId;
+        }
+
+        if (artifact.artifactType === ArtifactType.FireLink) {
+          const targetPlanet = await uiManager.startFireLinkFrom(onPlanet);
           targetPlanetId = targetPlanet?.locationId;
         }
 
