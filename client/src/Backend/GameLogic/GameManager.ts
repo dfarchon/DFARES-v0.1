@@ -2571,7 +2571,6 @@ class GameManager extends EventEmitter {
         for (let i = 0; i < 256 / 4; i++) {
           result += alphabet[Math.floor(Math.random() * alphabet.length)];
         }
-
         result = result.toLowerCase();
         return result;
       }

@@ -136,6 +136,13 @@ export function BuyArtifactPane({
               ArtifactType.PhotoidCannon.toString(),
               ArtifactType.BloomFilter.toString(),
               ArtifactType.BlackDomain.toString(),
+              ArtifactType.IceLink.toString(),
+              ArtifactType.FireLink.toString(),
+              ArtifactType.SoulSwap.toString(),
+              ArtifactType.Bomb.toString(),
+              ArtifactType.Doom.toString(),
+              ArtifactType.BlindBox.toString(),
+              ArtifactType.Avatar.toString(),
             ]}
             labels={[
               'Monolith',
@@ -147,6 +154,13 @@ export function BuyArtifactPane({
               'PhotoidCannon',
               'BloomFilter',
               'BlackDomain',
+              'IceLink',
+              'FireLink',
+              'SoulSwap',
+              'Bomb',
+              'Doom',
+              'BlindBox',
+              'Avatar',
             ]}
             value={type.toString()}
             setValue={setType}
