@@ -211,8 +211,7 @@ library LibArtifactUtils {
         // Unknown is the 0th one, Monolith is the 1st, and so on.
         // TODO v0.6: consider photoid canon
 
-
-        uint256[16] memory artifactCooldownsHours = [
+        uint256[17] memory artifactCooldownsHours = [
             uint256(24),
             0,
             0,
@@ -229,7 +228,7 @@ library LibArtifactUtils {
             0,
             0,
             0,
-            0,
+            0
         ];
 
         require(
@@ -426,7 +425,7 @@ library LibArtifactUtils {
     }
 
 
-    function deactivateArtifactWithoutCheckOwner(uint256 locationId) private {
+    function deactivateArtifactWithoutCheckOwner(uint256 locationId) private{
         Planet storage planet = gs().planets[locationId];
 
         require(!planet.destroyed, "planet is destroyed");
