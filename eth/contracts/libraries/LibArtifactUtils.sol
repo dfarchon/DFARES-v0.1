@@ -211,6 +211,7 @@ library LibArtifactUtils {
         // Unknown is the 0th one, Monolith is the 1st, and so on.
         // TODO v0.6: consider photoid canon
 
+
         uint256[16] memory artifactCooldownsHours = [
             uint256(24),
             0,
@@ -227,7 +228,8 @@ library LibArtifactUtils {
             0,
             0,
             0,
-            0
+            0,
+            0,
         ];
 
         require(
