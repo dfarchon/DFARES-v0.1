@@ -4,8 +4,8 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import dfstyles from '../Styles/dfstyles';
 
-export const ARTIFACT_URL = 'https://d2wspbczt15cqu.cloudfront.net/v0.6.0-artifacts/';
-// const ARTIFACT_URL = '/public/img/artifacts/videos/';
+// export const ARTIFACT_URL = 'https://d2wspbczt15cqu.cloudfront.net/v0.6.0-artifacts/';
+export const ARTIFACT_URL = '/public/df_ares_artifact_icons/';
 
 function getArtifactUrl(thumb: boolean, artifact: Artifact, color: ArtifactFileColor): string {
   const fileName = artifactFileName(true, thumb, artifact, color);
@@ -34,7 +34,8 @@ export function ArtifactImage({
 
   return (
     <Container width={size} height={size}>
-      {image}
+      {/* {image} */}
+      <img width={size} height={size} src={ARTIFACT_URL + artifact.artifactType + '.png'} />
     </Container>
   );
 }
@@ -51,3 +52,24 @@ const Container = styled.div`
     display: inline-block;
   `}
 `;
+
+// const ArtifactImg = styled.div`
+//   background-position: -10px -10px;
+//   background-repeat: no-repeat;
+
+//   ${({ url, width, height }: { url: string; width: number; height: number }) => css`
+//     background: transparent url(${url});
+//     width: ${width}px;
+//     height: ${height}px;
+//   `}
+// `;
+
+// const ArtifactImg = styled.img`
+//   position: absolute;
+
+//   ${({ w, h }: { w: number; h: number }) => css`
+//     clip: rect(0, ${w}px, ${h}px, 0);
+//     width: 2048px;
+//     height: 2048px;
+//   `}
+// `;
