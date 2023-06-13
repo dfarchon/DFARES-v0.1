@@ -15,7 +15,7 @@ library LibLazyUpdate {
         return LibStorage.gameStorage();
     }
 
-    function _updateSilver(uint256 updateToTime, Planet memory planet) private pure {
+    function _updateSilver(uint256 updateToTime, Planet memory planet) private view {
         // This function should never be called directly and should only be called
         // by the refresh planet function. This require is in place to make sure
         // no one tries to updateSilver on non silver producing planet.
@@ -30,7 +30,7 @@ library LibLazyUpdate {
 
         if (planet.silver < planet.silverCap) {
             uint256 _timeDiff = updateToTime - planet.lastUpdated;
-            uint256 _silverMined = planet.silverGrowth * _timeDiff;
+            uint256 _silverMined = (planet.silverGrowth * _timeDiff * gs().dynamicTimeFactor) / 100;
 
             uint256 _maxSilver = planet.silverCap;
             uint256 _currentSilver = planet.silver + _silverMined;
@@ -38,7 +38,7 @@ library LibLazyUpdate {
         }
     }
 
-    function _updatePopulation(uint256 updateToTime, Planet memory planet) private pure {
+    function _updatePopulation(uint256 updateToTime, Planet memory planet) private view {
         if (planet.owner == address(0)) {
             // unowned planet doesn't increase in population
             return;
@@ -58,7 +58,9 @@ library LibLazyUpdate {
                         ABDKMath64x64.mul(
                             ABDKMath64x64.mul(
                                 ABDKMath64x64.fromInt(-4),
-                                ABDKMath64x64.fromUInt(planet.populationGrowth)
+                                ABDKMath64x64.fromUInt(
+                                    (planet.populationGrowth * gs().dynamicTimeFactor) / 100
+                                )
                             ),
                             _timeElapsed
                         ),
@@ -98,7 +100,7 @@ library LibLazyUpdate {
 
     function updatePlanet(uint256 updateToTime, Planet memory planet)
         public
-        pure
+        view
         returns (Planet memory)
     {
         _updatePopulation(updateToTime, planet);

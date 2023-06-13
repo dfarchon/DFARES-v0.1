@@ -160,7 +160,8 @@ contract DFMoveFacet is WithStorage {
 
         LibGameUtils._buffPlanet(args.oldLoc, temporaryUpgrade);
 
-        uint256 travelTime = effectiveDistTimesHundred / gs().planets[args.oldLoc].speed;
+        uint256 travelTime = effectiveDistTimesHundred /
+            ((gs().planets[args.oldLoc].speed * gs().dynamicTimeFactor) / 100);
 
         // don't allow 0 second voyages, so that arrival can't be processed in same block
         if (travelTime == 0) {
