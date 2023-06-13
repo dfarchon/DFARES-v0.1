@@ -144,8 +144,6 @@ export interface RendererGameContext extends DiagnosticUpdater {
     energy: number
   ): number;
   getIsChoosingTargetPlanet(): boolean;
-  getIsFuckingYou(): boolean;
-  getIsBombing(): boolean;
   getLinkSourceArtifactType(): ArtifactType;
   getLinks(): Iterable<Link>;
   getRadiusOfPlanetLevel(planetRarity: PlanetLevel): number;

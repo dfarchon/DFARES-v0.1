@@ -108,7 +108,7 @@ const squid = {
 
 const doge = {
   legacy: false,
-  topLayer: ['http://localhost:8081/img/doge.png'], //['https://cryptologos.cc/logos/dogecoin-doge-logo.svg?v=025'],
+  topLayer: ['http://localhost:8081/img/doge.svg'], //['https://cryptologos.cc/logos/dogecoin-doge-logo.svg?v=025'],
   bottomLayer: [],
   // image: () =>
   //   new Promise<HTMLImageElement>((resolve) => {

@@ -101,9 +101,6 @@ class GameUIManager extends EventEmitter {
    */
   private isChoosingTargetPlanet = false;
 
-  private isFuckingYou = false;
-  private isBombing = false;
-
   private onChooseTargetPlanet?: (planet: LocatablePlanet | undefined) => void;
 
   private linkSourceArtifactType = ArtifactType.Unknown;
@@ -440,64 +437,15 @@ class GameUIManager extends EventEmitter {
     this.gameManager.withdrawSilver(locationId, amount);
   }
 
-  public startWormholeFrom(planet: LocatablePlanet): Promise<LocatablePlanet | undefined> {
+  public startLinkFrom(
+    planet: LocatablePlanet,
+    artifact: Artifact
+  ): Promise<LocatablePlanet | undefined> {
     this.isChoosingTargetPlanet = true;
     this.mouseDownOverCoords = planet.location.coords;
     this.mouseDownOverPlanet = planet;
-    this.linkSourceArtifactType = ArtifactType.Wormhole;
 
-    const { resolve, promise } = deferred<LocatablePlanet | undefined>();
-
-    this.onChooseTargetPlanet = resolve;
-
-    return promise;
-  }
-
-  public startIceLinkFrom(planet: LocatablePlanet): Promise<LocatablePlanet | undefined> {
-    this.isChoosingTargetPlanet = true;
-    this.mouseDownOverCoords = planet.location.coords;
-    this.mouseDownOverPlanet = planet;
-    this.linkSourceArtifactType = ArtifactType.IceLink;
-
-    const { resolve, promise } = deferred<LocatablePlanet | undefined>();
-
-    this.onChooseTargetPlanet = resolve;
-
-    return promise;
-  }
-
-  public startFireLinkFrom(planet: LocatablePlanet): Promise<LocatablePlanet | undefined> {
-    this.isChoosingTargetPlanet = true;
-    this.mouseDownOverCoords = planet.location.coords;
-    this.mouseDownOverPlanet = planet;
-    this.linkSourceArtifactType = ArtifactType.FireLink;
-
-    const { resolve, promise } = deferred<LocatablePlanet | undefined>();
-
-    this.onChooseTargetPlanet = resolve;
-
-    return promise;
-  }
-
-  public startSoulSwapFrom(planet: LocatablePlanet): Promise<LocatablePlanet | undefined> {
-    this.isChoosingTargetPlanet = true;
-    this.isFuckingYou = true;
-    this.mouseDownOverCoords = planet.location.coords;
-    this.mouseDownOverPlanet = planet;
-
-    const { resolve, promise } = deferred<LocatablePlanet | undefined>();
-
-    this.onChooseTargetPlanet = resolve;
-
-    return promise;
-  }
-
-  public startBombFrom(planet: LocatablePlanet): Promise<LocatablePlanet | undefined> {
-    //bomb immediately or wait for arrival?
-    this.isChoosingTargetPlanet = true;
-    this.isBombing = true;
-    this.mouseDownOverCoords = planet.location.coords;
-    this.mouseDownOverPlanet = planet;
+    this.linkSourceArtifactType = artifact.artifactType;
 
     const { resolve, promise } = deferred<LocatablePlanet | undefined>();
 
@@ -531,13 +479,6 @@ class GameUIManager extends EventEmitter {
     return this.isChoosingTargetPlanet;
   }
 
-  getIsFuckingYou() {
-    return this.isFuckingYou;
-  }
-
-  getIsBombing() {
-    return this.isBombing;
-  }
   getLinkSourceArtifactType() {
     return this.linkSourceArtifactType;
   }
@@ -550,8 +491,6 @@ class GameUIManager extends EventEmitter {
 
     if (this.getIsChoosingTargetPlanet()) {
       this.isChoosingTargetPlanet = false;
-      this.isFuckingYou = false;
-      this.isBombing = false;
       this.linkSourceArtifactType = ArtifactType.Unknown;
 
       if (this.onChooseTargetPlanet) {
@@ -669,8 +608,6 @@ class GameUIManager extends EventEmitter {
 
       this.isChoosingTargetPlanet = false;
 
-      this.isFuckingYou = false;
-      this.isBombing = false;
       this.linkSourceArtifactType = ArtifactType.Unknown;
     } else {
       uiEmitter.emit(UIEmitterEvent.SendCancelled);

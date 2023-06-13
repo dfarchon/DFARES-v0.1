@@ -13,7 +13,8 @@ import { engineConsts } from './EngineConsts';
 import { Renderer } from './Renderer';
 import { GameGLManager } from './WebGL/GameGLManager';
 
-const { orangeA, red, redA, white, whiteA, purpleA, blueA, pinkA } = engineConsts.colors;
+const { orangeA, red, redA, white, whiteA, purpleA, blueA, pinkA, sensaichaA } =
+  engineConsts.colors;
 
 export class UIRenderer implements UIRendererType {
   renderer: Renderer;
@@ -60,14 +61,13 @@ export class UIRenderer implements UIRendererType {
         } else if (artifactType === ArtifactType.FireLink) {
           showText = 'FireLink Target';
           lineColor = pinkA;
-        }
-
-        if (uiManager.getIsFuckingYou()) {
-          showText = 'Fuck Target';
+        } else if (artifactType === ArtifactType.BlackDomain) {
+          showText = 'BlackDomain Target';
+          lineColor = sensaichaA;
+        } else if (artifactType === ArtifactType.SoulSwap) {
+          showText = 'SoulSwap Target';
           lineColor = redA;
-        }
-
-        if (uiManager.getIsBombing()) {
+        } else if (artifactType === ArtifactType.Bomb) {
           showText = 'Bomb Target';
           lineColor = purpleA;
         }
