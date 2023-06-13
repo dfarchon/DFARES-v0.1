@@ -157,7 +157,15 @@ const web3mq = {
 
 export const hatFromType = (type: HatType): Hat => hats[type];
 export const avatarFromId = (id: string): HatType => {
-  const avatars = [HatType.Doge, HatType.Wojak, HatType.Mike, HatType.Panda, HatType.Pepe];
+  const avatars = [
+    HatType.Doge,
+    HatType.Wojak,
+    HatType.Mike,
+    HatType.Panda,
+    HatType.Pepe,
+    HatType.Mask,
+    HatType.Web3MQ,
+  ];
   return avatars[parseInt(id.substring(id.length - 2), 16) % avatars.length];
 };
 
