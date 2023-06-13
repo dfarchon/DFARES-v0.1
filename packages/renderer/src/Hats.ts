@@ -108,7 +108,7 @@ const squid = {
 
 const doge = {
   legacy: false,
-  topLayer: ['https://cryptologos.cc/logos/dogecoin-doge-logo.svg?v=025'],
+  topLayer: ['http://localhost:8081/img/doge.png'], //['https://cryptologos.cc/logos/dogecoin-doge-logo.svg?v=025'],
   bottomLayer: [],
   // image: () =>
   //   new Promise<HTMLImageElement>((resolve) => {
@@ -143,10 +143,29 @@ const mike = {
   topLayer: ['http://localhost:8081/img/mike.png'],
   bottomLayer: [],
 };
+const mask = {
+  legacy: false,
+  topLayer: ['http://localhost:8081/img/mask.svg'],
+  bottomLayer: [],
+};
+
+const web3mq = {
+  legacy: false,
+  topLayer: ['http://localhost:8081/img/web3mq.png'],
+  bottomLayer: [],
+};
 
 export const hatFromType = (type: HatType): Hat => hats[type];
 export const avatarFromId = (id: string): HatType => {
-  const avatars = [HatType.Doge, HatType.Wojak, HatType.Mike, HatType.Panda, HatType.Pepe];
+  const avatars = [
+    HatType.Doge,
+    HatType.Wojak,
+    HatType.Mike,
+    HatType.Panda,
+    HatType.Pepe,
+    HatType.Mask,
+    HatType.Web3MQ,
+  ];
   return avatars[parseInt(id.substring(id.length - 2), 16) % avatars.length];
 };
 
@@ -166,4 +185,6 @@ export const hats: Record<HatType, Hat> = {
   [HatType.Mike]: mike,
   [HatType.Panda]: panda,
   [HatType.Pepe]: pepe,
+  [HatType.Mask]: mask,
+  [HatType.Web3MQ]: web3mq,
 };

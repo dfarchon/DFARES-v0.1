@@ -3,14 +3,20 @@ import {
   Artifact,
   ArtifactRarity,
   ArtifactRarityNames,
+  ArtifactType,
   ArtifactTypeNames,
   BiomeNames,
+  HatType,
 } from '@darkforest_eth/types';
 import React from 'react';
 import styled from 'styled-components';
 import { RarityColors } from '../../Styles/Colors';
 import { LegendaryLabel } from './LegendaryLabel';
 import { MythicLabel } from './MythicLabel';
+const avatarFromId = (id: string): HatType => {
+  const avatars = [HatType.Doge, HatType.Wojak, HatType.Mike, HatType.Panda, HatType.Pepe];
+  return avatars[parseInt(id.substring(id.length - 2), 16) % avatars.length];
+};
 
 export const ArtifactRarityText = ({ rarity }: { rarity: ArtifactRarity }) => (
   <>{ArtifactRarityNames[rarity]}</>
@@ -21,7 +27,10 @@ export const ArtifactBiomeText = ({ artifact }: { artifact: Artifact }) => (
 );
 
 export const ArtifactTypeText = ({ artifact }: { artifact: Artifact }) => (
-  <>{ArtifactTypeNames[artifact.artifactType]}</>
+  <>
+    {ArtifactTypeNames[artifact.artifactType]}
+    {artifact.artifactType === ArtifactType.Avatar && ':' + avatarFromId(artifact.id)}
+  </>
 );
 
 // colored labels
