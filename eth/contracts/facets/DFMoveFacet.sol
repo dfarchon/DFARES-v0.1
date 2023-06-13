@@ -90,6 +90,13 @@ contract DFMoveFacet is WithStorage {
             LibGameUtils.checkPlanetDOS(args.newLoc, args.sender);
         }
 
+        if (gs().artifacts[args.movedArtifactId].artifactType == ArtifactType.ShipMothership) {
+            require(
+                !LibGameUtils.checkPlanetHasMothership(args.newLoc),
+                "Planet already has mothership"
+            );
+        }
+
         _executeMove(args);
 
         LibGameUtils.updateWorldRadius();

@@ -588,6 +588,41 @@ library LibGameUtils {
         );
     }
 
+    function checkPlanetHasMothership(uint256 locationId) public view returns (bool) {
+        //mothership in planet
+        for (uint8 i = 0; i < gs().planetArtifacts[locationId].length; i++) {
+            if (
+                gs().artifacts[gs().planetArtifacts[locationId][i]].artifactType ==
+                ArtifactType.ShipMothership
+            ) {
+                return true;
+            }
+        }
+
+        //mother ship in pending arrivals
+        for (uint8 i = 0; i < gs().planetEvents[locationId].length; i++) {
+            if (gs().planetEvents[locationId][i].eventType == PlanetEventType.ARRIVAL) {
+                //mothership in pending arrival
+                if (
+                    gs().planetArrivals[gs().planetEvents[locationId][i].id].carriedArtifactId !=
+                    0 &&
+                    gs()
+                        .artifacts[
+                            gs()
+                                .planetArrivals[gs().planetEvents[locationId][i].id]
+                                .carriedArtifactId
+                        ]
+                        .artifactType ==
+                    ArtifactType.ShipMothership
+                ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     function updateWorldRadius() public {
         if (!gameConstants().WORLD_RADIUS_LOCKED) {
             gs().worldRadius = _getRadius();
