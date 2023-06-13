@@ -31,7 +31,7 @@ ARTIFACT_POINT_VALUES = [
   3000000,
   20000000
 ]
-PHOTOID_ACTIVATION_DELAY = 14400 # seconds
+PHOTOID_ACTIVATION_DELAY = 30 # seconds
 
 ##############
 # Space junk #

@@ -110,6 +110,7 @@ contract DFMoveFacet is WithStorage {
         uint256 effectiveDistTimesHundred = args.maxDist * 100; // for precision
         ArrivalType arrivalType = ArrivalType.Normal;
         Upgrade memory temporaryUpgrade = LibGameUtils.defaultUpgrade();
+        bool photoidPresent = false;
 
         (bool wormholePresent, uint256 distModifier) = _checkWormhole(args);
         if (wormholePresent) {
@@ -118,9 +119,10 @@ contract DFMoveFacet is WithStorage {
         }
 
         if (!_isSpaceshipMove(args)) {
-            (bool photoidPresent, Upgrade memory newTempUpgrade) = _checkPhotoid(args);
-            if (photoidPresent) {
+            (bool newPhotoidPresent, Upgrade memory newTempUpgrade) = _checkPhotoid(args);
+            if (newPhotoidPresent) {
                 temporaryUpgrade = newTempUpgrade;
+                photoidPresent = newPhotoidPresent;
                 arrivalType = ArrivalType.Photoid;
             }
         }
@@ -156,6 +158,11 @@ contract DFMoveFacet is WithStorage {
         // don't allow 0 second voyages, so that arrival can't be processed in same block
         if (travelTime == 0) {
             travelTime = 1;
+        }
+
+        //all photoid travel same time
+        if (photoidPresent) {
+            travelTime = 60;
         }
 
         // all checks pass. execute move

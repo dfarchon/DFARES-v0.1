@@ -59,7 +59,7 @@ export const ArtifactTypeNames = {
   [ArtifactType.Bomb]: 'Bomb',
   [ArtifactType.Doom]: 'Doom',
   [ArtifactType.BlindBox]: 'Blind Box',
-  [ArtifactType.Avatar]: 'Shit Meme',
+  [ArtifactType.Avatar]: 'Meme',
   [ArtifactType.ShipMothership]: 'Mothership',
   [ArtifactType.ShipCrescent]: 'Crescent',
   [ArtifactType.ShipWhale]: 'Whale',
