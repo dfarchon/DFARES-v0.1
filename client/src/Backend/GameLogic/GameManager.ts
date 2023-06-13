@@ -808,28 +808,32 @@ class GameManager extends EventEmitter {
         } else if (isUnconfirmedActivateArtifactTx(tx)) {
           let refreshFlag = true;
           const fromPlanet = await gameManager.getPlanetWithId(tx.intent.locationId);
-          if (fromPlanet && fromPlanet.locationId && tx.intent.linkTo) {
-            const toPlanet = await gameManager.getPlanetWithId(tx.intent.linkTo);
-            if (toPlanet) {
-              const activeArtifactOnToPlanet = await gameManager.getActiveArtifact(toPlanet);
-              if (
-                activeArtifactOnToPlanet &&
-                activeArtifactOnToPlanet.artifactType === ArtifactType.IceLink &&
-                activeArtifactOnToPlanet.linkTo
-              ) {
-                const toLinkPlanet = await gameManager.getPlanetWithId(
+          const artifact = await gameManager.getArtifactWithId(tx.intent.artifactId);
+
+          if (artifact?.artifactType === ArtifactType.FireLink) {
+            if (fromPlanet && fromPlanet.locationId && tx.intent.linkTo) {
+              const toPlanet = await gameManager.getPlanetWithId(tx.intent.linkTo);
+              if (toPlanet) {
+                const activeArtifactOnToPlanet = await gameManager.getActiveArtifact(toPlanet);
+                if (
+                  activeArtifactOnToPlanet &&
+                  activeArtifactOnToPlanet.artifactType === ArtifactType.IceLink &&
                   activeArtifactOnToPlanet.linkTo
-                );
-                if (toLinkPlanet) {
-                  await Promise.all([
-                    gameManager.bulkHardRefreshPlanets([
-                      fromPlanet.locationId,
-                      toPlanet.locationId,
-                      toLinkPlanet.locationId,
-                    ]),
-                    gameManager.hardRefreshArtifact(tx.intent.artifactId),
-                  ]);
-                  refreshFlag = false;
+                ) {
+                  const toLinkPlanet = await gameManager.getPlanetWithId(
+                    activeArtifactOnToPlanet.linkTo
+                  );
+                  if (toLinkPlanet) {
+                    await Promise.all([
+                      gameManager.bulkHardRefreshPlanets([
+                        fromPlanet.locationId,
+                        toPlanet.locationId,
+                        toLinkPlanet.locationId,
+                      ]),
+                      gameManager.hardRefreshArtifact(tx.intent.artifactId),
+                    ]);
+                    refreshFlag = false;
+                  }
                 }
               }
             }
@@ -2493,11 +2497,6 @@ class GameManager extends EventEmitter {
 
       // Always await the submitTransaction so we can catch rejections
       const tx = await this.contractsAPI.submitTransaction(txIntent);
-
-      linkTo &&
-        tx.confirmedPromise.then(() => {
-          this.hardRefreshPlanet(linkTo);
-        });
 
       return tx;
     } catch (e) {

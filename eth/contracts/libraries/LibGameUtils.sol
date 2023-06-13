@@ -166,17 +166,19 @@ library LibGameUtils {
 
         ArtifactType artifactType = ArtifactType.Pyramid;
 
-        if (lastByteOfSeed < 256) {
-            artifactType = ArtifactType.Monolith;
-        } else if (lastByteOfSeed < 512) {
-            artifactType = ArtifactType.Colossus;
-        }
+        // if (lastByteOfSeed < 256) {
+        //     artifactType = ArtifactType.Monolith;
+        // } else if (lastByteOfSeed < 512) {
+        //     artifactType = ArtifactType.Colossus;
+        // }
         // else if (lastByteOfSeed < 117) {
         //     artifactType = ArtifactType.Spaceship;
         // }
-        else if (lastByteOfSeed < 768) {
-            artifactType = ArtifactType.Pyramid;
-        } else if (lastByteOfSeed < 1024) {
+        // else if (lastByteOfSeed < 768) {
+        //     artifactType = ArtifactType.Pyramid;
+        // }
+        // MyTodo: need to change the artifact show up probability
+        if (lastByteOfSeed < 1024) {
             artifactType = ArtifactType.Wormhole;
         } else if (lastByteOfSeed < 1280) {
             artifactType = ArtifactType.PlanetaryShield;

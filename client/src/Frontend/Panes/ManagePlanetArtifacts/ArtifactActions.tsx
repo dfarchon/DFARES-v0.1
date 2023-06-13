@@ -69,28 +69,15 @@ export function ArtifactActions({
       if (onPlanet && isLocatable(onPlanet)) {
         let targetPlanetId = undefined;
 
-        if (artifact.artifactType === ArtifactType.Wormhole) {
-          const targetPlanet = await uiManager.startWormholeFrom(onPlanet);
-          targetPlanetId = targetPlanet?.locationId;
-        }
-
-        if (artifact.artifactType === ArtifactType.SoulSwap) {
-          const targetPlanet = await uiManager.startSoulSwapFrom(onPlanet);
-          targetPlanetId = targetPlanet?.locationId;
-        }
-
-        if (artifact.artifactType === ArtifactType.Bomb) {
-          const targetPlanet = await uiManager.startBombFrom(onPlanet);
-          targetPlanetId = targetPlanet?.locationId;
-        }
-
-        if (artifact.artifactType === ArtifactType.IceLink) {
-          const targetPlanet = await uiManager.startIceLinkFrom(onPlanet);
-          targetPlanetId = targetPlanet?.locationId;
-        }
-
-        if (artifact.artifactType === ArtifactType.FireLink) {
-          const targetPlanet = await uiManager.startFireLinkFrom(onPlanet);
+        if (
+          artifact.artifactType === ArtifactType.Wormhole ||
+          artifact.artifactType === ArtifactType.BlackDomain ||
+          artifact.artifactType === ArtifactType.SoulSwap ||
+          artifact.artifactType === ArtifactType.IceLink ||
+          artifact.artifactType === ArtifactType.FireLink ||
+          artifact.artifactType === ArtifactType.Bomb
+        ) {
+          const targetPlanet = await uiManager.startLinkFrom(onPlanet, artifact);
           targetPlanetId = targetPlanet?.locationId;
         }
 

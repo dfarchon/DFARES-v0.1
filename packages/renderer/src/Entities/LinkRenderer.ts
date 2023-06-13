@@ -9,7 +9,7 @@ import {
 import { engineConsts } from '../EngineConsts';
 import { Renderer } from '../Renderer';
 import { GameGLManager } from '../WebGL/GameGLManager';
-const { purpleA, blueA, pinkA } = engineConsts.colors;
+const { purpleA, blueA, pinkA, sensaichaA } = engineConsts.colors;
 
 export class LinkRenderer implements LinkRendererType {
   renderer: Renderer;
@@ -69,6 +69,10 @@ export class LinkRenderer implements LinkRendererType {
 
     if (artifact.artifactType === ArtifactType.FireLink) {
       lineColor = pinkA;
+    }
+
+    if (artifact.artifactType === ArtifactType.BlackDomain) {
+      lineColor = sensaichaA;
     }
 
     this.renderer.lineRenderer.queueLineWorld(

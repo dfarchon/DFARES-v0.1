@@ -36,6 +36,8 @@ export const engineConsts = {
     greenA: [0, 255, 0, 255] as RGBAVec,
     pinkA: [255, 149, 183, 255] as RGBAVec,
     pink: [255, 149, 183],
+    sensaichaA: [77, 81, 57, 255] as RGBAVec,
+    sensaicha: [77, 81, 57] as RGBVec,
     range: {
       dash: [150, 145, 191] as RGBVec,
       energy: [245, 180, 130] as RGBVec,
