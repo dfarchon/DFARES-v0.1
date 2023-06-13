@@ -261,7 +261,7 @@ export const PluginElements = styled.div`
   color: ${dfstyles.colors.text};
   width: 400px;
   min-height: 100px;
-  max-height: 600px;
+  max-height: 700px;
   overflow: scroll;
 
   button {

@@ -297,6 +297,17 @@ async function createPlanet(coords: WorldCoords, level: number, type: PlanetType
   await df.hardRefreshPlanet(locationIdFromDecStr(location));
 }
 
+async function setDynamicTimeFactor(timeFactor: number) {
+  const args = Promise.resolve([Number(timeFactor) * 100]);
+  const tx = await df.submitTransaction({
+    args,
+    contract: df.getContract(),
+    methodName: 'setDynamicTimeFactor',
+  });
+
+  return tx;
+}
+
 function PlanetLink({ planetId }: { planetId?: LocationId }) {
   if (planetId) {
     return html`<a
@@ -488,6 +499,36 @@ function PlanetCreator() {
   `;
 }
 
+function ChangeTimeFactor() {
+  const [timeFactor, setTimeFactor] = useState(1);
+
+  return html`
+    <div style=${{ width: '100%' }}>
+      <h2>Change Time Factor</h2>
+      <div style=${rowStyle}>
+        <df-slider
+          label="Time Factor"
+          value=${timeFactor}
+          onChange=${(e: InputEvent) => setTimeFactor((e.target as HTMLInputElement).value)}
+          min=${1}
+          max=${40}
+        ></df-slider>
+      </div>
+      <div style=${{ ...rowStyle, justifyContent: 'space-between' }}>
+        ${html`
+          <df-button
+            onClick=${() => {
+              setDynamicTimeFactor(timeFactor);
+            }}
+          >
+            Set Time Factor
+          </df-button>
+        `}
+      </div>
+    </div>
+  `;
+}
+
 function App() {
   const [selectedPlanet, setSelectedPlanet] = useState(null);
   const [selectedShip, setSelectedShip] = useState(MIN_SPACESHIP_TYPE);
@@ -654,6 +695,9 @@ function App() {
       <div style=${rowStyle}>
         <${PlanetCreator} />
       </div>
+      <div style=${rowStyle}>
+        <${ChangeTimeFactor} />
+      </div>
     </div>
   `;
 }
@@ -661,6 +705,7 @@ function App() {
 class Plugin implements DFPlugin {
   async render(container: HTMLDivElement) {
     container.style.width = '525px';
+    container.style.height = '1500px';
 
     render(html`<${App} />`, container);
   }
