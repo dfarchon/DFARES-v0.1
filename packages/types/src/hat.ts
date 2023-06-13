@@ -18,4 +18,6 @@ export const HatType = {
   Mike: 'Mike' as HatType,
   Panda: 'Panda' as HatType,
   Pepe: 'Pepe' as HatType,
+  Mask: 'Mask' as HatType,
+  Web3MQ: 'Web3MQ' as HatType,
 };
