@@ -144,6 +144,8 @@ contract DFInitialize is WithStorage {
 
         gs().planetLevelsCount = 10;
 
+        gs().dynamicTimeFactor = 100;
+
         snarkConstants().DISABLE_ZK_CHECKS = initArgs.DISABLE_ZK_CHECKS;
         snarkConstants().PLANETHASH_KEY = initArgs.PLANETHASH_KEY;
         snarkConstants().SPACETYPE_KEY = initArgs.SPACETYPE_KEY;

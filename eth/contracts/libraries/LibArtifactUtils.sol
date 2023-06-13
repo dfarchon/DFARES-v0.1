@@ -210,6 +210,8 @@ library LibArtifactUtils {
 
         require(artifact.isInitialized, "this artifact is not on this planet");
 
+        // bool nonAvatarArtifactCanActivateWithAvatarActivated = LibGameUtils.getActiveArtifact(locationId).artifactType == ArtifactType.Avatar && artifact.artifactType != ArtifactType.Avatar;
+
         // Unknown is the 0th one, Monolith is the 1st, and so on.
         // TODO v0.6: consider photoid canon
 
@@ -341,9 +343,15 @@ library LibArtifactUtils {
 
             Artifact memory activeArtifactOnToPlanet = LibGameUtils.getActiveArtifact(linkTo);
 
-            require(activeArtifactOnToPlanet.artifactType == ArtifactType.IceLink,"artifact on toPlanet must be IceLink");
+            require(
+                activeArtifactOnToPlanet.artifactType == ArtifactType.IceLink,
+                "artifact on toPlanet must be IceLink"
+            );
 
-            require(artifact.rarity>=activeArtifactOnToPlanet.rarity,"FireLink rarity must gte IceLink rarity");
+            require(
+                artifact.rarity >= activeArtifactOnToPlanet.rarity,
+                "FireLink rarity must gte IceLink rarity"
+            );
 
             artifact.linkTo = linkTo;
 
@@ -351,9 +359,6 @@ library LibArtifactUtils {
 
             // deactivateArtifact(toPlanet.locationId);
             deactivateArtifactWithoutCheckOwner(toPlanet.locationId);
-
-
-
         } else if (artifact.artifactType == ArtifactType.SoulSwap) {
             require(linkTo != 0, "you must provide a linkTo to activate a SoulSwap");
 
@@ -455,8 +460,7 @@ library LibArtifactUtils {
         LibGameUtils._debuffPlanet(locationId, LibGameUtils._getUpgradeForArtifact(artifact));
     }
 
-
-    function deactivateArtifactWithoutCheckOwner(uint256 locationId) private{
+    function deactivateArtifactWithoutCheckOwner(uint256 locationId) private {
         Planet storage planet = gs().planets[locationId];
 
         require(!planet.destroyed, "planet is destroyed");
