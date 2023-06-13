@@ -564,7 +564,7 @@ library LibArtifactUtils {
             require(containsGear(locationId), "gear ship must be present on planet");
         }else {
             require(
-            (planet.population * 100) >= (planet.populationCap * 100) / 78,
+            planet.population*100 >= planet.populationCap * 78,
             // We lie here, but it is a better UX
             "planet must have 80% energy before capturing"
             );

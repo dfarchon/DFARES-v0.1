@@ -806,6 +806,8 @@ class GameManager extends EventEmitter {
         } else if (isUnconfirmedProspectPlanetTx(tx)) {
           await gameManager.softRefreshPlanet(tx.intent.planetId);
         } else if (isUnconfirmedActivateArtifactTx(tx)) {
+          console.warn(tx.intent);
+
           let refreshFlag = true;
           const fromPlanet = await gameManager.getPlanetWithId(tx.intent.locationId);
           const artifact = await gameManager.getArtifactWithId(tx.intent.artifactId);

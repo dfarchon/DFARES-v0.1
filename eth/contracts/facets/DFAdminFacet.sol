@@ -162,7 +162,7 @@ contract DFAdminFacet is WithStorage {
         gameConstants().PLANET_TRANSFER_ENABLED = enabled;
     }
 
-    function setDynamicTimeFactor(uint8 factor) public onlyAdmin {
+    function setDynamicTimeFactor(uint256 factor) public onlyAdmin {
         gs().dynamicTimeFactor = factor;
     }
 }

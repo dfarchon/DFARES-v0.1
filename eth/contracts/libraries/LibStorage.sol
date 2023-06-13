@@ -50,7 +50,7 @@ struct GameStorage {
     mapping(uint256 => Artifact) artifacts;
     // Capture Zones
     uint256 nextChangeBlock;
-    uint8 dynamicTimeFactor;
+    uint256 dynamicTimeFactor;
 }
 
 // Game config
