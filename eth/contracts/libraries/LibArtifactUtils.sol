@@ -136,6 +136,8 @@ library LibArtifactUtils {
         Planet storage planet = gs().planets[locationId];
         Artifact storage artifact = gs().artifacts[artifactId];
 
+        require(locationId!=linkTo,"locationId neq linkTo");
+
         require(
             LibGameUtils.isArtifactOnPlanet(locationId, artifactId),
             "can't active an artifact on a planet it's not on"

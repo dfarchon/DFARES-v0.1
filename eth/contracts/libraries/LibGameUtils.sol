@@ -214,7 +214,7 @@ library LibGameUtils {
             } else {
                 artifactType = ArtifactType.Wormhole;
             }
-            artifactType = ArtifactType.PhotoidCannon;
+            // artifactType = ArtifactType.PhotoidCannon;
         }
 
         uint256 bonus = 0;
