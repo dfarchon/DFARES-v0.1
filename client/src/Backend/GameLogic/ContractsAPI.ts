@@ -876,7 +876,14 @@ export class ContractsAPI extends EventEmitter {
     txIntent: T,
     overrides?: providers.TransactionRequest
   ): Promise<Transaction<T>> {
-    const queuedTx = await this.txExecutor.queueTransaction(txIntent, overrides);
+    const config = {
+      contractAddress: this.contractAddress,
+      account: this.ethConnection.getAddress(),
+    };
+    const queuedTx = await this.txExecutor.queueTransaction(txIntent, {
+      ...overrides,
+      gasLimit: getSetting(config, Setting.GasFeeLimit),
+    });
 
     this.emit(ContractsAPIEvent.TxQueued, queuedTx);
     // TODO: Why is this setTimeout here? Can it be removed?
