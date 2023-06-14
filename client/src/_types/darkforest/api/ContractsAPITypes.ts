@@ -268,6 +268,7 @@ export interface ContractConstants {
   ABANDON_RANGE_CHANGE_PERCENT: number;
 
   PHOTOID_ACTIVATION_DELAY: number;
+  STELLAR_ACTIVATION_DELAY: number;
   LOCATION_REVEAL_COOLDOWN: number;
 
   defaultPopulationCap: number[];

@@ -855,6 +855,7 @@ class GameManager extends EventEmitter {
             }
           }
         } else if (isUnconfirmedDeactivateArtifactTx(tx)) {
+          // console.log(tx);
           if (tx.intent.linkTo) {
             await Promise.all([
               gameManager.bulkHardRefreshPlanets([tx.intent.locationId, tx.intent.linkTo]),
@@ -1028,14 +1029,9 @@ class GameManager extends EventEmitter {
   }
 
   public async hardRefreshArtifact(artifactId: ArtifactId): Promise<void> {
-    const oldArtifact = this.getArtifactWithId(artifactId);
-    if (!oldArtifact) return;
-    if (oldArtifact.artifactType === ArtifactType.IceLink)
-      await this.hardRefreshPlanet(oldArtifact.linkTo);
-
     const artifact = await this.contractsAPI.getArtifactById(artifactId);
     if (!artifact) return;
-    if (oldArtifact.artifactType === ArtifactType.IceLink)
+    if (artifact.artifactType === ArtifactType.IceLink)
       await this.hardRefreshPlanet(artifact.linkTo);
     this.entityStore.replaceArtifactFromContractData(artifact);
   }

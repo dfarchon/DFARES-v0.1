@@ -211,7 +211,7 @@ enum ArtifactType {
     FireLink,
     SoulSwap,
     Bomb,
-    Doom,
+    StellarShield,
     BlindBox,
     Avatar,
     ShipMothership,

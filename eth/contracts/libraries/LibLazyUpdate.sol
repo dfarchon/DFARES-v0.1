@@ -3,16 +3,21 @@ pragma solidity ^0.8.0;
 
 // Library imports
 import {ABDKMath64x64} from "../vendor/libraries/ABDKMath64x64.sol";
+import {LibGameUtils} from "./LibGameUtils.sol";
 
 // Storage imports
-import {LibStorage, GameStorage} from "./LibStorage.sol";
+import {LibStorage, GameStorage, GameConstants, SnarkConstants} from "./LibStorage.sol";
 
 // Type imports
-import {Planet, PlanetType, PlanetEventMetadata, PlanetEventType, ArrivalData, ArrivalType, Artifact} from "../DFTypes.sol";
+import {Planet, PlanetType, PlanetEventMetadata, PlanetEventType, ArrivalData, ArrivalType, Artifact, ArtifactType} from "../DFTypes.sol";
 
 library LibLazyUpdate {
     function gs() internal pure returns (GameStorage storage) {
         return LibStorage.gameStorage();
+    }
+
+    function gameConstants() internal pure returns (GameConstants storage) {
+        return LibStorage.gameConstants();
     }
 
     function _updateSilver(uint256 updateToTime, Planet memory planet) private view {
@@ -117,17 +122,35 @@ library LibLazyUpdate {
     // assumes that the planet last updated time is equal to the arrival time trigger
     function applyArrival(Planet memory planet, ArrivalData memory arrival)
         private
-        pure
-        returns (uint256 newArtifactOnPlanet, Planet memory)
+        view
+        returns (
+            uint256 newArtifactOnPlanet,
+            Planet memory,
+            bool
+        )
     {
+        bool shoudDeactiveArtifact = false;
         // checks whether the planet is owned by the player sending ships
         if (arrival.player == planet.owner) {
             // simply increase the population if so
             planet.population = planet.population + arrival.popArriving;
         } else {
+            Artifact memory activeArtifactFrom = LibGameUtils.getActiveArtifact(planet.locationId);
             if (arrival.arrivalType == ArrivalType.Wormhole) {
                 // if this is a wormhole arrival to a planet that isn't owned by the initiator of
                 // the move, then don't move any energy
+            } else if (
+                arrival.arrivalType == ArrivalType.Photoid &&
+                activeArtifactFrom.artifactType == ArtifactType.StellarShield &&
+                arrival.arrivalTime >=
+                activeArtifactFrom.lastActivated + gameConstants().STELLAR_ACTIVATION_DELAY
+            ) {
+                // check if have activated stellarshield
+                // if so, don't move any energy and deactivate the stellar shield
+                // stellar shield successfully blocks one attack from photoid
+                // need deactivate outside here and many level view functions
+                // LibArtifactUtils.deactivateArtifactWithoutCheckOwner(planet.locationId);
+                shoudDeactiveArtifact = true;
             } else if (planet.population > (arrival.popArriving * 100) / planet.defense) {
                 // handles if the planet population is bigger than the arriving ships
                 // simply reduce the amount of planet population by the arriving ships
@@ -167,14 +190,22 @@ library LibLazyUpdate {
         uint256 _nextSilver = planet.silver + arrival.silverMoved;
         planet.silver = _maxSilver < _nextSilver ? _maxSilver : _nextSilver;
 
-        return (arrival.carriedArtifactId, planet);
+        return (arrival.carriedArtifactId, planet, shoudDeactiveArtifact);
     }
 
     function applyPendingEvents(
         uint256 currentTimestamp,
         Planet memory planet,
         PlanetEventMetadata[] memory events
-    ) public view returns (Planet memory, uint256[24] memory) {
+    )
+        public
+        view
+        returns (
+            Planet memory,
+            uint256[24] memory,
+            bool
+        )
+    {
         // first 12 are event ids to remove
         // last 12 are artifact ids that are new on the planet
         uint256[24] memory eventIdsAndArtifacts;
@@ -183,6 +214,7 @@ library LibLazyUpdate {
         uint256 numNewArtifactsOnPlanet = 0;
         uint256 earliestEventTime = 0;
         uint256 earliestEventIndex = 0;
+        bool shoudDeactiveArtifact = false;
 
         do {
             if (events.length == 0 || planet.destroyed || planet.frozen) {
@@ -229,7 +261,7 @@ library LibLazyUpdate {
                     eventIdsAndArtifacts[numEventsToRemove++] = events[earliestEventIndex].id;
 
                     uint256 newArtifactId;
-                    (newArtifactId, planet) = applyArrival(
+                    (newArtifactId, planet, shoudDeactiveArtifact) = applyArrival(
                         planet,
                         gs().planetArrivals[events[earliestEventIndex].id]
                     );
@@ -241,6 +273,82 @@ library LibLazyUpdate {
             }
         } while (earliestEventTime <= currentTimestamp);
 
-        return (planet, eventIdsAndArtifacts);
+        return (planet, eventIdsAndArtifacts, shoudDeactiveArtifact);
     }
+
+    // function shoudDeactiveArtifact(
+    //     uint256 currentTimestamp,
+    //     Planet memory planet,
+    //     PlanetEventMetadata[] memory events
+    // ) public view returns (bool) {
+    //     // first 12 are event ids to remove
+    //     // last 12 are artifact ids that are new on the planet
+    //     uint256[24] memory eventIdsAndArtifacts;
+
+    //     uint256 numEventsToRemove = 0;
+    //     uint256 numNewArtifactsOnPlanet = 0;
+    //     uint256 earliestEventTime = 0;
+    //     uint256 earliestEventIndex = 0;
+
+    //     do {
+    //         if (events.length == 0 || planet.destroyed || planet.frozen) {
+    //             break;
+    //         }
+
+    //         // set to to the upperbound of uint256
+    //         earliestEventTime = 115792089237316195423570985008687907853269984665640564039457584007913129639935;
+
+    //         // loops through the array and find the earliest event time that hasn't already been applied
+    //         for (uint256 i = 0; i < events.length; i++) {
+    //             if (events[i].timeTrigger < earliestEventTime) {
+    //                 bool shouldApply = true;
+
+    //                 // checks if this event has already been applied.
+    //                 for (
+    //                     uint256 alreadyRemovedIdx = 0;
+    //                     alreadyRemovedIdx < numEventsToRemove;
+    //                     alreadyRemovedIdx++
+    //                 ) {
+    //                     if (eventIdsAndArtifacts[alreadyRemovedIdx] == events[i].id) {
+    //                         shouldApply = false;
+    //                         break;
+    //                     }
+    //                 }
+
+    //                 if (shouldApply) {
+    //                     earliestEventTime = events[i].timeTrigger;
+    //                     earliestEventIndex = i;
+    //                 }
+    //             }
+    //         }
+
+    //         // only process the event if it occurs before the current time and the timeTrigger is not 0
+    //         // which comes from uninitialized PlanetEventMetadata
+    //         if (
+    //             events[earliestEventIndex].timeTrigger <= currentTimestamp &&
+    //             earliestEventTime !=
+    //             115792089237316195423570985008687907853269984665640564039457584007913129639935
+    //         ) {
+    //             planet = updatePlanet(events[earliestEventIndex].timeTrigger, planet);
+
+    //             if (events[earliestEventIndex].eventType == PlanetEventType.ARRIVAL) {
+    //                 eventIdsAndArtifacts[numEventsToRemove++] = events[earliestEventIndex].id;
+
+    //                 Artifact memory activeArtifactFrom = LibGameUtils.getActiveArtifact(
+    //                     planet.locationId
+    //                 );
+    //                 if (
+    //                     gs().planetArrivals[events[earliestEventIndex].id].arrivalType ==
+    //                     ArrivalType.Photoid &&
+    //                     activeArtifactFrom.artifactType == ArtifactType.StellarShield &&
+    //                     gs().planetArrivals[events[earliestEventIndex].id].arrivalTime >=
+    //                     activeArtifactFrom.lastActivated + gameConstants().STELLAR_ACTIVATION_DELAY
+    //                 ) {
+    //                     return true;
+    //                 }
+    //             }
+    //         }
+    //     } while (earliestEventTime <= currentTimestamp);
+    //     return false;
+    // }
 }

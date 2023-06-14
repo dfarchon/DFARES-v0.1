@@ -398,7 +398,11 @@ export async function deployLibraries({}, hre: HardhatRuntimeEnvironment) {
   const LibGameUtils = await LibGameUtilsFactory.deploy();
   await LibGameUtils.deployTransaction.wait();
 
-  const LibLazyUpdateFactory = await hre.ethers.getContractFactory('LibLazyUpdate');
+  const LibLazyUpdateFactory = await hre.ethers.getContractFactory('LibLazyUpdate', {
+    libraries: {
+      LibGameUtils: LibGameUtils.address,
+    },
+  });
   const LibLazyUpdate = await LibLazyUpdateFactory.deploy();
   await LibLazyUpdate.deployTransaction.wait();
 

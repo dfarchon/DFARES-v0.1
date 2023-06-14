@@ -79,6 +79,10 @@ export type LobbyConfigAction =
       type: 'PHOTOID_ACTIVATION_DELAY';
       value: Initializers['PHOTOID_ACTIVATION_DELAY'] | undefined;
     }
+  | {
+      type: 'STELLAR_ACTIVATION_DELAY';
+      value: Initializers['STELLAR_ACTIVATION_DELAY'] | undefined;
+    }
   | { type: 'SPAWN_RIM_AREA'; value: Initializers['SPAWN_RIM_AREA'] | undefined }
   | {
       type: 'LOCATION_REVEAL_COOLDOWN';
@@ -251,6 +255,10 @@ export function lobbyConfigReducer(state: LobbyConfigState, action: LobbyAction)
       break;
     }
     case 'PHOTOID_ACTIVATION_DELAY': {
+      update = ofPositiveInteger(action, state);
+      break;
+    }
+    case 'STELLAR_ACTIVATION_DELAY': {
       update = ofPositiveInteger(action, state);
       break;
     }
@@ -636,6 +644,17 @@ export function lobbyConfigInit(startingConfig: LobbyInitializers) {
         };
         break;
       }
+      case 'STELLAR_ACTIVATION_DELAY': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+
       case 'SPAWN_RIM_AREA': {
         const defaultValue = startingConfig[key];
         state[key] = {
@@ -1188,11 +1207,11 @@ export function ofMaxArtifactPerPlanet(
     };
   }
 
-  if (value > 9) {
+  if (value > 10) {
     return {
       ...state[type],
       displayValue: value,
-      warning: `Planets can't naturally be larger than Level 9`,
+      warning: `Planets can't have more than 10 artifacts`,
     };
   }
 
@@ -1239,14 +1258,6 @@ export function ofMaxSendingPlanet(
     };
   }
 
-  if (value > 9) {
-    return {
-      ...state[type],
-      displayValue: value,
-      warning: `Planets can't naturally be larger than Level 9`,
-    };
-  }
-
   if (Math.floor(value) !== value) {
     return {
       ...state[type],
@@ -1287,14 +1298,6 @@ export function ofMaxReceivingPlanet(
       ...state[type],
       displayValue: value,
       warning: `Value must be a positive integer`,
-    };
-  }
-
-  if (value > 9) {
-    return {
-      ...state[type],
-      displayValue: value,
-      warning: `Planets can't naturally be larger than Level 9`,
     };
   }
 

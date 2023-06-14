@@ -214,6 +214,17 @@ export function ArtifactDetailsBody({
     );
   }
 
+  if (artifact.artifactType === ArtifactType.StellarShield && isActivated(artifact)) {
+    readyInStr = (
+      <TimeUntil
+        timestamp={
+          artifact.lastActivated * 1000 + contractConstants.STELLAR_ACTIVATION_DELAY * 1000
+        }
+        ifPassed={'now!'}
+      />
+    );
+  }
+
   return (
     <>
       <div style={{ display: 'inline-block' }}>

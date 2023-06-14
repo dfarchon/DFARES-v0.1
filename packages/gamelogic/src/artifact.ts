@@ -25,7 +25,7 @@ export const RelicsList: ArtifactType[] = [
   ArtifactType.BlackDomain,
   ArtifactType.SoulSwap,
   ArtifactType.Bomb,
-  ArtifactType.Doom,
+  ArtifactType.StellarShield,
   ArtifactType.BlindBox,
   ArtifactType.Avatar,
 ];
@@ -65,7 +65,7 @@ const artifactCooldownHoursMap = {
   [ArtifactType.BlackDomain]: 24,
   [ArtifactType.SoulSwap]: 0,
   [ArtifactType.Bomb]: 0,
-  [ArtifactType.Doom]: 0,
+  [ArtifactType.StellarShield]: 0,
   [ArtifactType.BlindBox]: 0,
   [ArtifactType.Avatar]: 0,
 } as const;

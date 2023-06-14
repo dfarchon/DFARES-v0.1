@@ -115,6 +115,7 @@ export function CreateLobby({ match }: RouteComponentProps<{ contract: string }>
             // TODO: Implement... Needs a datetime input component (WIP)
             TOKEN_MINT_END_TIMESTAMP: 1948939200, // new Date("2031-10-05T04:00:00.000Z").getTime() / 1000,
             PHOTOID_ACTIVATION_DELAY: config.PHOTOID_ACTIVATION_DELAY,
+            STELLAR_ACTIVATION_DELAY: config.STELLAR_ACTIVATION_DELAY,
             SILVER_SCORE_VALUE: config.SILVER_SCORE_VALUE,
             ARTIFACT_POINT_VALUES: [
               config.ARTIFACT_POINT_VALUES[ArtifactRarity.Unknown],
