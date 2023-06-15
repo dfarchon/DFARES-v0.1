@@ -201,7 +201,7 @@ export class ContractsAPI extends EventEmitter {
         [
           contract.filters.ArrivalQueued(null, null, null, null, null).topics,
           contract.filters.ArtifactActivated(null, null, null, null).topics,
-          contract.filters.ArtifactDeactivated(null, null, null).topics,
+          contract.filters.ArtifactDeactivated(null, null, null, null).topics,
           contract.filters.ArtifactDeposited(null, null, null).topics,
           contract.filters.ArtifactFound(null, null, null).topics,
           contract.filters.ArtifactWithdrawn(null, null, null).topics,
@@ -276,11 +276,13 @@ export class ContractsAPI extends EventEmitter {
       [ContractEvent.ArtifactDeactivated]: (
         _playerAddr: string,
         rawArtifactId: EthersBN,
-        loc: EthersBN
+        loc: EthersBN,
+        linkTo: EthersBN
       ) => {
         const artifactId = artifactIdFromEthersBN(rawArtifactId);
         this.emit(ContractsAPIEvent.ArtifactUpdate, artifactId);
         this.emit(ContractsAPIEvent.PlanetUpdate, locationIdFromEthersBN(loc));
+        this.emit(ContractsAPIEvent.PlanetUpdate, locationIdFromEthersBN(linkTo));
       },
       [ContractEvent.PlayerInitialized]: async (player: string, locRaw: EthersBN, _: Event) => {
         this.emit(ContractsAPIEvent.PlayerUpdate, address(player));

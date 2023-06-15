@@ -27,7 +27,7 @@ contract DFArtifactFacet is WithStorage, ERC721 {
     event ArtifactDeposited(address player, uint256 artifactId, uint256 loc);
     event ArtifactWithdrawn(address player, uint256 artifactId, uint256 loc);
     event ArtifactActivated(address player, uint256 artifactId, uint256 loc,uint256 linkTo); // also emitted in LibPlanet
-    event ArtifactDeactivated(address player, uint256 artifactId, uint256 loc); // also emitted in LibPlanet
+    event ArtifactDeactivated(address player, uint256 artifactId, uint256 loc,uint256 linkTo); // also emitted in LibPlanet
 
     modifier onlyWhitelisted() {
         require(
