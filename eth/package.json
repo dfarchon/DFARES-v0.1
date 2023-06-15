@@ -86,6 +86,7 @@
     "wait:node": "wait-on tcp:8545",
     "deploy:contracts": "hardhat --network localhost deploy",
     "hardhat:deploy": "run-s wait:node \"deploy:contracts {@}\" --",
-    "start": "run-p hardhat:node \"hardhat:deploy {@}\" --"
+    "start": "run-p hardhat:node \"hardhat:deploy {@}\" --",
+    "ganache": "npx ganache --chain.chainId 1337 --database.dbPath './blockchain/' -m 'change typical hire slam amateur loan grid fix drama electric seed label'  --wallet.defaultBalance 200000  --wallet.totalAccounts 20 "
   }
 }
