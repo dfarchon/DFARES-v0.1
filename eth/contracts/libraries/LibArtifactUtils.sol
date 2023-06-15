@@ -23,7 +23,7 @@ library LibArtifactUtils {
     }
 
     // also need to copy some of DFCore's event signatures
-    event ArtifactActivated(address player, uint256 artifactId, uint256 loc);
+    event ArtifactActivated(address player, uint256 artifactId, uint256 loc,uint256 linkTo);
     event ArtifactDeactivated(address player, uint256 artifactId, uint256 loc);
     event PlanetUpgraded(address player, uint256 loc, uint256 branch, uint256 toBranchLevel);
 
@@ -186,7 +186,7 @@ library LibArtifactUtils {
             }
 
             planet.planetType = PlanetType.SILVER_MINE;
-            emit ArtifactActivated(msg.sender, artifactId, locationId);
+            emit ArtifactActivated(msg.sender, artifactId, locationId,0);
         }
     }
 
@@ -247,7 +247,7 @@ library LibArtifactUtils {
         bool shouldDeactivateAndBurn = false;
 
         artifact.lastActivated = block.timestamp;
-        emit ArtifactActivated(msg.sender, artifactId, locationId);
+        emit ArtifactActivated(msg.sender, artifactId, locationId,linkTo);
 
         if (artifact.artifactType == ArtifactType.Wormhole) {
             require(linkTo != 0, "you must provide a linkTo to activate a wormhole");

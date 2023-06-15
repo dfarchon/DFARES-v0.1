@@ -200,7 +200,7 @@ export class ContractsAPI extends EventEmitter {
       topics: [
         [
           contract.filters.ArrivalQueued(null, null, null, null, null).topics,
-          contract.filters.ArtifactActivated(null, null, null).topics,
+          contract.filters.ArtifactActivated(null, null, null, null).topics,
           contract.filters.ArtifactDeactivated(null, null, null).topics,
           contract.filters.ArtifactDeposited(null, null, null).topics,
           contract.filters.ArtifactFound(null, null, null).topics,
@@ -265,11 +265,13 @@ export class ContractsAPI extends EventEmitter {
       [ContractEvent.ArtifactActivated]: (
         _playerAddr: string,
         rawArtifactId: EthersBN,
-        loc: EthersBN
+        loc: EthersBN,
+        linkTo: EthersBN
       ) => {
         const artifactId = artifactIdFromEthersBN(rawArtifactId);
         this.emit(ContractsAPIEvent.ArtifactUpdate, artifactId);
         this.emit(ContractsAPIEvent.PlanetUpdate, locationIdFromEthersBN(loc));
+        this.emit(ContractsAPIEvent.PlanetUpdate, locationIdFromEthersBN(linkTo));
       },
       [ContractEvent.ArtifactDeactivated]: (
         _playerAddr: string,
