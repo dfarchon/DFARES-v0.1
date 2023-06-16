@@ -71,7 +71,7 @@
     "test": "hardhat test && yarn subgraph:template:dev",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "hardhat:node": "hardhat node --hostname localhost",
+    "hardhat:node": "hardhat node --hostname 0.0.0.0",
     "hardhat:dev": "hardhat --network localhost",
     "hardhat:prod": "hardhat --network xdai",
     "hardhat:mainnet": "hardhat --network mainnet",
@@ -87,6 +87,6 @@
     "deploy:contracts": "hardhat --network localhost deploy",
     "hardhat:deploy": "run-s wait:node \"deploy:contracts {@}\" --",
     "start": "run-p hardhat:node \"hardhat:deploy {@}\" --",
-    "ganache": "npx ganache --chain.chainId 1337 --database.dbPath './blockchain/' -m 'change typical hire slam amateur loan grid fix drama electric seed label'  --wallet.defaultBalance 200000  --wallet.totalAccounts 20 "
+    "ganache": "npx ganache --chain.chainId 31337 --database.dbPath './blockchain/' -m 'change typical hire slam amateur loan grid fix drama electric seed label'  --wallet.defaultBalance 200000  --wallet.totalAccounts 20 "
   }
 }
