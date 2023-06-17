@@ -29,6 +29,7 @@ export const Setting = {
   HighPerformanceRendering: 'HighPerformanceRendering' as Setting,
   MoveNotifications: 'MoveNotifications' as Setting,
   GasFeeGwei: 'GasFeeGwei' as Setting,
+  GasFeeLimit: 'GasFeeLimit' as Setting,
   TerminalVisible: 'TerminalVisible' as Setting,
   HasAcceptedPluginRisk: 'HasAcceptedPluginRisk' as Setting,
 

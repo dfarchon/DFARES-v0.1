@@ -41,7 +41,7 @@ ARTIFACT_POINT_VALUES = [
   0
 ]
 PHOTOID_ACTIVATION_DELAY = 30 # seconds
-
+STELLAR_ACTIVATION_DELAY = 15 # seconds
 ##############
 # Space junk #
 ##############

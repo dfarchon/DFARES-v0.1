@@ -128,15 +128,13 @@ const biomeSpriteInfo = (): BiomeSpriteLocations => {
       }
     }
 
-    if (type >= ArtifactType.IceLink && type < ArtifactType.ShipMothership) {
+    if (type >= ArtifactType.SoulSwap && type < ArtifactType.ShipMothership) {
       //new added artifact use wormhole icon temporarily
       result[type] = result[ArtifactType.Wormhole];
     } else {
       result[type] = biomeInfo as BiomeToSprite;
     }
   }
-
-  console.log(result);
 
   return result as BiomeSpriteLocations;
 };

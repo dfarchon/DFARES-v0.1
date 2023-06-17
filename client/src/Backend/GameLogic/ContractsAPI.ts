@@ -425,6 +425,7 @@ export class ContractsAPI extends EventEmitter {
       PLANET_RARITY,
       PLANET_TRANSFER_ENABLED,
       PHOTOID_ACTIVATION_DELAY,
+      STELLAR_ACTIVATION_DELAY,
       LOCATION_REVEAL_COOLDOWN,
       SPACE_JUNK_ENABLED,
       SPACE_JUNK_LIMIT,
@@ -525,6 +526,7 @@ export class ContractsAPI extends EventEmitter {
       ABANDON_RANGE_CHANGE_PERCENT: ABANDON_SPEED_CHANGE_PERCENT.toNumber(),
 
       PHOTOID_ACTIVATION_DELAY: PHOTOID_ACTIVATION_DELAY.toNumber(),
+      STELLAR_ACTIVATION_DELAY: STELLAR_ACTIVATION_DELAY.toNumber(),
       SPAWN_RIM_AREA: SPAWN_RIM_AREA.toNumber(),
       LOCATION_REVEAL_COOLDOWN: LOCATION_REVEAL_COOLDOWN.toNumber(),
 
@@ -628,7 +630,7 @@ export class ContractsAPI extends EventEmitter {
       ],
     };
 
-    console.log(constants);
+    // console.log(constants);
     return constants;
   }
 
@@ -878,7 +880,14 @@ export class ContractsAPI extends EventEmitter {
     txIntent: T,
     overrides?: providers.TransactionRequest
   ): Promise<Transaction<T>> {
-    const queuedTx = await this.txExecutor.queueTransaction(txIntent, overrides);
+    const config = {
+      contractAddress: this.contractAddress,
+      account: this.ethConnection.getAddress(),
+    };
+    const queuedTx = await this.txExecutor.queueTransaction(txIntent, {
+      ...overrides,
+      gasLimit: getSetting(config, Setting.GasFeeLimit),
+    });
 
     this.emit(ContractsAPIEvent.TxQueued, queuedTx);
     // TODO: Why is this setTimeout here? Can it be removed?

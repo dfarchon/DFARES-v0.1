@@ -136,7 +136,7 @@ library LibArtifactUtils {
         Planet storage planet = gs().planets[locationId];
         Artifact storage artifact = gs().artifacts[artifactId];
 
-        require(locationId!=linkTo,"locationId neq linkTo");
+        require(locationId != linkTo, "locationId neq linkTo");
 
         require(
             LibGameUtils.isArtifactOnPlanet(locationId, artifactId),
@@ -274,7 +274,7 @@ library LibArtifactUtils {
             // );
             // planet.destroyed = true;
             // shouldDeactivateAndBurn = true;
-            require(linkTo!=0,"you must provide a linkTo to activate a BlockDomain");
+            require(linkTo != 0, "you must provide a linkTo to activate a BlockDomain");
             Planet storage toPlanet = gs().planets[linkTo];
 
             require(
@@ -293,7 +293,7 @@ library LibArtifactUtils {
                 "artifact is not powerful enough to apply effect to this planet level"
             );
 
-             Artifact memory artifactOnToPlanet = LibGameUtils.getActiveArtifact(linkTo);
+            Artifact memory artifactOnToPlanet = LibGameUtils.getActiveArtifact(linkTo);
             if (artifactOnToPlanet.artifactType == ArtifactType.PlanetaryShield) {
                 require(
                     artifact.rarity > artifactOnToPlanet.rarity,
@@ -302,7 +302,6 @@ library LibArtifactUtils {
             }
             toPlanet.destroyed = true;
             shouldDeactivateAndBurn = true;
-
         } else if (artifact.artifactType == ArtifactType.IceLink) {
             require(linkTo != 0, "you must provide a linkTo to activate a IceLink");
             Planet storage toPlanet = gs().planets[linkTo];
@@ -394,11 +393,11 @@ library LibArtifactUtils {
             // planet.owner = gs().planets[linkTo].owner;
             // gs().planets[linkTo].owner = msg.sender;
             shouldDeactivateAndBurn = true;
-        } else if (artifact.artifactType == ArtifactType.Doom) {
-            // require(linkTo != 0, "you must provide a linkTo to activate a Doom");
-            // require(!gs().planets[linkTo].destroyed, "planet destroyed");
-            // planet.owner = gs().planets[linkTo].owner;
-            // gs().planets[linkTo].owner = msg.sender;
+            // } else if (artifact.artifactType == ArtifactType.Doom) {
+            //     // require(linkTo != 0, "you must provide a linkTo to activate a Doom");
+            //     // require(!gs().planets[linkTo].destroyed, "planet destroyed");
+            //     // planet.owner = gs().planets[linkTo].owner;
+            //     // gs().planets[linkTo].owner = msg.sender;
         } else if (artifact.artifactType == ArtifactType.BlindBox) {
             // planet.owner = gs().planets[linkTo].owner;
             // gs().planets[linkTo].owner = msg.sender;
@@ -452,7 +451,8 @@ library LibArtifactUtils {
 
         bool shouldBurn = artifact.artifactType == ArtifactType.PlanetaryShield ||
             artifact.artifactType == ArtifactType.PhotoidCannon ||
-            artifact.artifactType == ArtifactType.IceLink;
+            artifact.artifactType == ArtifactType.IceLink ||
+            artifact.artifactType == ArtifactType.StellarShield;
 
         if (shouldBurn) {
             // burn it after use. will be owned by contract but not on a planet anyone can control
@@ -462,7 +462,7 @@ library LibArtifactUtils {
         LibGameUtils._debuffPlanet(locationId, LibGameUtils._getUpgradeForArtifact(artifact));
     }
 
-    function deactivateArtifactWithoutCheckOwner(uint256 locationId) private {
+    function deactivateArtifactWithoutCheckOwner(uint256 locationId) internal {
         Planet storage planet = gs().planets[locationId];
 
         require(!planet.destroyed, "planet is destroyed");
@@ -485,7 +485,8 @@ library LibArtifactUtils {
 
         bool shouldBurn = artifact.artifactType == ArtifactType.PlanetaryShield ||
             artifact.artifactType == ArtifactType.PhotoidCannon ||
-            artifact.artifactType == ArtifactType.IceLink;
+            artifact.artifactType == ArtifactType.IceLink ||
+            artifact.artifactType == ArtifactType.StellarShield;
 
         if (shouldBurn) {
             // burn it after use. will be owned by contract but not on a planet anyone can control
@@ -565,11 +566,11 @@ library LibArtifactUtils {
 
         if (gameConstants().SPACESHIPS.GEAR) {
             require(containsGear(locationId), "gear ship must be present on planet");
-        }else {
+        } else {
             require(
-            planet.population*100 >= planet.populationCap * 78,
-            // We lie here, but it is a better UX
-            "planet must have 80% energy before capturing"
+                planet.population * 100 >= planet.populationCap * 78,
+                // We lie here, but it is a better UX
+                "planet must have 80% energy before capturing"
             );
         }
 

@@ -75,6 +75,7 @@ struct GameConstants {
     uint256 PLANET_RARITY;
     bool PLANET_TRANSFER_ENABLED;
     uint256 PHOTOID_ACTIVATION_DELAY;
+    uint256 STELLAR_ACTIVATION_DELAY;
     uint256 LOCATION_REVEAL_COOLDOWN;
     uint8[5][10][4] PLANET_TYPE_WEIGHTS; // spaceType (enum 0-3) -> planetLevel (0-9) -> planetType (enum 0-4)
     uint256 SILVER_SCORE_VALUE;

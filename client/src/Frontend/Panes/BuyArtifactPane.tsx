@@ -140,7 +140,7 @@ export function BuyArtifactPane({
               ArtifactType.FireLink.toString(),
               ArtifactType.SoulSwap.toString(),
               ArtifactType.Bomb.toString(),
-              ArtifactType.Doom.toString(),
+              ArtifactType.StellarShield.toString(),
               ArtifactType.BlindBox.toString(),
               ArtifactType.Avatar.toString(),
             ]}
@@ -158,7 +158,7 @@ export function BuyArtifactPane({
               'FireLink',
               'SoulSwap',
               'Bomb',
-              'Doom',
+              'StellarShield',
               'BlindBox',
               'Avatar',
             ]}

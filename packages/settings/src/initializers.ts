@@ -52,6 +52,7 @@ export const decodeInitializers = decoders.guard(
     PLANET_RARITY: decoders.number,
     PLANET_TRANSFER_ENABLED: decoders.boolean,
     PHOTOID_ACTIVATION_DELAY: decoders.number,
+    STELLAR_ACTIVATION_DELAY: decoders.number,
     SPAWN_RIM_AREA: decoders.number,
     LOCATION_REVEAL_COOLDOWN: decoders.number,
     PLANET_TYPE_WEIGHTS: exactArray4(exactArray10(exactArray5(between(decoders.number, 0, 255)))),

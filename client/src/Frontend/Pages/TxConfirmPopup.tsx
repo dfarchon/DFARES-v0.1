@@ -152,6 +152,7 @@ export function TxConfirmPopup({
   };
 
   const gasFee = EthersBN.from(localStorage.getItem(`${account}-gasFeeGwei`) || '');
+  const gasLimit = EthersBN.from(localStorage.getItem(`${account}-gasFeeLimit`) || '');
 
   const fromPlanet = localStorage.getItem(`${account}-fromPlanet`);
   const toPlanet = localStorage.getItem(`${account}-toPlanet`);
@@ -342,7 +343,7 @@ export function TxConfirmPopup({
         {method !== 'buyHat' && method !== 'buyArtifact' && (
           <Row>
             <b>Gas Limit</b>
-            <span>2000000</span>
+            <span>{gasLimit}</span>
           </Row>
         )}
 

@@ -162,7 +162,9 @@ export const arrive = (
   }
 
   // apply energy
-  const { energyArriving } = arrival;
+  const { energyArriving, arrivalTime } = arrival;
+
+  const activeArtifact = artifactsOnPlanet.find((a) => a.lastActivated > a.lastDeactivated);
 
   if (arrival.player !== toPlanet.owner) {
     if (arrival.arrivalType === ArrivalType.Wormhole) {
@@ -171,6 +173,21 @@ export const arrive = (
     }
     // attacking enemy - includes emptyAddress
     else if (
+      arrival.arrivalType === ArrivalType.Photoid &&
+      activeArtifact?.artifactType === ArtifactType.StellarShield &&
+      arrivalTime >= activeArtifact.lastActivated + contractConstants.STELLAR_ACTIVATION_DELAY
+    ) {
+      //stellar shield successfully blocks an attack
+      //then deactivated the shield
+      // console.log(
+      //   toPlanet,
+      //   artifactsOnPlanet,
+      //   arrival,
+      //   arrivingArtifact,
+      //   contractConstants,
+      //   contractConstants
+      // );
+    } else if (
       toPlanet.energy >
       Math.floor((energyArriving * CONTRACT_PRECISION * 100) / toPlanet.defense) /
         CONTRACT_PRECISION

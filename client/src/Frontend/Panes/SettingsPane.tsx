@@ -240,6 +240,12 @@ export function SettingsPane({
             ]}
           />
         </Section>
+        <Section>
+          <SectionHeader>Gas Limit</SectionHeader>
+          Some ops may fail, try increasing the gas limit.
+          <Spacer height={16} />
+          <NumberSetting uiManager={uiManager} setting={Setting.GasFeeLimit} />
+        </Section>
 
         <Section>
           <SectionHeader>Burner Wallet Info (Private)</SectionHeader>

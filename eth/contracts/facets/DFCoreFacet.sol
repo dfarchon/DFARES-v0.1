@@ -66,7 +66,8 @@ contract DFCoreFacet is WithStorage {
         returns (
             Planet memory,
             uint256[12] memory eventsToRemove,
-            uint256[12] memory artifactsToAdd
+            uint256[12] memory artifactsToAdd,
+            bool shouldDeactiveArtifact
         )
     {
         return LibPlanet.getRefreshedPlanet(location, timestamp);

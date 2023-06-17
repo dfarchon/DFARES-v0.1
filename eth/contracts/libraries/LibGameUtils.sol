@@ -197,7 +197,7 @@ library LibGameUtils {
         } else if (lastByteOfSeed < 3072) {
             artifactType = ArtifactType.Bomb;
         } else if (lastByteOfSeed < 3328) {
-            artifactType = ArtifactType.Doom;
+            artifactType = ArtifactType.StellarShield;
         } else if (lastByteOfSeed < 3584) {
             artifactType = ArtifactType.BlindBox;
         } else if (lastByteOfSeed < 4096) {

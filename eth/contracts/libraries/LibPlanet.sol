@@ -7,7 +7,7 @@ import {DFVerifierFacet} from "../facets/DFVerifierFacet.sol";
 // Library imports
 import {LibGameUtils} from "./LibGameUtils.sol";
 import {LibLazyUpdate} from "./LibLazyUpdate.sol";
-
+import {LibArtifactUtils} from "./LibArtifactUtils.sol";
 // Storage imports
 import {LibStorage, GameStorage, GameConstants, SnarkConstants} from "./LibStorage.sol";
 
@@ -267,7 +267,8 @@ library LibPlanet {
         returns (
             Planet memory,
             uint256[12] memory eventsToRemove,
-            uint256[12] memory artifactsToAdd
+            uint256[12] memory artifactsToAdd,
+            bool shoudDeactiveArtifact
         )
     {
         Planet memory planet = gs().planets[location];
@@ -278,7 +279,11 @@ library LibPlanet {
 
         PlanetEventMetadata[] memory events = gs().planetEvents[location];
 
-        (planet, updates) = LibLazyUpdate.applyPendingEvents(timestamp, planet, events);
+        (planet, updates, shoudDeactiveArtifact) = LibLazyUpdate.applyPendingEvents(
+            timestamp,
+            planet,
+            events
+        );
 
         for (uint256 i = 0; i < 12; i++) {
             eventsToRemove[i] = updates[i];
@@ -293,7 +298,7 @@ library LibPlanet {
 
         planet = LibLazyUpdate.updatePlanet(timestamp, planet);
 
-        return (planet, eventsToRemove, artifactsToAdd);
+        return (planet, eventsToRemove, artifactsToAdd, shoudDeactiveArtifact);
     }
 
     function applySpaceshipArrive(Artifact memory artifact, Planet memory planet)
@@ -328,8 +333,13 @@ library LibPlanet {
         (
             Planet memory planet,
             uint256[12] memory eventsToRemove,
-            uint256[12] memory artifactIdsToAddToPlanet
+            uint256[12] memory artifactIdsToAddToPlanet,
+            bool shouldDeactiveArtifact
         ) = getRefreshedPlanet(location, block.timestamp);
+
+        if (shouldDeactiveArtifact) {
+            LibArtifactUtils.deactivateArtifactWithoutCheckOwner(planet.locationId);
+        }
 
         gs().planets[location] = planet;
 

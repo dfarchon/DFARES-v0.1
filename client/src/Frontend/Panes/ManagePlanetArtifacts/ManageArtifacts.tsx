@@ -74,7 +74,7 @@ export function ManageArtifactsPane({
 
       <Spacer height={4} />
 
-      {!isMyTradingPost && (
+      {isMyTradingPost && (
         <SelectArtifactsContainer>
           <SelectArtifactList
             selected={!viewingDepositList}

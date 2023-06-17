@@ -74,6 +74,7 @@ struct InitArgs {
     uint256 SILVER_SCORE_VALUE;
     uint256[6] ARTIFACT_POINT_VALUES;
     uint256 PHOTOID_ACTIVATION_DELAY;
+    uint256 STELLAR_ACTIVATION_DELAY;
     // Space Junk
     bool SPACE_JUNK_ENABLED;
     /**
@@ -171,6 +172,7 @@ contract DFInitialize is WithStorage {
         gameConstants().PLANET_LEVEL_THRESHOLDS = initArgs.PLANET_LEVEL_THRESHOLDS;
         gameConstants().PLANET_TRANSFER_ENABLED = initArgs.PLANET_TRANSFER_ENABLED;
         gameConstants().PHOTOID_ACTIVATION_DELAY = initArgs.PHOTOID_ACTIVATION_DELAY;
+        gameConstants().STELLAR_ACTIVATION_DELAY = initArgs.STELLAR_ACTIVATION_DELAY;
         gameConstants().LOCATION_REVEAL_COOLDOWN = initArgs.LOCATION_REVEAL_COOLDOWN;
         gameConstants().PLANET_TYPE_WEIGHTS = initArgs.PLANET_TYPE_WEIGHTS;
         gameConstants().SILVER_SCORE_VALUE = initArgs.SILVER_SCORE_VALUE;
