@@ -1031,8 +1031,6 @@ class GameManager extends EventEmitter {
   public async hardRefreshArtifact(artifactId: ArtifactId): Promise<void> {
     const artifact = await this.contractsAPI.getArtifactById(artifactId);
     if (!artifact) return;
-    if (artifact.artifactType === ArtifactType.IceLink)
-      await this.hardRefreshPlanet(artifact.linkTo);
     this.entityStore.replaceArtifactFromContractData(artifact);
   }
 
