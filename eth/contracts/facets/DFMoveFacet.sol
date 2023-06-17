@@ -14,7 +14,7 @@ import {LibPlanet} from "../libraries/LibPlanet.sol";
 import {WithStorage} from "../libraries/LibStorage.sol";
 
 // Type imports
-import {ArrivalData, ArrivalType, Artifact, ArtifactType, DFPCreateArrivalArgs, DFPMoveArgs, Planet, PlanetEventMetadata, PlanetEventType, Upgrade} from "../DFTypes.sol";
+import {ArrivalData, ArrivalType, Artifact, ArtifactType, DFPCreateArrivalArgs, DFPMoveArgs, Planet, PlanetEventMetadata, PlanetEventType,PlanetType, Upgrade} from "../DFTypes.sol";
 
 contract DFMoveFacet is WithStorage {
     modifier notPaused() {
@@ -125,6 +125,7 @@ contract DFMoveFacet is WithStorage {
             arrivalType = ArrivalType.Wormhole;
         }
 
+
         if (!_isSpaceshipMove(args)) {
             (bool newPhotoidPresent, Upgrade memory newTempUpgrade) = _checkPhotoid(args);
             if (newPhotoidPresent) {
@@ -172,6 +173,13 @@ contract DFMoveFacet is WithStorage {
         if (photoidPresent) {
             travelTime = 60;
         }
+
+        Planet memory toPlanet = gs().planets[args.newLoc];
+        if(toPlanet.planetType == PlanetType.SILVER_BANK){
+            travelTime /=2;
+        }
+
+
 
         // all checks pass. execute move
         // push the new move into the planetEvents array for args.newLoc

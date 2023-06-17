@@ -806,8 +806,6 @@ class GameManager extends EventEmitter {
         } else if (isUnconfirmedProspectPlanetTx(tx)) {
           await gameManager.softRefreshPlanet(tx.intent.planetId);
         } else if (isUnconfirmedActivateArtifactTx(tx)) {
-          console.warn(tx.intent);
-
           let refreshFlag = true;
           const fromPlanet = await gameManager.getPlanetWithId(tx.intent.locationId);
           const artifact = await gameManager.getArtifactWithId(tx.intent.artifactId);
@@ -950,8 +948,7 @@ class GameManager extends EventEmitter {
     this.entityStore.replacePlanetFromContractData(planet);
   }
 
-  public async hardRefreshPlanet(planetId: LocationId | undefined): Promise<void> {
-    if (planetId === undefined) return;
+  public async hardRefreshPlanet(planetId: LocationId): Promise<void> {
     const planet = await this.contractsAPI.getPlanetById(planetId);
     if (!planet) return;
     const arrivals = await this.contractsAPI.getArrivalsForPlanet(planetId);
