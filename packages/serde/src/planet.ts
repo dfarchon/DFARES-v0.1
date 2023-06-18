@@ -38,6 +38,7 @@ export function decodePlanet(rawLocationId: string, rawPlanet: RawPlanet): Plane
     spaceType: rawPlanet.spaceType as SpaceType,
     owner: address(rawPlanet.owner),
     hatLevel: rawPlanet.hatLevel.toNumber(),
+    hatType: rawPlanet.hatType.toNumber(),
 
     planetLevel: rawPlanet.planetLevel.toNumber() as PlanetLevel,
     planetType: rawPlanet.planetType as PlanetType,

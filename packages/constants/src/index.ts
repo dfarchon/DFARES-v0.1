@@ -202,3 +202,7 @@ export const HAT_SIZES = [
  */
 export const THEGRAPH_API_URL =
   'https://api.thegraph.com/subgraphs/name/darkforest-eth/dark-forest-v06-round-5';
+
+export const TOKEN_NAME = 'RES';
+export const BLOCKCHAIN_NAME = 'AltLayer';
+export const HOST_TEAM_NAME = 'DF Archon';
