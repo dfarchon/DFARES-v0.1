@@ -24,7 +24,7 @@ import {
   WorldCoords,
 } from '@darkforest_eth/types';
 import { engineConsts } from '../EngineConsts';
-import { avatarFromId, hats } from '../Hats';
+import { avatarFromHatTypeId, avatarFromId, hats } from '../Hats';
 import { Renderer } from '../Renderer';
 import { GameGLManager } from '../WebGL/GameGLManager';
 const { whiteA, barbsA, gold } = engineConsts.colors;
@@ -137,8 +137,20 @@ export class PlanetRenderManager implements PlanetRenderManagerType {
         (a) => a.artifactType === ArtifactType.Avatar && a.lastActivated > a.lastDeactivated
       );
 
+      const haveNewHat = planet.hatLevel !== 0 && planet.hatTypeId === 9;
+
+      console.warn('sdfsdfsdf');
+      console.warn(activatedAvatar);
+      console.warn(haveNewHat);
+      console.warn(planet.hatTypeId);
       if (activatedAvatar) {
         this.queueNewHat(planet.location.coords, renderInfo.radii.radiusWorld * 2, activatedAvatar);
+      } else if (haveNewHat) {
+        this.queueNewHatV2(
+          planet.location.coords,
+          renderInfo.radii.radiusWorld * 2,
+          planet.hatTypeId
+        );
       } else {
         this.queueHat(planet, planet.location.coords, renderInfo.radii.radiusWorld);
       }
@@ -441,6 +453,26 @@ export class PlanetRenderManager implements PlanetRenderManagerType {
         radius === 1 ? 2 : 1.2 * 1.3 ** (artifact.rarity - 1) * radius,
         radius === 1 ? 2 : 1.2 * 1.3 ** (artifact.rarity - 1) * radius,
         radius === 1 ? 1.5 : 1.3 ** (artifact.rarity - 1) * radius,
+        hoveringPlanet,
+        hoverCoords
+      );
+  }
+
+  //public method risk?
+  queueNewHatV2(center: WorldCoords, radius: number, hatTypeId: number) {
+    if (hatTypeId === 0) return;
+    const { context } = this.renderer;
+    const hoveringPlanet = context.getHoveringOverPlanet() !== undefined;
+    const hoverCoords = context.getHoveringOverCoords();
+
+    const avatarType = avatarFromHatTypeId(hatTypeId);
+    this.newHats[avatarType] &&
+      this.renderer.overlay2dRenderer.drawNewHat(
+        this.newHats[avatarType],
+        center,
+        radius === 1 ? 2 : 1.2 * 1.3 ** (1 - 1) * radius,
+        radius === 1 ? 2 : 1.2 * 1.3 ** (1 - 1) * radius,
+        radius === 1 ? 1.5 : 1.3 ** (1 - 1) * radius,
         hoveringPlanet,
         hoverCoords
       );

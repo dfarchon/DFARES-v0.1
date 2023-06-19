@@ -1411,7 +1411,7 @@ export class GameObjects {
       spaceType,
       owner: EMPTY_ADDRESS,
       hatLevel: 0,
-      hatType: 0,
+      hatTypeId: 0,
       bonus: bonusFromHex(hex),
 
       planetLevel,

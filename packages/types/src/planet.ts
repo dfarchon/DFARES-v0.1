@@ -94,7 +94,7 @@ export type Planet = {
   spaceType: SpaceType;
   owner: EthAddress; // should never be null; all unowned planets should have 0 address
   hatLevel: number;
-  hatType: number;
+  hatTypeId: number;
 
   planetLevel: PlanetLevel;
   planetType: PlanetType;

@@ -12,7 +12,6 @@ import { Sub } from '../Components/Text';
 import { useAccount, usePlanet, useUIManager } from '../Utils/AppHooks';
 import { useEmitterValue } from '../Utils/EmitterHooks';
 import { ModalHandle } from '../Views/ModalPane';
-
 const StyledHatPane = styled.div`
   & > div {
     display: flex;
@@ -55,7 +54,7 @@ export function HatPane({
     planet?.owner === account &&
     balanceEth > getHatCostEth(planet);
 
-  const [hatType, setHatType] = useState(1);
+  const [hatTypeId, setHatTypeId] = useState(9);
 
   if (planet && planet.owner === account) {
     return (
@@ -88,7 +87,7 @@ export function HatPane({
         <Btn
           onClick={() => {
             if (!enabled(planet) || !uiManager || !planet) return;
-            uiManager.buyHat(planet);
+            uiManager.buyHat(planet, hatTypeId);
           }}
           disabled={!enabled(planet)}
         >

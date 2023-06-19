@@ -60,7 +60,7 @@ struct Planet {
     uint256 upgradeState1;
     uint256 upgradeState2;
     uint256 hatLevel;
-    uint256 hatType;
+    uint256 hatTypeId;
     bool hasTriedFindingArtifact;
     uint256 prospectedBlockNumber;
     bool destroyed;

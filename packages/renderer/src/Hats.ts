@@ -156,6 +156,7 @@ const web3mq = {
 };
 
 export const hatFromType = (type: HatType): Hat => hats[type];
+
 export const avatarFromId = (id: string): HatType => {
   const avatars = [
     HatType.Doge,
@@ -167,6 +168,11 @@ export const avatarFromId = (id: string): HatType => {
     HatType.Web3MQ,
   ];
   return avatars[parseInt(id.substring(id.length - 2), 16) % avatars.length];
+};
+
+export const avatarFromHatTypeId = (id: number): HatType => {
+  if (id !== 1000) return HatType.Mask;
+  else return HatType.Mask;
 };
 
 export const hats: Record<HatType, Hat> = {

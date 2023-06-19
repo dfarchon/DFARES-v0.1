@@ -13,7 +13,6 @@ import {
 import { engineConsts } from './EngineConsts';
 import { hatFromType } from './Hats';
 import { Renderer } from './Renderer';
-
 /*
    this is mostly migration code from the old renderer; it holds all of the old renderer primitives,
    but most of them have been re-implemented in GL. still useful for debugging sometimes - draws
