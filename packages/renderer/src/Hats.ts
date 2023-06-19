@@ -208,6 +208,12 @@ const web3mq = {
   bottomLayer: [],
 };
 
+const dfAres = {
+  legacy: false,
+  topLayer: ['http://localhost:8081/img/logo/dfAres.png'],
+  bottomLayer: [],
+};
+
 export const hatFromType = (type: HatType): Hat => hats[type];
 
 export const avatarFromArtifactId = (id: ArtifactId): HatType => {
@@ -247,4 +253,5 @@ export const hats: Record<HatType, Hat> = {
   [HatType.Mask]: mask,
   [HatType.Web3MQ]: web3mq,
   [HatType.Mask]: mask,
+  [HatType.DFARES]: dfAres,
 };

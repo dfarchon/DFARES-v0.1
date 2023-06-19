@@ -204,7 +204,7 @@ export const MIN_MEME_HAT_TYPE = 11;
 export const MAX_MEME_HAT_TYPE = 24;
 
 export const MIN_LOGO_HAT_TYPE = 25;
-export const MAX_LOGO_HAT_TYPE = 26;
+export const MAX_LOGO_HAT_TYPE = 27;
 
 /**
  * This should be updated every round.

@@ -33,6 +33,7 @@ export const HatType = {
   Wojak4: 24 as HatType,
   Mask: 25 as HatType,
   Web3MQ: 26 as HatType,
+  DFARES: 27 as HatType,
   // Don't forget to update MIN_HAT_TYPE and/or MAX_HAT_TYPE in the `constants` package
 };
 
@@ -67,6 +68,7 @@ export const HatTypeNames = {
   [HatType.Wojak4]: 'Wojak4',
   [HatType.Mask]: 'Mask',
   [HatType.Web3MQ]: 'Web3MQ',
+  [HatType.DFARES]: 'DF ARES',
 } as const;
 
 // export const HatType = {
