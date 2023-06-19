@@ -1,9 +1,10 @@
+import { TOKEN_NAME } from '@darkforest_eth/constants';
 import { weiToEth } from '@darkforest_eth/network';
 import { getHatSizeName, getPlanetCosmetic } from '@darkforest_eth/procedural';
 import { isUnconfirmedBuyHatTx } from '@darkforest_eth/serde';
 import { LocationId, Planet } from '@darkforest_eth/types';
 import { BigNumber } from 'ethers';
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Btn } from '../Components/Btn';
 import { CenterBackgroundSubtext, EmSpacer, Link } from '../Components/CoreUI';
@@ -54,6 +55,8 @@ export function HatPane({
     planet?.owner === account &&
     balanceEth > getHatCostEth(planet);
 
+  const [hatType, setHatType] = useState(1);
+
   if (planet && planet.owner === account) {
     return (
       <StyledHatPane>
@@ -68,16 +71,18 @@ export function HatPane({
         <div className='margin-top'>
           <Sub>Next Level Cost</Sub>
           <span>
-            {getHatCostEth(planet)} USD <Sub>/</Sub> {getHatCostEth(planet)} DAI
+            {getHatCostEth(planet)} USD <Sub>/</Sub> {getHatCostEth(planet)} ${TOKEN_NAME}
           </span>
         </div>
         <div>
           <Sub>Current Balance</Sub>
-          <span>{balanceEth} xDAI</span>
+          <span>
+            {balanceEth} ${TOKEN_NAME}
+          </span>
         </div>
 
         <EmSpacer height={1} />
-        <Link to={'https://blog.zkga.me/df-04-faq'}>Get More xDai</Link>
+        <Link to={'https://blog.zkga.me/df-04-faq'}>Get More ${TOKEN_NAME}</Link>
         <EmSpacer height={0.5} />
 
         <Btn

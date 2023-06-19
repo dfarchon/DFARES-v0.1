@@ -1,3 +1,4 @@
+import { BLOCKCHAIN_NAME, HOST_TEAM_NAME } from '@darkforest_eth/constants';
 import { ModalName } from '@darkforest_eth/types';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -61,7 +62,7 @@ function OnboardMoney({ advance }: { advance: () => void }) {
         <a onClick={() => window.open('https://github.com/austintgriffith/burner-wallet')}>
           burner wallet
         </a>{' '}
-        for you and dripped 15c to it, courtesy of Dark Forest Team and xDAI.
+        for you and dripped 15c to it, courtesy of ${HOST_TEAM_NAME} Team, and ${BLOCKCHAIN_NAME}.
       </p>
       <p className='indent'>
         Your burner wallet address is: <br />

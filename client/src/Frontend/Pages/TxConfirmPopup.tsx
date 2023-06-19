@@ -1,3 +1,4 @@
+import { TOKEN_NAME } from '@darkforest_eth/constants';
 import { weiToGwei } from '@darkforest_eth/network';
 import { address } from '@darkforest_eth/serde';
 import { Setting } from '@darkforest_eth/types';
@@ -152,7 +153,7 @@ export function TxConfirmPopup({
   };
 
   const gasFee = EthersBN.from(localStorage.getItem(`${account}-gasFeeGwei`) || '');
-  const gasLimit = EthersBN.from(localStorage.getItem(`${account}-gasFeeLimit`) || '');
+  const gasLimit = localStorage.getItem(`${account}-gasFeeLimit`) || '';
 
   const fromPlanet = localStorage.getItem(`${account}-fromPlanet`);
   const toPlanet = localStorage.getItem(`${account}-toPlanet`);
@@ -218,7 +219,7 @@ export function TxConfirmPopup({
             <Row>
               <b>HAT Level</b>
               <span>
-                {hatLevel} ({hatCost} xDAI)
+                {hatLevel} ({hatCost} ${TOKEN_NAME})
               </span>
             </Row>
           </>
@@ -322,7 +323,9 @@ export function TxConfirmPopup({
             </Row>
             <Row>
               <b>Artifact Price </b>
-              <span>({buyArtifactCost} xDAI)</span>
+              <span>
+                ({buyArtifactCost} ${TOKEN_NAME})
+              </span>
             </Row>
           </>
         )}
@@ -363,7 +366,9 @@ export function TxConfirmPopup({
 
         <Row>
           <b>Total Transaction Cost</b>
-          <span>{txCost.toFixed(8)} xDAI</span>
+          <span>
+            {txCost.toFixed(8)} ${TOKEN_NAME}
+          </span>
         </Row>
         {method === 'buyHat' && hatLevel && +hatLevel > 6 && (
           <Row>
@@ -379,7 +384,9 @@ export function TxConfirmPopup({
         )}
         <Row className='mtop'>
           <b>Account Balance</b>
-          <span>{parseFloat(balance).toFixed(8)} xDAI</span>
+          <span>
+            {parseFloat(balance).toFixed(8)} ${TOKEN_NAME}
+          </span>
         </Row>
         <Row className='mtop'>
           <Button onClick={doReject}>
@@ -395,7 +402,7 @@ export function TxConfirmPopup({
       <div className='section'>
         <Row className='network'>
           <div>
-            <ConfirmIcon /> DF connected to xDAI
+            <ConfirmIcon /> DF connected to Blockchain
           </div>
         </Row>
         <Row className='mtop'>

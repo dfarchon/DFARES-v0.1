@@ -23,8 +23,8 @@ library LibArtifactUtils {
     }
 
     // also need to copy some of DFCore's event signatures
-    event ArtifactActivated(address player, uint256 artifactId, uint256 loc,uint256 linkTo);
-    event ArtifactDeactivated(address player, uint256 artifactId, uint256 loc,uint256 linkTo);
+    event ArtifactActivated(address player, uint256 artifactId, uint256 loc, uint256 linkTo);
+    event ArtifactDeactivated(address player, uint256 artifactId, uint256 loc, uint256 linkTo);
     event PlanetUpgraded(address player, uint256 loc, uint256 branch, uint256 toBranchLevel);
 
     // verifies that user is allowed to call findArtifact on this planet
@@ -186,7 +186,7 @@ library LibArtifactUtils {
             }
 
             planet.planetType = PlanetType.SILVER_MINE;
-            emit ArtifactActivated(msg.sender, artifactId, locationId,0);
+            emit ArtifactActivated(msg.sender, artifactId, locationId, 0);
         }
     }
 
@@ -247,7 +247,7 @@ library LibArtifactUtils {
         bool shouldDeactivateAndBurn = false;
 
         artifact.lastActivated = block.timestamp;
-        emit ArtifactActivated(msg.sender, artifactId, locationId,linkTo);
+        emit ArtifactActivated(msg.sender, artifactId, locationId, linkTo);
 
         if (artifact.artifactType == ArtifactType.Wormhole) {
             require(linkTo != 0, "you must provide a linkTo to activate a wormhole");
@@ -410,7 +410,7 @@ library LibArtifactUtils {
         if (shouldDeactivateAndBurn) {
             artifact.lastDeactivated = block.timestamp; // immediately deactivate
             DFArtifactFacet(address(this)).updateArtifact(artifact); // save artifact state immediately, because _takeArtifactOffPlanet will access pull it from tokens contract
-            emit ArtifactDeactivated(msg.sender, artifactId, locationId,linkTo);
+            emit ArtifactDeactivated(msg.sender, artifactId, locationId, linkTo);
             // burn it after use. will be owned by contract but not on a planet anyone can control
             LibGameUtils._takeArtifactOffPlanet(artifactId, locationId);
         } else {
@@ -446,7 +446,7 @@ library LibArtifactUtils {
         uint256 linkTo = artifact.linkTo;
         artifact.linkTo = 0;
 
-        emit ArtifactDeactivated(msg.sender, artifact.id, locationId,linkTo);
+        emit ArtifactDeactivated(msg.sender, artifact.id, locationId, linkTo);
         DFArtifactFacet(address(this)).updateArtifact(artifact);
 
         bool shouldBurn = artifact.artifactType == ArtifactType.PlanetaryShield ||
@@ -480,7 +480,7 @@ library LibArtifactUtils {
         artifact.lastDeactivated = block.timestamp;
         uint256 linkTo = artifact.linkTo;
         artifact.linkTo = 0;
-        emit ArtifactDeactivated(msg.sender, artifact.id, locationId,linkTo);
+        emit ArtifactDeactivated(msg.sender, artifact.id, locationId, linkTo);
         DFArtifactFacet(address(this)).updateArtifact(artifact);
 
         bool shouldBurn = artifact.artifactType == ArtifactType.PlanetaryShield ||

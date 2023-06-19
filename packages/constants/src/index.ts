@@ -197,6 +197,9 @@ export const HAT_SIZES = [
   'HAAAAT',
 ];
 
+export const MIN_HAT_TYPE = 1;
+export const MAX_HAT_TYPE = 17;
+
 /**
  * This should be updated every round.
  */

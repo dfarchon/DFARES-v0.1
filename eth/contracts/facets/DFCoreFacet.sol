@@ -23,7 +23,7 @@ contract DFCoreFacet is WithStorage {
 
     event PlayerInitialized(address player, uint256 loc);
     event PlanetUpgraded(address player, uint256 loc, uint256 branch, uint256 toBranchLevel); // emitted in LibPlanet
-    event PlanetHatBought(address player, uint256 loc, uint256 tohatLevel);
+    event PlanetHatBought(address player, uint256 loc, uint256 tohatLevel, uint256 tohatType);
     event PlanetTransferred(address sender, uint256 loc, address receiver);
     event LocationRevealed(address revealer, uint256 loc, uint256 x, uint256 y);
 
@@ -32,6 +32,11 @@ contract DFCoreFacet is WithStorage {
     //////////////////////
     /// ACCESS CONTROL ///
     //////////////////////
+
+    modifier onlyAdmin() {
+        LibDiamond.enforceIsContractOwner();
+        _;
+    }
 
     modifier onlyWhitelisted() {
         require(
@@ -192,7 +197,7 @@ contract DFCoreFacet is WithStorage {
         emit PlanetTransferred(msg.sender, _location, _player);
     }
 
-    function buyHat(uint256 _location) public payable notPaused {
+    function buyHat(uint256 _location, uint256 hatType) public payable notPaused {
         require(gs().planets[_location].isInitialized == true, "Planet is not initialized");
         refreshPlanet(_location);
 
@@ -206,7 +211,36 @@ contract DFCoreFacet is WithStorage {
         require(msg.value == cost, "Wrong value sent");
 
         gs().planets[_location].hatLevel += 1;
-        emit PlanetHatBought(msg.sender, _location, gs().planets[_location].hatLevel);
+        gs().planets[_location].hatType = hatType;
+        emit PlanetHatBought(
+            msg.sender,
+            _location,
+            gs().planets[_location].hatLevel,
+            gs().planets[_location].hatType
+        );
+    }
+
+    function setHat(
+        uint256 _location,
+        uint256 hatLevel,
+        uint256 hatType
+    ) public onlyAdmin {
+        require(gs().planets[_location].isInitialized == true, "Planet is not initialized");
+        refreshPlanet(_location);
+
+        require(
+            gs().planets[_location].owner == msg.sender,
+            "Only owner account can perform that operation on planet."
+        );
+
+        gs().planets[_location].hatLevel = hatLevel;
+        gs().planets[_location].hatType = hatType;
+        emit PlanetHatBought(
+            msg.sender,
+            _location,
+            gs().planets[_location].hatLevel,
+            gs().planets[_location].hatType
+        );
     }
 
     // withdraw silver

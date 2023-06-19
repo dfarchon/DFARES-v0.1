@@ -1,3 +1,4 @@
+import { TOKEN_NAME } from '@darkforest_eth/constants';
 import { weiToEth } from '@darkforest_eth/network';
 import { isUnconfirmedBuyArtifactTx } from '@darkforest_eth/serde';
 import { ArtifactRarity, ArtifactType, Biome, LocationId, Planet } from '@darkforest_eth/types';
@@ -72,7 +73,9 @@ export function BuyArtifactPane({
       <StyledBuyArtifactPane>
         <div>
           <Sub>Artifact Price</Sub>
-          <span>{cost} xDAI</span>
+          <span>
+            {cost} ${TOKEN_NAME}
+          </span>
         </div>
         <div>
           <div>Biome</div>
@@ -169,7 +172,9 @@ export function BuyArtifactPane({
 
         <div>
           <Sub>Current Balance</Sub>
-          <span>{balanceEth} xDAI</span>
+          <span>
+            {balanceEth} ${TOKEN_NAME}
+          </span>
         </div>
         <div>
           <Btn
@@ -187,47 +192,6 @@ export function BuyArtifactPane({
             Buy Artifact
           </Btn>
         </div>
-
-        {/* <div>
-          <Sub>HAT</Sub>
-          <span>{getPlanetCosmetic(planet).hatType}</span>
-        </div>
-        <div>
-          <Sub>HAT Level</Sub>
-          <span>{getHatSizeName(planet)}</span>
-        </div>
-        <div className='margin-top'>
-          <Sub>Next Level Cost</Sub>
-          <span>
-            {getHatCostEth(planet)} USD <Sub>/</Sub> {getHatCostEth(planet)} DAI
-          </span>
-        </div>
-        <div>
-          <Sub>Current Balance</Sub>
-          <span>{balanceEth} xDAI</span>
-        </div>
-
-        <EmSpacer height={1} />
-        <Link to={'https://blog.zkga.me/df-04-faq'}>Get More xDai</Link>
-        <EmSpacer height={0.5} />
-
-        <Btn
-          onClick={() => {
-            if (!enabled(planet) || !uiManager || !planet) return;
-            // uiManager.buyHat(planet);
-
-            // locationId: LocationId,
-            // rarity: ArtifactRarity,
-            // biome: Biome,
-            // type: ArtifactType
-
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            uiManager.buyArtifact(planetId!, 1 as ArtifactRarity, 1 as Biome, 2 as ArtifactType);
-          }}
-          disabled={!enabled(planet)}
-        >
-          {planet && planet.hatLevel > 0 ? 'Upgrade' : 'Buy'} Artifact
-        </Btn> */}
       </StyledBuyArtifactPane>
     );
   } else {

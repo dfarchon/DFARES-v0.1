@@ -1,3 +1,4 @@
+import { TOKEN_NAME } from '@darkforest_eth/constants';
 import _ from 'lodash';
 import React from 'react';
 import { DarkForestNumberInput, NumberInput } from '../../Components/Input';
@@ -53,7 +54,7 @@ export function RewardsPane({ config, onUpdate }: LobbiesPaneProps) {
   return (
     <>
       <Row>
-        <span>XDAI Reward for Players based on their rank at the end of the round</span>
+        <span>${TOKEN_NAME} Reward for Players based on their rank at the end of the round</span>
       </Row>
       {rewardInputs}
       <Row>

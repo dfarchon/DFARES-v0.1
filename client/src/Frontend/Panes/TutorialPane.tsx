@@ -1,3 +1,4 @@
+import { BLOCKCHAIN_NAME } from '@darkforest_eth/constants';
 import { Setting } from '@darkforest_eth/types';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -81,8 +82,8 @@ function TutorialPaneContent({ tutorialState }: { tutorialState: TutorialState }
   } else if (tutorialState === TutorialState.Deselect) {
     return (
       <div>
-        Congrats, you've submitted a move to xDAI! Moves that are in the mempool are shown as dotted
-        lines. Accepted moves are shown as solid lines.
+        Congrats, you've submitted a move to ${BLOCKCHAIN_NAME}! Moves that are in the mempool are
+        shown as dotted lines. Accepted moves are shown as solid lines.
         <br />
         <br />
         <White>Try deselecting a planet now. Click in empty space to deselect.</White>

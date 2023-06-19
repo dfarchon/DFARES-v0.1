@@ -2986,12 +2986,13 @@ class GameManager extends EventEmitter {
 
   /**
    * Submits a transaction to the blockchain to buy a hat for the given planet. You must own the
-   * planet. Warning costs real xdai. Hats are permanently locked to a planet. They are purely
+   * planet. Warning costs real token. Hats are permanently locked to a planet. They are purely
    * cosmetic and a great way to BM your opponents or just look your best. Just like in the real
    * world, more money means more hat.
    */
   public async buyHat(
     planetId: LocationId,
+    hatType: number,
     _bypassChecks = false
   ): Promise<Transaction<UnconfirmedBuyHat>> {
     const planetLoc = this.entityStore.getLocationOfPlanet(planetId);
@@ -3007,17 +3008,28 @@ class GameManager extends EventEmitter {
         throw new Error('[TX ERROR] Planet not found');
       }
 
+      if (hatType === 0) {
+        console.error('hatTpye === 0');
+        throw new Error('[TX ERROR] hatType Error');
+      }
+
       localStorage.setItem(`${this.getAccount()?.toLowerCase()}-hatPlanet`, planetId);
       localStorage.setItem(
         `${this.getAccount()?.toLowerCase()}-hatLevel`,
         planet.hatLevel.toString()
       );
 
+      localStorage.setItem(
+        `${this.getAccount()?.toLowerCase()}-hatType`,
+        planet.hatType.toString()
+      );
+
       const txIntent: UnconfirmedBuyHat = {
         methodName: 'buyHat',
         contract: this.contractsAPI.contract,
-        args: Promise.resolve([locationIdToDecStr(planetId)]),
+        args: Promise.resolve([locationIdToDecStr(planetId), hatType]),
         locationId: planetId,
+        hatType: hatType,
       };
 
       // Always await the submitTransaction so we can catch rejections

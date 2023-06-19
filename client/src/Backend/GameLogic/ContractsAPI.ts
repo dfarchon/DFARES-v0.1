@@ -1,4 +1,4 @@
-import { EMPTY_LOCATION_ID } from '@darkforest_eth/constants';
+import { EMPTY_LOCATION_ID, TOKEN_NAME } from '@darkforest_eth/constants';
 import { DarkForest } from '@darkforest_eth/contracts/typechain';
 import {
   aggregateBulkGetter,
@@ -155,7 +155,7 @@ export class ContractsAPI extends EventEmitter {
     if (balance.lt(ContractsAPI.MIN_BALANCE)) {
       const notifsManager = NotificationManager.getInstance();
       notifsManager.balanceEmpty();
-      throw new Error('xDAI balance too low!');
+      throw new Error(`${TOKEN_NAME} balance too low!`);
     }
 
     const gasFeeGwei = EthersBN.from(overrides?.gasPrice || '1000000000');

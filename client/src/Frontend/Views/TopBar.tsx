@@ -1,3 +1,4 @@
+import { TOKEN_NAME } from '@darkforest_eth/constants';
 import { Monomitter } from '@darkforest_eth/events';
 import { weiToEth } from '@darkforest_eth/network';
 import { EthAddress, ModalName, TooltipName } from '@darkforest_eth/types';
@@ -198,7 +199,9 @@ export function TopBar({ twitterVerifyHook }: { twitterVerifyHook: Hook<boolean>
           name={TooltipName.Empty}
           extraContent={<Text>Your burner wallet balance.</Text>}
         >
-          <Sub>({weiToEth(balance).toFixed(2)} xDAI)</Sub>
+          <Sub>
+            ({weiToEth(balance).toFixed(2)} ${TOKEN_NAME})
+          </Sub>
         </TooltipTrigger>
         {process.env.DF_WEBSERVER_URL && (
           <>

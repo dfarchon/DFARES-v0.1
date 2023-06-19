@@ -89,7 +89,7 @@ contract DFCaptureFacet is WithStorage {
         require(planet.owner == msg.sender, "you can only capture planets you own");
         require(planet.invader != address(0), "you must invade the planet before capturing");
         require(
-            planet.population*100 >= planet.populationCap * 78,
+            planet.population * 100 >= planet.populationCap * 78,
             // We lie here, but it is a better UX
             "planet must have 80% energy before capturing"
         );
