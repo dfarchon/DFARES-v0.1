@@ -335,7 +335,7 @@ function shipOptions() {
 
 function artifactOptions() {
   const options = [] as HTMLOptionElement[];
-  console.log(ArtifactTypeNames);
+  // console.log(ArtifactTypeNames);
   for (let i = MIN_ARTIFACT_TYPE; i < MIN_SPACESHIP_TYPE; i++) {
     options.push(html`<option value=${i}>${ArtifactTypeNames[i]}</option>`);
   }

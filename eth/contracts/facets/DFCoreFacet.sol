@@ -23,7 +23,7 @@ contract DFCoreFacet is WithStorage {
 
     event PlayerInitialized(address player, uint256 loc);
     event PlanetUpgraded(address player, uint256 loc, uint256 branch, uint256 toBranchLevel); // emitted in LibPlanet
-    event PlanetHatBought(address player, uint256 loc, uint256 tohatLevel, uint256 tohatTypeId);
+    event PlanetHatBought(address player, uint256 loc, uint256 tohatLevel, uint256 tohatType);
     event PlanetTransferred(address sender, uint256 loc, address receiver);
     event LocationRevealed(address revealer, uint256 loc, uint256 x, uint256 y);
 
@@ -104,7 +104,7 @@ contract DFCoreFacet is WithStorage {
         uint256[2][2] memory _b,
         uint256[2] memory _c,
         uint256[9] memory _input
-    ) public onlyWhitelisted returns (uint256) {
+    ) public onlyWhitelisted {
         require(checkRevealProof(_a, _b, _c, _input), "Failed reveal pf check");
 
         if (!gs().planets[_input[0]].isInitialized) {
@@ -197,7 +197,7 @@ contract DFCoreFacet is WithStorage {
         emit PlanetTransferred(msg.sender, _location, _player);
     }
 
-    function buyHat(uint256 _location, uint256 hatTypeId) public payable notPaused {
+    function buyHat(uint256 _location, uint256 hatType) public payable notPaused {
         require(gs().planets[_location].isInitialized == true, "Planet is not initialized");
         refreshPlanet(_location);
 
@@ -211,19 +211,19 @@ contract DFCoreFacet is WithStorage {
         require(msg.value == cost, "Wrong value sent");
 
         gs().planets[_location].hatLevel += 1;
-        gs().planets[_location].hatTypeId = hatTypeId;
+        gs().planets[_location].hatType = hatType;
         emit PlanetHatBought(
             msg.sender,
             _location,
             gs().planets[_location].hatLevel,
-            gs().planets[_location].hatTypeId
+            gs().planets[_location].hatType
         );
     }
 
     function setHat(
         uint256 _location,
         uint256 hatLevel,
-        uint256 hatTypeId
+        uint256 hatType
     ) public onlyAdmin {
         require(gs().planets[_location].isInitialized == true, "Planet is not initialized");
         refreshPlanet(_location);
@@ -234,12 +234,12 @@ contract DFCoreFacet is WithStorage {
         );
 
         gs().planets[_location].hatLevel = hatLevel;
-        gs().planets[_location].hatTypeId = hatTypeId;
+        gs().planets[_location].hatType = hatType;
         emit PlanetHatBought(
             msg.sender,
             _location,
             gs().planets[_location].hatLevel,
-            gs().planets[_location].hatTypeId
+            gs().planets[_location].hatType
         );
     }
 

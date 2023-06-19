@@ -54,6 +54,7 @@ import {
   ClaimedLocation,
   Diagnostics,
   EthAddress,
+  HatType,
   Link,
   LocatablePlanet,
   LocationId,
@@ -2992,7 +2993,7 @@ class GameManager extends EventEmitter {
    */
   public async buyHat(
     planetId: LocationId,
-    hatTypeId: number,
+    hatType: number,
     _bypassChecks = false
   ): Promise<Transaction<UnconfirmedBuyHat>> {
     const planetLoc = this.entityStore.getLocationOfPlanet(planetId);
@@ -3008,7 +3009,7 @@ class GameManager extends EventEmitter {
         throw new Error('[TX ERROR] Planet not found');
       }
 
-      if (hatTypeId === 0) {
+      if (hatType === HatType.Unknown) {
         console.error('hatTpye === 0');
         throw new Error('[TX ERROR] hatType Error');
       }
@@ -3021,15 +3022,15 @@ class GameManager extends EventEmitter {
 
       localStorage.setItem(
         `${this.getAccount()?.toLowerCase()}-hatType`,
-        planet.hatTypeId.toString()
+        planet.hatType.toString()
       );
 
       const txIntent: UnconfirmedBuyHat = {
         methodName: 'buyHat',
         contract: this.contractsAPI.contract,
-        args: Promise.resolve([locationIdToDecStr(planetId), hatTypeId]),
+        args: Promise.resolve([locationIdToDecStr(planetId), hatType]),
         locationId: planetId,
-        hatTypeId: hatTypeId,
+        hatType: hatType,
       };
 
       // Always await the submitTransaction so we can catch rejections

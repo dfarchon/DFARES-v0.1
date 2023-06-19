@@ -124,57 +124,34 @@ const taglinesById = new Map<LocationId, string>();
 const huesByHash = new Map<string, number>();
 const rgbsByHash = new Map<string, RGBAVec>();
 
-export function hatTypeFromHash(hash: LocationId, hatType: number): HatType {
-  const mod = hatType;
-
-  // [HatType.GraduationCap]: 1,
-  // [HatType.Fish]: 2,
-  // [HatType.TopHat]: 3,
-  // [HatType.Fez]: 4,
-  // [HatType.ChefHat]: 5,
-  // [HatType.CowboyHat]: 6,
-  // [HatType.PopeHat]: 7,
-  // [HatType.Squid]: 8,
-  // [HatType.SantaHat]: 9,
-  // [HatType.Doge]: 10,
-  // [HatType.Wojak]: 11,
-  // [HatType.Mike]: 12,
-  // [HatType.Panda]: 13,
-  // [HatType.Pepe]: 14,
-  // [HatType.Mask]: 15,
-  // [HatType.Web3MQ]: 16,
-  //MyTodo: add type
-
-  switch (mod) {
-    case 1:
-      return HatType.GraduationCap;
-    case 2:
-      return HatType.Fish;
-    case 3:
-      return HatType.TopHat;
-    case 4:
-      return HatType.Fez;
-    case 5:
-      return HatType.ChefHat;
-    case 6:
-      return HatType.CowboyHat;
-    case 7:
-      return HatType.PopeHat;
-    case 8:
-      return HatType.Squid;
-
-    case 9:
-      return HatType.Mask;
-    default:
-      return HatType.Mask;
-  }
-
+export function hatTypeFromHash(hatType: number): HatType {
+  return hatType as HatType;
+  // switch (hatType) {
+  //   case 1:
+  //     return HatType.GraduationCap;
+  //   case 2:
+  //     return HatType.Fish;
+  //   case 3:
+  //     return HatType.TopHat;
+  //   case 4:
+  //     return HatType.Fez;
+  //   case 5:
+  //     return HatType.ChefHat;
+  //   case 6:
+  //     return HatType.CowboyHat;
+  //   case 7:
+  //     return HatType.PopeHat;
+  //   case 8:
+  //     return HatType.Squid;
+  //   case 9:
+  //     return HatType.Doge;
+  //   default:
+  //     return HatType.Doge;
+  // }
   // const rand = planetRandomInt(hash);
   // if (rand() % 69 === 0) return HatType.Fish;
   // if (rand() % 16 === 0) return HatType.SantaHat;
-
   // const mod = rand() % 8;
-
   // switch (mod) {
   //   case 0:
   //     return HatType.GraduationCap;
@@ -449,7 +426,7 @@ export function getPlanetCosmetic(planet: Planet | undefined): PlanetCosmeticInf
 
     seed,
 
-    hatType: hatTypeFromHash(planet.locationId, planet.hatTypeId),
+    hatType: planet.hatType as HatType, //hatTypeFromHash(planet.locationId, planet.hatType, planet.hatLevel),
 
     ruins: getRuinsInfo(planet.locationId),
   };

@@ -118,7 +118,7 @@ export type UnconfirmedUpgrade = TxIntent & {
 export type UnconfirmedBuyHat = TxIntent & {
   methodName: 'buyHat';
   locationId: LocationId;
-  hatTypeId: number;
+  hatType: number;
 };
 
 /**

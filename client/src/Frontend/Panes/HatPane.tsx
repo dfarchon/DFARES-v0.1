@@ -1,17 +1,26 @@
-import { TOKEN_NAME } from '@darkforest_eth/constants';
+import {
+  MAX_LOGO_HAT_TYPE,
+  MAX_MEME_HAT_TYPE,
+  MAX_NORMAL_HAT_TYPE,
+  MIN_LOGO_HAT_TYPE,
+  MIN_MEME_HAT_TYPE,
+  MIN_NORMAL_HAT_TYPE,
+  TOKEN_NAME,
+} from '@darkforest_eth/constants';
 import { weiToEth } from '@darkforest_eth/network';
 import { getHatSizeName, getPlanetCosmetic } from '@darkforest_eth/procedural';
 import { isUnconfirmedBuyHatTx } from '@darkforest_eth/serde';
-import { LocationId, Planet } from '@darkforest_eth/types';
+import { HatType, HatTypeNames, LocationId, Planet } from '@darkforest_eth/types';
 import { BigNumber } from 'ethers';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Btn } from '../Components/Btn';
-import { CenterBackgroundSubtext, EmSpacer, Link } from '../Components/CoreUI';
+import { CenterBackgroundSubtext, EmSpacer, Link, SelectFrom } from '../Components/CoreUI';
 import { Sub } from '../Components/Text';
 import { useAccount, usePlanet, useUIManager } from '../Utils/AppHooks';
 import { useEmitterValue } from '../Utils/EmitterHooks';
 import { ModalHandle } from '../Views/ModalPane';
+
 const StyledHatPane = styled.div`
   & > div {
     display: flex;
@@ -54,7 +63,24 @@ export function HatPane({
     planet?.owner === account &&
     balanceEth > getHatCostEth(planet);
 
-  const [hatTypeId, setHatTypeId] = useState(9);
+  const [hatType, setHatType] = useState(HatType.Mask.toString());
+
+  const values = [];
+  const labels = [];
+  for (let i = MIN_NORMAL_HAT_TYPE; i <= MAX_NORMAL_HAT_TYPE; i++) {
+    values.push(i.toString());
+    labels.push(HatTypeNames[i]);
+  }
+
+  for (let i = MIN_MEME_HAT_TYPE; i <= MAX_MEME_HAT_TYPE; i++) {
+    values.push(i.toString());
+    labels.push(HatTypeNames[i]);
+  }
+
+  for (let i = MIN_LOGO_HAT_TYPE; i <= MAX_LOGO_HAT_TYPE; i++) {
+    values.push(i.toString());
+    labels.push(HatTypeNames[i]);
+  }
 
   if (planet && planet.owner === account) {
     return (
@@ -84,10 +110,20 @@ export function HatPane({
         <Link to={'https://blog.zkga.me/df-04-faq'}>Get More ${TOKEN_NAME}</Link>
         <EmSpacer height={0.5} />
 
+        <div>
+          <div>Biome</div>
+          <SelectFrom
+            values={values}
+            labels={labels}
+            value={hatType.toString()}
+            setValue={setHatType}
+          />
+        </div>
+
         <Btn
           onClick={() => {
             if (!enabled(planet) || !uiManager || !planet) return;
-            uiManager.buyHat(planet, hatTypeId);
+            uiManager.buyHat(planet, Number(hatType));
           }}
           disabled={!enabled(planet)}
         >

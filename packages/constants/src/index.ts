@@ -197,8 +197,14 @@ export const HAT_SIZES = [
   'HAAAAT',
 ];
 
-export const MIN_HAT_TYPE = 1;
-export const MAX_HAT_TYPE = 17;
+export const MIN_NORMAL_HAT_TYPE = 1;
+export const MAX_NORMAL_HAT_TYPE = 10;
+
+export const MIN_MEME_HAT_TYPE = 11;
+export const MAX_MEME_HAT_TYPE = 24;
+
+export const MIN_LOGO_HAT_TYPE = 25;
+export const MAX_LOGO_HAT_TYPE = 26;
 
 /**
  * This should be updated every round.

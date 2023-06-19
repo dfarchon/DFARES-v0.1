@@ -96,7 +96,9 @@ export class Overlay2DRenderer {
   ) {
     const { ctx } = this;
     const viewport = this.renderer.getViewport();
+
     const hat = hatFromType(hatType);
+
     // const hat = hatFromType(HatType.Doge);
 
     const offY = radius + height / 4;
@@ -126,6 +128,8 @@ export class Overlay2DRenderer {
         hoverCoords.y > hatTopLeft.y &&
         hoverCoords.y < hatTopLeft.y + height) ||
       hoveringPlanet;
+
+    // console.warn(hat);
 
     // now draw the hat
     if (hat.legacy) {
@@ -160,8 +164,8 @@ export class Overlay2DRenderer {
     }
   }
 
-  drawNewHat(
-    imgage: HTMLImageElement,
+  drawImageHat(
+    image: HTMLImageElement,
     center: WorldCoords, // center of planet
     width: number, // width of hat
     height: number, // height of hat
@@ -208,7 +212,7 @@ export class Overlay2DRenderer {
     // ctx.clip();
 
     ctx.drawImage(
-      imgage,
+      image,
       trueCenter.x - trueWidth / 2,
       trueCenter.y - trueHeight / 2,
       trueWidth,
@@ -216,7 +220,6 @@ export class Overlay2DRenderer {
     );
 
     ctx.globalAlpha = 1;
-
     ctx.restore();
   }
 

@@ -855,11 +855,20 @@ export interface PlanetRenderManagerType {
     disableHats?: boolean
   ): void;
 
-  /**
-   * Draw all queued planets
-   */
+  queueHat(
+    planet: Planet,
+    center: WorldCoords,
+    radius: number,
+    hatType: number,
+    hatLevel: number
+  ): void;
 
   queueNewHat(center: WorldCoords, radius: number, artifact?: Artifact): void;
+
+  queueMemeHat(center: WorldCoords, radius: number, hatType: HatType, hatLevel: number): void;
+
+  queueLogoHat(center: WorldCoords, radius: number, hatType: HatType, hatLevel: number): void;
+
   flush(): void;
 }
 
