@@ -476,9 +476,12 @@ export class PlanetRenderManager implements PlanetRenderManagerType {
       this.renderer.overlay2dRenderer.drawImageHat(
         this.newHats[avatarType],
         center,
-        radius === 1 ? 2 : 1.2 * 1.3 ** (artifact.rarity - 1) * radius,
-        radius === 1 ? 2 : 1.2 * 1.3 ** (artifact.rarity - 1) * radius,
-        radius === 1 ? 1.5 : 1.3 ** (artifact.rarity - 1) * radius,
+        // radius === 1 ? 2 : 1.2 * 1.3 ** (artifact.rarity - 1) * radius,
+        // radius === 1 ? 2 : 1.2 * 1.3 ** (artifact.rarity - 1) * radius,
+        // radius === 1 ? 1.5 : 1.3 ** (artifact.rarity - 1) * radius,
+        radius,
+        radius,
+        radius,
         hoveringPlanet,
         hoverCoords
       );

@@ -128,7 +128,7 @@ export class VoyageRenderer implements VoyageRendererType {
           const y = screenCoords.y;
           if (artifact.artifactType !== ArtifactType.Avatar)
             sR.queueArtifact(artifact, { x, y }, artifactSizePixels);
-          else pRM.queueNewHat(viewport.canvasToWorldCoords({ x, y }), 1, artifact);
+          else pRM.queueNewHat(viewport.canvasToWorldCoords({ x, y }), 20, artifact);
         }
       }
 
