@@ -171,6 +171,10 @@ export class SpriteRenderer
 
     const tex: SpriteRectangle = spriteFromArtifact(artifact);
 
+    //ToDelete
+    if (artifact.id === '3b29cdf30458a98c9855bbc909558062195731ff97968f8a86ebf27393364b10')
+      console.warn(tex);
+
     const { x1, x2, y1, y2 } = tex;
 
     const dim = width;

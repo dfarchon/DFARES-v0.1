@@ -131,23 +131,31 @@ const biomeSpriteInfo = (): BiomeSpriteLocations => {
     // return result as BiomeSpriteLocations;
 
     // MyTodo: change the results
+    //   Unknown: 0 as ArtifactType,
+    // Monolith: 1 as ArtifactType,
+    // Colossus: 2 as ArtifactType,
+    // Spaceship: 3 as ArtifactType,
+    // Pyramid: 4 as ArtifactType,
+    // Wormhole: 5 as ArtifactType,
+    // PlanetaryShield: 6 as ArtifactType,
+    // PhotoidCannon: 7 as ArtifactType,
+    // BloomFilter: 8 as ArtifactType,
+    // BlackDomain: 9 as ArtifactType,
+    // IceLink: 10 as ArtifactType,
+    // FireLink: 11 as ArtifactType,
+    // SoulSwap: 12 as ArtifactType,
+    // Bomb: 13 as ArtifactType,
+    // StellarShield: 14 as ArtifactType,
+    // BlindBox: 15 as ArtifactType,
+    // Avatar: 16 as ArtifactType,
 
-    // [ArtifactType.IceLink]: 'Ice Link',
-    // [ArtifactType.FireLink]: 'Fire Link',
-    // [ArtifactType.SoulSwap]: 'Soul Swap',
-    // [ArtifactType.Bomb]: 'Bomb',
-    // [ArtifactType.StellarShield]: 'Stellar Shield',
-    // [ArtifactType.BlindBox]: 'Blind Box',
-    // [ArtifactType.Avatar]: 'Meme',
-
-    if (type >= ArtifactType.IceLink && type <= ArtifactType.BlindBox) {
+    if (type >= ArtifactType.SoulSwap && type <= ArtifactType.BlindBox) {
       //new added artifact use wormhole icon temporarily
       result[type] = result[ArtifactType.Wormhole];
     } else {
       result[type] = biomeInfo as BiomeToSprite;
     }
   }
-
   return result as BiomeSpriteLocations;
 };
 
@@ -184,6 +192,15 @@ export function spriteFromArtifact(artifact: RenderedArtifact): SpriteRectangle 
 
   if (artifactSpriteMap.has(id)) return artifactSpriteMap.get(id) || EMPTY_SPRITE;
 
+  //ToDelete
+  if (artifact.id === '3b29cdf30458a98c9855bbc909558062195731ff97968f8a86ebf27393364b10') {
+    console.warn('isSpaceShip');
+    console.log(isSpaceShip(artifact.artifactType));
+
+    console.warn('isAncient');
+    console.log(isAncient(artifact));
+  }
+
   if (isSpaceShip(artifact.artifactType)) {
     const idx = {
       [ArtifactType.ShipMothership]: 0,
@@ -193,11 +210,14 @@ export function spriteFromArtifact(artifact: RenderedArtifact): SpriteRectangle 
       [ArtifactType.ShipTitan]: 4,
     };
     return spriteRectangleFromIndex(idx[artifact.artifactType], 11);
-  } else if (isAncient(artifact)) {
-    const info = ancientSpriteLocs[type];
+  }
+  //MyTodo: maybe later to support isAncient
+  // } else if (isAncient(artifact)) {
+  //   const info = ancientSpriteLocs[type];
 
-    return isShiny(rarity) ? info.shiny : info.normal;
-  } else {
+  //   return isShiny(rarity) ? info.shiny : info.normal;
+  // }
+  else {
     const artifactSpriteInfo = biomeSpriteLocs[type];
     const info = artifactSpriteInfo ? artifactSpriteInfo[biome] : EMPTY_SET;
 
