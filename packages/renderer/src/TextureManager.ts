@@ -128,7 +128,19 @@ const biomeSpriteInfo = (): BiomeSpriteLocations => {
       }
     }
 
-    if (type >= ArtifactType.SoulSwap && type < ArtifactType.ShipMothership) {
+    // return result as BiomeSpriteLocations;
+
+    // MyTodo: change the results
+
+    // [ArtifactType.IceLink]: 'Ice Link',
+    // [ArtifactType.FireLink]: 'Fire Link',
+    // [ArtifactType.SoulSwap]: 'Soul Swap',
+    // [ArtifactType.Bomb]: 'Bomb',
+    // [ArtifactType.StellarShield]: 'Stellar Shield',
+    // [ArtifactType.BlindBox]: 'Blind Box',
+    // [ArtifactType.Avatar]: 'Meme',
+
+    if (type >= ArtifactType.IceLink && type <= ArtifactType.BlindBox) {
       //new added artifact use wormhole icon temporarily
       result[type] = result[ArtifactType.Wormhole];
     } else {

@@ -138,6 +138,25 @@ export class SpriteRenderer
   ) {
     if (!this.loaded) return;
 
+    // have problems
+    // if (artifact.id !== '7d616b9b711393f013a90f50110be771ad9002aba19c145b9eeb6d4beb3274b0') {
+    //   return;
+    // }
+
+    // if (artifact.id !== 'ac90051630b279592618539ffa8a3087b74bdb07373cf1702eab47d808fa6ad8') {
+    //   return;
+    // }
+
+    // console.log(artifact);
+    // console.log(topLeft);
+    // console.log(width);
+    // console.log(alpha);
+    // console.log(color);
+    // console.log(atFrame);
+    // console.log(theta);
+
+    // console.warn('into queueSprite');
+
     const { rarity } = artifact;
     const shine = rarity >= ArtifactRarity.Rare;
     const invert = rarity === ArtifactRarity.Legendary;
