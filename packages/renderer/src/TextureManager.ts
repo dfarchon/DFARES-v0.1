@@ -1,5 +1,5 @@
 import { MAX_ARTIFACT_TYPE, MAX_BIOME, MIN_ARTIFACT_TYPE } from '@darkforest_eth/constants';
-import { isAncient, isBasic, isRelic, isSpaceShip } from '@darkforest_eth/gamelogic';
+import { isBasic, isRelic, isSpaceShip } from '@darkforest_eth/gamelogic';
 import {
   ArtifactId,
   ArtifactRarity,
@@ -193,13 +193,13 @@ export function spriteFromArtifact(artifact: RenderedArtifact): SpriteRectangle 
   if (artifactSpriteMap.has(id)) return artifactSpriteMap.get(id) || EMPTY_SPRITE;
 
   //ToDelete
-  if (artifact.id === '3b29cdf30458a98c9855bbc909558062195731ff97968f8a86ebf27393364b10') {
-    console.warn('isSpaceShip');
-    console.log(isSpaceShip(artifact.artifactType));
+  // if (artifact.id === '3b29cdf30458a98c9855bbc909558062195731ff97968f8a86ebf27393364b10') {
+  //   console.warn('isSpaceShip');
+  //   console.log(isSpaceShip(artifact.artifactType));
 
-    console.warn('isAncient');
-    console.log(isAncient(artifact));
-  }
+  //   console.warn('isAncient');
+  //   console.log(isAncient(artifact));
+  // }
 
   if (isSpaceShip(artifact.artifactType)) {
     const idx = {
