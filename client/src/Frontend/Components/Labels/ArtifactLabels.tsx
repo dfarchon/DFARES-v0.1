@@ -1,28 +1,19 @@
 import { isAncient } from '@darkforest_eth/gamelogic';
+import { avatarFromArtifactId } from '@darkforest_eth/renderer';
 import {
   Artifact,
-  ArtifactId,
   ArtifactRarity,
   ArtifactRarityNames,
   ArtifactType,
   ArtifactTypeNames,
   BiomeNames,
-  HatType,
+  HatTypeNames,
 } from '@darkforest_eth/types';
 import React from 'react';
 import styled from 'styled-components';
 import { RarityColors } from '../../Styles/Colors';
 import { LegendaryLabel } from './LegendaryLabel';
 import { MythicLabel } from './MythicLabel';
-
-export const avatarFromArtifactId = (id: ArtifactId): HatType => {
-  const avatars = [HatType.Doge];
-  if (id) {
-  }
-  return avatars[0];
-
-  // return avatars[parseInt(id.substring(id.length - 2), 16) % avatars.length];
-};
 
 export const ArtifactRarityText = ({ rarity }: { rarity: ArtifactRarity }) => (
   <>{ArtifactRarityNames[rarity]}</>
@@ -35,7 +26,8 @@ export const ArtifactBiomeText = ({ artifact }: { artifact: Artifact }) => (
 export const ArtifactTypeText = ({ artifact }: { artifact: Artifact }) => (
   <>
     {ArtifactTypeNames[artifact.artifactType]}
-    {artifact.artifactType === ArtifactType.Avatar && ':' + avatarFromArtifactId(artifact.id)}
+    {artifact.artifactType === ArtifactType.Avatar &&
+      ':' + HatTypeNames[avatarFromArtifactId(artifact.id)]}
   </>
 );
 

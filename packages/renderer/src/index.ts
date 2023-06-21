@@ -1,6 +1,7 @@
 export * from './EngineConsts';
 export * from './EngineUtils';
 export * from './Entities/SpriteRenderer';
+export * from './Hats';
 export * from './Renderer';
 export * from './UIRenderer';
 export * from './WebGL/AttribArray';
