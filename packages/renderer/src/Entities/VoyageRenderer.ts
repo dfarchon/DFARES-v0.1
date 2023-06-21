@@ -131,7 +131,7 @@ export class VoyageRenderer implements VoyageRendererType {
           // console.warn('view');
           // console.warn(viewport.viewportWidth);
           // console.warn(dist);
-          const k = 30;
+          const k = 40;
           const size = (k * 20.0) / (1.0 * viewport.worldToCanvasDist(20));
 
           if (artifact.artifactType !== ArtifactType.Avatar)
