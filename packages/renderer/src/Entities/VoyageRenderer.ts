@@ -121,14 +121,22 @@ export class VoyageRenderer implements VoyageRendererType {
       if (voyage.artifactId) {
         const artifact = gameUIManager.getArtifactWithId(voyage.artifactId);
         if (artifact) {
-          const viewport = this.renderer.getViewport();
+          // const viewport = this.renderer.getViewport();
           const screenCoords = viewport.worldToCanvasCoords(shipsLocation);
           const distanceFromCenterOfFleet = fleetRadius * 1.5 + artifactSizePixels;
           const x = distanceFromCenterOfFleet + screenCoords.x;
           const y = screenCoords.y;
+
+          //MyDelete
+          // console.warn('view');
+          // console.warn(viewport.viewportWidth);
+          // console.warn(dist);
+          const k = 30;
+          const size = (k * 20.0) / (1.0 * viewport.worldToCanvasDist(20));
+
           if (artifact.artifactType !== ArtifactType.Avatar)
             sR.queueArtifact(artifact, { x, y }, artifactSizePixels);
-          else pRM.queueNewHat(viewport.canvasToWorldCoords({ x, y }), 20, artifact);
+          else pRM.queueNewHat(viewport.canvasToWorldCoords({ x, y }), size, artifact);
         }
       }
 

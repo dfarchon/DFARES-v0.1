@@ -124,6 +124,13 @@ const cat = {
   bottomLayer: [],
 };
 
+//MyDelete
+// const cat = {
+//   legacy: false,
+//   topLayer: ['http://localhost:8081/img/meme/MovingDoge.gif'],
+//   bottomLayer: [],
+// };
+
 const chunZhen = {
   legacy: false,
   topLayer: ['http://localhost:8081/img/meme/chunZhen.png'],
@@ -238,7 +245,7 @@ export const avatarFromArtifactId = (id: ArtifactId): HatType => {
     HatType.DFARES,
   ];
 
-  return avatars[parseInt(id.substring(id.length - 4), 16) % avatars.length];
+  return avatars[parseInt(id.substring(id.length - 2), 16) % avatars.length];
 };
 
 export const hats: Record<HatType, Hat> = {
