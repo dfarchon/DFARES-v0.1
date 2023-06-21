@@ -217,12 +217,28 @@ const dfAres = {
 export const hatFromType = (type: HatType): Hat => hats[type];
 
 export const avatarFromArtifactId = (id: ArtifactId): HatType => {
-  const avatars = [HatType.Doge];
-  if (id) {
-  }
-  return avatars[0];
+  const avatars = [
+    HatType.Doge,
+    HatType.Cat,
+    HatType.ChunZhen,
+    HatType.IKunBird,
+    HatType.Mike,
+    HatType.Panda,
+    HatType.Pepe,
+    HatType.PigMan,
+    HatType.RobotCat,
+    HatType.TaiKuLa,
+    HatType.Wojak1,
+    HatType.Wojak2,
+    HatType.Wojak3,
+    HatType.Wojak4,
+    HatType.Mask,
+    HatType.Web3MQ,
+    HatType.Mask,
+    HatType.DFARES,
+  ];
 
-  // return avatars[parseInt(id.substring(id.length - 2), 16) % avatars.length];
+  return avatars[parseInt(id.substring(id.length - 4), 16) % avatars.length];
 };
 
 export const hats: Record<HatType, Hat> = {
