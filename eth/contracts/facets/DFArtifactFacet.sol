@@ -16,8 +16,10 @@ import {LibPlanet} from "../libraries/LibPlanet.sol";
 // Storage imports
 import {WithStorage} from "../libraries/LibStorage.sol";
 
+
+
 // Type imports
-import {Artifact, ArtifactType, ArtifactRarity, DFTCreateArtifactArgs, DFPFindArtifactArgs} from "../DFTypes.sol";
+import {Artifact, ArtifactType, ArtifactRarity, DFTCreateArtifactArgs, DFPFindArtifactArgs,Planet} from "../DFTypes.sol";
 
 contract DFArtifactFacet is WithStorage, ERC721 {
     using ERC721BaseStorage for ERC721BaseStorage.Layout;
@@ -28,7 +30,7 @@ contract DFArtifactFacet is WithStorage, ERC721 {
     event ArtifactWithdrawn(address player, uint256 artifactId, uint256 loc);
     event ArtifactActivated(address player, uint256 artifactId, uint256 loc, uint256 linkTo); // also emitted in LibPlanet
     event ArtifactDeactivated(address player, uint256 artifactId, uint256 loc, uint256 linkTo); // also emitted in LibPlanet
-
+    event ArtifactChangeImageType(address player, uint256 artifactId, uint256 loc, uint256 imageType);
     modifier onlyWhitelisted() {
         require(
             DFWhitelistFacet(address(this)).isWhitelisted(msg.sender) ||
@@ -86,7 +88,8 @@ contract DFArtifactFacet is WithStorage, ERC721 {
             0,
             0,
             0,
-            args.controller
+            args.controller,
+            0
         );
 
         gs().artifacts[args.tokenId] = newArtifact;
@@ -115,7 +118,8 @@ contract DFArtifactFacet is WithStorage, ERC721 {
             0,
             0,
             0,
-            args.controller
+            args.controller,
+            0
         );
 
         gs().artifacts[args.tokenId] = newArtifact;
@@ -360,5 +364,26 @@ contract DFArtifactFacet is WithStorage, ERC721 {
         LibGameUtils._putArtifactOnPlanet(artifact.id, args.planetId);
 
         emit ArtifactFound(args.owner, artifact.id, args.planetId);
+    }
+
+    function changeArtifactImageType(uint256 locationId, uint256 artifactId, uint256 newImageType) public notPaused {
+
+        LibPlanet.refreshPlanet(locationId);
+        Planet storage planet = gs().planets[locationId];
+
+        require(!planet.destroyed, "planet is destroyed");
+        require(!planet.frozen, "planet is frozen");
+        require(planet.owner == msg.sender, "you can only change artifactImageType on a planet you own");
+
+        require(LibGameUtils.isArtifactOnPlanet(locationId,artifactId),"artifact is not on planet");
+
+        Artifact storage artifact = gs().artifacts[artifactId];
+
+        require(artifact.isInitialized,"Artifact has not been initialized");
+        require(artifact.artifactType == ArtifactType.Avatar,"artifact type should by avatar");
+        require(artifact.imageType != newImageType,"need change imageType");
+        artifact.imageType = newImageType;
+
+        emit ArtifactChangeImageType(msg.sender,artifactId,locationId,newImageType);
     }
 }

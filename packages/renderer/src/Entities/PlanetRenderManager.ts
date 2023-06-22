@@ -30,7 +30,7 @@ import {
   WorldCoords,
 } from '@darkforest_eth/types';
 import { engineConsts } from '../EngineConsts';
-import { avatarFromArtifactId, hats } from '../Hats';
+import { avatarFromArtifactIdAndImageType, hats } from '../Hats';
 import { Renderer } from '../Renderer';
 import { GameGLManager } from '../WebGL/GameGLManager';
 const { whiteA, barbsA, gold } = engineConsts.colors;
@@ -251,7 +251,11 @@ export class PlanetRenderManager implements PlanetRenderManagerType {
         // && artifacts[i].lastActivated <= artifacts[i].lastDeactivated
       ) {
         //draw special hat
-        const avatarType = avatarFromArtifactId(artifacts[i].id);
+        const avatarType = avatarFromArtifactIdAndImageType(
+          artifacts[i].id,
+          artifacts[i].imageType,
+          false
+        );
         this.newHats[avatarType] &&
           this.renderer.overlay2dRenderer.drawImageHat(
             this.newHats[avatarType],
@@ -471,7 +475,7 @@ export class PlanetRenderManager implements PlanetRenderManagerType {
     const hoveringPlanet = context.getHoveringOverPlanet() !== undefined;
     const hoverCoords = context.getHoveringOverCoords();
 
-    const avatarType = avatarFromArtifactId(artifact.id);
+    const avatarType = avatarFromArtifactIdAndImageType(artifact.id, artifact.imageType, false);
     this.newHats[avatarType] &&
       this.renderer.overlay2dRenderer.drawImageHat(
         this.newHats[avatarType],

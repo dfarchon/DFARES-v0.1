@@ -122,6 +122,7 @@ export type Artifact = {
   lastActivated: number;
   lastDeactivated: number;
   controller: EthAddress;
+  imageType: number;
 
   upgrade: Upgrade;
   timeDelayedUpgrade: Upgrade;

@@ -447,7 +447,7 @@ library LibGameUtils {
         return artifact.lastDeactivated < artifact.lastActivated;
     }
 
-    function isArtifactOnPlanet(uint256 locationId, uint256 artifactId) public returns (bool) {
+    function isArtifactOnPlanet(uint256 locationId, uint256 artifactId) public view returns (bool) {
         for (uint256 i; i < gs().planetArtifacts[locationId].length; i++) {
             if (gs().planetArtifacts[locationId][i] == artifactId) {
                 return true;
@@ -513,7 +513,8 @@ library LibGameUtils {
                 0,
                 0,
                 0,
-                address(0)
+                address(0),
+                0
             );
     }
 

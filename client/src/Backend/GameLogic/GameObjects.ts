@@ -11,6 +11,8 @@ import {
   isUnconfirmedBuyHat,
   isUnconfirmedBuyHatTx,
   isUnconfirmedCapturePlanetTx,
+  isUnconfirmedChangeArtifactImageType,
+  isUnconfirmedChangeArtifactImageTypeTx,
   isUnconfirmedDeactivateArtifact,
   isUnconfirmedDeactivateArtifactTx,
   isUnconfirmedDepositArtifact,
@@ -775,6 +777,17 @@ export class GameObjects {
         artifact.transactions?.addTransaction(tx);
         this.setArtifact(artifact);
       }
+    } else if (isUnconfirmedChangeArtifactImageTypeTx(tx)) {
+      const planet = this.getPlanetWithId(tx.intent.locationId);
+      const artifact = this.getArtifactById(tx.intent.artifactId);
+      if (planet) {
+        planet.transactions?.addTransaction(tx);
+        this.setPlanet(planet);
+      }
+      if (artifact) {
+        artifact.transactions?.addTransaction(tx);
+        this.setArtifact(artifact);
+      }
     } else if (isUnconfirmedBuyArtifactTx(tx)) {
       const planet = this.getPlanetWithId(tx.intent.locationId);
       const artifact = this.getArtifactById(tx.intent.artifactId);
@@ -907,6 +920,17 @@ export class GameObjects {
         this.setArtifact(artifact);
       }
     } else if (isUnconfirmedDeactivateArtifact(tx.intent)) {
+      const planet = this.getPlanetWithId(tx.intent.locationId);
+      const artifact = this.getArtifactById(tx.intent.artifactId);
+      if (planet) {
+        planet.transactions?.removeTransaction(tx);
+        this.setPlanet(planet);
+      }
+      if (artifact) {
+        artifact.transactions?.removeTransaction(tx);
+        this.setArtifact(artifact);
+      }
+    } else if (isUnconfirmedChangeArtifactImageType(tx.intent)) {
       const planet = this.getPlanetWithId(tx.intent.locationId);
       const artifact = this.getArtifactById(tx.intent.artifactId);
       if (planet) {

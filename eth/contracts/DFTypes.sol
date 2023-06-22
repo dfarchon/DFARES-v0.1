@@ -158,8 +158,8 @@ struct DFTCreateArtifactArgs {
     Biome biome;
     ArtifactType artifactType;
     address owner;
-    // Only used for spaceships
-    address controller;
+    address controller;    // Only used for spaceships
+    uint256 imageType; // Only for meme/logo artifacts
 }
 
 struct ArrivalData {
@@ -247,6 +247,7 @@ struct Artifact {
     uint256 lastDeactivated;
     uint256 linkTo; // location id
     address controller; // space ships can be controlled regardless of which planet they're on
+    uint256 imageType; // for meme/logo artifacts
 }
 
 // for artifact getters

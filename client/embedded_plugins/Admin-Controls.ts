@@ -129,6 +129,7 @@ async function createArtifact(
       artifactType: type,
       owner: owner,
       controller: '0x0000000000000000000000000000000000000000',
+      imageType: 0,
     },
   ]);
 

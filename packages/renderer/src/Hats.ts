@@ -124,13 +124,6 @@ const cat = {
   bottomLayer: [],
 };
 
-//MyDelete
-// const cat = {
-//   legacy: false,
-//   topLayer: ['http://localhost:8081/img/meme/MovingDoge.gif'],
-//   bottomLayer: [],
-// };
-
 const chunZhen = {
   legacy: false,
   topLayer: ['http://localhost:8081/img/meme/chunZhen.png'],
@@ -223,8 +216,13 @@ const dfAres = {
 
 export const hatFromType = (type: HatType): Hat => hats[type];
 
-export const avatarFromArtifactId = (id: ArtifactId): HatType => {
+export const avatarFromArtifactIdAndImageType = (
+  id: ArtifactId,
+  imageType: number,
+  ifRandom: boolean
+): HatType => {
   const avatars = [
+    HatType.DFARES,
     HatType.Doge,
     HatType.Cat,
     HatType.ChunZhen,
@@ -242,10 +240,9 @@ export const avatarFromArtifactId = (id: ArtifactId): HatType => {
     HatType.Mask,
     HatType.Web3MQ,
     HatType.Mask,
-    HatType.DFARES,
   ];
-
-  return avatars[parseInt(id.substring(id.length - 2), 16) % avatars.length];
+  if (ifRandom) return avatars[parseInt(id.substring(id.length - 2), 16) % avatars.length];
+  else return avatars[parseInt(imageType.toString()) % avatars.length];
 };
 
 export const hats: Record<HatType, Hat> = {

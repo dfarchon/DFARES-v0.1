@@ -411,6 +411,14 @@ class GameUIManager extends EventEmitter {
     this.gameManager.deactivateArtifact(locationId, artifactId, linkTo);
   }
 
+  public async changeArtifactImageType(
+    locationId: LocationId,
+    artifactId: ArtifactId,
+    newImageType: number
+  ) {
+    this.gameManager.changeArtifactImageType(locationId, artifactId, newImageType);
+  }
+
   public buyArtifact(
     locationId: LocationId,
     rarity: ArtifactRarity,

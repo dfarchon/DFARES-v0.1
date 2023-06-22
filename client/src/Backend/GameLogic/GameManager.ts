@@ -28,6 +28,7 @@ import {
   isUnconfirmedBuyArtifactTx,
   isUnconfirmedBuyHatTx,
   isUnconfirmedCapturePlanetTx,
+  isUnconfirmedChangeArtifactImageTypeTx,
   isUnconfirmedDeactivateArtifactTx,
   isUnconfirmedDepositArtifactTx,
   isUnconfirmedFindArtifactTx,
@@ -78,6 +79,7 @@ import {
   UnconfirmedBuyArtifact,
   UnconfirmedBuyHat,
   UnconfirmedCapturePlanet,
+  UnconfirmedChangeArtifactImageType,
   UnconfirmedClaimReward,
   UnconfirmedDeactivateArtifact,
   UnconfirmedDepositArtifact,
@@ -866,6 +868,11 @@ class GameManager extends EventEmitter {
               gameManager.hardRefreshArtifact(tx.intent.artifactId),
             ]);
           }
+        } else if (isUnconfirmedChangeArtifactImageTypeTx(tx)) {
+          await Promise.all([
+            await gameManager.hardRefreshPlanet(tx.intent.locationId),
+            await gameManager.hardRefreshArtifact(tx.intent.artifactId),
+          ]);
         } else if (isUnconfirmedBuyArtifactTx(tx)) {
           await Promise.all([
             gameManager.hardRefreshPlanet(tx.intent.locationId),
@@ -884,7 +891,6 @@ class GameManager extends EventEmitter {
             gameManager.hardRefreshPlanet(tx.intent.locationId),
           ]);
         }
-
         gameManager.entityStore.clearUnconfirmedTxIntent(tx);
         gameManager.onTxConfirmed(tx);
       })
@@ -2535,6 +2541,56 @@ class GameManager extends EventEmitter {
     }
   }
 
+  public async changeArtifactImageType(
+    locationId: LocationId,
+    artifactId: ArtifactId,
+    newImageType: number,
+    bypassChecks = false
+  ): Promise<Transaction<UnconfirmedChangeArtifactImageType>> {
+    try {
+      if (!bypassChecks) {
+        const planet = this.entityStore.getPlanetWithId(locationId);
+        if (!planet) {
+          throw new Error('tried to changeArtrtifactImageType on an unknown planet');
+        }
+      }
+
+      localStorage.setItem(
+        `${this.getAccount()?.toLowerCase()}-changeArtifactImageType-locationId`,
+        locationId
+      );
+      localStorage.setItem(
+        `${this.getAccount()?.toLowerCase()}-changeArtifactImageType-artifactId`,
+        artifactId
+      );
+      localStorage.setItem(
+        `${this.getAccount()?.toLowerCase()}-changeArtifactImageType-newImageType`,
+        newImageType.toString()
+      );
+
+      const txIntent: UnconfirmedChangeArtifactImageType = {
+        methodName: 'changeArtifactImageType',
+        contract: this.contractsAPI.contract,
+        args: Promise.resolve([
+          locationIdToDecStr(locationId),
+          artifactIdToDecStr(artifactId),
+          newImageType,
+        ]),
+        locationId,
+        artifactId,
+        newImageType,
+      };
+
+      // Always await the submitTransaction so we can catch rejections
+      const tx = await this.contractsAPI.submitTransaction(txIntent);
+
+      return tx;
+    } catch (e) {
+      this.getNotificationsManager().txInitError('deactivateArtifact', e.message);
+      throw e;
+    }
+  }
+
   public async buyArtifact(
     locationId: LocationId,
     rarity: ArtifactRarity,
@@ -2575,6 +2631,8 @@ class GameManager extends EventEmitter {
         else if (rarity === ArtifactRarity.Legendary) return 8;
         else return 0;
       }
+
+      //Notice: this will not be the true artifactId
       const artifactId: ArtifactId = random256Id() as ArtifactId;
 
       const args = Promise.resolve([
@@ -2587,6 +2645,7 @@ class GameManager extends EventEmitter {
           artifactType: type,
           owner: this.account,
           controller: '0x0000000000000000000000000000000000000000',
+          imageType: 0,
         },
       ]);
 

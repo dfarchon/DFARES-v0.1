@@ -119,6 +119,7 @@ export function decodeArtifact(rawArtifactWithMetadata: RawArtifactWithMetadata)
     lastActivated: artifact.lastActivated.toNumber(),
     lastDeactivated: artifact.lastDeactivated.toNumber(),
     controller: address(artifact.controller),
+    imageType: artifact.imageType.toNumber(),
     linkTo: artifact.linkTo.eq(0) ? undefined : locationIdFromEthersBN(artifact.linkTo),
     currentOwner: address(owner),
     upgrade: decodeUpgrade(upgrade),

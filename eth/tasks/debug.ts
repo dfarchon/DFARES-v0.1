@@ -68,6 +68,7 @@ async function giveArtifact(
       artifactType: chosenArtifactType,
       owner: playerAddress,
       controller: '0x0000000000000000000000000000000000000000',
+      imageType: 0,
     };
 
     await (await contract.createArtifact(createArtifactArgs)).wait();

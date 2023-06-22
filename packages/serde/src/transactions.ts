@@ -5,6 +5,7 @@ import {
   UnconfirmedBuyArtifact,
   UnconfirmedBuyHat,
   UnconfirmedCapturePlanet,
+  UnconfirmedChangeArtifactImageType,
   UnconfirmedDeactivateArtifact,
   UnconfirmedDepositArtifact,
   UnconfirmedFindArtifact,
@@ -85,6 +86,12 @@ export function isUnconfirmedDeactivateArtifact(
   txIntent: TxIntent
 ): txIntent is UnconfirmedDeactivateArtifact {
   return txIntent.methodName === 'deactivateArtifact';
+}
+
+export function isUnconfirmedChangeArtifactImageType(
+  txIntent: TxIntent
+): txIntent is UnconfirmedChangeArtifactImageType {
+  return txIntent.methodName === 'changeArtifactImageType';
 }
 
 export function isUnconfirmedBuyArtifact(txIntent: TxIntent): txIntent is UnconfirmedBuyArtifact {
@@ -175,6 +182,12 @@ export function isUnconfirmedDeactivateArtifactTx(
   tx: Transaction
 ): tx is Transaction<UnconfirmedDeactivateArtifact> {
   return isUnconfirmedDeactivateArtifact(tx.intent);
+}
+
+export function isUnconfirmedChangeArtifactImageTypeTx(
+  tx: Transaction
+): tx is Transaction<UnconfirmedDeactivateArtifact> {
+  return isUnconfirmedChangeArtifactImageType(tx.intent);
 }
 
 export function isUnconfirmedBuyArtifactTx(

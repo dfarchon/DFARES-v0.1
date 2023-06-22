@@ -72,7 +72,8 @@ library LibArtifactUtils {
             Biome.Unknown,
             shipType,
             address(this),
-            owner
+            owner,
+            0
         );
 
         Artifact memory foundArtifact = DFArtifactFacet(address(this)).createArtifact(
@@ -111,7 +112,8 @@ library LibArtifactUtils {
             biome,
             artifactType,
             args.coreAddress,
-            address(0)
+            address(0),
+            0
         );
 
         Artifact memory foundArtifact = DFArtifactFacet(address(this)).createArtifact(
