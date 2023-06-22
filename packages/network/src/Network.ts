@@ -169,7 +169,7 @@ export function createContract<C extends Contract>(
 }
 
 /**
- * Creates a new {@link JsonRpcProvider}, and makes sure that it's connected to xDai if we're in
+ * Creates a new {@link JsonRpcProvider}, and makes sure that it's connected to blockchain if we're in
  * production.
  */
 export function makeProvider(rpcUrl: string): providers.JsonRpcProvider {

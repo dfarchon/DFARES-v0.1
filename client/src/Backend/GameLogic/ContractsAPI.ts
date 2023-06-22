@@ -157,8 +157,16 @@ export class ContractsAPI extends EventEmitter {
       notifsManager.balanceEmpty();
       throw new Error(`${TOKEN_NAME} balance too low!`);
     }
+    const config = {
+      contractAddress: this.contractAddress,
+      account: this.ethConnection.getAddress(),
+    };
 
-    const gasFeeGwei = EthersBN.from(overrides?.gasPrice || '1000000000');
+    const gasFeeGwei = overrides?.gasPrice
+      ? EthersBN.from(overrides?.gasPrice).toNumber()
+      : Number(getSetting(config, Setting.GasFeeGwei));
+
+    const gasFeeLimit = Number(overrides?.gasLimit || getSetting(config, Setting.GasFeeLimit));
 
     await openConfirmationWindowForTransaction({
       contractAddress: this.contractAddress,
@@ -168,6 +176,7 @@ export class ContractsAPI extends EventEmitter {
       overrides,
       from: address,
       gasFeeGwei,
+      gasFeeLimit,
     });
   }
 
@@ -885,8 +894,8 @@ export class ContractsAPI extends EventEmitter {
       account: this.ethConnection.getAddress(),
     };
     const queuedTx = await this.txExecutor.queueTransaction(txIntent, {
-      ...overrides,
       gasLimit: getSetting(config, Setting.GasFeeLimit),
+      ...overrides,
     });
 
     this.emit(ContractsAPIEvent.TxQueued, queuedTx);

@@ -1,6 +1,6 @@
 import { EthConnection, isPurchase, weiToEth } from '@darkforest_eth/network';
 import { EthAddress, Setting, TransactionId, TxIntent } from '@darkforest_eth/types';
-import { BigNumber as EthersBN, providers } from 'ethers';
+import { providers } from 'ethers';
 import { getBooleanSetting } from '../Utils/SettingsHooks';
 
 // tx is killed if user doesn't click popup within 20s
@@ -13,7 +13,8 @@ interface OpenConfirmationConfig {
   intent: TxIntent;
   overrides?: providers.TransactionRequest;
   from: EthAddress;
-  gasFeeGwei: EthersBN;
+  gasFeeGwei: number;
+  gasFeeLimit: number;
 }
 
 export async function openConfirmationWindowForTransaction({
@@ -24,6 +25,7 @@ export async function openConfirmationWindowForTransaction({
   overrides,
   from,
   gasFeeGwei,
+  gasFeeLimit,
 }: OpenConfirmationConfig): Promise<void> {
   const config = {
     contractAddress,
@@ -33,6 +35,7 @@ export async function openConfirmationWindowForTransaction({
 
   if (!autoApprove || isPurchase(overrides)) {
     localStorage.setItem(`${from}-gasFeeGwei`, gasFeeGwei.toString());
+    localStorage.setItem(`${from}-gasFeeLimit`, gasFeeLimit.toString());
     const account = connection.getAddress();
     if (!account) throw new Error('no account');
     const balanceEth = weiToEth(await connection.loadBalance(account));

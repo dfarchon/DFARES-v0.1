@@ -42,7 +42,7 @@ const defaultSettings: Record<Setting, string> = {
   [Setting.MoveNotifications]: 'true',
   [Setting.HasAcceptedPluginRisk]: onlyInDevelopment(),
   [Setting.GasFeeGwei]: AutoGasSetting.Average,
-  [Setting.GasFeeLimit]: '5000000',
+  [Setting.GasFeeLimit]: '3000000',
   [Setting.TerminalVisible]: 'true',
   [Setting.TutorialOpen]: onlyInProduction(),
 

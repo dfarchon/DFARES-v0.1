@@ -111,7 +111,7 @@ export function HatPane({
         <EmSpacer height={0.5} />
 
         <div>
-          <div>Biome</div>
+          <div>Hat Type</div>
           <SelectFrom
             values={values}
             labels={labels}

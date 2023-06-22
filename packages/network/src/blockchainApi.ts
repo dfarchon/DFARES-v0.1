@@ -6,7 +6,7 @@ import {
 import { GasPrices } from '@darkforest_eth/types';
 
 /**
- * Gets the current gas prices from xDai's price oracle. If the oracle is broken, return some sane
+ * Gets the current gas prices from blockchain's price oracle. If the oracle is broken, return some sane
  * defaults.
  */
 export async function getAutoGasPrices(): Promise<GasPrices> {
@@ -24,7 +24,7 @@ export async function getAutoGasPrices(): Promise<GasPrices> {
 }
 
 /**
- * In case xDai gives us a malformed response, clean it up with some default gas prices.
+ * In case blockchain gives us a malformed response, clean it up with some default gas prices.
  */
 function cleanGasPrices(gasPrices: GasPrices): void {
   if (typeof gasPrices.fast !== 'number') {

@@ -1,8 +1,7 @@
 import { TOKEN_NAME } from '@darkforest_eth/constants';
-import { weiToGwei } from '@darkforest_eth/network';
+import { gweiToWei, weiToEth } from '@darkforest_eth/network';
 import { address } from '@darkforest_eth/serde';
 import { Setting } from '@darkforest_eth/types';
-import { BigNumber as EthersBN } from 'ethers';
 import React, { useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import styled, { css, keyframes } from 'styled-components';
@@ -152,7 +151,7 @@ export function TxConfirmPopup({
     else approve();
   };
 
-  const gasFee = EthersBN.from(localStorage.getItem(`${account}-gasFeeGwei`) || '');
+  const gasFee = localStorage.getItem(`${account}-gasFeeGwei`) || '';
   const gasLimit = localStorage.getItem(`${account}-gasFeeLimit`) || '';
 
   const fromPlanet = localStorage.getItem(`${account}-fromPlanet`);
@@ -161,8 +160,6 @@ export function TxConfirmPopup({
   const hatPlanet = localStorage.getItem(`${account}-hatPlanet`);
   const hatLevel = localStorage.getItem(`${account}-hatLevel`);
   const hatCost: number = method === 'buyHat' && hatLevel ? 2 ** parseInt(hatLevel) : 0;
-
-  const txCost: number = hatCost + 0.002 * weiToGwei(gasFee);
 
   const upPlanet = localStorage.getItem(`${account}-upPlanet`);
   const branch = localStorage.getItem(`${account}-branch`);
@@ -190,6 +187,9 @@ export function TxConfirmPopup({
   const buyArtifactRarity = localStorage.getItem(`${account}-buyArtifactRarity`);
   const buyArtifactCost: number =
     method === 'buyArtifact' && buyArtifactRarity ? 2 ** (Number(buyArtifactRarity) - 1) : 0;
+
+  const txCost: number =
+    hatCost + buyArtifactCost + weiToEth(gweiToWei(Number(gasLimit) * Number(gasFee)));
 
   const revealPlanet = localStorage.getItem(`${account}-revealLocationId`);
 
@@ -340,32 +340,16 @@ export function TxConfirmPopup({
       <div className='section'>
         <Row>
           <b>Gas Fee</b>
-          <span>{weiToGwei(gasFee)} gwei</span>
+          <span>{gasFee} gwei</span>
         </Row>
 
-        {method !== 'buyHat' && method !== 'buyArtifact' && (
-          <Row>
-            <b>Gas Limit</b>
-            <span>{gasLimit}</span>
-          </Row>
-        )}
-
-        {method === 'buyHat' && (
-          <Row>
-            <b>Gas Limit</b>
-            <span>500000</span>
-          </Row>
-        )}
-
-        {method === 'buyArtifact' && (
-          <Row>
-            <b>Gas Limit</b>
-            <span>2000000</span>
-          </Row>
-        )}
+        <Row>
+          <b>Gas Limit</b>
+          <span>{gasLimit}</span>
+        </Row>
 
         <Row>
-          <b>Total Transaction Cost</b>
+          <b>Max Transaction Cost</b>
           <span>
             {txCost.toFixed(8)} ${TOKEN_NAME}
           </span>

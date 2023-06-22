@@ -11,9 +11,9 @@ import {
 import { BigNumber, Contract, EventFilter, providers, Wallet } from 'ethers';
 import stringify from 'json-stable-stringify';
 import debounce from 'just-debounce';
+import { getAutoGasPrices } from './blockchainApi';
 import { ContractLoader } from './Contracts';
 import { callWithRetry, getGasSettingGwei, makeProvider, waitForTransaction } from './Network';
-import { getAutoGasPrices } from './xDaiApi';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 

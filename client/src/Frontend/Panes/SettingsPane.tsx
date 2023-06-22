@@ -243,9 +243,34 @@ export function SettingsPane({
         </Section>
         <Section>
           <SectionHeader>Gas Limit</SectionHeader>
-          Some ops may fail, try increasing the gas limit.
+          Some transactions may fail, try to increase the gas limit.
           <Spacer height={16} />
-          <NumberSetting uiManager={uiManager} setting={Setting.GasFeeLimit} />
+          {/* <NumberSetting uiManager={uiManager} setting={Setting.GasFeeLimit} /> */}
+          <MultiSelectSetting
+            wide
+            uiManager={uiManager}
+            setting={Setting.GasFeeLimit}
+            values={[
+              '1000000',
+              '2000000',
+              '3000000',
+              '4000000',
+              '5000000',
+              '6000000',
+              '7000000',
+              '8000000',
+            ]}
+            labels={[
+              '1,000,000',
+              '2,000,000',
+              '3,000,000',
+              '4,000,000',
+              '5,000,000',
+              '6,000,000',
+              '7,000,000',
+              '8,000,000',
+            ]}
+          />
         </Section>
 
         <Section>
