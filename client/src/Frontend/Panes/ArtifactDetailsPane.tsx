@@ -31,6 +31,7 @@ import dfstyles from '../Styles/dfstyles';
 import { useArtifact, useUIManager } from '../Utils/AppHooks';
 import { ModalHandle } from '../Views/ModalPane';
 import { ArtifactActions } from './ManagePlanetArtifacts/ArtifactActions';
+import { ArtifactChangeImageType } from './ManagePlanetArtifacts/ArtifactChangeImageType';
 import { TooltipTrigger } from './Tooltip';
 
 const StatsContainer = styled.div`
@@ -327,6 +328,7 @@ export function ArtifactDetailsBody({
           </div>
         )}
 
+        <ArtifactChangeImageType artifactId={artifactWrapper.value?.id} depositOn={depositOn} />
         {!noActions && (
           <ArtifactActions artifactId={artifactWrapper.value?.id} depositOn={depositOn} />
         )}

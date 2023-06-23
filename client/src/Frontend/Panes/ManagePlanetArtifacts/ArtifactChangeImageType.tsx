@@ -1,33 +1,35 @@
+import { isUnconfirmedChangeArtifactImageTypeTx } from '@darkforest_eth/serde';
 import {
-  canActivateArtifact,
-  canDepositArtifact,
-  canWithdrawArtifact,
-  durationUntilArtifactAvailable,
-  isActivated,
-  isLocatable,
-} from '@darkforest_eth/gamelogic';
-import {
-  isUnconfirmedActivateArtifactTx,
-  isUnconfirmedDeactivateArtifactTx,
-  isUnconfirmedDepositArtifactTx,
-  isUnconfirmedWithdrawArtifactTx,
-} from '@darkforest_eth/serde';
-import { Artifact, ArtifactId, ArtifactType, LocationId, TooltipName } from '@darkforest_eth/types';
-import React, { useCallback } from 'react';
+  Artifact,
+  ArtifactId,
+  ArtifactType,
+  HatType,
+  LocationId,
+  Planet,
+} from '@darkforest_eth/types';
+import React, { useState } from 'react';
+import styled from 'styled-components';
 import { Btn } from '../../Components/Btn';
-import { Spacer } from '../../Components/CoreUI';
-import { ArtifactRarityLabelAnim } from '../../Components/Labels/ArtifactLabels';
-import { LoadingSpinner } from '../../Components/LoadingSpinner';
-import { Sub } from '../../Components/Text';
-import { formatDuration } from '../../Components/TimeUntil';
-import {
-  useAccount,
-  useArtifact,
-  usePlanet,
-  usePlanetArtifacts,
-  useUIManager,
-} from '../../Utils/AppHooks';
-import { TooltipTrigger, TooltipTriggerProps } from '../Tooltip';
+import { SelectFrom } from '../../Components/CoreUI';
+import { useAccount, useArtifact, usePlanet, useUIManager } from '../../Utils/AppHooks';
+
+const StyledBuyArtifactPane = styled.div`
+  & > div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    &:last-child > span {
+      margin-top: 1em;
+      text-align: center;
+      flex-grow: 1;
+    }
+
+    &.margin-top {
+      margin-top: 0.5em;
+    }
+  }
+`;
 
 export function ArtifactChangeImageType({
   artifactId,
@@ -46,166 +48,116 @@ export function ArtifactChangeImageType({
   const depositPlanet = depositPlanetWrapper.value;
   const onPlanet = onPlanetWrapper.value;
 
-  const otherArtifactsOnPlanet = usePlanetArtifacts(onPlanetWrapper, uiManager);
+  // const otherArtifactsOnPlanet = usePlanetArtifacts(onPlanetWrapper, uiManager);
+
+  const [imageType, setImageType] = useState(HatType.Doge.toString());
+
   if (!artifact || (!onPlanet && !depositPlanet) || !account) return null;
 
-  // const [newImageType, setNewImageType] = useState(artifact.imageType);
+  if (!onPlanet) return null;
 
-  const withdraw = useCallback(
-    (artifact: Artifact) => {
-      onPlanet && uiManager.withdrawArtifact(onPlanet.locationId, artifact?.id);
-    },
-    [onPlanet, uiManager]
+  const canArtifactChangeImageType = (artifact: Artifact) =>
+    artifact.artifactType === ArtifactType.Avatar;
+
+  const imageTypeChangeing = artifact.transactions?.hasTransaction(
+    isUnconfirmedChangeArtifactImageTypeTx
   );
 
-  const deposit = useCallback(
-    (artifact: Artifact) => {
-      artifact &&
-        depositPlanetWrapper.value &&
-        uiManager.depositArtifact(depositPlanetWrapper.value.locationId, artifact?.id);
-    },
-    [uiManager, depositPlanetWrapper.value]
-  );
+  const enabled = (planet: Planet): boolean => !imageTypeChangeing && planet?.owner === account;
 
-  const activate = useCallback(
-    async (artifact: Artifact) => {
-      if (onPlanet && isLocatable(onPlanet)) {
-        let targetPlanetId = undefined;
-
-        if (
-          artifact.artifactType === ArtifactType.Wormhole ||
-          artifact.artifactType === ArtifactType.BlackDomain ||
-          artifact.artifactType === ArtifactType.SoulSwap ||
-          artifact.artifactType === ArtifactType.IceLink ||
-          artifact.artifactType === ArtifactType.FireLink ||
-          artifact.artifactType === ArtifactType.Bomb
-        ) {
-          const targetPlanet = await uiManager.startLinkFrom(onPlanet, artifact);
-          targetPlanetId = targetPlanet?.locationId;
-        }
-
-        uiManager.activateArtifact(onPlanet.locationId, artifact.id, targetPlanetId);
-      }
-    },
-    [onPlanet, uiManager]
-  );
-
-  const deactivate = useCallback(
-    (artifact: Artifact) => {
-      onPlanet && uiManager.deactivateArtifact(onPlanet.locationId, artifact.id, artifact.linkTo);
-    },
-    [onPlanet, uiManager]
-  );
-
-  const actions: TooltipTriggerProps[] = [];
-
-  const withdrawing = artifact.transactions?.hasTransaction(isUnconfirmedWithdrawArtifactTx);
-  const depositing = artifact.transactions?.hasTransaction(isUnconfirmedDepositArtifactTx);
-  const activating = artifact.transactions?.hasTransaction(isUnconfirmedActivateArtifactTx);
-  const deactivating = artifact.transactions?.hasTransaction(isUnconfirmedDeactivateArtifactTx);
-
-  const canHandleDeposit =
-    depositPlanetWrapper.value && depositPlanetWrapper.value.planetLevel > artifact.rarity;
-  const canHandleWithdraw =
-    onPlanetWrapper.value && onPlanetWrapper.value.planetLevel > artifact.rarity;
-
-  const wait = durationUntilArtifactAvailable(artifact);
-
-  if (canDepositArtifact(account, artifact, depositPlanetWrapper.value)) {
-    actions.unshift({
-      name: TooltipName.DepositArtifact,
-      extraContent: !canHandleDeposit && (
-        <>
-          . <ArtifactRarityLabelAnim rarity={artifact.rarity} />
-          {` artifacts can only be deposited on level ${artifact.rarity + 1}+ spacetime rips`}
-        </>
-      ),
-      children: (
-        <Btn
-          disabled={depositing}
-          onClick={(e) => {
-            e.stopPropagation();
-            canHandleDeposit && deposit(artifact);
-          }}
-        >
-          {depositing ? <LoadingSpinner initialText={'Depositing...'} /> : 'Deposit'}
-        </Btn>
-      ),
-    });
-  }
-  if (isActivated(artifact) && artifact.artifactType !== ArtifactType.BlackDomain) {
-    actions.unshift({
-      name: TooltipName.DeactivateArtifact,
-      children: (
-        <Btn
-          disabled={deactivating}
-          onClick={(e) => {
-            e.stopPropagation();
-            deactivate(artifact);
-          }}
-        >
-          {deactivating ? <LoadingSpinner initialText={'Deactivating...'} /> : 'Deactivate'}
-        </Btn>
-      ),
-    });
-  }
-  if (canWithdrawArtifact(account, artifact, onPlanet)) {
-    actions.unshift({
-      name: TooltipName.WithdrawArtifact,
-      extraContent: !canHandleWithdraw && (
-        <>
-          . <ArtifactRarityLabelAnim rarity={artifact.rarity} />
-          {` artifacts can only be withdrawn from level ${artifact.rarity + 1}+ spacetime rips`}
-        </>
-      ),
-      children: (
-        <Btn
-          disabled={withdrawing}
-          onClick={(e) => {
-            e.stopPropagation();
-            canHandleWithdraw && withdraw(artifact);
-          }}
-        >
-          {withdrawing ? <LoadingSpinner initialText={'Withdrawing...'} /> : 'Withdraw'}
-        </Btn>
-      ),
-    });
-  }
-
-  if (canActivateArtifact(artifact, onPlanet, otherArtifactsOnPlanet)) {
-    actions.unshift({
-      name: TooltipName.ActivateArtifact,
-      children: (
-        <Btn
-          disabled={activating}
-          onClick={(e) => {
-            e.stopPropagation();
-            activate(artifact);
-          }}
-        >
-          {activating ? <LoadingSpinner initialText={'Activating...'} /> : 'Activate'}
-        </Btn>
-      ),
-    });
-  }
-
-  if (wait > 0) {
-    actions.unshift({
-      name: TooltipName.Empty,
-      extraContent: <>You have to wait before activating an artifact again</>,
-      children: <Sub>{formatDuration(wait)}</Sub>,
-    });
-  }
+  // MyTodo: make more show state
+  // const canHandleImageTypeChange = depositPlanetWrapper.value && ;
 
   return (
     <div>
-      {actions.length > 0 && <Spacer height={4} />}
-      {actions.map((a, i) => (
-        <span key={i}>
-          <TooltipTrigger {...a} />
-          <Spacer width={4} />
-        </span>
-      ))}
+      {canArtifactChangeImageType(artifact) && (
+        <StyledBuyArtifactPane>
+          <div>
+            <div> Image Type </div>
+            <SelectFrom
+              values={[
+                // HatType.DFARES.toString(),
+                // HatType.Doge.toString(),
+                // HatType.Cat.toString(),
+                // HatType.ChunZhen.toString(),
+                // HatType.IKunBird.toString(),
+                // HatType.Mike.toString(),
+                // HatType.Panda.toString(),
+                // HatType.Pepe.toString(),
+                // HatType.PigMan.toString(),
+                // HatType.RobotCat.toString(),
+                // HatType.TaiKuLa.toString(),
+                // HatType.Wojak1.toString(),
+                // HatType.Wojak2.toString(),
+                // HatType.Wojak3.toString(),
+                // HatType.Wojak4.toString(),
+                // HatType.Mask.toString(),
+                // HatType.Web3MQ.toString(),
+                '0',
+                '1',
+                '2',
+                '3',
+                '4',
+                '5',
+                '6',
+                '7',
+                '8',
+                '9',
+                '10',
+                '11',
+                '12',
+                '13',
+                '14',
+                '15',
+                '16',
+                '17',
+              ]}
+              labels={[
+                'DF ARES',
+                'Doge',
+                'Cat',
+                'ChunZhen',
+                'IKunBird',
+                'Mike',
+                'Panda',
+                'Pepe',
+                'PigMan',
+                'RobotCat',
+                'TaiKuLa',
+                'Wojak1',
+                'Wojak2',
+                'Wojak3',
+                'Wojak4',
+                'Mask',
+                'Web3MQ',
+              ]}
+              value={imageType.toString()}
+              setValue={setImageType}
+            />
+          </div>
+          <div>
+            <Btn
+              onClick={() => {
+                if (!enabled(onPlanet) || !uiManager || !onPlanet) return;
+                // uiManager.buyArtifact(
+                //   planet.locationId,
+                //   parseInt(rarity) as ArtifactRarity,
+                //   parseInt(biome) as Biome,
+                //   parseInt(type) as ArtifactType
+                // );
+                uiManager.changeArtifactImageType(
+                  onPlanet.locationId,
+                  artifact.id,
+                  Number(imageType)
+                );
+              }}
+              disabled={!enabled(onPlanet)}
+            >
+              Set Image Type
+            </Btn>
+          </div>
+        </StyledBuyArtifactPane>
+      )}
     </div>
   );
 }
