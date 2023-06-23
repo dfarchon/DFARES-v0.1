@@ -4,7 +4,7 @@ import { providers } from 'ethers';
 import { getBooleanSetting } from '../Utils/SettingsHooks';
 
 // tx is killed if user doesn't click popup within 20s
-const POPUP_TIMEOUT = 20000;
+const POPUP_TIMEOUT = 20000; //MyTodo: change to 20000
 
 interface OpenConfirmationConfig {
   contractAddress: EthAddress;

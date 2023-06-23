@@ -10,7 +10,7 @@ import Button from '../Components/Button';
 import { Checkbox, DarkForestCheckbox } from '../Components/Input';
 import { Row } from '../Components/Row';
 import dfstyles from '../Styles/dfstyles';
-import { setBooleanSetting } from '../Utils/SettingsHooks';
+import { getSetting, setBooleanSetting } from '../Utils/SettingsHooks';
 
 const StyledTxConfirmPopup = styled.div`
   width: 100%;
@@ -123,6 +123,11 @@ export function TxConfirmPopup({
   const contractAddress = address(contract);
   const account = address(addr);
 
+  const config = {
+    contractAddress: contractAddress,
+    account: account,
+  };
+
   const doReject = () => {
     localStorage.setItem(`tx-approved-${account}-${actionId}`, 'false');
     window.close();
@@ -151,8 +156,30 @@ export function TxConfirmPopup({
     else approve();
   };
 
-  const gasFee = localStorage.getItem(`${account}-gasFeeGwei`) || '';
-  const gasLimit = localStorage.getItem(`${account}-gasFeeLimit`) || '';
+  // public getGasFeeForTransaction(tx: Transaction): AutoGasSetting | string {
+  //   if (
+  //     (tx.intent.methodName === 'initializePlayer' || tx.intent.methodName === 'getSpaceShips') &&
+  //     tx.intent.contract.address === this.contract.address
+  //   ) {
+  //     return '50';
+  //   }
+  //   const config = {
+  //     contractAddress: this.contractAddress,
+  //     account: this.ethConnection.getAddress(),
+  //   };
+  //   return getSetting(config, Setting.GasFeeGwei);
+  // }
+  // ethConnection.getAutoGasPriceGwei(ethConnection.getAutoGasPrices(), autoGasPriceSetting);
+
+  const wrapGasFee = () => {
+    if (method === 'initializePlayer' || method === 'getSpaceShips') return '50';
+    const res = getSetting(config, Setting.GasFeeGwei);
+
+    return res;
+  };
+  const gasFeeGwei = wrapGasFee();
+
+  const gasLimit = getSetting(config, Setting.GasFeeLimit);
 
   const fromPlanet = localStorage.getItem(`${account}-fromPlanet`);
   const toPlanet = localStorage.getItem(`${account}-toPlanet`);
@@ -188,8 +215,26 @@ export function TxConfirmPopup({
   const buyArtifactCost: number =
     method === 'buyArtifact' && buyArtifactRarity ? 2 ** (Number(buyArtifactRarity) - 1) : 0;
 
-  const txCost: number =
-    hatCost + buyArtifactCost + weiToEth(gweiToWei(Number(gasLimit) * Number(gasFee)));
+  //MyTodo: chance to useUIManager
+  const getTxCost = () => {
+    if (!isNaN(Number(gasFeeGwei))) {
+      const res: number =
+        hatCost + buyArtifactCost + weiToEth(gweiToWei(Number(gasLimit) * Number(gasFeeGwei)));
+      return res.toFixed(8).toString();
+    } else {
+      const pre = 'Estimated: ';
+      let val = '0';
+      if (gasFeeGwei === 'Slow') val = '1';
+      else if (gasFeeGwei === 'Average') val = '3';
+      else if (gasFeeGwei === 'Fast') val = '10';
+      else val = gasFeeGwei;
+      const res: number =
+        hatCost + buyArtifactCost + weiToEth(gweiToWei(Number(gasLimit) * Number(val)));
+      return pre + res.toFixed(8).toString();
+    }
+  };
+
+  const txCost: string = getTxCost();
 
   const revealPlanet = localStorage.getItem(`${account}-revealLocationId`);
 
@@ -340,7 +385,7 @@ export function TxConfirmPopup({
       <div className='section'>
         <Row>
           <b>Gas Fee</b>
-          <span>{gasFee} gwei</span>
+          <span>{gasFeeGwei} gwei</span>
         </Row>
 
         <Row>
@@ -351,7 +396,7 @@ export function TxConfirmPopup({
         <Row>
           <b>Max Transaction Cost</b>
           <span>
-            {txCost.toFixed(8)} ${TOKEN_NAME}
+            {txCost} ${TOKEN_NAME}
           </span>
         </Row>
         {method === 'buyHat' && hatLevel && +hatLevel > 6 && (
