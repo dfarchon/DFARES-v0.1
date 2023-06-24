@@ -26,3 +26,6 @@ darkforest.localhost.toml
 
 # ganache log
 /blockchain/*
+
+
+/whitelist/*

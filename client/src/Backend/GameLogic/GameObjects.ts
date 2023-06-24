@@ -1205,8 +1205,12 @@ export class GameObjects {
               this.getArtifactById(arrival.artifactId),
               this.contractConstants
             );
-            this.emitArrivalNotifications(update);
+            //MyDelete
+            // console.warn('test ');
+            // console.warn(update.previous);
+            // console.warn(update.current);
             this.removeArrival(planetId, update.arrival.eventId);
+            this.emitArrivalNotifications(update);
           }, arrival.arrivalTime * 1000 - Date.now());
 
           const arrivalWithTimer = {

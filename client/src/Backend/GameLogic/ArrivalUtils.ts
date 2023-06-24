@@ -187,6 +187,7 @@ export const arrive = (
       //   contractConstants,
       //   contractConstants
       // );
+      toPlanet.heldArtifactIds = toPlanet.heldArtifactIds.filter((id) => id !== activeArtifact.id);
     } else if (
       toPlanet.energy >
       Math.floor((energyArriving * CONTRACT_PRECISION * 100) / toPlanet.defense) /
