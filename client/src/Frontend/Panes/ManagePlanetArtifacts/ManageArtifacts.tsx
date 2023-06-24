@@ -22,7 +22,8 @@ export function ManageArtifactsPane({
   const isMyTradingPost =
     planet.owner === playerAddress &&
     planet.planetType === PlanetType.TRADING_POST &&
-    !planet.destroyed;
+    !planet.destroyed &&
+    !planet.frozen;
   const [viewingDepositList, setViewingDepositList] = useState(false);
   const [action, setAction] = useState(false);
   const [composingArtifactList, setComposingArtifactList] = useState<Artifact[]>([]);

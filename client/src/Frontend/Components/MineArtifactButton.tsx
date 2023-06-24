@@ -39,7 +39,7 @@ export function MineArtifactButton({
   );
 
   const isDestroyed = useMemo(() => planetWrapper.value?.destroyed, [planetWrapper]);
-
+  const isFrozen = useMemo(() => planetWrapper.value?.frozen, [planetWrapper]);
   const hasGear = useMemo(
     () =>
       planetWrapper.value?.heldArtifactIds
@@ -81,7 +81,7 @@ export function MineArtifactButton({
 
   return (
     <StyledArtifactRow>
-      {owned && !alreadyMined && !isDestroyed && (
+      {owned && !alreadyMined && !isDestroyed && !isFrozen && (
         <>
           {isRuins && !findable && (
             <MaybeShortcutButton

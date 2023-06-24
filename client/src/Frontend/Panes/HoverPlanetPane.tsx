@@ -44,7 +44,13 @@ export function HoverPlanetPane() {
 
   return (
     <HoverPane
-      style={hoverWrapper.value?.destroyed ? snips.destroyedBackground : undefined}
+      style={
+        hoverWrapper.value?.destroyed
+          ? snips.destroyedBackground
+          : hoverWrapper.value?.frozen
+          ? snips.frozenBackground
+          : undefined
+      }
       visible={visible}
       element={<PlanetCard standalone planetWrapper={hoverWrapper} />}
     />

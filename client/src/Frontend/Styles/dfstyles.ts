@@ -161,6 +161,14 @@ export const snips = {
     backgroundPosition: 'right bottom',
     backgroundRepeat: 'no-repeat',
   } as CSSStyleDeclaration & React.CSSProperties,
+  // It is unclear where this should go in this file
+  //MyTodo : change destroyedbg.png to frozenbg.png
+  frozenBackground: {
+    backgroundImage: 'url("/public/img/destroyedbg.png")',
+    backgroundSize: '150px',
+    backgroundPosition: 'right bottom',
+    backgroundRepeat: 'no-repeat',
+  } as CSSStyleDeclaration & React.CSSProperties,
 };
 
 export default dfstyles;

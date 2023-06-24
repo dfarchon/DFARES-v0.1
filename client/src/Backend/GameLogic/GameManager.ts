@@ -1856,8 +1856,8 @@ class GameManager extends EventEmitter {
         throw new Error("you can't invade a planet you haven't discovered");
       }
 
-      if (planet.destroyed) {
-        throw new Error("you can't invade destroyed planets");
+      if (planet.destroyed || planet.frozen) {
+        throw new Error("you can't invade destroyed/frozen planets");
       }
 
       if (planet.invader !== EMPTY_ADDRESS) {
@@ -1916,8 +1916,8 @@ class GameManager extends EventEmitter {
         throw new Error('planet is not loaded');
       }
 
-      if (planet.destroyed) {
-        throw new Error("you can't capture destroyed planets");
+      if (planet.destroyed || planet.frozen) {
+        throw new Error("you can't capture destroyed/frozen planets");
       }
 
       if (planet.capturer !== EMPTY_ADDRESS) {
@@ -2702,8 +2702,8 @@ class GameManager extends EventEmitter {
         if (amount === 0) {
           throw new Error('must withdraw more than 0 silver!');
         }
-        if (planet.destroyed) {
-          throw new Error("can't withdraw silver from a destroyed planet");
+        if (planet.destroyed || planet.frozen) {
+          throw new Error("can't withdraw silver from a destroyed/frozen planet");
         }
       }
 

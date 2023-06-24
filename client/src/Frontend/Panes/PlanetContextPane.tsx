@@ -49,32 +49,32 @@ function PlanetContextPaneContent({
   const p = planet.value;
 
   let captureRow = null;
-  if (!p?.destroyed && uiManager.captureZonesEnabled) {
+  if (!p?.destroyed && !p?.frozen && uiManager.captureZonesEnabled) {
     captureRow = <CapturePlanetButton planetWrapper={planet} />;
   }
 
   let upgradeRow = null;
-  if (!p?.destroyed && owned) {
+  if (!p?.destroyed && !p?.frozen && owned) {
     upgradeRow = <OpenUpgradeDetailsPaneButton modal={modal} planetId={p?.locationId} />;
   }
 
   let hatRow = null;
-  if (!p?.destroyed && owned) {
+  if (!p?.destroyed && !p?.frozen && owned) {
     hatRow = <OpenHatPaneButton modal={modal} planetId={p?.locationId} />;
   }
 
   let buyArtifactRow = null;
-  if (!p?.destroyed && owned) {
+  if (!p?.destroyed && !p?.frozen && owned) {
     buyArtifactRow = <OpenBuyArtifactPaneButton modal={modal} planetId={p?.locationId} />;
   }
 
   let withdrawRow = null;
-  if (!p?.destroyed && owned && p?.planetType === PlanetType.TRADING_POST) {
+  if (!p?.destroyed && !p?.frozen && owned && p?.planetType === PlanetType.TRADING_POST) {
     withdrawRow = <WithdrawSilver wrapper={planet} />;
   }
 
   let notifRow = null;
-  if (!p?.destroyed && notifs.length > 0) {
+  if (!p?.destroyed && !p?.frozen && notifs.length > 0) {
     notifRow = <PlanetNotifications planet={planet} notifs={notifs} />;
   }
 
@@ -134,7 +134,12 @@ export function PlanetContextPane({ visible, onClose }: { visible: boolean; onCl
   }, [planet, uiManager]);
 
   const toggleSendingForces = useCallback(() => {
-    if (planet.value?.destroyed && !uiManager.isSendingShip(planet.value?.locationId)) return;
+    if (
+      planet.value?.destroyed &&
+      planet.value?.frozen &&
+      !uiManager.isSendingShip(planet.value?.locationId)
+    )
+      return;
     const isAbandoning = uiManager.isAbandoning();
     if (isAbandoning) return;
     const isSending = uiManager.isSendingForces();
@@ -144,6 +149,7 @@ export function PlanetContextPane({ visible, onClose }: { visible: boolean; onCl
 
   const toggleAbandoning = useCallback(() => {
     if (planet.value?.destroyed) return;
+    if (planet.value?.frozen) return;
     const isAbandoning = uiManager.isAbandoning();
     uiManager.setAbandoning(!isAbandoning);
     doSend();
@@ -206,7 +212,13 @@ export function PlanetContextPane({ visible, onClose }: { visible: boolean; onCl
 
   return (
     <ModalPane
-      style={planet?.value?.destroyed ? snips.destroyedBackground : undefined}
+      style={
+        planet?.value?.destroyed
+          ? snips.destroyedBackground
+          : planet?.value?.frozen
+          ? snips.frozenBackground
+          : undefined
+      }
       visible={visible}
       onClose={onClose}
       id={ModalName.PlanetContextPane}

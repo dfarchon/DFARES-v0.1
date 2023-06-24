@@ -150,13 +150,13 @@ export function PlanetIcons({ planet }: { planet: Planet | undefined }) {
           </TooltipTrigger>
         )}
       {captureZoneIcons}
-      {planet.destroyed && (
+      {(planet.destroyed || planet.frozen) && (
         <TooltipTrigger
           name={TooltipName.Empty}
           extraContent={
             <>
-              This planet is destroyed. It does not generate energy or silver, all incoming voyages
-              are void, and you cannot send or receive energy from it.
+              This planet is destroyed/frozen. It does not generate energy or silver, all incoming
+              voyages are void, and you cannot send or receive energy from it.
             </>
           }
         >

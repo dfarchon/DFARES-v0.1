@@ -299,7 +299,7 @@ export function SendResources({
         <LoadingSpinner initialText='Abandoning...' />
       </Btn>
     );
-  } else if (p.value && !p.value.destroyed) {
+  } else if (p.value && !p.value.destroyed && !p.value.frozen) {
     abandonRow = (
       <AbandonButton
         planet={p.value}
@@ -318,7 +318,7 @@ export function SendResources({
       </Btn>
     );
   } else {
-    const isDisabled = (p.value?.destroyed || !owned) && !isSendingShip;
+    const isDisabled = (p.value?.destroyed || p.value?.frozen || !owned) && !isSendingShip;
     sendRow = (
       <SendRow
         artifact={artifactSending}
@@ -331,7 +331,7 @@ export function SendResources({
 
   return (
     <StyledSendResources>
-      {owned && !p.value?.destroyed && (
+      {owned && !p.value?.destroyed && !p.value?.frozen && (
         <>
           <ResourceBar
             selected={p.value}
