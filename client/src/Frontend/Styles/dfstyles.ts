@@ -162,9 +162,8 @@ export const snips = {
     backgroundRepeat: 'no-repeat',
   } as CSSStyleDeclaration & React.CSSProperties,
   // It is unclear where this should go in this file
-  //MyTodo : change destroyedbg.png to frozenbg.png
   frozenBackground: {
-    backgroundImage: 'url("/public/img/destroyedbg.png")',
+    backgroundImage: 'url("/public/img/frozenbg.png")',
     backgroundSize: '150px',
     backgroundPosition: 'right bottom',
     backgroundRepeat: 'no-repeat',

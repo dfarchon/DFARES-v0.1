@@ -170,7 +170,7 @@ contract DFMoveFacet is WithStorage {
 
         //all photoid travel same time
         if (photoidPresent) {
-            travelTime = 60;
+            travelTime = 10;
         }
 
         Planet memory toPlanet = gs().planets[args.newLoc];

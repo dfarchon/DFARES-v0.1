@@ -117,7 +117,8 @@ const biomeSpriteInfo = (): BiomeSpriteLocations => {
       }
     } else if (isRelic(type)) {
       const yIdx = 8;
-      const relicNo = type - ArtifactType.Wormhole;
+      let relicNo = type - ArtifactType.Wormhole;
+      if (type === ArtifactType.StellarShield) relicNo -= 2;
       const xIdx = relicNo * 2;
 
       for (let biome: Biome = Biome.UNKNOWN; biome <= MAX_BIOME; biome++) {
@@ -149,8 +150,13 @@ const biomeSpriteInfo = (): BiomeSpriteLocations => {
     // BlindBox: 15 as ArtifactType,
     // Avatar: 16 as ArtifactType,
 
-    if (type >= ArtifactType.SoulSwap && type <= ArtifactType.BlindBox) {
+    if (
+      type >= ArtifactType.SoulSwap &&
+      type <= ArtifactType.BlindBox &&
+      type !== ArtifactType.StellarShield
+    ) {
       //new added artifact use wormhole icon temporarily
+
       result[type] = result[ArtifactType.Wormhole];
     } else {
       result[type] = biomeInfo as BiomeToSprite;
