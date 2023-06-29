@@ -34,7 +34,7 @@
 /**
  * The name of the network where these contracts are deployed.
  */
-export const NETWORK = 'localhost';
+export const NETWORK = 'hardhat';
 /**
  * The id of the network where these contracts are deployed.
  */
@@ -46,8 +46,8 @@ export const START_BLOCK = 0;
 /**
  * The address for the DarkForest contract.
  */
-export const CONTRACT_ADDRESS = '0x8950bab77f29E8f81e6F78AEA0a79bADD88Eeb13';
+export const CONTRACT_ADDRESS = '0x884e9AF7c4bc2B12B8e0Cc5538926986ccf4E670';
 /**
  * The address for the initalizer contract. Useful for lobbies.
  */
-export const INIT_ADDRESS = '0x500cf53555c09948f4345594F9523E7B444cD67E';
+export const INIT_ADDRESS = '0x7Df56e3DCe643CC13cD155B668212b6F898e0415';

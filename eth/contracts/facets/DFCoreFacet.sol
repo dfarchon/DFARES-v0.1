@@ -148,7 +148,8 @@ contract DFCoreFacet is WithStorage {
             gameConstants().SPACE_JUNK_LIMIT,
             false,
             0,
-            false
+            false,
+            0
         );
 
         LibGameUtils.updateWorldRadius();
@@ -206,12 +207,23 @@ contract DFCoreFacet is WithStorage {
             "Only owner account can perform that operation on planet."
         );
 
+        uint256 amount = gs().players[msg.sender].buyArtifactAmount + 1;
+        uint256 totalGameBlocks = block.number - gameConstants().GAME_START_BLOCK;
+
+        //MyTodo: altlayer 2 sec for 1 block
+        //1 hour 1 artifact
+        // require(totalGameBlocks * 2 >= amount * 60 * 60, "block number limit");
+
+        // 1 min 1 artifact
+        require(totalGameBlocks * 2 >= amount * 60, "block number limit");
+
         uint256 cost = (1 << gs().planets[_location].hatLevel) * 1 ether;
 
         require(msg.value == cost, "Wrong value sent");
 
         gs().planets[_location].hatLevel += 1;
         gs().planets[_location].hatType = hatType;
+        gs().players[msg.sender].buyArtifactAmount++;
         emit PlanetHatBought(
             msg.sender,
             _location,

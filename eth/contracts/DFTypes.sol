@@ -35,6 +35,7 @@ struct Player {
     bool claimedShips;
     uint256 finalRank;
     bool claimedReward;
+    uint256 buyArtifactAmount;
 }
 
 struct Planet {
@@ -158,7 +159,7 @@ struct DFTCreateArtifactArgs {
     Biome biome;
     ArtifactType artifactType;
     address owner;
-    address controller;    // Only used for spaceships
+    address controller; // Only used for spaceships
     uint256 imageType; // Only for meme/logo artifacts
 }
 
