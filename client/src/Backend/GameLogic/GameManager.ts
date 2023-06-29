@@ -1294,6 +1294,11 @@ class GameManager extends EventEmitter {
     return player?.spaceJunkLimit;
   }
 
+  public getPlayerBuyArtifactAmount(addr: EthAddress): number | undefined {
+    const player = this.players.get(addr);
+    return player?.buyArtifactAmount;
+  }
+
   public getDefaultSpaceJunkForPlanetLevel(level: number) {
     return this.contractConstants.PLANET_LEVEL_JUNK[level];
   }

@@ -24,4 +24,5 @@ export type Player = {
   claimedShips: boolean;
   finalRank: number;
   claimedReward: boolean;
+  buyArtifactAmount: number;
 };

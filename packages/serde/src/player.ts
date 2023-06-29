@@ -26,5 +26,6 @@ export function decodePlayer(rawPlayer: RawPlayer): Player {
     claimedShips: rawPlayer.claimedShips,
     finalRank: rawPlayer.finalRank.toNumber(),
     claimedReward: rawPlayer.claimedReward,
+    buyArtifactAmount: rawPlayer.buyArtifactAmount.toNumber(),
   };
 }

@@ -668,6 +668,9 @@ export class ContractsAPI extends EventEmitter {
     if (!rawPlayer.isInitialized) return undefined;
     const player = decodePlayer(rawPlayer);
 
+    //MyDelete:
+    console.warn(player);
+
     return player;
   }
 

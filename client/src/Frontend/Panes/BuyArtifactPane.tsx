@@ -46,6 +46,16 @@ export function BuyArtifactPane({
     useEmitterValue(uiManager.getEthConnection().myBalance$, BigNumber.from('0'))
   );
 
+  const currentBlockNumber = useEmitterValue(uiManager.getEthConnection().blockNumber$, undefined);
+
+  const maxAmount = currentBlockNumber
+    ? Math.floor(((currentBlockNumber - uiManager.contractConstants.GAME_START_BLOCK) * 2.0) / 60)
+    : 0;
+
+  const buyArtifactAmountInContract = account ? uiManager.getPlayerBuyArtifactAmount(account) : 0;
+
+  const buyArtifactAmount = buyArtifactAmountInContract ? buyArtifactAmountInContract : 0;
+
   const [biome, setBiome] = useState(Biome.GRASSLAND.toString());
   const [type, setType] = useState(ArtifactType.PhotoidCannon.toString());
   const [rarity, setRarity] = useState(ArtifactRarity.Legendary.toString());
@@ -66,11 +76,15 @@ export function BuyArtifactPane({
     !planet.transactions?.hasTransaction(isUnconfirmedBuyArtifactTx) &&
     planet?.owner === account &&
     cost > 0 &&
-    balanceEth >= cost;
+    balanceEth >= cost &&
+    maxAmount > buyArtifactAmount;
 
   if (planet && planet.owner === account) {
     return (
       <StyledBuyArtifactPane>
+        <div>block number: {currentBlockNumber}</div>
+        <div> buy artifact amount {buyArtifactAmount}</div>
+        <div> max artifact amount {maxAmount} </div>
         <div>
           <Sub>Artifact Price</Sub>
           <span>

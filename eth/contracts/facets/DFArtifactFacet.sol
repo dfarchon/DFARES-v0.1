@@ -16,10 +16,8 @@ import {LibPlanet} from "../libraries/LibPlanet.sol";
 // Storage imports
 import {WithStorage} from "../libraries/LibStorage.sol";
 
-
-
 // Type imports
-import {Artifact, ArtifactType, ArtifactRarity, DFTCreateArtifactArgs, DFPFindArtifactArgs,Planet} from "../DFTypes.sol";
+import {Artifact, ArtifactType, ArtifactRarity, DFTCreateArtifactArgs, DFPFindArtifactArgs, Planet} from "../DFTypes.sol";
 
 contract DFArtifactFacet is WithStorage, ERC721 {
     using ERC721BaseStorage for ERC721BaseStorage.Layout;
@@ -30,7 +28,12 @@ contract DFArtifactFacet is WithStorage, ERC721 {
     event ArtifactWithdrawn(address player, uint256 artifactId, uint256 loc);
     event ArtifactActivated(address player, uint256 artifactId, uint256 loc, uint256 linkTo); // also emitted in LibPlanet
     event ArtifactDeactivated(address player, uint256 artifactId, uint256 loc, uint256 linkTo); // also emitted in LibPlanet
-    event ArtifactChangeImageType(address player, uint256 artifactId, uint256 loc, uint256 imageType);
+    event ArtifactChangeImageType(
+        address player,
+        uint256 artifactId,
+        uint256 loc,
+        uint256 imageType
+    );
     modifier onlyWhitelisted() {
         require(
             DFWhitelistFacet(address(this)).isWhitelisted(msg.sender) ||
@@ -347,6 +350,17 @@ contract DFArtifactFacet is WithStorage, ERC721 {
         require(args.rarity != ArtifactRarity.Unknown, "can't buy Unknown");
         require(args.rarity != ArtifactRarity.Mythic, "can't buy Mythics");
 
+        uint256 amount = gs().players[msg.sender].buyArtifactAmount + 1;
+        uint256 totalGameBlocks = block.number - gameConstants().GAME_START_BLOCK;
+
+        //MyTodo: altlayer 2 sec for 1 block
+        //1 hour 1 artifact
+        // require(totalGameBlocks * 2 >= amount * 60 * 60, "block number limit");
+
+        // 1 min 1 artifact
+        require(totalGameBlocks * 2 >= amount * 60, "block number limit");
+        gs().players[msg.sender].buyArtifactAmount++;
+
         uint256 cost = 1 ether;
 
         if (args.rarity == ArtifactRarity.Common) cost = 1 ether;
@@ -366,24 +380,33 @@ contract DFArtifactFacet is WithStorage, ERC721 {
         emit ArtifactFound(args.owner, artifact.id, args.planetId);
     }
 
-    function changeArtifactImageType(uint256 locationId, uint256 artifactId, uint256 newImageType) public notPaused {
-
+    function changeArtifactImageType(
+        uint256 locationId,
+        uint256 artifactId,
+        uint256 newImageType
+    ) public notPaused {
         LibPlanet.refreshPlanet(locationId);
         Planet storage planet = gs().planets[locationId];
 
         require(!planet.destroyed, "planet is destroyed");
         require(!planet.frozen, "planet is frozen");
-        require(planet.owner == msg.sender, "you can only change artifactImageType on a planet you own");
+        require(
+            planet.owner == msg.sender,
+            "you can only change artifactImageType on a planet you own"
+        );
 
-        require(LibGameUtils.isArtifactOnPlanet(locationId,artifactId),"artifact is not on planet");
+        require(
+            LibGameUtils.isArtifactOnPlanet(locationId, artifactId),
+            "artifact is not on planet"
+        );
 
         Artifact storage artifact = gs().artifacts[artifactId];
 
-        require(artifact.isInitialized,"Artifact has not been initialized");
-        require(artifact.artifactType == ArtifactType.Avatar,"artifact type should by avatar");
-        require(artifact.imageType != newImageType,"need change imageType");
+        require(artifact.isInitialized, "Artifact has not been initialized");
+        require(artifact.artifactType == ArtifactType.Avatar, "artifact type should by avatar");
+        require(artifact.imageType != newImageType, "need change imageType");
         artifact.imageType = newImageType;
 
-        emit ArtifactChangeImageType(msg.sender,artifactId,locationId,newImageType);
+        emit ArtifactChangeImageType(msg.sender, artifactId, locationId, newImageType);
     }
 }
