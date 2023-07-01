@@ -31,9 +31,17 @@ export const HatType = {
   Wojak2: 22 as HatType,
   Wojak3: 23 as HatType,
   Wojak4: 24 as HatType,
-  Mask: 25 as HatType,
-  Web3MQ: 26 as HatType,
-  DFARES: 27 as HatType,
+  zero1a1: 25 as HatType,
+  AGLD: 26 as HatType,
+  AltLayer: 27 as HatType,
+  DF: 28 as HatType,
+  DFARES: 29 as HatType,
+  DFDAO: 30 as HatType,
+  Kawaiidoge: 31 as HatType,
+  Mask: 32 as HatType,
+  NetherScape: 33 as HatType,
+  OrdenGG: 34 as HatType,
+  Web3MQ: 35 as HatType,
   // Don't forget to update MIN_HAT_TYPE and/or MAX_HAT_TYPE in the `constants` package
 };
 
@@ -66,9 +74,17 @@ export const HatTypeNames = {
   [HatType.Wojak2]: 'Wojak2',
   [HatType.Wojak3]: 'Wojak3',
   [HatType.Wojak4]: 'Wojak4',
-  [HatType.Mask]: 'Mask',
-  [HatType.Web3MQ]: 'Web3MQ',
+  [HatType.zero1a1]: '01a1',
+  [HatType.AGLD]: 'AGLD DAO',
+  [HatType.AltLayer]: 'AltLayer',
+  [HatType.DF]: 'Dark Forest',
   [HatType.DFARES]: 'DF ARES',
+  [HatType.DFDAO]: 'DFDAO',
+  [HatType.Kawaiidoge]: 'Kawaii Doge',
+  [HatType.Mask]: 'Mask Network',
+  [HatType.NetherScape]: 'NetherScape',
+  [HatType.OrdenGG]: 'Orden GG',
+  [HatType.Web3MQ]: 'Web3MQ',
 } as const;
 
 // export const HatType = {

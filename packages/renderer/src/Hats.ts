@@ -196,21 +196,69 @@ const wojak4 = {
   bottomLayer: [],
 };
 
-const mask = {
+const zero1a1 = {
   legacy: false,
-  topLayer: ['http://localhost:8081/img/logo/mask.svg'],
+  topLayer: ['http://localhost:8081/img/logo/01a1.png'],
   bottomLayer: [],
 };
 
-const web3mq = {
+const AGLD = {
   legacy: false,
-  topLayer: ['http://localhost:8081/img/logo/web3mq.png'],
+  topLayer: ['http://localhost:8081/img/logo/AGLD.png'],
+  bottomLayer: [],
+};
+
+const altlayer = {
+  legacy: false,
+  topLayer: ['http://localhost:8081/img/logo/altlayer.png'],
+  bottomLayer: [],
+};
+
+const df = {
+  legacy: false,
+  topLayer: ['http://localhost:8081/img/logo/df.png'],
   bottomLayer: [],
 };
 
 const dfAres = {
   legacy: false,
   topLayer: ['http://localhost:8081/img/logo/dfAres.png'],
+  bottomLayer: [],
+};
+
+const dfdao = {
+  legacy: false,
+  topLayer: ['http://localhost:8081/img/logo/dfdao.png'],
+  bottomLayer: [],
+};
+
+const kawaiidoge = {
+  legacy: false,
+  topLayer: ['http://localhost:8081/img/logo/kawaiidoge.png'],
+  bottomLayer: [],
+};
+
+const mask = {
+  legacy: false,
+  topLayer: ['http://localhost:8081/img/logo/mask.svg'],
+  bottomLayer: [],
+};
+
+const netherscape = {
+  legacy: false,
+  topLayer: ['http://localhost:8081/img/logo/netherscape.png'],
+  bottomLayer: [],
+};
+
+const ordengg = {
+  legacy: false,
+  topLayer: ['http://localhost:8081/img/logo/ordengg.png'],
+  bottomLayer: [],
+};
+
+const web3mq = {
+  legacy: false,
+  topLayer: ['http://localhost:8081/img/logo/web3mq.png'],
   bottomLayer: [],
 };
 
@@ -237,9 +285,17 @@ export const avatarFromArtifactIdAndImageType = (
     HatType.Wojak2,
     HatType.Wojak3,
     HatType.Wojak4,
+    HatType.zero1a1,
+    HatType.AGLD,
+    HatType.AltLayer,
+    HatType.DF,
+    HatType.DFARES,
+    HatType.DFDAO,
+    HatType.Kawaiidoge,
     HatType.Mask,
+    HatType.NetherScape,
+    HatType.OrdenGG,
     HatType.Web3MQ,
-    HatType.Mask,
   ];
   if (ifRandom) return avatars[parseInt(id.substring(id.length - 2), 16) % avatars.length];
   else return avatars[parseInt(imageType.toString()) % avatars.length];
@@ -270,8 +326,15 @@ export const hats: Record<HatType, Hat> = {
   [HatType.Wojak2]: wojak2,
   [HatType.Wojak3]: wojak3,
   [HatType.Wojak4]: wojak4,
-  [HatType.Mask]: mask,
-  [HatType.Web3MQ]: web3mq,
-  [HatType.Mask]: mask,
+  [HatType.zero1a1]: zero1a1,
+  [HatType.AGLD]: AGLD,
+  [HatType.AltLayer]: altlayer,
+  [HatType.DF]: df,
   [HatType.DFARES]: dfAres,
+  [HatType.DFDAO]: dfdao,
+  [HatType.Kawaiidoge]: kawaiidoge,
+  [HatType.Mask]: mask,
+  [HatType.NetherScape]: netherscape,
+  [HatType.OrdenGG]: ordengg,
+  [HatType.Web3MQ]: web3mq,
 };
