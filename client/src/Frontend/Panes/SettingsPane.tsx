@@ -232,7 +232,6 @@ export function SettingsPane({
             labels={[
               '1 gwei (default)',
               '2 gwei (faster)',
-
               '5 gwei (turbo)',
               '10 gwei (mega turbo)',
               '20 gwei (need4speed)',
