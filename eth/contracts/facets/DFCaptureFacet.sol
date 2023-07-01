@@ -81,7 +81,7 @@ contract DFCaptureFacet is WithStorage {
         require(gameConstants().CAPTURE_ZONES_ENABLED, "capture zones are disabled");
 
         LibPlanet.refreshPlanet(locationId);
-        Planet memory planet = gs().planets[locationId];
+        Planet storage planet = gs().planets[locationId];
 
         require(planet.capturer == address(0), "planets can only be captured once");
         require(!planet.destroyed, "planet is destroyed");
