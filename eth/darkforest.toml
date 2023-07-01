@@ -40,8 +40,8 @@ ARTIFACT_POINT_VALUES = [
   0,
   0
 ]
-PHOTOID_ACTIVATION_DELAY = 30 # seconds
-STELLAR_ACTIVATION_DELAY = 15 # seconds
+PHOTOID_ACTIVATION_DELAY = 600 # seconds
+STELLAR_ACTIVATION_DELAY = 0 # seconds
 ##############
 # Space junk #
 ##############
@@ -77,9 +77,9 @@ CAPTURE_ZONE_PLANET_LEVEL_SCORE = [
   1_000_000
 ]
 # After invading, the number of blocks you need to hold a planet for before capturing
-CAPTURE_ZONE_HOLD_BLOCKS_REQUIRED = 0 # 255 # MyTodo: need to change to a non-zero value
+CAPTURE_ZONE_HOLD_BLOCKS_REQUIRED = 10 # 255 # MyTodo: need to change to a non-zero value
 # Number of capture zones that spawn each time they generate
-CAPTURE_ZONES_PER_5000_WORLD_RADIUS = 3
+CAPTURE_ZONES_PER_5000_WORLD_RADIUS = 10  # 3
 
 ######################
 # Game configuration #

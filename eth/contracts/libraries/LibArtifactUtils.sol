@@ -408,6 +408,8 @@ library LibArtifactUtils {
             //     // require(!gs().planets[linkTo].destroyed, "planet destroyed");
             //     // planet.owner = gs().planets[linkTo].owner;
             //     // gs().planets[linkTo].owner = msg.sender;
+        } else if (artifact.artifactType == ArtifactType.StellarShield) {
+            // MyTodo: maybe add some limit?
         } else if (artifact.artifactType == ArtifactType.BlindBox) {
             // planet.owner = gs().planets[linkTo].owner;
             // gs().planets[linkTo].owner = msg.sender;
