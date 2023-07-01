@@ -802,7 +802,9 @@ library LibGameUtils {
             _planet.silverCap *= 2;
             _planet.defense /= 2;
         } else if (planetType == PlanetType.SILVER_BANK) {
-            _planet.speed /= 2;
+            // quasar move faster
+            _planet.speed *= 2;
+            // _planet.speed /= 2;
             _planet.silverCap *= 10;
             _planet.populationGrowth = 0;
             _planet.populationCap *= 5;
