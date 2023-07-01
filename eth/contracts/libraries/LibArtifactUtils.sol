@@ -138,8 +138,6 @@ library LibArtifactUtils {
         Planet storage planet = gs().planets[locationId];
         Artifact storage artifact = gs().artifacts[artifactId];
 
-        require(locationId != linkTo, "locationId neq linkTo");
-
         require(
             LibGameUtils.isArtifactOnPlanet(locationId, artifactId),
             "can't active an artifact on a planet it's not on"
@@ -199,6 +197,7 @@ library LibArtifactUtils {
         Planet storage planet,
         Artifact memory artifact
     ) private {
+        require(locationId != linkTo, "locationId ne linkTo");
         require(
             planet.owner == msg.sender,
             "you must own the planet you are activating an artifact on"
@@ -319,6 +318,11 @@ library LibArtifactUtils {
                 "fromPlanetLevel must be >= toPlanetLevel"
             );
 
+            require(
+                2 * uint256(artifact.rarity) >= planet.planetLevel,
+                "artifact is not powerful enough to apply effect to this planet level"
+            );
+
             Artifact memory artifactOnToPlanet = LibGameUtils.getActiveArtifact(linkTo);
             if (artifactOnToPlanet.artifactType == ArtifactType.PlanetaryShield) {
                 require(
@@ -342,8 +346,12 @@ library LibArtifactUtils {
                 "fromPlanetLevel need gte toPlanetLevel"
             );
 
-            Artifact memory activeArtifactOnToPlanet = LibGameUtils.getActiveArtifact(linkTo);
+            require(
+                2 * uint256(artifact.rarity) >= planet.planetLevel,
+                "artifact is not powerful enough to apply effect to this planet level"
+            );
 
+            Artifact memory activeArtifactOnToPlanet = LibGameUtils.getActiveArtifact(linkTo);
             require(
                 activeArtifactOnToPlanet.artifactType == ArtifactType.IceLink,
                 "artifact on toPlanet must be IceLink"
@@ -453,8 +461,7 @@ library LibArtifactUtils {
 
         bool shouldBurn = artifact.artifactType == ArtifactType.PlanetaryShield ||
             artifact.artifactType == ArtifactType.PhotoidCannon ||
-            artifact.artifactType == ArtifactType.IceLink ||
-            artifact.artifactType == ArtifactType.StellarShield;
+            artifact.artifactType == ArtifactType.IceLink;
 
         if (shouldBurn) {
             // burn it after use. will be owned by contract but not on a planet anyone can control
