@@ -88,6 +88,6 @@
     "deploy:contracts": "hardhat --network localhost deploy",
     "hardhat:deploy": "run-s wait:node \"deploy:contracts {@}\" --",
     "start": "run-p hardhat:node \"hardhat:deploy {@}\" --",
-    "ganache": "npx ganache --chain.chainId 31337 --database.dbPath './blockchain/' -m 'change typical hire slam amateur loan grid fix drama electric seed label'  --wallet.defaultBalance 200000  --wallet.totalAccounts 20"
+    "ganache": "npx ganache --chain.chainId 31337 --database.dbPath './blockchain/' -m 'change typical hire slam amateur loan grid fix drama electric seed label'  --wallet.defaultBalance 200000  --wallet.totalAccounts 20 --miner.blockTime=2"
   }
 }

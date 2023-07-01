@@ -155,6 +155,7 @@ const biomeSpriteInfo = (): BiomeSpriteLocations => {
       type <= ArtifactType.BlindBox &&
       type !== ArtifactType.StellarShield
     ) {
+      //MyTodo:
       //new added artifact use wormhole icon temporarily
 
       result[type] = result[ArtifactType.Wormhole];
@@ -197,15 +198,6 @@ export function spriteFromArtifact(artifact: RenderedArtifact): SpriteRectangle 
   const { id, artifactType: type, planetBiome: biome, rarity } = artifact;
 
   if (artifactSpriteMap.has(id)) return artifactSpriteMap.get(id) || EMPTY_SPRITE;
-
-  //ToDelete
-  // if (artifact.id === '3b29cdf30458a98c9855bbc909558062195731ff97968f8a86ebf27393364b10') {
-  //   console.warn('isSpaceShip');
-  //   console.log(isSpaceShip(artifact.artifactType));
-
-  //   console.warn('isAncient');
-  //   console.log(isAncient(artifact));
-  // }
 
   if (isSpaceShip(artifact.artifactType)) {
     const idx = {

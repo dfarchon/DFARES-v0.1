@@ -5,12 +5,9 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Btn } from '../Components/Btn';
 import { EmSpacer, Link, Spacer, Title } from '../Components/CoreUI';
-import { EmailCTA, EmailCTAMode } from '../Components/Email';
 import { Modal } from '../Components/Modal';
-import { HideSmall, Text, White } from '../Components/Text';
+import { Text, White } from '../Components/Text';
 import dfstyles from '../Styles/dfstyles';
-import { LandingPageRoundArt } from '../Views/LandingPageRoundArt';
-import { LeadboardDisplay } from '../Views/Leaderboard';
 
 export const enum LandingPageZIndex {
   Background = 0,
@@ -53,7 +50,7 @@ export default function LandingPage() {
   return (
     <>
       <PrettyOverlayGradient />
-      <Hiring />
+      {/* <Hiring /> */}
 
       <Page>
         <OnlyMobile>
@@ -65,7 +62,7 @@ export default function LandingPage() {
 
         <MainContentContainer>
           <Header>
-            <LinkContainer>
+            {/* <LinkContainer>
               <Link to={links.email}>email</Link>
               <Spacer width={4} />
               <Link to={links.blog}>blog</Link>
@@ -87,8 +84,8 @@ export default function LandingPage() {
               <Link to={links.plugins}>plugins</Link>
               <Spacer width={4} />
               <Link to={links.wiki}>wiki</Link>
-            </LinkContainer>
-
+            </LinkContainer> */}
+            {/*
             <OnlyMobile>
               <Spacer height={4} />
             </OnlyMobile>
@@ -96,33 +93,42 @@ export default function LandingPage() {
               <Spacer height={16} />
             </HideOnMobile>
 
-            <LandingPageRoundArt />
-
+            <LandingPageRoundArt /> */}
+            {/*
             <p>
               <White>Dark Forest</White> <Text>zkSNARK space warfare</Text>
               <br />
               <Text>Round 5: </Text>
               <White>The Junk Wars</White>
+            </p> */}
+
+            <Spacer height={280} />
+
+            <p>
+              <White>DF ARES v0.1 </White> <Text> </Text>
+              {/* <br />
+              <Text>Round 1: </Text>
+              <White>Artifact Combat</White> */}
             </p>
 
             <Spacer height={16} />
 
             <ButtonWrapper>
-              <Btn size='large' onClick={() => history.push(`/lobby/${defaultAddress}`)}>
+              {/* <Btn size='large' onClick={() => history.push(`/lobby/${defaultAddress}`)}>
                 Create Lobby
-              </Btn>
+              </Btn> */}
               <Btn size='large' onClick={() => history.push(`/play/${defaultAddress}`)}>
-                Enter Round 5
+                Enter Round 1
               </Btn>
-              <Btn size='large' onClick={() => history.push(`/events`)}>
+              {/* <Btn size='large' onClick={() => history.push(`/events`)}>
                 Events
-              </Btn>
+              </Btn> */}
             </ButtonWrapper>
           </Header>
-          <EmSpacer height={3} />
+          {/* <EmSpacer height={3} />
           Ways to get Involved
-          <EmSpacer height={1} />
-          <Involved>
+          <EmSpacer height={1} /> */}
+          {/* <Involved>
             <InvolvedItem
               href='https://blog.zkga.me/hosting-a-dark-forest-community-round'
               style={{
@@ -153,9 +159,9 @@ export default function LandingPage() {
                 backgroundImage: "url('/public/get_involved/lobby.png')",
               }}
             ></InvolvedItem>
-          </Involved>
+          </Involved> */}
           <EmSpacer height={3} />
-          <HallOfFame style={{ color: dfstyles.colors.text }}>
+          {/* <HallOfFame style={{ color: dfstyles.colors.text }}>
             <HallOfFameTitle>Space Masters</HallOfFameTitle>
             <Spacer height={8} />
             <table>
@@ -286,18 +292,18 @@ export default function LandingPage() {
                 </TRow>
               </tbody>
             </table>
-          </HallOfFame>
+          </HallOfFame> */}
           <Spacer height={32} />
-          <EmailWrapper>
+          {/* <EmailWrapper>
             <EmailCTA mode={EmailCTAMode.SUBSCRIBE} />
-          </EmailWrapper>
+          </EmailWrapper> */}
         </MainContentContainer>
 
-        <Spacer height={128} />
+        {/* <Spacer height={128} />
 
         <LeadboardDisplay />
 
-        <Spacer height={256} />
+        <Spacer height={256} /> */}
       </Page>
     </>
   );

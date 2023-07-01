@@ -1407,7 +1407,9 @@ export class GameObjects {
       silCap *= 2;
       defense *= 0.5;
     } else if (planetType === PlanetType.SILVER_BANK) {
-      speed /= 2;
+      // speed /= 2;
+      //MyNotice
+      speed *= 2;
       silCap *= 10;
       energyGro = 0;
       energyCap *= 5;

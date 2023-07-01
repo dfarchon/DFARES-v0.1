@@ -350,9 +350,17 @@ contract DFArtifactFacet is WithStorage, ERC721 {
         require(args.rarity != ArtifactRarity.Unknown, "can't buy Unknown");
         require(args.rarity != ArtifactRarity.Mythic, "can't buy Mythics");
 
-        require(args.artifactType != ArtifactType.BlackDomain, "no BlackDomain");
+        require(args.artifactType != ArtifactType.Monolith, "no Monolith");
+        require(args.artifactType != ArtifactType.Colossus, "no Colossus");
+        require(args.artifactType != ArtifactType.Spaceship, "no Spaceship");
+        require(args.artifactType != ArtifactType.Pyramid, "no Pyramid");
+
         require(args.artifactType != ArtifactType.PhotoidCannon, "no PhotoidCannon");
+        require(args.artifactType != ArtifactType.BlackDomain, "no BlackDomain");
         require(args.artifactType != ArtifactType.IceLink, "no IceLink");
+        require(args.artifactType != ArtifactType.SoulSwap, "no SoulSwap");
+        require(args.artifactType != ArtifactType.Bomb, "no Bomb");
+        require(args.artifactType != ArtifactType.BlindBox, "no BlindBox");
 
         uint256 amount = gs().players[msg.sender].buyArtifactAmount + 1;
         uint256 totalGameBlocks = block.number - gameConstants().GAME_START_BLOCK;
@@ -361,8 +369,8 @@ contract DFArtifactFacet is WithStorage, ERC721 {
         //1 hour 1 artifact
         // require(totalGameBlocks * 2 >= amount * 60 * 60, "block number limit");
 
-        // 10 min 1 artifact
-        require(totalGameBlocks * 2 >= amount * 60 * 10, "block number limit");
+        // 3 min 1 artifact
+        require(totalGameBlocks * 2 >= amount * 60 * 3, "block number limit");
         gs().players[msg.sender].buyArtifactAmount++;
 
         uint256 cost = 1 ether;

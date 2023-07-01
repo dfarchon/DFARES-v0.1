@@ -49,7 +49,9 @@ export function BuyArtifactPane({
   const currentBlockNumber = useEmitterValue(uiManager.getEthConnection().blockNumber$, undefined);
 
   const maxAmount = currentBlockNumber
-    ? Math.floor(((currentBlockNumber - uiManager.contractConstants.GAME_START_BLOCK) * 2.0) / 60)
+    ? Math.floor(
+        ((currentBlockNumber - uiManager.contractConstants.GAME_START_BLOCK) * 2.0) / (60 * 3)
+      )
     : 0;
 
   const buyArtifactAmountInContract = account ? uiManager.getPlayerBuyArtifactAmount(account) : 0;
@@ -57,7 +59,7 @@ export function BuyArtifactPane({
   const buyArtifactAmount = buyArtifactAmountInContract ? buyArtifactAmountInContract : 0;
 
   const [biome, setBiome] = useState(Biome.GRASSLAND.toString());
-  const [type, setType] = useState(ArtifactType.PhotoidCannon.toString());
+  const [type, setType] = useState(ArtifactType.Wormhole.toString());
   const [rarity, setRarity] = useState(ArtifactRarity.Legendary.toString());
 
   function getCost() {
@@ -144,39 +146,19 @@ export function BuyArtifactPane({
 
           <SelectFrom
             values={[
-              ArtifactType.Monolith.toString(),
-              ArtifactType.Colossus.toString(),
-              ArtifactType.Spaceship.toString(),
-              ArtifactType.Pyramid.toString(),
               ArtifactType.Wormhole.toString(),
               ArtifactType.PlanetaryShield.toString(),
-              ArtifactType.PhotoidCannon.toString(),
               ArtifactType.BloomFilter.toString(),
-              ArtifactType.BlackDomain.toString(),
-              ArtifactType.IceLink.toString(),
               ArtifactType.FireLink.toString(),
-              ArtifactType.SoulSwap.toString(),
-              ArtifactType.Bomb.toString(),
               ArtifactType.StellarShield.toString(),
-              ArtifactType.BlindBox.toString(),
               ArtifactType.Avatar.toString(),
             ]}
             labels={[
-              'Monolith',
-              'Colossus',
-              'Spaceship',
-              'Pyramid',
               'Wormhole',
               'PlanetaryShield',
-              'PhotoidCannon',
               'BloomFilter',
-              'BlackDomain',
-              'IceLink',
               'FireLink',
-              'SoulSwap',
-              'Bomb',
               'StellarShield',
-              'BlindBox',
               'Avatar',
             ]}
             value={type.toString()}
