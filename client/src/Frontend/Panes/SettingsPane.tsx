@@ -1,6 +1,6 @@
 import { BLOCKCHAIN_NAME } from '@darkforest_eth/constants';
 import { EthConnection } from '@darkforest_eth/network';
-import { AutoGasSetting, Chunk, ModalName, Setting } from '@darkforest_eth/types';
+import { Chunk, ModalName, Setting } from '@darkforest_eth/types';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import TutorialManager from '../../Backend/GameLogic/TutorialManager';
@@ -224,20 +224,22 @@ export function SettingsPane({
               '10',
               '20',
               '40',
-              AutoGasSetting.Slow,
-              AutoGasSetting.Average,
-              AutoGasSetting.Fast,
+              //MyNotice: altlayer don't have GAS_PRICE_API
+              // AutoGasSetting.Slow,
+              // AutoGasSetting.Average,
+              // AutoGasSetting.Fast,
             ]}
             labels={[
               '1 gwei (default)',
               '2 gwei (faster)',
+
               '5 gwei (turbo)',
               '10 gwei (mega turbo)',
               '20 gwei (need4speed)',
               '40 gwei (gigafast)',
-              `slow auto (~${gasPrices.slow} gwei)`,
-              `average auto (~${gasPrices.average} gwei)`,
-              `fast auto (~${gasPrices.fast} gwei)`,
+              // `slow auto (~${gasPrices.slow} gwei)`,
+              // `average auto (~${gasPrices.average} gwei)`,
+              // `fast auto (~${gasPrices.fast} gwei)`,
             ]}
           />
         </Section>

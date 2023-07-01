@@ -2637,7 +2637,7 @@ class GameManager extends EventEmitter {
         else return 0;
       }
 
-      //Notice: this will not be the true artifactId
+      //MyNotice: this will not be the true artifactId
       const artifactId: ArtifactId = random256Id() as ArtifactId;
 
       const args = Promise.resolve([
@@ -2665,7 +2665,7 @@ class GameManager extends EventEmitter {
       // Always await the submitTransaction so we can catch rejections
 
       const tx = await this.contractsAPI.submitTransaction(txIntent, {
-        // Notice: when change gasLimit, need change the value in TxConfirmPopup.tsx
+        // MyNotice: when change gasLimit, need change the value in TxConfirmPopup.tsx
         gasLimit: 2000000,
         value: bigInt(1000000000000000000).multiply(price()).toString(),
       });
@@ -3102,7 +3102,7 @@ class GameManager extends EventEmitter {
       // Always await the submitTransaction so we can catch rejections
 
       const tx = await this.contractsAPI.submitTransaction(txIntent, {
-        // Notice: when change gasLimit, need change the value in TxConfirmPopup.tsx
+        // MyNotice: when change gasLimit, need change the value in TxConfirmPopup.tsx
         gasLimit: 500000,
         value: bigInt(1000000000000000000)
           .multiply(2 ** planet.hatLevel)
