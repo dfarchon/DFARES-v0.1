@@ -230,11 +230,6 @@ contract DFCoreFacet is WithStorage {
         require(gs().planets[_location].isInitialized == true, "Planet is not initialized");
         refreshPlanet(_location);
 
-        require(
-            gs().planets[_location].owner == msg.sender,
-            "Only owner account can perform that operation on planet."
-        );
-
         gs().planets[_location].hatLevel = hatLevel;
         gs().planets[_location].hatType = hatType;
         emit PlanetHatBought(

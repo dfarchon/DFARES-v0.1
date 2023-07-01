@@ -441,6 +441,9 @@ export class PlanetRenderManager implements PlanetRenderManagerType {
     const myRotation = 0;
     const cosmetic = getPlanetCosmetic(planet);
 
+    //MyTodo: determine the size limit
+    hatLevel = Math.min(hatLevel, 3);
+
     if (hatLevel > 0) {
       const hoverCoords = context.getHoveringOverCoords();
 
@@ -494,17 +497,22 @@ export class PlanetRenderManager implements PlanetRenderManagerType {
   queueMemeHat(center: WorldCoords, radius: number, hatType: HatType, hatLevel: number) {
     if (hatType === HatType.Unknown) return;
 
+    // MyTodo: determine the size limit
+    // hatLevel = Math.min(hatLevel, 1);
+
     const { context } = this.renderer;
     const hoveringPlanet = context.getHoveringOverPlanet() !== undefined;
     const hoverCoords = context.getHoveringOverCoords();
-    const hatScale = 1.65 ** (hatLevel - 1);
+    // const hatScale = 1.65 ** (hatLevel - 1);
 
     this.newHats[hatType] &&
       this.renderer.overlay2dRenderer.drawImageHat(
         this.newHats[hatType],
         center,
-        1.2 * radius * hatScale,
-        1.2 * radius * hatScale,
+        // 1.2 * radius * hatScale,
+        // 1.2 * radius * hatScale,
+        radius,
+        radius,
         radius,
         hoveringPlanet,
         hoverCoords
@@ -513,6 +521,9 @@ export class PlanetRenderManager implements PlanetRenderManagerType {
 
   queueLogoHat(center: WorldCoords, radius: number, hatType: HatType, hatLevel: number) {
     if (hatType === HatType.Unknown) return;
+
+    //MyTodo: determine the size limit
+    hatLevel = Math.min(hatLevel, 3);
 
     const { context } = this.renderer;
     const hoveringPlanet = context.getHoveringOverPlanet() !== undefined;

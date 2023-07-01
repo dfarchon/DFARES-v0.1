@@ -417,6 +417,7 @@ library LibArtifactUtils {
         } else if (artifact.artifactType == ArtifactType.Avatar) {
             // planet.owner = gs().planets[linkTo].owner;
             // gs().planets[linkTo].owner = msg.sender;
+            require(planet.hatLevel == 0, "no hat");
         }
 
         if (shouldDeactivateAndBurn) {

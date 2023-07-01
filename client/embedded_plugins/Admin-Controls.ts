@@ -87,6 +87,69 @@ const ArtifactTypeNames = [
   'Titan',
 ];
 
+export const HatType = {
+  Unknown: 0,
+  GraduationCap: 1,
+  PartyHat: 2,
+  Fish: 3,
+  TopHat: 4,
+  Fez: 5,
+  ChefHat: 6,
+  CowboyHat: 7,
+  PopeHat: 8,
+  Squid: 9,
+  SantaHat: 10,
+  Doge: 11,
+  Cat: 12,
+  ChunZhen: 13,
+  IKunBird: 14,
+  Mike: 15,
+  Panda: 16,
+  Pepe: 17,
+  PigMan: 18,
+  RobotCat: 19,
+  TaiKuLa: 20,
+  Wojak1: 21,
+  Wojak2: 22,
+  Wojak3: 23,
+  Wojak4: 24,
+  Mask: 25,
+  Web3MQ: 26,
+  DFARES: 27,
+  // Don't forget to update MIN_HAT_TYPE and/or MAX_HAT_TYPE in the `constants` package
+};
+
+export const HatTypeNames = {
+  [HatType.Unknown]: 'Unknown',
+  [HatType.GraduationCap]: 'GraduationCap',
+  [HatType.PartyHat]: 'PartyHat',
+  [HatType.Fish]: 'Fish',
+  [HatType.TopHat]: 'TopHat',
+  [HatType.Fez]: 'Fez',
+  [HatType.ChefHat]: 'ChefHat',
+  [HatType.CowboyHat]: 'CoyboyHat',
+  [HatType.PopeHat]: 'PopeHat',
+  [HatType.Squid]: 'Squid',
+  [HatType.SantaHat]: 'SantaHat',
+  [HatType.Doge]: 'Doge',
+  [HatType.Cat]: 'Cat',
+  [HatType.ChunZhen]: 'ChunZhen',
+  [HatType.IKunBird]: 'IKunBird',
+  [HatType.Mike]: 'Mike',
+  [HatType.Panda]: 'Panda',
+  [HatType.Pepe]: 'Pepe',
+  [HatType.PigMan]: 'PigMan',
+  [HatType.RobotCat]: 'RobotCat',
+  [HatType.TaiKuLa]: 'TaiKuLa',
+  [HatType.Wojak1]: 'Wojak1',
+  [HatType.Wojak2]: 'Wojak2',
+  [HatType.Wojak3]: 'Wojak3',
+  [HatType.Wojak4]: 'Wojak4',
+  [HatType.Mask]: 'Mask',
+  [HatType.Web3MQ]: 'Web3MQ',
+  [HatType.DFARES]: 'DF ARES',
+} as const;
+
 import {
   html,
   render,
@@ -309,6 +372,30 @@ async function setDynamicTimeFactor(timeFactor: number) {
   return tx;
 }
 
+async function setPlanetHat(planet: LocatablePlanet | undefined, level: number, type: number) {
+  if (!planet) {
+    alert('no selected planet');
+    return;
+  }
+
+  await initPlanet(planet);
+
+  const args = Promise.resolve([locationIdToDecStr(planet.locationId), level, type]);
+
+  const tx = await df.submitTransaction({
+    locationId: planet.locationId,
+    hatLevel: level,
+    hatType: type,
+    args,
+    contract: df.getContract(),
+    methodName: 'setHat',
+  });
+
+  tx.confirmedPromise.then(() => df.hardRefreshPlanet(planet.locationId));
+
+  return tx;
+}
+
 function PlanetLink({ planetId }: { planetId?: LocationId }) {
   if (planetId) {
     return html`<a
@@ -372,6 +459,22 @@ function planetTypeOptions() {
   const options = [] as HTMLOptionElement[];
   for (let i = 0; i <= Object.values(PlanetType).length - 1; i++) {
     options.push(html`<option value=${i}>${PlanetTypeNames[i]}</option>`);
+  }
+  return options;
+}
+
+function hatTypeOptions() {
+  const options = [] as HTMLOptionElement[];
+  for (let i = 0; i <= Object.values(HatType).length - 1; i++) {
+    options.push(html`<option value=${i}>${HatTypeNames[i]}</option>`);
+  }
+  return options;
+}
+
+function hatLevelOptions() {
+  const options = [] as HTMLOptionElement[];
+  for (let i = 0; i <= 10; i++) {
+    options.push(html`<option value=${i}>${i.toString()}</option>`);
   }
   return options;
 }
@@ -541,6 +644,9 @@ function App() {
   const [targetAccount, setTargetAccount] = useState(null);
   const [allPlayers, setAllPlayers] = useState([]);
 
+  const [hatLevel, setHatLevel] = useState(1);
+  const [hatType, setHatType] = useState(1);
+
   useEffect(() => {
     const account = df.getAccount();
     setAccount(account);
@@ -698,6 +804,30 @@ function App() {
       </div>
       <div style=${rowStyle}>
         <${ChangeTimeFactor} />
+      </div>
+
+      <${Heading} title="Set Planet Hat State" />
+
+      <div style=${rowStyle}>
+        <span> Planet: <${PlanetLink} planetId=${(selectedPlanet as Planet)?.locationId} /> </span>
+
+        <${Select}
+          style=${{ flex: '1' }}
+          value=${hatLevel}
+          onChange=${(e: InputEvent) => setHatLevel((e.target as HTMLSelectElement).value)}
+          items=${hatLevelOptions()}
+        />
+
+        <${Select}
+          style=${{ flex: '1' }}
+          value=${hatType}
+          onChange=${(e: InputEvent) => setHatType((e.target as HTMLSelectElement).value)}
+          items=${hatTypeOptions()}
+        />
+
+        <df-button onClick=${() => setPlanetHat(selectedPlanet, hatLevel, hatType)}>
+          Give Planet
+        </df-button>
       </div>
     </div>
   `;
