@@ -166,19 +166,70 @@ library LibGameUtils {
 
         ArtifactType artifactType = ArtifactType.Pyramid;
 
-        // if (lastByteOfSeed < 256) {
-        //     artifactType = ArtifactType.Monolith;
-        // } else if (lastByteOfSeed < 512) {
-        //     artifactType = ArtifactType.Colossus;
+        // // if (lastByteOfSeed < 256) {
+        // //     artifactType = ArtifactType.Monolith;
+        // // } else if (lastByteOfSeed < 512) {
+        // //     artifactType = ArtifactType.Colossus;
+        // // }
+        // // else if (lastByteOfSeed < 117) {
+        // //     artifactType = ArtifactType.Spaceship;
+        // // }
+        // // else if (lastByteOfSeed < 768) {
+        // //     artifactType = ArtifactType.Pyramid;
+        // // }
+        // // MyTodo: need to change the artifact show up probability
+        // if (lastByteOfSeed < 1024) {
+        //     artifactType = ArtifactType.Wormhole;
+        // } else if (lastByteOfSeed < 1280) {
+        //     artifactType = ArtifactType.PlanetaryShield;
+        // } else if (lastByteOfSeed < 1536) {
+        //     artifactType = ArtifactType.PhotoidCannon;
+        // } else if (lastByteOfSeed < 1792) {
+        //     artifactType = ArtifactType.BloomFilter;
+        // } else if (lastByteOfSeed < 2048) {
+        //     artifactType = ArtifactType.BlackDomain;
+        // } else if (lastByteOfSeed < 2304) {
+        //     artifactType = ArtifactType.IceLink;
+        // } else if (lastByteOfSeed < 2560) {
+        //     artifactType = ArtifactType.FireLink;
+        // } else if (lastByteOfSeed < 2816) {
+        //     artifactType = ArtifactType.SoulSwap;
+        // } else if (lastByteOfSeed < 3072) {
+        //     artifactType = ArtifactType.Bomb;
+        // } else if (lastByteOfSeed < 3328) {
+        //     artifactType = ArtifactType.StellarShield;
+        // } else if (lastByteOfSeed < 3584) {
+        //     artifactType = ArtifactType.BlindBox;
+        // } else if (lastByteOfSeed < 4096) {
+        //     artifactType = ArtifactType.Avatar;
+        // } else {
+        //     if (biome == Biome.Ice) {
+        //         artifactType = ArtifactType.PlanetaryShield;
+        //     } else if (biome == Biome.Lava) {
+        //         artifactType = ArtifactType.PhotoidCannon;
+        //     } else if (biome == Biome.Wasteland) {
+        //         artifactType = ArtifactType.BloomFilter;
+        //     } else if (biome == Biome.Corrupted) {
+        //         artifactType = ArtifactType.BlackDomain;
+        //     } else {
+        //         artifactType = ArtifactType.Wormhole;
+        //     }
+        //     // artifactType = ArtifactType.PhotoidCannon;
         // }
-        // else if (lastByteOfSeed < 117) {
-        //     artifactType = ArtifactType.Spaceship;
-        // }
-        // else if (lastByteOfSeed < 768) {
-        //     artifactType = ArtifactType.Pyramid;
-        // }
-        // MyTodo: need to change the artifact show up probability
-        if (lastByteOfSeed < 1024) {
+
+        if (lastByteOfSeed < 256) {
+            // artifactType = ArtifactType.Monolith;
+            artifactType = ArtifactType.StellarShield;
+        } else if (lastByteOfSeed < 512) {
+            // artifactType = ArtifactType.Colossus;
+            artifactType = ArtifactType.PhotoidCannon;
+        } else if (lastByteOfSeed < 117) {
+            // artifactType = ArtifactType.Spaceship;
+            artifactType = ArtifactType.IceLink;
+        } else if (lastByteOfSeed < 768) {
+            // artifactType = ArtifactType.Pyramid;
+            artifactType = ArtifactType.FireLink;
+        } else if (lastByteOfSeed < 1024) {
             artifactType = ArtifactType.Wormhole;
         } else if (lastByteOfSeed < 1280) {
             artifactType = ArtifactType.PlanetaryShield;
@@ -193,28 +244,30 @@ library LibGameUtils {
         } else if (lastByteOfSeed < 2560) {
             artifactType = ArtifactType.FireLink;
         } else if (lastByteOfSeed < 2816) {
-            artifactType = ArtifactType.SoulSwap;
+            // artifactType = ArtifactType.SoulSwap;
         } else if (lastByteOfSeed < 3072) {
-            artifactType = ArtifactType.Bomb;
+            // artifactType = ArtifactType.Bomb;
         } else if (lastByteOfSeed < 3328) {
             artifactType = ArtifactType.StellarShield;
         } else if (lastByteOfSeed < 3584) {
-            artifactType = ArtifactType.BlindBox;
+            // artifactType = ArtifactType.BlindBox;
+            artifactType = ArtifactType.PlanetaryShield;
         } else if (lastByteOfSeed < 4096) {
             artifactType = ArtifactType.Avatar;
         } else {
-            if (biome == Biome.Ice) {
-                artifactType = ArtifactType.PlanetaryShield;
-            } else if (biome == Biome.Lava) {
-                artifactType = ArtifactType.PhotoidCannon;
-            } else if (biome == Biome.Wasteland) {
-                artifactType = ArtifactType.BloomFilter;
-            } else if (biome == Biome.Corrupted) {
-                artifactType = ArtifactType.BlackDomain;
-            } else {
-                artifactType = ArtifactType.Wormhole;
-            }
+            // if (biome == Biome.Ice) {
+            //     artifactType = ArtifactType.PlanetaryShield;
+            // } else if (biome == Biome.Lava) {
+            //     artifactType = ArtifactType.PhotoidCannon;
+            // } else if (biome == Biome.Wasteland) {
+            //     artifactType = ArtifactType.BloomFilter;
+            // } else if (biome == Biome.Corrupted) {
+            //     artifactType = ArtifactType.BlackDomain;
+            // } else {
+            //     artifactType = ArtifactType.Wormhole;
+            // }
             // artifactType = ArtifactType.PhotoidCannon;
+            artifactType = ArtifactType.Avatar;
         }
 
         uint256 bonus = 0;

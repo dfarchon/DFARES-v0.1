@@ -560,6 +560,9 @@ library LibArtifactUtils {
             "spacetime rip not high enough level to withdraw this artifact"
         );
         require(!isSpaceship(artifact.artifactType), "cannot withdraw spaceships");
+
+        require(artifact.artifactType != ArtifactType.Avatar, "cannot withdraw logo artifacts");
+
         LibGameUtils._takeArtifactOffPlanet(artifactId, locationId);
 
         DFArtifactFacet(address(this)).transferArtifact(artifactId, msg.sender);
