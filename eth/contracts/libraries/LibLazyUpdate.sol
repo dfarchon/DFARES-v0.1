@@ -35,7 +35,7 @@ library LibLazyUpdate {
 
         if (planet.silver < planet.silverCap) {
             uint256 _timeDiff = updateToTime - planet.lastUpdated;
-            uint256 _silverMined = (planet.silverGrowth * _timeDiff * gs().dynamicTimeFactor) / 100;
+            uint256 _silverMined = planet.silverGrowth * _timeDiff; // * gs().dynamicTimeFactor) / 100;
 
             uint256 _maxSilver = planet.silverCap;
             uint256 _currentSilver = planet.silver + _silverMined;
@@ -64,7 +64,7 @@ library LibLazyUpdate {
                             ABDKMath64x64.mul(
                                 ABDKMath64x64.fromInt(-4),
                                 ABDKMath64x64.fromUInt(
-                                    (planet.populationGrowth * gs().dynamicTimeFactor) / 100
+                                    planet.populationGrowth //* gs().dynamicTimeFactor) / 100
                                 )
                             ),
                             _timeElapsed

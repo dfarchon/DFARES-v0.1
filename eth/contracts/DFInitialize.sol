@@ -145,6 +145,7 @@ contract DFInitialize is WithStorage {
 
         gs().planetLevelsCount = 10;
 
+        // MyNotice: only effect move speed
         gs().dynamicTimeFactor = 100;
 
         snarkConstants().DISABLE_ZK_CHECKS = initArgs.DISABLE_ZK_CHECKS;
