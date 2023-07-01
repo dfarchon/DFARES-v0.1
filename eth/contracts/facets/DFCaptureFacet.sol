@@ -63,7 +63,7 @@ contract DFCaptureFacet is WithStorage {
         require(planetInCaptureZone(_input[2], _input[3]), "planet is not in capture zone");
 
         LibPlanet.refreshPlanet(locationId);
-        Planet memory planet = gs().planets[locationId];
+        Planet storage planet = gs().planets[locationId];
 
         require(!planet.destroyed, "planet is destroyed");
         require(!planet.frozen, "planet is frozen");
