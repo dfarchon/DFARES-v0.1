@@ -42,12 +42,12 @@ export const NETWORK_ID = 4000002;
 /**
  * The block in which the DarkForest contract was initialized.
  */
-export const START_BLOCK = 418904;
+export const START_BLOCK = 419841;
 /**
  * The address for the DarkForest contract.
  */
-export const CONTRACT_ADDRESS = '0xB3982689988510F36a3524F73aE1791cDCb5cD48';
+export const CONTRACT_ADDRESS = '0xC4Ae52F41ebc6946AAcE246A07a9473d64788215';
 /**
  * The address for the initalizer contract. Useful for lobbies.
  */
-export const INIT_ADDRESS = '0xD9E88537604BCFa3E6318442Fa9f7CdB699f5439';
+export const INIT_ADDRESS = '0xF422B12287684382be5BC5C5C56f31333477Cf03';
