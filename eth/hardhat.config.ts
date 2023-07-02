@@ -31,6 +31,7 @@ import './tasks/upgrades';
 import './tasks/utils';
 import './tasks/wallet';
 import './tasks/whitelist';
+import './tasks/batch';
 
 require('dotenv').config();
 

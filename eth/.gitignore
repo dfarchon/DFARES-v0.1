@@ -29,3 +29,5 @@ darkforest.localhost.toml
 
 
 /whitelist/*
+
+/local/*
