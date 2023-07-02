@@ -139,7 +139,7 @@ contract DFInitialize is WithStorage {
         gs().diamondAddress = address(this);
 
         ws().enabled = whitelistEnabled;
-        ws().drip = 0.05 ether;
+        ws().drip = 0 ether; // 0.05 ether;
         ws().relayerRewardsEnabled = false;
         ws().relayerReward = 0.01 ether;
 
