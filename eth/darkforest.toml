@@ -23,23 +23,23 @@ PERLIN_LENGTH_SCALE = 16384 # must be a power of two no greater than 16384
 # Artifacts #
 #############
 TOKEN_MINT_END_TIMESTAMP = 2023-10-05T04:00:00.000Z # Mon Oct 04 2022 21:00:00 GMT-0700 (Pacific Daylight Time)
-# ARTIFACT_POINT_VALUES = [
-#   0,
-#   2000,
-#   10000,
-#   200000,
-#   3000000,
-#   20000000
-# ]
-
 ARTIFACT_POINT_VALUES = [
   0,
-  0,
-  0,
-  0,
-  0,
-  0
+  2000,
+  10000,
+  200000,
+  3000000,
+  20000000
 ]
+
+# ARTIFACT_POINT_VALUES = [
+#   0,
+#   0,
+#   0,
+#   0,
+#   0,
+#   0
+# ]
 PHOTOID_ACTIVATION_DELAY = 600 # seconds
 STELLAR_ACTIVATION_DELAY = 0 # seconds
 ##############
