@@ -530,7 +530,7 @@ function ArtifactDescription({
       content = (
         <Text>
           <Text>
-            If StellarShield is activated on the target planet, it can resist a photoid cannon's
+            If stellar shield is activated on the target planet, it can resist a photoid cannon's
             quick move attack.
           </Text>
           <Text> Stellar shield will not disappear after deactivation.</Text>
