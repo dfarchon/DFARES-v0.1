@@ -4,8 +4,6 @@ Dark Forest Game on Blockchain.
 
 To run this project you will need to be on Node 14 OR Node 16.
 
-
-
 ## use ganache
 
 seems faster & can store blocks
@@ -13,11 +11,9 @@ seems faster & can store blocks
 ```
 yarn
 yarn workspace eth ganache
-yarn workspace eth deploy:dev deploy
-yarn workspace client start
+yarn workspace eth hardhat:dev deploy
+yarn workspace client start:dev
 ```
-
-
 
 ## local development
 
