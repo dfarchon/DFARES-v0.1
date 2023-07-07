@@ -11,6 +11,7 @@ import {
 } from '../Components/GameWindowComponents';
 import ControllableCanvas from '../Game/ControllableCanvas';
 import { ArtifactHoverPane } from '../Panes/ArtifactHoverPane';
+import { ChatFusionPane } from '../Panes/ChatFusionPane';
 import { CoordsPane } from '../Panes/CoordsPane';
 import { DiagnosticsPane } from '../Panes/DiagnosticsPane';
 import { ExplorePane } from '../Panes/ExplorePane';
@@ -75,6 +76,9 @@ export function GameWindowLayout({
   );
   const [twitterVerifyVisible, setTwitterVerifyVisible] = useState<boolean>(
     isModalOpen(ModalName.TwitterVerify)
+  );
+  const [chatFusionVisible, setChatFusionVisible] = useState<boolean>(
+    isModalOpen(ModalName.ChatFusion)
   );
   const [settingsVisible, setSettingsVisible] = useState<boolean>(isModalOpen(ModalName.Settings));
   const [privateVisible, setPrivateVisible] = useState<boolean>(isModalOpen(ModalName.Private));
@@ -149,6 +153,13 @@ export function GameWindowLayout({
           onClose={() => setSettingsVisible(false)}
           onOpenPrivate={() => setPrivateVisible(true)}
         />
+
+        <ChatFusionPane
+          ethConnection={uiManager.getEthConnection()}
+          visible={settingsVisible}
+          onClose={() => setSettingsVisible(false)}
+          onOpenPrivate={() => setPrivateVisible(true)}
+        />
         <PrivatePane visible={privateVisible} onClose={() => setPrivateVisible(false)} />
         <PlayerArtifactsPane
           visible={playerArtifactsVisible}
@@ -180,6 +191,7 @@ export function GameWindowLayout({
             <ZoomPane />
           </UpperLeft>
           <SidebarPane
+            chatFusionHook={[chatFusionVisible, setChatFusionVisible]}
             transactionLogHook={[transactionLogVisible, setTransactionLogVisible]}
             settingsHook={[settingsVisible, setSettingsVisible]}
             helpHook={[helpVisible, setHelpVisible]}

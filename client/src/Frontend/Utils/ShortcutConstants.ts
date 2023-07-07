@@ -3,6 +3,7 @@ import { SpecialKey } from '@darkforest_eth/constants';
 // modal shortcuts
 export const MODAL_BACK_SHORTCUT = 't';
 export const CLOSE_MODAL = 't';
+export const TOGGLE_CHAT_FUSION_PANE = 'g';
 export const TOGGLE_SETTINGS_PANE = 'h';
 export const TOGGLE_HELP_PANE = 'j';
 export const TOGGLE_PLUGINS_PANE = 'k';
