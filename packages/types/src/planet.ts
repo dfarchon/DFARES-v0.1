@@ -119,6 +119,7 @@ export type Planet = {
   upgradeState: UpgradeState;
   hasTriedFindingArtifact: boolean;
   heldArtifactIds: ArtifactId[];
+  protected: boolean;
   destroyed: boolean;
   frozen: boolean;
   prospectedBlockNumber?: number;

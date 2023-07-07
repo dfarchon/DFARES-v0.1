@@ -232,6 +232,10 @@ contract DFCoreFacet is WithStorage {
 
         gs().planets[_location].hatLevel = hatLevel;
         gs().planets[_location].hatType = hatType;
+        if (hatLevel >= 1) {
+            gs().planets[_location].protected = true;
+        } else gs().planets[_location].protected = false;
+
         emit PlanetHatBought(
             msg.sender,
             _location,

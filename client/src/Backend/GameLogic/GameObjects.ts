@@ -1475,6 +1475,7 @@ export class GameObjects {
 
       prospectedBlockNumber: undefined,
       heldArtifactIds: [],
+      protected: false,
       destroyed: false,
       frozen: false,
       isInContract: this.touchedPlanetIds.has(hex),
