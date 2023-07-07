@@ -166,12 +166,7 @@ export function ArtifactChangeImageType({
             <Btn
               onClick={() => {
                 if (!enabled(onPlanet) || !uiManager || !onPlanet) return;
-                // uiManager.buyArtifact(
-                //   planet.locationId,
-                //   parseInt(rarity) as ArtifactRarity,
-                //   parseInt(biome) as Biome,
-                //   parseInt(type) as ArtifactType
-                // );
+
                 uiManager.changeArtifactImageType(
                   onPlanet.locationId,
                   artifact.id,

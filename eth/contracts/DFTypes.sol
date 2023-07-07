@@ -67,6 +67,7 @@ struct Planet {
     bool protected;
     bool destroyed;
     bool frozen;
+    bool canShow;
     uint256 spaceJunk;
     uint256 pausers;
     uint256 energyGroDoublers;
