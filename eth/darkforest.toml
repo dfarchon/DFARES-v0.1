@@ -45,9 +45,9 @@ STELLAR_ACTIVATION_DELAY = 0 # seconds
 ##############
 # Space junk #
 ##############
-SPACE_JUNK_ENABLED = false
+SPACE_JUNK_ENABLED = true #false
 # Total amount of space junk a player can take on. This can be overridden at runtime by updating this value for a specific player in storage.
-SPACE_JUNK_LIMIT = 1000
+SPACE_JUNK_LIMIT = 3000
 # The amount of junk that each level of planet gives the player when moving to it for the first time.
 PLANET_LEVEL_JUNK = [20, 25, 30, 35, 40, 45, 50, 55, 60, 65]
 # The speed boost a movement receives when abandoning a planet.
