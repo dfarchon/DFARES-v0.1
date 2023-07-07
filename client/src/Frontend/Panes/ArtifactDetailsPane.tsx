@@ -24,7 +24,7 @@ import { ArtifactRarityLabelAnim, ArtifactTypeText } from '../Components/Labels/
 import { ArtifactBiomeLabelAnim } from '../Components/Labels/BiomeLabels';
 import { AccountLabel } from '../Components/Labels/Labels';
 import { ReadMore } from '../Components/ReadMore';
-import { Green, Red, Sub, Text, White } from '../Components/Text';
+import { Green, Red, Sub, Text, Text2, White } from '../Components/Text';
 import { TextPreview } from '../Components/TextPreview';
 import { TimeUntil } from '../Components/TimeUntil';
 import dfstyles from '../Styles/dfstyles';
@@ -367,6 +367,9 @@ function ArtifactDescription({
   collapsable?: boolean;
 }) {
   let content;
+  const rarityName = ArtifactRarityNames[artifact.rarity];
+
+  const wormholeShrinkLevels = [0, 2, 4, 8, 16, 32];
 
   const maxLevelsBlackDomain = [0, 2, 4, 6, 8, 9];
   const maxLevelBlackDomain = maxLevelsBlackDomain[artifact.rarity];
@@ -374,34 +377,18 @@ function ArtifactDescription({
   const maxLevelsBloomFilter = [0, 2, 4, 6, 8, 9];
   const maxLevelBloomFilter = maxLevelsBloomFilter[artifact.rarity];
 
-  const wormholeShrinkLevels = [0, 2, 4, 8, 16, 32];
-  const rarityName = ArtifactRarityNames[artifact.rarity];
-  const photoidRanges = [0, 2, 2, 2, 2, 2];
-  const photoidSpeeds = [0, 5, 10, 15, 20, 25];
+  // const photoidRanges = [0, 2, 2, 2, 2, 2];
+  // const photoidSpeeds = [0, 5, 10, 15, 20, 25];
+
+  const maxLevelsIceLink = [0, 2, 4, 6, 8, 9];
+  const maxLevelIceLink = maxLevelsIceLink[artifact.rarity];
+
+  const maxLevelsFireLink = [0, 2, 4, 6, 8, 9];
+  const maxLevelFireLink = maxLevelsFireLink[artifact.rarity];
 
   const genericSpaceshipDescription = <>Can move between planets without sending energy.</>;
 
   switch (artifact.artifactType) {
-    case ArtifactType.BlackDomain:
-      content = (
-        <Text>
-          When activated, permanently disables your planet. It'll still be yours, but you won't be
-          able to do anything with it. It turns completely black too. Just ... gone. Because this
-          one is <White>{rarityName}</White>, it works on planets up to level{' '}
-          <White>{maxLevelBlackDomain}</White>. This artifact is consumed on activation.
-        </Text>
-      );
-      break;
-    case ArtifactType.BloomFilter:
-      content = (
-        <Text>
-          When activated refills your planet's energy and silver to their respective maximum values.
-          How it does this, we do not know. Because this one is <White>{rarityName}</White>, it
-          works on planets up to level <White>{maxLevelBloomFilter}</White>. This artifact is
-          consumed on activation.
-        </Text>
-      );
-      break;
     case ArtifactType.Wormhole:
       content = (
         <Text>
@@ -415,24 +402,138 @@ function ArtifactDescription({
         </Text>
       );
       break;
-    case ArtifactType.PhotoidCannon:
-      content = (
-        <Text>
-          Ahh, the Photoid Canon. Activate it, wait four hours. Because this one is{' '}
-          <White>{rarityName}</White>, the next move you send will be able to go{' '}
-          <White>{photoidRanges[artifact.rarity]}</White>x further and{' '}
-          <White>{photoidSpeeds[artifact.rarity]}</White>x faster. During the 4 hour waiting period,
-          your planet's defense is temporarily decreased. This artifact is consumed once the canon
-          is fired.
-        </Text>
-      );
-      break;
+
     case ArtifactType.PlanetaryShield:
       content = (
         <Text>
-          Activate the planetary shield to gain a defense bonus on your planet, at the expense of
-          range and speed. When this artifact is deactivated, it is destroyed and your planet's
-          stats are reverted--so use it wisely!
+          <Text>
+            Activate the planetary shield to gain a defense bonus on your planet, at the expense of
+            range and speed. When this artifact is deactivated, it is destroyed and your planet's
+            stats are reverted--so use it wisely!{' '}
+          </Text>
+          <Text2>
+            Planet with activated planetary shield can defend against black domain's attack when
+            planetary shield's rarity {'>='} block domain rarity.{' '}
+          </Text2>
+          <Text>
+            Planet with activated planetary shield can defend against ice link's attack when
+            planetary shield's rarity {'>='} ice link's rarity.
+          </Text>
+        </Text>
+      );
+      break;
+    case ArtifactType.BlackDomain:
+      content = (
+        <Text>
+          <Text>
+            When activated, permanently disables target planet. It'll still be others, but the owner
+            won't be able to do anything with it. It turns completely black too. Just ... gone.
+            Because this one is <White>{rarityName}</White>, it can activate on planets up to level{' '}
+            <White>{maxLevelBlackDomain}</White>.
+          </Text>
+          <Text2>The target planet must be owned by others. </Text2>
+          <Text>The target planet level must {'>='} source planet level. </Text>
+          <Text2>This artifact is consumed on activation. </Text2>
+          <Text>Block domain can be defended by planerary shield. </Text>
+        </Text>
+      );
+      break;
+
+    case ArtifactType.PhotoidCannon:
+      // content = (
+      //   <Text>
+      //     Ahh, the Photoid Canon. Activate it, wait four hours. Because this one is{' '}
+      //     <White>{rarityName}</White>, the next move you send will be able to go{' '}
+      //     <White>{photoidRanges[artifact.rarity]}</White>x further and{' '}
+      //     <White>{photoidSpeeds[artifact.rarity]}</White>x faster. During the 4 hour waiting period,
+      //     your planet's defense is temporarily decreased. This artifact is consumed once the canon
+      //     is fired.
+      //   </Text>
+      // );
+      content = (
+        <Text>
+          <Text>
+            Ahh, the Photoid Canon. Activate it, wait for sometimes. The next move you send will be
+            able to arrive in a very short time. During the waiting period, your planet's defense is
+            temporarily decreased.
+          </Text>
+          <Text2> This artifact is consumed once the canon is fired. </Text2>
+
+          <Text>The quick move can be defended by stellar Shield. </Text>
+        </Text>
+      );
+      break;
+
+    case ArtifactType.BloomFilter:
+      // content = (
+      //   <Text>
+      //     When activated refills your planet's energy and silver to their respective maximum values.
+      //     How it does this, we do not know. Because this one is <White>{rarityName}</White>, it
+      //     works on planets up to level <White>{maxLevelBloomFilter}</White>. This artifact is
+      //     consumed on activation.
+      //   </Text>
+      // );
+
+      content = (
+        <Text>
+          When activated refills your planet's energy to their respective maximum values. How it
+          does this, we do not know. Because this one is <White>{rarityName}</White>, it works on
+          planets up to level <White>{maxLevelBloomFilter}</White>. This artifact is consumed on
+          activation.
+        </Text>
+      );
+      break;
+
+    case ArtifactType.IceLink:
+      content = (
+        <Text>
+          <Text>When activated, source planet & target planet will be frozen.</Text>
+
+          <Text>
+            Because this one is <White>{rarityName}</White>, it can be activated on planets up to
+            level <White>{maxLevelIceLink}</White>.
+          </Text>
+
+          <Text2> Source planet level must be {'>='} target planet level.</Text2>
+
+          <Text> Target planet must be owned by others.</Text>
+
+          <Text2>
+            You can choose to deactivate this artifact. However, ice link will disappear after
+            deactivation.
+          </Text2>
+        </Text>
+      );
+      break;
+
+    case ArtifactType.FireLink:
+      content = (
+        <Text>
+          <Text>
+            Activate on your own planet, can only connect to a planet where someone else has
+            activated iceLink
+          </Text>
+          <Text>
+            Because this one is <White>{rarityName}</White>, it can be activated on planets up to
+            level <White>{maxLevelFireLink}</White>.
+          </Text>
+          <Text2> Source planet level must be {'>='} target planet level.</Text2>
+
+          <Text>
+            The effect of a fire link activation is: cancel the effect of ice link activation.
+          </Text>
+          <Text2> Fire link will disappear after activation.</Text2>
+        </Text>
+      );
+      break;
+    case ArtifactType.StellarShield:
+      content = (
+        <Text>
+          <Text>
+            If StellarShield is activated on the target planet, it can resist a photoid cannon's
+            quick move attack.
+          </Text>
+          <Text> Stellar shield will not disappear after deactivation.</Text>
         </Text>
       );
       break;

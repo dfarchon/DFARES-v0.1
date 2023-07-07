@@ -44,6 +44,10 @@ export const Subber = styled.span`
 export const Text = styled.span`
   color: ${dfstyles.colors.text};
 `;
+
+export const Text2 = styled.span`
+  color: ${dfstyles.colors.text2};
+`;
 export const White = styled.span`
   color: ${dfstyles.colors.dfwhite};
 `;

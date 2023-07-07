@@ -389,7 +389,7 @@ class GameUIManager extends EventEmitter {
       `Are you sure you want to activate this artifact? ` +
       `You can only have one artifact active at time. After` +
       ` deactivation, you must wait for a long cooldown` +
-      ` before you can activate it again. Some artifacts (bloom filter, black domain, photoid cannon) are consumed on usage.`;
+      ` before you can activate it again. Some artifacts (bloom filter, black domain, photoid cannon, fire link) are consumed on usage.`;
 
     if (!confirm(confirmationText)) return;
 
@@ -404,7 +404,7 @@ class GameUIManager extends EventEmitter {
     const confirmationText =
       `Are you sure you want to deactivate this artifact? ` +
       `After deactivation, you must wait for a long cooldown` +
-      ` before you can activate it again. Some artifacts (planetary shields) are consumed on deactivation.`;
+      ` before you can activate it again. Some artifacts (planetary shield, ice link) are consumed on deactivation.`;
 
     if (!confirm(confirmationText)) return;
 
