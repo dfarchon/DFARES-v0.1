@@ -31,6 +31,7 @@ const icon = (modal: ModalName): React.ReactNode => {
   else if (modal === ModalName.YourArtifacts) return <Icon type={IconType.Artifact} />;
   else if (modal === ModalName.WithdrawSilver) return <Icon type={IconType.Withdraw} />;
   else if (modal === ModalName.TransactionLog) return <Icon type={IconType.DoubleArrows} />;
+  else if (modal === ModalName.ChatFusion) return <Icon type={IconType.ChatFusion} />;
   return <span>T</span>;
 };
 

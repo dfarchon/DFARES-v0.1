@@ -125,6 +125,7 @@ export const TooltipName = {
   ModalTwitterBroadcast: 'ModalTwitterBroadcast' as TooltipName,
   ModalHats: 'ModalHats' as TooltipName,
   ModalSettings: 'ModalSettings' as TooltipName,
+  ModalChatFusion: 'ModalChatFusion' as TooltipName,
   ModalYourArtifacts: 'ModalYourArtifacts' as TooltipName,
   ModalFindArtifact: 'ModalFindArtifact' as TooltipName,
   ModalPlugins: 'ModalPlugins' as TooltipName,

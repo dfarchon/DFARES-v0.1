@@ -154,12 +154,7 @@ export function GameWindowLayout({
           onOpenPrivate={() => setPrivateVisible(true)}
         />
 
-        <ChatFusionPane
-          ethConnection={uiManager.getEthConnection()}
-          visible={settingsVisible}
-          onClose={() => setSettingsVisible(false)}
-          onOpenPrivate={() => setPrivateVisible(true)}
-        />
+        <ChatFusionPane visible={chatFusionVisible} onClose={() => setChatFusionVisible(false)} />
         <PrivatePane visible={privateVisible} onClose={() => setPrivateVisible(false)} />
         <PlayerArtifactsPane
           visible={playerArtifactsVisible}

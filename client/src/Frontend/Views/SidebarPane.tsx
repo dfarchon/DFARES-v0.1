@@ -41,14 +41,14 @@ export function SidebarPane({
     >
       <BorderlessPane style={{ zIndex: sidebarHovered ? DFZIndex.Tooltip : undefined }}>
         <ModalToggleButton
-          modal={ModalName.Settings}
+          modal={ModalName.ChatFusion}
           hook={chatFusionHook}
           text={sidebarHovered ? 'Chat Fusion' : undefined}
           size='stretch'
           shortcutKey={TOGGLE_CHAT_FUSION_PANE}
           shortcutText={sidebarHovered ? TOGGLE_CHAT_FUSION_PANE : undefined}
         />
-
+        <EmSpacer height={0.5} />
         <ModalToggleButton
           modal={ModalName.Settings}
           hook={settingsHook}

@@ -460,6 +460,10 @@ function SettingsPane() {
   return <>Manage settings - export SKEY, manage maps, and more.</>;
 }
 
+function ChatFusionPane() {
+  return <>Chat Fusion - chat with game players.</>;
+}
+
 function YourArtifacts() {
   return <>View your artifacts.</>;
 }
@@ -530,6 +534,7 @@ export function TooltipContent({ name }: { name: TooltipName | undefined }) {
   if (name === TooltipName.ArtifactBuff) return <ArtifactBuffPane />;
   if (name === TooltipName.ModalPlugins) return <PluginsTooltipPane />;
   if (name === TooltipName.ModalSettings) return <SettingsPane />;
+  if (name === TooltipName.ModalChatFusion) return <ChatFusionPane />;
   if (name === TooltipName.ModalYourArtifacts) return <YourArtifacts />;
   if (name === TooltipName.ModalHats) return <Hats />;
   if (name === TooltipName.FindArtifact) return <FindArtifact />;
