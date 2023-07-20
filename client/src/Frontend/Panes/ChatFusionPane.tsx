@@ -8,7 +8,7 @@ import {
   ChatAutoComplete,
   ConnectMessage,
   DashBoard,
-  LoginModal,
+  Loading,
   MessageConsole,
   MessageHeader,
   MessageInput,
@@ -19,19 +19,14 @@ import {
   Window,
 } from '@web3mq/react-components';
 import '@web3mq/react-components/dist/css/index.css';
+import { Button as AntdBtn, Form, Input, message } from 'antd';
 import cx from 'classnames';
+import { ethers } from 'ethers';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { Section } from '../Components/CoreUI';
 import { ModalPane } from '../Views/ModalPane';
 import './chatfusion-pane.css';
-import {
-  ConnectWalletIcon,
-  LoginBgcIcon,
-  LoginCenterIcon,
-  OpenModalIcon,
-  WarningIcon,
-} from './icons';
+import { ConnectWalletIcon, LoginCenterIcon, OpenModalIcon, WarningIcon } from './icons';
 declare type MainKeysType = {
   publicKey: string;
   privateKey: string;
@@ -166,7 +161,7 @@ const Main = () => {
   const { activeNotification } = useChatContext('Main');
 
   return (
-    <div style={{ height: '100%' }}>
+    <div style={{ height: '100%', width: '100%' }}>
       <Channel
         className={cx({
           hide: activeNotification,
@@ -184,9 +179,193 @@ const Main = () => {
   );
 };
 
+const LoginModule = (props: any) => {
+  const { wallet, handleLoginEvent, userInfo, address, setStep } = props;
+  const walletType = 'eth';
+
+  const handleLogin = async (values: any) => {
+    // The public-private key pair returned after registration
+    let localMainPrivateKey = localStorage.getItem('MAIN_PRIVATE_KEY') || '';
+    let localMainPublicKey = localStorage.getItem('MAIN_PUBLIC_KEY') || '';
+    const tempTime = Number(localStorage.getItem('PUBKEY_EXPIRED_TIMESTAMP')) || undefined;
+    const password = values.password;
+    if (!localMainPublicKey) {
+      const { signContent } = await Client.register.getMainKeypairSignContent({
+        password,
+        did_value: address,
+        did_type: walletType,
+      });
+      const signature = await wallet.signMessage(signContent);
+      const { publicKey, secretKey } = await Client.register.getMainKeypairBySignature(
+        signature,
+        password
+      );
+      localMainPublicKey = publicKey;
+      localMainPrivateKey = secretKey;
+    }
+
+    const options = await Client.register.login({
+      mainPrivateKey: localMainPrivateKey,
+      mainPublicKey: localMainPublicKey,
+      didType: walletType,
+      didValue: address,
+      userid: userInfo.userid,
+      password,
+      pubkeyExpiredTimestamp: tempTime,
+    });
+    message.success('Login successfully!');
+    handleLoginEvent({
+      type: 'login',
+      data: {
+        privateKey: options.mainPrivateKey,
+        publicKey: options.mainPublicKey,
+        tempPrivateKey: options.tempPrivateKey,
+        tempPublicKey: options.tempPublicKey,
+        didKey: walletType + ':' + address,
+        userid: userInfo.userid,
+        address,
+        pubkeyExpiredTimestamp: options.pubkeyExpiredTimestamp,
+      },
+    });
+  };
+
+  const backToLastStep = () => {
+    setStep(0);
+  };
+
+  return (
+    <div>
+      <AntdBtn onClick={backToLastStep}>Back</AntdBtn>
+      <div>Current user account:{userInfo.userid}</div>
+      <div>
+        <Form
+          name='basic'
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          style={{ maxWidth: 600 }}
+          initialValues={{ remember: true }}
+          onFinish={handleLogin}
+          autoComplete='off'
+        >
+          <Form.Item
+            label='Password'
+            name='password'
+            rules={[{ required: true, message: 'Please input your password!' }]}
+          >
+            <Input.Password />
+          </Form.Item>
+
+          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+            <AntdBtn type='primary' htmlType='submit'>
+              Login
+            </AntdBtn>
+          </Form.Item>
+        </Form>
+      </div>
+    </div>
+  );
+};
+
+type WalletType = 'eth' | 'starknet' | 'qrcode';
+
+const RegistModule = (props: any) => {
+  const { wallet, handleLoginEvent, userInfo, address, setStep } = props;
+  const walletType: WalletType = 'eth';
+
+  const handleRegist = async (values: any) => {
+    const { password, passwordConfirm, nickName } = values;
+    if (password !== passwordConfirm) {
+      message.warning('The input passwords do not match');
+      return;
+    }
+    const { signContent: mainKeysSignContent } = await Client.register.getMainKeypairSignContent({
+      password,
+      did_value: address,
+      did_type: walletType,
+    });
+    const mainKeySignature = await wallet.signMessage(mainKeysSignContent);
+    //获取web3mq的publicKey
+    const { publicKey: mainPublicKey, secretKey: mainPrivateKey } =
+      await Client.register.getMainKeypairBySignature(mainKeySignature, password);
+
+    // const registerSignContent = aw Client.register.
+    const { signContent: registerSignContent } = await Client.register.getRegisterSignContent({
+      userid: userInfo.userid,
+      mainPublicKey,
+      didType: walletType,
+      didValue: address,
+    });
+
+    const registerSignature = await wallet.signMessage(registerSignContent);
+    const params = {
+      userid: userInfo.userid,
+      didValue: address,
+      mainPublicKey: mainPublicKey,
+      did_pubkey: '',
+      didType: walletType,
+      nickname: nickName,
+      avatar_url: '',
+      signature: registerSignature,
+    };
+    const registerRes = await Client.register.register(params);
+    // reset password
+    // const resetRes = await Client.register.resetPassword(params);
+    console.log('注册结果' + registerRes);
+    handleLoginEvent({
+      type: 'register',
+      data: {
+        privateKey: mainPrivateKey,
+        publicKey: mainPublicKey,
+        address,
+      },
+    });
+  };
+  return (
+    <div>
+      <AntdBtn onClick={() => setStep(0)}>Back</AntdBtn>
+      <Form
+        name='basic'
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 16 }}
+        style={{ maxWidth: 600 }}
+        initialValues={{ remember: true }}
+        onFinish={handleRegist}
+        autoComplete='off'
+      >
+        <Form.Item
+          label='NickName'
+          name='nickName'
+          rules={[{ required: true, message: 'Please input your NickName!' }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label='Password'
+          name='password'
+          rules={[{ required: true, message: 'Please input your password!' }]}
+        >
+          <Input.Password />
+        </Form.Item>
+        <Form.Item
+          label='PasswordConfirm'
+          name='passwordConfirm'
+          rules={[{ required: true, message: 'Please input your password!' }]}
+        >
+          <Input.Password />
+        </Form.Item>
+        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+          <AntdBtn type='primary' htmlType='submit'>
+            Register
+          </AntdBtn>
+        </Form.Item>
+      </Form>
+    </div>
+  );
+};
+
 const ChatFusionContent = styled.div`
-  width: 1000px;
-  height: 800px;
+  width: 900px;
+  height: 700px;
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
@@ -206,11 +385,33 @@ export function ChatFusionPane({ visible, onClose }: { visible: boolean; onClose
 
   const appType = AppTypeEnum['pc'];
   //get df info from browser
+  const address = df.getAddress() || '';
+  const privateKey = df.getPrivateKey() || '';
+  const walletType = 'eth';
+  const wallet = new ethers.Wallet(privateKey);
+
+  const [userInfo, setUserInfo] = useState({ userid: '', userExist: false });
+  const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState(0);
 
   useEffect(() => {
     init();
     document.getElementsByTagName('body')[0].setAttribute('data-theme', 'dark');
   }, []);
+
+  const getAccount = async () => {
+    setLoading(true);
+    const { userid, userExist } = await Client.register.getUserInfo({
+      did_value: address,
+      did_type: walletType,
+    });
+    setLoading(false);
+    setStep(1);
+    setUserInfo({
+      userid,
+      userExist,
+    });
+  };
 
   if (!keys) {
     let mainKeys: MainKeysType = {
@@ -220,7 +421,7 @@ export function ChatFusionPane({ visible, onClose }: { visible: boolean; onClose
     };
     const mainPrivateKey = localStorage.getItem(`MAIN_PRIVATE_KEY`);
     const mainPublicKey = localStorage.getItem(`MAIN_PUBLIC_KEY`);
-    const address = localStorage.getItem('WALLET_ADDRESS');
+    // const address = localStorage.getItem('WALLET_ADDRESS');
     if (mainPublicKey && mainPrivateKey && address) {
       mainKeys = {
         publicKey: mainPublicKey,
@@ -228,47 +429,59 @@ export function ChatFusionPane({ visible, onClose }: { visible: boolean; onClose
         walletAddress: address,
       };
     }
+    //如果keys不存在，mainKeys也不存在 判断是否存在此账号，存在进入登陆，不存在
+    //进入注册
+
     return (
       <ModalPane id={ModalName.ChatFusion} title='ChatFusion' visible={visible} onClose={onClose}>
         <ChatFusionContent>
-          <Section>
+          {loading ? (
+            <Loading />
+          ) : (
             <div className='login_container'>
-              <div className='test-bgc'>
-                <LoginBgcIcon />
-              </div>
               <div className={'connectBtnBox'}>
                 <LoginCenterIcon />
                 <div className='connectBtnBoxTitle'>Welcome to Web3MQ</div>
                 <div className='connectBtnBoxText'>
                   Let's get started with your decentralized trip now!
                 </div>
-                <div className='walletConnect-btnBox'>
-                  <LoginModal
-                    env={'dev'}
-                    containerId={''}
-                    keys={mainKeys}
-                    handleOperationEvent={handleLoginEvent}
-                    appType={appType}
-                    styles={{
-                      addressBox: {
-                        width: '281px',
-                      },
-                    }}
-                    customBtnNode={
-                      <Button
-                        icon={<ConnectWalletIcon />}
-                        type={'primary'}
-                        className='walletConnect-btn'
-                        disabled={!fastestUrl}
-                      >
-                        {fastestUrl ? 'Connect' : 'Initializing'}
-                      </Button>
-                    }
-                  />
-                </div>
+                {step === 1 && (
+                  <>
+                    {userInfo.userExist ? (
+                      <LoginModule
+                        wallet={wallet}
+                        userInfo={userInfo}
+                        handleLoginEvent={handleLoginEvent}
+                        address={address}
+                        setStep={setStep}
+                      />
+                    ) : (
+                      <RegistModule
+                        wallet={wallet}
+                        userInfo={userInfo}
+                        handleLoginEvent={handleLoginEvent}
+                        address={address}
+                        setStep={setStep}
+                      />
+                    )}
+                  </>
+                )}
+                {step === 0 && (
+                  <div className='walletConnect-btnBox'>
+                    <Button
+                      icon={<ConnectWalletIcon />}
+                      type={'primary'}
+                      className='walletConnect-btn'
+                      disabled={!fastestUrl}
+                      onClick={getAccount}
+                    >
+                      {fastestUrl ? 'Connect' : 'Initializing'}
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
-          </Section>
+          )}
         </ChatFusionContent>
       </ModalPane>
     );
