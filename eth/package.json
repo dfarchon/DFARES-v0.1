@@ -76,6 +76,7 @@
     "hardhat:prod": "hardhat --network xdai",
     "hardhat:mainnet": "hardhat --network mainnet",
     "hardhat:altlayer": "hardhat --network altlayer",
+    "hardhat:redstoneTestnet" :"hardhat --network redstoneTestnet",
     "compile": "hardhat compile",
     "circom:prod": "hardhat circom --verbose",
     "circom:dev": "hardhat circom --deterministic --verbose",
