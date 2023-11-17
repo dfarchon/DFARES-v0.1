@@ -217,24 +217,24 @@ export function SettingsPane({
             uiManager={uiManager}
             setting={Setting.GasFeeGwei}
             values={[
-              '1',
-              '2',
-              '5',
-              '10',
-              '20',
-              '40',
+              '0.00000005', // '1',
+              '0.00000010', //'2',
+              '0.00000025', //'5',
+              '0.00000050', //'10',
+              '0.00000100', //'20',
+              '0.00000200', // '40',
               //MyNotice: altlayer don't have GAS_PRICE_API
               // AutoGasSetting.Slow,
               // AutoGasSetting.Average,
               // AutoGasSetting.Fast,
             ]}
             labels={[
-              '1 gwei (default)',
-              '2 gwei (faster)',
-              '5 gwei (turbo)',
-              '10 gwei (mega turbo)',
-              '20 gwei (need4speed)',
-              '40 gwei (gigafast)',
+              '0.00000005 gwei (default)', //'1 gwei (default)',
+              '0.00000010 gwei (faster)', // '2 gwei (faster)',
+              '0.00000025 gwei (turbo)', //'5 gwei (turbo)',
+              '0.00000050 gwei (mega turbo)', // '10 gwei (mega turbo)',
+              '0.00000100 gwei (need4speed)', //'20 gwei (need4speed)',
+              '0.00000200 gwei (gigafast)', // '40 gwei (gigafast)',
               // `slow auto (~${gasPrices.slow} gwei)`,
               // `average auto (~${gasPrices.average} gwei)`,
               // `fast auto (~${gasPrices.fast} gwei)`,

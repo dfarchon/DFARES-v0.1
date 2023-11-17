@@ -36,12 +36,12 @@ function onlyInDevelopment(): string {
 
 const defaultSettings: Record<Setting, string> = {
   [Setting.OptOutMetrics]: onlyInDevelopment(),
-  [Setting.AutoApproveNonPurchaseTransactions]: onlyInDevelopment(),
+  [Setting.AutoApproveNonPurchaseTransactions]: 'true', //onlyInDevelopment(),
   [Setting.DrawChunkBorders]: 'false',
   [Setting.HighPerformanceRendering]: 'false',
   [Setting.MoveNotifications]: 'true',
   [Setting.HasAcceptedPluginRisk]: onlyInDevelopment(),
-  [Setting.GasFeeGwei]: '1', // AutoGasSetting.Average,
+  [Setting.GasFeeGwei]: '0.00000005', //'1', // AutoGasSetting.Average,
   [Setting.GasFeeLimit]: '3000000',
   [Setting.TerminalVisible]: 'true',
   [Setting.TutorialOpen]: onlyInProduction(),

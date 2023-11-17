@@ -172,7 +172,7 @@ export function TxConfirmPopup({
   // ethConnection.getAutoGasPriceGwei(ethConnection.getAutoGasPrices(), autoGasPriceSetting);
 
   const wrapGasFee = () => {
-    if (method === 'initializePlayer' || method === 'getSpaceShips') return '50';
+    if (method === 'initializePlayer' || method === 'getSpaceShips') return '0.00000250'; //'50';
     const res = getSetting(config, Setting.GasFeeGwei);
 
     return res;
@@ -264,6 +264,7 @@ export function TxConfirmPopup({
     if (!isNaN(Number(gasFeeGwei)) && !isNaN(buyArtifactCost) && !isNaN(hatCost)) {
       const res: number =
         hatCost + buyArtifactCost + weiToEth(gweiToWei(Number(gasLimit) * Number(gasFeeGwei)));
+
       return res.toFixed(8).toString();
     } else {
       const pre = 'Estimated: ';

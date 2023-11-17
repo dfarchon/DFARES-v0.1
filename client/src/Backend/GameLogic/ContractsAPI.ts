@@ -124,7 +124,7 @@ export class ContractsAPI extends EventEmitter {
       (tx.intent.methodName === 'initializePlayer' || tx.intent.methodName === 'getSpaceShips') &&
       tx.intent.contract.address === this.contract.address
     ) {
-      return '50';
+      return '0.00000250'; //'50';
     }
 
     const config = {

@@ -148,7 +148,8 @@ export const MAX_AUTO_GAS_PRICE_GWEI = 15 as const;
  */
 // Careful, don't add a slash to the end of this.
 // export const BLOCK_EXPLORER_URL = 'https://dashboard.tenderly.co/tx/xdai' as const;
-export const BLOCK_EXPLORER_URL = 'https://dfares-explorer.altlayer.io/tx' as const;
+// export const BLOCK_EXPLORER_URL = 'https://dfares-explorer.altlayer.io/tx' as const;
+export const BLOCK_EXPLORER_URL = 'https://explorer.holesky.redstone.xyz/tx' as const;
 /**
  * The amount of time between gas price refreshes when fetching prices from the oracle.
  */
@@ -218,6 +219,6 @@ export const MAX_AVATAR_TYPE = 9;
 export const THEGRAPH_API_URL =
   'https://api.thegraph.com/subgraphs/name/darkforest-eth/dark-forest-v06-round-5';
 
-export const TOKEN_NAME = 'RES';
-export const BLOCKCHAIN_NAME = 'AltLayer';
+export const TOKEN_NAME = 'ETH';
+export const BLOCKCHAIN_NAME = 'Redstone Testnet';
 export const HOST_TEAM_NAME = 'DF Archon';

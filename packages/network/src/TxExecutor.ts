@@ -257,10 +257,14 @@ export class TxExecutor {
 
     if (tx.overrides?.gasPrice === undefined) {
       tx.overrides = tx.overrides ?? {};
+
+      console.log(this.)
+
+
       tx.overrides.gasPrice = gweiToWei(
         this.ethConnection.getAutoGasPriceGwei(
           this.ethConnection.getAutoGasPrices(),
-          autoGasPriceSetting
+          autoGasPriceSetting.toString()
         )
       );
     }
@@ -272,6 +276,10 @@ export class TxExecutor {
 
       return this.execute(tx);
     }, tx);
+
+    console.log('=== transaction ===');
+    console.warn(tx);
+    console.log(tx.overrides.gasPrice);
 
     return tx;
   }
