@@ -34,6 +34,14 @@ import {
 } from '@dfares/types';
 import bigInt, { BigInteger } from 'big-integer';
 
+export const TOKEN_NAME = 'ETH';
+export const BLOCKCHAIN_NAME = 'Redstone Testnet';
+export const HOST_TEAM_NAME = 'DF Archon';
+
+export const GAS_ADJUST_DELTA = '0.00000005';
+
+export const FIXED_DIGIT_NUMBER = 9;
+
 /**
  * The precision of Energy & Silver stored in the Dark Forest smart contracts.
  *
@@ -132,9 +140,9 @@ export const GAS_PRICE_API = 'https://blockscout.com/xdai/mainnet/api/v1/gas-pri
  * In case we cannot load gas prices from xDai, these are the default auto gas prices.
  */
 export const DEFAULT_GAS_PRICES: GasPrices = {
-  slow: 1,
-  average: 3,
-  fast: 10,
+  slow: Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('1')), // 1,
+  average: Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('3')), //3,
+  fast: Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('10')), //10,
 } as const;
 
 /**
@@ -218,11 +226,3 @@ export const MAX_AVATAR_TYPE = 9;
  */
 export const THEGRAPH_API_URL =
   'https://api.thegraph.com/subgraphs/name/darkforest-eth/dark-forest-v06-round-5';
-
-export const TOKEN_NAME = 'ETH';
-export const BLOCKCHAIN_NAME = 'Redstone Testnet';
-export const HOST_TEAM_NAME = 'DF Archon';
-
-export const GAS_ADJUST_DELTA = '0.00000005';
-
-export const FIXED_DIGIT_NUMBER = 9;
