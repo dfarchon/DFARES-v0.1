@@ -1,3 +1,4 @@
+import { FIXED_DIGIT_NUMBER } from '@dfares/constants';
 import {
   AutoGasSetting,
   DiagnosticUpdater,
@@ -8,13 +9,12 @@ import {
   TxIntent,
 } from '@dfares/types';
 import { Mutex } from 'async-mutex';
-import { providers } from 'ethers';
+import { providers, utils } from 'ethers';
 import deferred from 'p-defer';
 import timeout from 'p-timeout';
 import { EthConnection } from './EthConnection';
-import { gweiToWei, waitForTransaction } from './Network';
+import { waitForTransaction } from './Network';
 import { ConcurrentQueueConfiguration, ThrottledConcurrentQueue } from './ThrottledConcurrentQueue';
-
 /**
  * Returns either a string that represents the gas price we should use by default for transactions,
  * or a string that represents the fact that we should be using one of the automatic gas prices.
@@ -258,15 +258,14 @@ export class TxExecutor {
     if (tx.overrides?.gasPrice === undefined) {
       tx.overrides = tx.overrides ?? {};
 
-      console.log(this.)
-
-
-      tx.overrides.gasPrice = gweiToWei(
-        this.ethConnection.getAutoGasPriceGwei(
-          this.ethConnection.getAutoGasPrices(),
-          autoGasPriceSetting.toString()
-        )
+      const t1 = this.ethConnection.getAutoGasPriceGwei(
+        this.ethConnection.getAutoGasPrices(),
+        autoGasPriceSetting
       );
+
+      const t2 = t1.toFixed(FIXED_DIGIT_NUMBER);
+
+      tx.overrides.gasPrice = utils.parseUnits(t2, 'gwei');
     }
 
     this.queue.add(() => {
@@ -276,10 +275,6 @@ export class TxExecutor {
 
       return this.execute(tx);
     }, tx);
-
-    console.log('=== transaction ===');
-    console.warn(tx);
-    console.log(tx.overrides.gasPrice);
 
     return tx;
   }

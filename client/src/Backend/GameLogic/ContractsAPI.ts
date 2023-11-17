@@ -1,4 +1,4 @@
-import { EMPTY_LOCATION_ID, TOKEN_NAME } from '@dfares/constants';
+import { EMPTY_LOCATION_ID, GAS_ADJUST_DELTA, TOKEN_NAME } from '@dfares/constants';
 import { DarkForest } from '@dfares/contracts/typechain';
 import {
   aggregateBulkGetter,
@@ -124,7 +124,9 @@ export class ContractsAPI extends EventEmitter {
       (tx.intent.methodName === 'initializePlayer' || tx.intent.methodName === 'getSpaceShips') &&
       tx.intent.contract.address === this.contract.address
     ) {
-      return '0.00000250'; //'50';
+      return Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('50'))
+        .toFixed(16)
+        .toString();
     }
 
     const config = {

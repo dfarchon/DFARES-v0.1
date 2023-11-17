@@ -1,6 +1,6 @@
 {
   "name": "@dfares/hexgen",
-  "version": "6.8.4",
+  "version": "6.8.5",
   "license": "MIT",
   "author": "0xPARC <ivan@0xPARC.org>",
   "engines": {
@@ -21,7 +21,7 @@
     "clean": "del-cli dist node_modules tsconfig.ref.tsbuildinfo"
   },
   "dependencies": {
-    "@dfares/types": "6.8.4",
+    "@dfares/types": "6.8.5",
     "big-integer": "^1.6.48"
   },
   "devDependencies": {

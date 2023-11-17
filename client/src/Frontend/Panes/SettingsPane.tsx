@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from '@dfares/constants';
+import { BLOCKCHAIN_NAME, FIXED_DIGIT_NUMBER, GAS_ADJUST_DELTA } from '@dfares/constants';
 import { EthConnection } from '@dfares/network';
 import { Chunk, ModalName, Setting } from '@dfares/types';
 import React, { useEffect, useState } from 'react';
@@ -217,24 +217,49 @@ export function SettingsPane({
             uiManager={uiManager}
             setting={Setting.GasFeeGwei}
             values={[
-              '0.00000005', // '1',
-              '0.00000010', //'2',
-              '0.00000025', //'5',
-              '0.00000050', //'10',
-              '0.00000100', //'20',
-              '0.00000200', // '40',
+              Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('1'))
+                .toFixed(FIXED_DIGIT_NUMBER)
+                .toString(), // '1',
+              Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('2'))
+                .toFixed(FIXED_DIGIT_NUMBER)
+                .toString(), //'2',
+              Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('5'))
+                .toFixed(FIXED_DIGIT_NUMBER)
+                .toString(), //'5',
+              Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('10'))
+                .toFixed(FIXED_DIGIT_NUMBER)
+                .toString(), //'10',
+              Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('20'))
+                .toFixed(FIXED_DIGIT_NUMBER)
+                .toString(), //'20',
+              Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('40'))
+                .toFixed(FIXED_DIGIT_NUMBER)
+                .toString(), //'40',
+
               //MyNotice: altlayer don't have GAS_PRICE_API
               // AutoGasSetting.Slow,
               // AutoGasSetting.Average,
               // AutoGasSetting.Fast,
             ]}
             labels={[
-              '0.00000005 gwei (default)', //'1 gwei (default)',
-              '0.00000010 gwei (faster)', // '2 gwei (faster)',
-              '0.00000025 gwei (turbo)', //'5 gwei (turbo)',
-              '0.00000050 gwei (mega turbo)', // '10 gwei (mega turbo)',
-              '0.00000100 gwei (need4speed)', //'20 gwei (need4speed)',
-              '0.00000200 gwei (gigafast)', // '40 gwei (gigafast)',
+              Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('1'))
+                .toFixed(FIXED_DIGIT_NUMBER)
+                .toString() + ' gwei (default)', //'1 gwei (default)',
+              Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('2'))
+                .toFixed(FIXED_DIGIT_NUMBER)
+                .toString() + ' gwei (faster)', // '2 gwei (faster)',
+              Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('5'))
+                .toFixed(FIXED_DIGIT_NUMBER)
+                .toString() + ' gwei (turbo)', //'5 gwei (turbo)',
+              Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('10'))
+                .toFixed(FIXED_DIGIT_NUMBER)
+                .toString() + ' gwei (mega turbo)', // '10 gwei (mega turbo)',
+              Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('20'))
+                .toFixed(FIXED_DIGIT_NUMBER)
+                .toString() + ' gwei (need4speed)', //'20 gwei (need4speed)',
+              Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('40'))
+                .toFixed(FIXED_DIGIT_NUMBER)
+                .toString() + ' gwei (gigafast)', // '40 gwei (gigafast)',
               // `slow auto (~${gasPrices.slow} gwei)`,
               // `average auto (~${gasPrices.average} gwei)`,
               // `fast auto (~${gasPrices.fast} gwei)`,
