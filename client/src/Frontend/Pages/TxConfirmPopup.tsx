@@ -269,7 +269,7 @@ export function TxConfirmPopup({
       const res: number =
         hatCost + buyArtifactCost + weiToEth(gweiToWei(Number(gasLimit) * Number(gasFeeGwei)));
 
-      return res.toFixed(8).toString();
+      return res.toFixed(18).toString();
     } else {
       const pre = 'Estimated: ';
       let val = '0';
@@ -279,7 +279,7 @@ export function TxConfirmPopup({
       else val = gasFeeGwei;
       const res: number =
         hatCost + buyArtifactCost + weiToEth(gweiToWei(Number(gasLimit) * Number(val)));
-      return pre + res.toFixed(8).toString();
+      return pre + res.toFixed(18).toString();
     }
   };
 
