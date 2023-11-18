@@ -3,10 +3,8 @@ import { address } from '@dfares/serde';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import { Btn } from '../Components/Btn';
 import { EmSpacer, Link, Spacer, Title } from '../Components/CoreUI';
 import { Modal } from '../Components/Modal';
-import { Text, White } from '../Components/Text';
 import dfstyles from '../Styles/dfstyles';
 import { LandingPageRoundArt } from '../Views/LandingPageRoundArt';
 
@@ -50,7 +48,7 @@ export default function LandingPage() {
 
   return (
     <>
-      <PrettyOverlayGradient />
+      {/* <PrettyOverlayGradient /> */}
       {/* <Hiring /> */}
 
       <Page>
@@ -93,6 +91,8 @@ export default function LandingPage() {
             <HideOnMobile>
               <Spacer height={16} />
             </HideOnMobile> */}
+
+            <Spacer height={100} />
             <LandingPageRoundArt />
 
             {/*
@@ -106,21 +106,21 @@ export default function LandingPage() {
             <Spacer height={20} />
 
             <p>
-              <White>DF ARES v0.1 </White> <Text> </Text>
+              {/* <White>DF ARES v0.1 </White> <Text> </Text> */}
               {/* <br />
               <Text>Round 1: </Text>
               <White>Artifact Combat</White> */}
             </p>
 
-            <Spacer height={16} />
+            {/* <Spacer height={16} /> */}
 
             <ButtonWrapper>
               {/* <Btn size='large' onClick={() => history.push(`/lobby/${defaultAddress}`)}>
                 Create Lobby
               </Btn> */}
-              <Btn size='large' onClick={() => history.push(`/play/${defaultAddress}`)}>
+              {/* <Btn size='large' onClick={() => history.push(`/play/${defaultAddress}`)}>
                 Enter Round 1
-              </Btn>
+              </Btn> */}
               {/* <Btn size='large' onClick={() => history.push(`/events`)}>
                 Events
               </Btn> */}
@@ -358,6 +358,7 @@ const Page = styled.div`
   max-width: 100vw;
   height: 100%;
   color: white;
+  background-color: #021452;
   font-size: ${dfstyles.fontSize};
   display: flex;
   flex-direction: column;

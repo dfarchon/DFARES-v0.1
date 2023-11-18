@@ -463,7 +463,7 @@ export function TxConfirmPopup({
         <Row className='mtop'>
           <b>Account Balance</b>
           <span>
-            {parseFloat(balance).toFixed(8)} ${TOKEN_NAME}
+            {parseFloat(balance).toFixed(18)} ${TOKEN_NAME}
           </span>
         </Row>
         <Row className='mtop'>
