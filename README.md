@@ -1,21 +1,31 @@
-# darkforest
+# Dark Forest ARES
 
-Dark Forest Game on Blockchain.
+A modified version of Dark Forest maintained by DF community.
 
 To run this project you will need to be on Node 14 OR Node 16.
-
-DF ARES v0.1.1
 
 ## use ganache
 
 seems faster & can store blocks
 
 ```
-yarn
+yarn // if meet error run npm install instead
 yarn workspace eth ganache
-yarn workspace eth deploy:dev deploy
+yarn workspace eth hardhat:dev deploy
 yarn workspace client start
 ```
+
+## deploy on RedStone
+
+open packages/constants/src/index.ts 
+
+set GAS_ADJUST_DELTA value '0.00000005'
+
+run `yarn`
+
+Notice: if daily localtest, please set GAS_ADJUST_DELTA value '1', then run `yarn`
+
+
 
 ## local development
 
