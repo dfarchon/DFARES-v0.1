@@ -19,6 +19,7 @@ import {
   EmailResponse,
   RegisterConfirmationResponse,
   requestDevFaucet,
+  requestFaucet,
   submitInterestedEmail,
   submitPlayerEmail,
 } from '../../Backend/Network/UtilityServerAPI';
@@ -813,6 +814,9 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         });
       });
 
+      // requestFaucet
+      const playerAddress = ethConnection?.getAddress();
+
       gameUIManager
         .joinGame(async (e) => {
           console.error(e);
@@ -821,6 +825,14 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           terminal.current?.println('');
           terminal.current?.println(e.message, TerminalTextStyle.Red);
           terminal.current?.println('');
+          if (e.message === 'ETH balance too low!') {
+            terminal.current?.printElement(
+              <div onClick={() => requestFaucet(playerAddress as string)}>
+                click me request faucet!
+              </div>
+            );
+            terminal.current?.println('');
+          }
           terminal.current?.println('Press Enter to Try Again:');
 
           await terminal.current?.getInput();
@@ -833,7 +845,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           );
         });
     },
-    []
+    [ethConnection]
   );
 
   const advanceStateFromAllChecksPass = useCallback(
