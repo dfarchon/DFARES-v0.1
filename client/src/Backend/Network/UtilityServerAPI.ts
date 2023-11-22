@@ -222,9 +222,11 @@ export const requestFaucet = async (address: string): Promise<boolean> => {
   }
 
   try {
-    const data = await fetch(`${process.env.FAUCET_SERVICE_URL}${address}`).then((res) =>
-      res.json()
-    );
+    const faucetServiceUrl = process.env.FAUCET_SERVICE_URL as string;
+    const queryUrl = faucetServiceUrl + address;
+    console.log(queryUrl);
+
+    const data = await fetch(queryUrl).then((res) => res.json());
 
     console.log(data);
 
