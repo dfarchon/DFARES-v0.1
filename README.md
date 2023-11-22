@@ -12,20 +12,18 @@ seems faster & can store blocks
 yarn // if meet error run npm install instead
 yarn workspace eth ganache
 yarn workspace eth hardhat:dev deploy
-yarn workspace client start
+yarn workspace client start:dev
 ```
 
 ## deploy on RedStone
 
-open packages/constants/src/index.ts 
+open packages/constants/src/index.ts
 
 set GAS_ADJUST_DELTA value '0.00000005'
 
 run `yarn`
 
 Notice: if daily localtest, please set GAS_ADJUST_DELTA value '1', then run `yarn`
-
-
 
 ## local development
 
@@ -36,7 +34,7 @@ Notice: if daily localtest, please set GAS_ADJUST_DELTA value '1', then run `yar
 ### Running the project
 
 - Run `yarn workspace eth start` which starts the hardhat blockchain and deploys the game contracts.
-- Run `yarn workspace client start` to load the webclient.
+- Run `yarn workspace client start:dev` to load the webclient.
 - Run `yarn watch` to start a typescript watcher to incrementally rebuild changed dependencies.
 
 You can import the private key of one of the accounts `hardhat node` created and funded, which are printed when you started the node such as:

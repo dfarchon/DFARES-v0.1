@@ -215,6 +215,28 @@ export const requestDevFaucet = async (address: EthAddress): Promise<boolean> =>
   }
 };
 
+// only redstone faucet
+export const requestFaucet = async (address: string): Promise<boolean> => {
+  if (!process.env.FAUCET_SERVICE_URL) {
+    return false;
+  }
+
+  try {
+    const faucetServiceUrl = process.env.FAUCET_SERVICE_URL as string;
+    const queryUrl = faucetServiceUrl + address;
+    console.log(queryUrl);
+
+    const data = await fetch(queryUrl).then((res) => res.json());
+
+    console.log(data);
+
+    return data;
+  } catch (e) {
+    console.error(`Error request faucet: ${e}`);
+    return false;
+  }
+};
+
 /**
  * Swallows all errors. Either loads the address to twitter map from the webserver in 5 seconds, or
  * returan empty map.
