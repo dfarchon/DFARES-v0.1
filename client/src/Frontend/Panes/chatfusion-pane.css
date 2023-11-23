@@ -287,3 +287,30 @@ select {
 .index_mainContainer__dvsf- {
   height: 100% !important;
 }
+
+.index_contentEnterDone__NmBEt {
+  left: 85%;
+}
+
+.ant-form-item {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.ant-form-item-row {
+  display: flex;
+}
+.ant-form-item-required {
+  margin-right: 10px;
+}
+
+.radius-btn {
+  border: 1px solid white;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.reg-form {
+  margin: 10px;
+}

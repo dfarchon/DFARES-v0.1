@@ -1,0 +1,33 @@
+.operateFollowRequestBar {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 16px;
+  border-top: 1px solid #f4f4f5;
+}
+.warning {
+  display: flex;
+  width: 100%;
+  line-height: 16px;
+  padding: 12px;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  .warnIcon {
+    display: flex;
+    align-items: center;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.cancelBtn {
+  margin-right: 16px;
+}
+.cancelBtn,
+.operateBtn {
+  flex: 1;
+  width: 50%;
+}
+
+.dialogContent {
+  height: 480px;
+}

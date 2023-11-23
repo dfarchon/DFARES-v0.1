@@ -1,0 +1,50 @@
+.notificationContainerClass {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex: 1;
+}
+.notificationHeaderContainer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 20px 16px;
+  min-height: 80px;
+
+  &.mobileStyle {
+    padding: 0 16px;
+  }
+  .title {
+    max-width: 190px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: white;
+  }
+}
+.notificationBody {
+  height: 100%;
+  width: 100%;
+  padding: 16px;
+}
+.messageLine {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+}
+.messageBody {
+  border-radius: 8px 8px 8px 2px;
+  padding: 12px;
+}
+.wrap {
+  display: flex;
+  align-items: center;
+  font-family: Inter, sans-serif;
+  .user {
+  }
+  .date {
+    margin-left: 5px;
+  }
+}
+.content {
+}

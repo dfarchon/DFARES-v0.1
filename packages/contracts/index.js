@@ -48,9 +48,9 @@ exports.START_BLOCK = 0;
 /**
  * The address for the DarkForest contract.
  */
-exports.CONTRACT_ADDRESS = '0xE02A09bFea38E8eC18E16fb3AeDc8Bee4C9789D6';
+exports.CONTRACT_ADDRESS = '0xf0dC4e4B6A253e2819e629aCa3843aEa08CdA1a7';
 /**
  * The address for the initalizer contract. Useful for lobbies.
  */
-exports.INIT_ADDRESS = '0x14E5528eB1272a5f5254627ebf0b27e8BfBb6528';
+exports.INIT_ADDRESS = '0x7D5e784f2c495ADff5425004727aA4d33A2e06B6';
 //# sourceMappingURL=index.js.map

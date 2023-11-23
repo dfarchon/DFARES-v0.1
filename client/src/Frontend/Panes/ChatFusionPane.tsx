@@ -1,133 +1,86 @@
 import { ModalName } from '@darkforest_eth/types';
-import { Client, KeyPairsType, SignClientCallBackType } from '@web3mq/client';
+import { Client } from '@web3mq/client';
 import {
   AppTypeEnum,
   Button,
   Channel,
+  ChannelList,
   Chat,
   ChatAutoComplete,
   ConnectMessage,
+  ContactList,
   DashBoard,
   Loading,
   MessageConsole,
   MessageHeader,
   MessageInput,
   MessageList,
-  Notification,
+  NotificationList,
+  NotificationModal,
   Notify,
   useChatContext,
   Window,
 } from '@web3mq/react-components';
 import '@web3mq/react-components/dist/css/index.css';
-import { Button as AntdBtn, Form, Input, message } from 'antd';
+import { Button as AntdBtn, Form, Input, message, Space } from 'antd';
 import cx from 'classnames';
 import { ethers } from 'ethers';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { Btn } from '../Components/Btn';
+import { TextInput } from '../Components/Input';
 import { ModalPane } from '../Views/ModalPane';
 import './chatfusion-pane.css';
-import { ConnectWalletIcon, LoginCenterIcon, OpenModalIcon, WarningIcon } from './icons';
+import {
+  ChatsIcon,
+  ConnectWalletIcon,
+  LoginCenterIcon,
+  NotificationIcon,
+  OpenModalIcon,
+  RoomsIcon,
+  WarningIcon,
+} from './ChatFusionComponent/icons';
+import { Notification } from './ChatFusionComponent/Notification/Notification';
+import { useLogin } from './ChatFusionComponent/utils/useLogin';
 declare type MainKeysType = {
   publicKey: string;
   privateKey: string;
   walletAddress: string;
 };
-const useLogin = () => {
-  const hasKeys = useMemo(() => {
-    const PrivateKey = localStorage.getItem('PRIVATE_KEY') || '';
-    const PublicKey = localStorage.getItem('PUBLIC_KEY') || '';
-    const userid = localStorage.getItem('userid') || '';
-    if (PrivateKey && PublicKey && userid) {
-      return { PrivateKey, PublicKey, userid };
-    }
-    return null;
-  }, []);
 
-  const [keys, setKeys] = useState<KeyPairsType | null>(hasKeys);
-  const [fastestUrl, setFastUrl] = useState<string | null>(null);
-
-  const init = async () => {
-    const tempPubkey = localStorage.getItem('PUBLIC_KEY') || '';
-    const didKey = localStorage.getItem('DID_KEY') || '';
-    const fastUrl = await Client.init({
-      connectUrl: localStorage.getItem('FAST_URL'),
-      app_key: 'SDrulLdGJGQSOkkK',
-      didKey,
-      tempPubkey,
-    });
-    localStorage.setItem('FAST_URL', fastUrl);
-    setFastUrl(fastUrl);
-  };
-
-  const logout = () => {
-    localStorage.setItem('PRIVATE_KEY', '');
-    localStorage.setItem('PUBLIC_KEY', '');
-    localStorage.setItem('DID_KEY', '');
-    localStorage.setItem('userid', '');
-    setKeys(null);
-  };
-
-  const handleEvent = (options: SignClientCallBackType) => {
-    const { type, data } = options;
-    console.log(`${type} ====>`, data);
-    if (type === 'keys') {
-      const { private_key: PrivateKey, pubkey: PublicKey, userid } = data;
-      localStorage.setItem('PRIVATE_KEY', PrivateKey);
-      localStorage.setItem('PUBLICKEY', PublicKey);
-      localStorage.setItem('USERID', userid);
-      setKeys({ PrivateKey, PublicKey, userid });
-
-      // message.success('login success', 2).then(() => {
-      // });
-    }
-  };
-
-  const handleLoginEvent = (eventData: any) => {
-    if (eventData.data) {
-      if (eventData.type === 'login') {
-        const {
-          privateKey,
-          publicKey,
-          tempPrivateKey,
-          tempPublicKey,
-          didKey,
-          userid,
-          address,
-          pubkeyExpiredTimestamp,
-        } = eventData.data;
-        localStorage.setItem('userid', userid);
-        localStorage.setItem('PRIVATE_KEY', tempPrivateKey);
-        localStorage.setItem('PUBLIC_KEY', tempPublicKey);
-        localStorage.setItem('WALLET_ADDRESS', address);
-        localStorage.setItem(`MAIN_PRIVATE_KEY`, privateKey);
-        localStorage.setItem(`MAIN_PUBLIC_KEY`, publicKey);
-        localStorage.setItem(`DID_KEY`, didKey);
-        localStorage.setItem('PUBKEY_EXPIRED_TIMESTAMP', String(pubkeyExpiredTimestamp));
-        setKeys({
-          PrivateKey: tempPrivateKey,
-          PublicKey: tempPublicKey,
-          userid,
-        });
-      }
-      if (eventData.type === 'register') {
-        const { privateKey, publicKey, address } = eventData.data;
-        localStorage.setItem('WALLET_ADDRESS', address);
-        localStorage.setItem(`MAIN_PRIVATE_KEY`, privateKey);
-        localStorage.setItem(`MAIN_PUBLIC_KEY`, publicKey);
-      }
-    }
-  };
-
-  return {
-    keys,
-    fastestUrl,
-    init,
-    handleLoginEvent,
-    logout,
-    handleEvent,
-    setKeys,
-  };
+type TabType = {
+  title: string;
+  icon: React.ReactNode;
+  type: string;
+  component: React.ReactNode;
 };
+
+enum showTypeEnum {
+  'list' = 'list',
+  'modal' = 'modal',
+}
+const showNotificationType: showTypeEnum = showTypeEnum['list'];
+const PCTabs: TabType[] = [
+  {
+    title: 'Rooms',
+    icon: <RoomsIcon />,
+    type: 'room',
+    component: <ChannelList />,
+  },
+  {
+    title: 'Contact',
+    icon: <ChatsIcon />,
+    type: 'chat',
+    component: <ContactList />,
+  },
+  {
+    title: 'Notification',
+    icon:
+      showNotificationType === showTypeEnum['list'] ? <NotificationIcon /> : <NotificationModal />,
+    type: 'Notification',
+    component: <NotificationList style={{ width: '360px' }} />,
+  },
+];
 
 const MsgInput: React.FC = () => {
   const [visible, setVisible] = useState<boolean>(false);
@@ -182,86 +135,120 @@ const Main = () => {
 const LoginModule = (props: any) => {
   const { wallet, handleLoginEvent, userInfo, address, setStep } = props;
   const walletType = 'eth';
+  const [loading, setLoading] = useState(false);
+  const [formRef] = Form.useForm();
 
-  const handleLogin = async (values: any) => {
+  const handleLogin = async () => {
     // The public-private key pair returned after registration
-    let localMainPrivateKey = localStorage.getItem('MAIN_PRIVATE_KEY') || '';
-    let localMainPublicKey = localStorage.getItem('MAIN_PUBLIC_KEY') || '';
-    const tempTime = Number(localStorage.getItem('PUBKEY_EXPIRED_TIMESTAMP')) || undefined;
-    const password = values.password;
-    if (!localMainPublicKey) {
-      const { signContent } = await Client.register.getMainKeypairSignContent({
-        password,
-        did_value: address,
-        did_type: walletType,
-      });
-      const signature = await wallet.signMessage(signContent);
-      const { publicKey, secretKey } = await Client.register.getMainKeypairBySignature(
-        signature,
-        password
-      );
-      localMainPublicKey = publicKey;
-      localMainPrivateKey = secretKey;
-    }
+    try {
+      setLoading(true);
+      const values = formRef.getFieldsValue(true);
+      debugger;
+      let localMainPrivateKey = localStorage.getItem('MAIN_PRIVATE_KEY') || '';
+      let localMainPublicKey = localStorage.getItem('MAIN_PUBLIC_KEY') || '';
+      const tempTime = Number(localStorage.getItem('PUBKEY_EXPIRED_TIMESTAMP')) || undefined;
+      const password = values.password;
+      if (!localMainPublicKey) {
+        const { signContent } = await Client.register.getMainKeypairSignContent({
+          password,
+          did_value: address,
+          did_type: walletType,
+        });
+        const signature = await wallet.signMessage(signContent);
+        const { publicKey, secretKey } = await Client.register.getMainKeypairBySignature(
+          signature,
+          password
+        );
+        localMainPublicKey = publicKey;
+        localMainPrivateKey = secretKey;
+      }
 
-    const options = await Client.register.login({
-      mainPrivateKey: localMainPrivateKey,
-      mainPublicKey: localMainPublicKey,
-      didType: walletType,
-      didValue: address,
-      userid: userInfo.userid,
-      password,
-      pubkeyExpiredTimestamp: tempTime,
-    });
-    message.success('Login successfully!');
-    handleLoginEvent({
-      type: 'login',
-      data: {
-        privateKey: options.mainPrivateKey,
-        publicKey: options.mainPublicKey,
-        tempPrivateKey: options.tempPrivateKey,
-        tempPublicKey: options.tempPublicKey,
-        didKey: walletType + ':' + address,
+      const options = await Client.register.login({
+        mainPrivateKey: localMainPrivateKey,
+        mainPublicKey: localMainPublicKey,
+        didType: walletType,
+        didValue: address,
         userid: userInfo.userid,
-        address,
-        pubkeyExpiredTimestamp: options.pubkeyExpiredTimestamp,
-      },
-    });
+        password,
+        pubkeyExpiredTimestamp: tempTime,
+      });
+      message.success('Login successfully!');
+      handleLoginEvent({
+        type: 'login',
+        data: {
+          privateKey: options.mainPrivateKey,
+          publicKey: options.mainPublicKey,
+          tempPrivateKey: options.tempPrivateKey,
+          tempPublicKey: options.tempPublicKey,
+          didKey: walletType + ':' + address,
+          userid: userInfo.userid,
+          address,
+          pubkeyExpiredTimestamp: options.pubkeyExpiredTimestamp,
+        },
+      });
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+      message.error('Login failed!');
+    }
   };
 
   const backToLastStep = () => {
     setStep(0);
   };
 
+  const getSimpleId = (userId: string) => {
+    if (!userId) {
+      return 'user not exist';
+    } else {
+      const simpleStr = userId.substring(0, 8) + '***' + userId.substring(userId.length - 5);
+      return simpleStr;
+    }
+  };
+
   return (
     <div>
-      <AntdBtn onClick={backToLastStep}>Back</AntdBtn>
-      <div>Current user account:{userInfo.userid}</div>
-      <div>
-        <Form
-          name='basic'
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
-          style={{ maxWidth: 600 }}
-          initialValues={{ remember: true }}
-          onFinish={handleLogin}
-          autoComplete='off'
-        >
-          <Form.Item
-            label='Password'
-            name='password'
-            rules={[{ required: true, message: 'Please input your password!' }]}
-          >
-            <Input.Password />
-          </Form.Item>
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <div className='reg-form'>
+            LoginUser:
+            {getSimpleId(userInfo.userid)}
+          </div>
+          <div>
+            <Form
+              name='basic'
+              labelCol={{ span: 8 }}
+              wrapperCol={{ span: 16 }}
+              style={{ maxWidth: 600 }}
+              onFinish={handleLogin}
+              autoComplete='off'
+              form={formRef}
+              initialValues={{ password: '' }}
+            >
+              <Form.Item
+                label='Password'
+                name='password'
+                rules={[{ required: true, message: 'Please input your password!' }]}
+              >
+                <TextInput placeholder='input your password' />
+              </Form.Item>
 
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <AntdBtn type='primary' htmlType='submit'>
-              Login
-            </AntdBtn>
-          </Form.Item>
-        </Form>
-      </div>
+              <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                <Space style={{ display: 'flex' }}>
+                  <Btn size='stretch' onClick={handleLogin}>
+                    Login
+                  </Btn>
+                  <Btn onClick={backToLastStep}>Back to connecting</Btn>
+                </Space>
+              </Form.Item>
+            </Form>
+          </div>
+          <div>Powered by Web3MQ</div>
+        </>
+      )}
     </div>
   );
 };
@@ -273,92 +260,102 @@ const RegistModule = (props: any) => {
   const walletType: WalletType = 'eth';
 
   const handleRegist = async (values: any) => {
-    const { password, passwordConfirm, nickName } = values;
-    if (password !== passwordConfirm) {
-      message.warning('The input passwords do not match');
-      return;
+    try {
+      const { password, passwordConfirm, nickName } = values;
+      if (password !== passwordConfirm) {
+        message.warning('The input passwords do not match');
+        return;
+      }
+      const { signContent: mainKeysSignContent } = await Client.register.getMainKeypairSignContent({
+        password,
+        did_value: address,
+        did_type: walletType,
+      });
+      const mainKeySignature = await wallet.signMessage(mainKeysSignContent);
+      //获取web3mq的publicKey
+      const { publicKey: mainPublicKey, secretKey: mainPrivateKey } =
+        await Client.register.getMainKeypairBySignature(mainKeySignature, password);
+
+      const { signContent: registerSignContent } = await Client.register.getRegisterSignContent({
+        userid: userInfo.userid,
+        mainPublicKey,
+        didType: walletType,
+        didValue: address,
+      });
+
+      const registerSignature = await wallet.signMessage(registerSignContent);
+      const params = {
+        userid: userInfo.userid,
+        didValue: address,
+        mainPublicKey: mainPublicKey,
+        did_pubkey: '',
+        didType: walletType,
+        nickname: nickName,
+        // avatar_url: '/public/img/chat-user-icon.png',
+        signature: registerSignature,
+      };
+      debugger;
+      const registerRes = await Client.register.register(params);
+      // reset password
+      // const resetRes = await Client.register.resetPassword(params);
+      console.log('注册结果' + registerRes);
+      setStep(0);
+      handleLoginEvent({
+        type: 'register',
+        data: {
+          privateKey: mainPrivateKey,
+          publicKey: mainPublicKey,
+          address,
+        },
+      });
+    } catch (error) {
+      setStep(0);
+      message.error('Register failed:' + JSON.stringify(error));
+      console.log('Register failed' + JSON.stringify(error));
     }
-    const { signContent: mainKeysSignContent } = await Client.register.getMainKeypairSignContent({
-      password,
-      did_value: address,
-      did_type: walletType,
-    });
-    const mainKeySignature = await wallet.signMessage(mainKeysSignContent);
-    //获取web3mq的publicKey
-    const { publicKey: mainPublicKey, secretKey: mainPrivateKey } =
-      await Client.register.getMainKeypairBySignature(mainKeySignature, password);
-
-    // const registerSignContent = aw Client.register.
-    const { signContent: registerSignContent } = await Client.register.getRegisterSignContent({
-      userid: userInfo.userid,
-      mainPublicKey,
-      didType: walletType,
-      didValue: address,
-    });
-
-    const registerSignature = await wallet.signMessage(registerSignContent);
-    const params = {
-      userid: userInfo.userid,
-      didValue: address,
-      mainPublicKey: mainPublicKey,
-      did_pubkey: '',
-      didType: walletType,
-      nickname: nickName,
-      avatar_url: '',
-      signature: registerSignature,
-    };
-    const registerRes = await Client.register.register(params);
-    // reset password
-    // const resetRes = await Client.register.resetPassword(params);
-    console.log('注册结果' + registerRes);
-    handleLoginEvent({
-      type: 'register',
-      data: {
-        privateKey: mainPrivateKey,
-        publicKey: mainPublicKey,
-        address,
-      },
-    });
   };
   return (
     <div>
+      <div style={{ padding: '20px 10px' }}>
+        <Form
+          name='basic'
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          style={{ maxWidth: 600 }}
+          initialValues={{ remember: true }}
+          onFinish={handleRegist}
+          autoComplete='off'
+        >
+          <Form.Item
+            label='NickName:'
+            name='nickName'
+            rules={[{ required: true, message: 'Please input your NickName!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label='Password:'
+            name='password'
+            rules={[{ required: true, message: 'Please input your password!' }]}
+          >
+            <Input.Password />
+          </Form.Item>
+          <Form.Item
+            label='PasswordConfirm:'
+            name='passwordConfirm'
+            rules={[{ required: true, message: 'Please input your password!' }]}
+          >
+            <Input.Password />
+          </Form.Item>
+          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+            <AntdBtn type='primary' htmlType='submit'>
+              Register
+            </AntdBtn>
+          </Form.Item>
+        </Form>
+      </div>
+
       <AntdBtn onClick={() => setStep(0)}>Back</AntdBtn>
-      <Form
-        name='basic'
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 600 }}
-        initialValues={{ remember: true }}
-        onFinish={handleRegist}
-        autoComplete='off'
-      >
-        <Form.Item
-          label='NickName'
-          name='nickName'
-          rules={[{ required: true, message: 'Please input your NickName!' }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label='Password'
-          name='password'
-          rules={[{ required: true, message: 'Please input your password!' }]}
-        >
-          <Input.Password />
-        </Form.Item>
-        <Form.Item
-          label='PasswordConfirm'
-          name='passwordConfirm'
-          rules={[{ required: true, message: 'Please input your password!' }]}
-        >
-          <Input.Password />
-        </Form.Item>
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <AntdBtn type='primary' htmlType='submit'>
-            Register
-          </AntdBtn>
-        </Form.Item>
-      </Form>
     </div>
   );
 };
@@ -428,6 +425,7 @@ export function ChatFusionPane({ visible, onClose }: { visible: boolean; onClose
         privateKey: mainPrivateKey,
         walletAddress: address,
       };
+      console.log(mainKeys);
     }
     //如果keys不存在，mainKeys也不存在 判断是否存在此账号，存在进入登陆，不存在
     //进入注册
@@ -497,7 +495,7 @@ export function ChatFusionPane({ visible, onClose }: { visible: boolean; onClose
       <ChatFusionContent>
         <Chat client={client} appType={appType} logout={logout}>
           <ConnectMessage />
-          <DashBoard />
+          <DashBoard PCTabMaps={PCTabs} />
           <Main />
         </Chat>
       </ChatFusionContent>
