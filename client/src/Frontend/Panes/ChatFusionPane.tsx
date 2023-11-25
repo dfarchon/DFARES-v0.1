@@ -30,7 +30,7 @@ import styled from 'styled-components';
 import { Btn } from '../Components/Btn';
 import { TextInput } from '../Components/Input';
 import { ModalPane } from '../Views/ModalPane';
-import './chatfusion-pane.css';
+// import './chatfusion-pane.css';
 import {
   ChatsIcon,
   ConnectWalletIcon,
