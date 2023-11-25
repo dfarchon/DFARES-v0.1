@@ -1,0 +1,494 @@
+@import '../style/index.scss';
+.btn {
+  border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  cursor: pointer;
+  border-radius: 20px;
+  margin-right: -3px;
+  @include themeify {
+    background: themed(White_color);
+  }
+}
+.btn:focus {
+  border: none;
+  outline: none;
+}
+
+.createChannelModal {
+  min-width: 420px;
+  width: 420px;
+  height: 480px;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+  &.mobileStyle {
+    width: 100%;
+    height: 100%;
+    min-width: 375px;
+    border-radius: unset;
+  }
+}
+
+.createChannelModalHeader {
+  display: flex;
+  position: relative;
+  height: 50px;
+  border-radius: 0px;
+  padding: 14px 16px 14px 16px;
+
+  .title {
+    width: 100%;
+    line-height: 22px;
+    letter-spacing: 0em;
+    text-align: center;
+    @include themeify {
+      color: themed(Primary_color);
+      font-size: themed(title3_font-size);
+      font-weight: themed(Medium_font-weight);
+    }
+  }
+  .backBtn {
+    position: absolute;
+    left: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    height: 16px;
+    @include themeify {
+      svg path {
+        fill: themed(Primary_color);
+      }
+
+      &:hover {
+        color: themed(Gray_500);
+        svg path {
+          fill: themed(Gray_500);
+        }
+      }
+    }
+  }
+
+  .closeBtn {
+    position: absolute;
+    right: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    height: 16px;
+    @include themeify {
+      svg path {
+        fill: themed(Primary_color);
+      }
+      &:hover {
+        color: themed(Gray_500);
+        svg path {
+          fill: themed(Gray_500);
+        }
+      }
+    }
+  }
+}
+
+.createChannelContainer {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 65px);
+  overflow-y: hidden;
+}
+
+.hide {
+  display: none !important;
+}
+
+.mainContainer {
+  position: relative;
+  margin-top: 16px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.mainContainer::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.mainContainer::-webkit-scrollbar-track {
+  @include themeify {
+    background: themed(White_color);
+  }
+  border-radius: 2px;
+}
+.mainContainer::-webkit-scrollbar-thumb {
+  @include themeify {
+    background: themed(Gray_500);
+  }
+  border-radius: 10px;
+}
+.mainContainer::-webkit-scrollbar-thumb:hover {
+  @include themeify {
+    background: themed(Gray_900);
+  }
+}
+
+.opreraBar {
+  display: flex;
+  padding: 16px 16px;
+  font-family: 'Inter', sans-serif;
+  &.hide {
+    display: none;
+  }
+  button:first-of-type {
+    margin-right: 16px;
+  }
+  .addFriends,
+  .createRoom {
+    width: 20px;
+    height: 20px;
+    @include themeify {
+      $font-size: themed(Headline_font-size) or 16px;
+      font-size: $font-size/2.4;
+    }
+  }
+}
+
+.contactsContainer {
+  overflow: hidden;
+  height: 100%;
+  > .friendTitle {
+    width: 100%;
+    height: 20px;
+    padding: 0px 16px;
+    margin-bottom: 8px;
+    font-style: normal;
+    line-height: 20px;
+    @include themeify {
+      color: themed(Gray_700);
+      font-weight: themed(Regular_font-weight);
+      font-size: themed(Body_font-size);
+    }
+  }
+}
+
+.contactList {
+  height: calc(100% - 28px);
+  overflow-y: auto;
+  cursor: pointer;
+}
+
+.contactList::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.contactList::-webkit-scrollbar-track {
+  @include themeify {
+    background: themed(White_color);
+  }
+  border-radius: 2px;
+}
+.contactList::-webkit-scrollbar-thumb {
+  @include themeify {
+    background: themed(Gray_500);
+  }
+  border-radius: 10px;
+}
+.contactList::-webkit-scrollbar-thumb:hover {
+  @include themeify {
+    background: themed(Gray_900);
+  }
+}
+
+.contactItem,
+.searchFollowerItem,
+.searchContactItem {
+  display: flex;
+  padding: 8px 16px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  @include themeify {
+    color: themed(Gray_900);
+    font-size: themed(Body_font-size);
+    font-weight: themed(Medium_font-weight);
+    &:hover {
+      background-color: themed(Gray_100);
+    }
+  }
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  letter-spacing: 0em;
+  text-align: left;
+}
+
+.searchFollowerItem {
+  .followStatus {
+    @include themeify {
+      font-size: themed(Caption2_font-size);
+      font-weight: themed(Regular_font-weight);
+      color: themed(Gray_400);
+    }
+  }
+  .searchFollowersBtn {
+    display: flex;
+    align-self: center;
+    position: absolute;
+    right: 16px;
+  }
+}
+
+.addFriendContainer,
+.selectContactsContainer,
+.createRoomContainer {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 124px);
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0em;
+  text-align: left;
+  &.hide {
+    display: none;
+  }
+  @include themeify {
+    font-size: themed(Body_font-size);
+    font-weight: themed(Regular_font-weight);
+    border-bottom: 1px solid themed(Gray_100);
+  }
+}
+.btnContaner {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  padding: 16px;
+}
+.commonInput,
+.commonTextarea {
+  box-sizing: border-box;
+  width: 100%;
+  text-align: left;
+  line-height: 20px;
+  padding: 10px 16px;
+  outline: none;
+  border-radius: 8px;
+  &:disabled {
+    cursor: no-drop;
+  }
+  @include themeify {
+    font-size: themed(Headline_font-size);
+    border: 1px solid themed(Gray_200);
+    color: themed(Gray_900);
+    background: themed(White_color);
+    &:focus {
+      border: 2px solid themed(Violet_400);
+    }
+  }
+}
+.commonTextarea {
+  resize: vertical;
+}
+
+.addFriendContainer {
+  padding: 0 16px;
+  > .label {
+    @include themeify {
+      color: themed(Gray_900);
+    }
+    margin-bottom: 8px;
+  }
+  .label:nth-child(4) {
+    margin-top: 16px;
+  }
+  > .warnning {
+    box-sizing: border-box;
+    display: flex;
+    line-height: 16px;
+    padding: 12px;
+    margin-top: 8px;
+    border-radius: 12px;
+    &.hide {
+      display: none;
+    }
+    @include themeify {
+      font-size: themed(Caption1_font-size);
+      font-weight: themed(Medium_font-weight);
+      color: themed(Red_500);
+      border: 1px solid themed(Red_100);
+      background-color: themed(Red_50);
+    }
+  }
+  .warnIcon {
+    display: flex;
+    align-items: center;
+    width: 16px;
+    height: 16px;
+    @include themeify {
+      $font-size: themed(Headline_font-size) or 16px;
+      font-size: $font-size/4;
+    }
+  }
+}
+
+.selectContactsContainer {
+  @include themeify {
+    font-weight: themed(Bold_font-weight);
+  }
+}
+.inputContainer {
+  box-sizing: border-box;
+  display: flex;
+  margin: 0 16px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  cursor: text;
+  @include themeify {
+    border: 2px solid #8885fd;
+  }
+}
+.contactSelector {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  .selectedBox {
+    height: 23px;
+    line-height: 20px;
+    padding: 1px 6px 2px 6px;
+    margin: 4px 8px 4px 0px;
+    border-radius: 4px;
+    cursor: default;
+    @include themeify {
+      color: themed(White_color);
+      background: themed(Violet_500);
+    }
+  }
+
+  .inputElement {
+    min-width: 4px;
+    width: 100%;
+    overflow: auto;
+    background: none;
+    border: none;
+    outline: none;
+    flex: none;
+    align-self: center;
+    margin: 0;
+    padding: 0;
+    appearance: none;
+    @include themeify {
+      font-size: themed(Headline_font-size);
+    }
+  }
+
+  .inputElement::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  .inputElement::-webkit-scrollbar-track {
+    @include themeify {
+      background: themed(White_color);
+    }
+    border-radius: 2px;
+  }
+  .inputElement::-webkit-scrollbar-thumb {
+    @include themeify {
+      background: themed(Gray_500);
+    }
+    border-radius: 10px;
+  }
+  .inputElement::-webkit-scrollbar-thumb:hover {
+    @include themeify {
+      background: themed(Gray_900);
+    }
+  }
+}
+
+.searchContactItem {
+  input[type='checkbox'] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    align-self: center;
+    margin: 0;
+    margin-right: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    &:checked {
+      position: relative;
+      border-radius: 6px;
+      &::after {
+        box-sizing: border-box;
+        position: absolute;
+        top: 50%;
+        inset-inline-start: 21.5%;
+        display: table;
+        width: 7.14282142px;
+        height: 11.285714px;
+        transform: rotate(45deg) translate(-50%, -50%);
+        content: '';
+      }
+    }
+    @include themeify {
+      border: 1.875px solid themed(Gray_300);
+      &:checked {
+        border: none;
+        background-color: themed(Violet_500);
+        &::after {
+          border: 2px solid themed(White_color);
+          border-top: 0;
+          border-inline-start: 0;
+        }
+      }
+    }
+  }
+}
+
+.createRoomContainer {
+  .operationContainer {
+    display: flex;
+    align-items: center;
+    border-radius: 22px;
+    padding: 12px;
+    margin: 0px 16px 16px 16px;
+
+    @include themeify {
+      background: themed(White_color);
+    }
+
+    .fileBox,
+    .imgBox {
+      border-radius: 12px;
+      cursor: pointer;
+    }
+    .imgBox {
+      width: 64px;
+      height: 64px;
+      overflow: hidden;
+    }
+
+    .fileBox {
+      margin-right: 12px;
+      padding: 14px;
+      &.nopadding {
+        padding: 0;
+      }
+      .cameraIcon {
+        width: 36px;
+        height: 36px;
+        font-size: 12px;
+        color: #fdfdfd;
+      }
+    }
+    @include themeify {
+      background: themed(Violet_50);
+      .fileBox {
+        background: themed(Violet_400);
+        .cameraIcon {
+          color: themed(Gray_50);
+        }
+      }
+    }
+  }
+}

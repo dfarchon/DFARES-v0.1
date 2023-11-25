@@ -1,0 +1,316 @@
+body,
+html {
+  overflow: auto !important;
+}
+
+.hide {
+  display: none;
+}
+.block {
+  display: block;
+}
+
+/*
+LoginModal
+*/
+.login_container {
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.connectBtnBox {
+  width: 700px;
+  background: black;
+  border: 1px solid #e4e4e7;
+  box-shadow: 0px 4px 6px -2px rgba(0, 0, 0, 0.05), 0px 6px 15px -3px rgba(0, 0, 0, 0.1);
+  border-radius: 18px;
+  text-align: center;
+  padding: 56px 48px;
+}
+
+.connectMobileBtnBox {
+  border: none;
+  box-shadow: none;
+}
+.connectBtnBox .connectBtnBoxText {
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  text-align: center;
+  color: #71717a;
+  margin-top: 12px;
+}
+.connectBtnBox .connectBtnBoxTitle {
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 26px;
+  text-align: center;
+  color: white;
+  margin-top: 24px;
+}
+.connectBtnBox .walletConnect-btnBox {
+  width: 100%;
+  margin-top: 34px;
+}
+.connectBtnBox .walletConnect-btnBox .walletConnect-btn {
+  width: 100%;
+  height: 44px;
+  border-radius: 8px;
+}
+
+.step_text {
+  font-family: sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  color: #000000;
+}
+
+.step_box .up_text {
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 36px;
+  height: 36px;
+}
+
+.step_box .down_text {
+  margin-top: 12px;
+  padding: 0 54px;
+  line-height: 150%;
+  color: #424242;
+}
+
+.step_box .step_text {
+  margin-top: 78px;
+  line-height: 16px;
+}
+
+.button_box {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 12px;
+  row-gap: 10px;
+}
+
+.sign_btn {
+  width: 195px;
+  height: 48px;
+  border-radius: 49px;
+  border: none;
+  color: #000;
+  background: #fff;
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(230, 230, 230);
+}
+
+.sign_btn:hover {
+  /*background: rgba(51, 125, 207, 0.6);*/
+  /* opacity: 0.6; */
+  color: #fff;
+  background-color: #337dcf;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.modalLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 50px;
+}
+
+.modalContentBody {
+  flex: 1;
+}
+
+.ModalBtnGroupBtn {
+  cursor: pointer;
+  width: 195px;
+  height: 48px;
+  border-radius: 49px;
+  border: none;
+  color: #ffffff;
+  background: #337dcf;
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.modalContentBodyInput {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.modalContentBodyInput input,
+select {
+  margin: 0 auto;
+  box-sizing: border-box;
+  font-size: 16px;
+  outline: none;
+  height: 40px;
+  width: 60%;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  padding-left: 12px;
+}
+
+.codeContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.code {
+  width: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.codeItem {
+  font-size: 60px;
+  font-weight: bold;
+  color: blue;
+}
+
+.tips {
+  padding: 0 40px;
+  font-size: 24px;
+  font-weight: bold;
+  color: red;
+  text-align: center;
+}
+
+.step {
+  margin-top: 80px;
+  padding: 0 50px;
+}
+
+.btnIcon {
+  width: 20px;
+  margin-right: 2px;
+}
+
+.inputBox {
+  display: flex;
+  align-items: center;
+  padding: 13px 30px;
+  box-shadow: 0px -12px 10px rgba(30, 83, 133, 0.03);
+}
+.inputBox .mobileStyle {
+  padding: 13px 15px;
+}
+.inputBox .mobileStyle .auditBox {
+  margin-right: 10px;
+}
+.auditBox {
+  cursor: pointer;
+  margin-right: 20px;
+  width: 30px;
+  height: 30px;
+}
+.operationContainer {
+  padding: 24px;
+  background: #fafafa;
+}
+.operation {
+  display: flex;
+}
+.operaItem {
+  cursor: pointer;
+  display: flex;
+  margin-right: 70px;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Helvetica Neue', sans-serif;
+}
+.iconBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background-color: #fff;
+  border-radius: 10px;
+}
+.title {
+  padding: 18px 0;
+  color: #1f2128;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.warning {
+  display: flex;
+  align-items: center;
+  font-weight: 400;
+  font-size: 10px;
+  color: #bdbdbd;
+}
+.warning .icon {
+  margin-right: 5px;
+}
+.close {
+  transform: rotateZ(45deg);
+}
+.transferContainer img {
+  max-width: 600px;
+}
+.index_windowContainer__rccCr {
+  height: 100% !important;
+}
+
+.index_mainContainer__dvsf- {
+  height: 100% !important;
+}
+
+.index_contentEnterDone__NmBEt {
+  left: 85%;
+}
+
+.ant-form-item {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.ant-form-item-row {
+  display: flex;
+}
+.ant-form-item-required {
+  margin-right: 10px;
+}
+
+.radius-btn {
+  border: 1px solid white;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.reg-form {
+  margin: 10px;
+}

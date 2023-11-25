@@ -56,7 +56,14 @@
     "sortablejs": "^1.10.2",
     "styled-components": "^5.3.3",
     "ts-dedent": "^2.0.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "@ant-design/icons": "^5.2.5",
+    "@web3mq/client": "1.0.14",
+    "@web3mq/react-components": "1.0.52",
+    "axios": "^0.27.2",
+    "antd": "4.22.1",
+    "classnames": "^2.3.2",
+    "js-sha3": "^0.8.0"
   },
   "scripts": {
     "declarations": "tsc -p tsconfig.decs.json",
@@ -124,6 +131,8 @@
     "webpack": "^5.62.1",
     "webpack-bundle-analyzer": "^4.5.0",
     "webpack-cli": "^4.9.1",
-    "webpack-dev-server": "^4.4.0"
+    "webpack-dev-server": "^4.4.0",
+    "sass": "^1.64.1",
+    "sass-loader": "^13.3.2"
   }
 }
