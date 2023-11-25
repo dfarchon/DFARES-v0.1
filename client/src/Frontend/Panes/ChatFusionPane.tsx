@@ -21,16 +21,13 @@ import {
   useChatContext,
   Window,
 } from '@web3mq/react-components';
-import '@web3mq/react-components/dist/css/index.css';
 import { Button as AntdBtn, Form, Input, message, Space } from 'antd';
-import cx from 'classnames';
 import { ethers } from 'ethers';
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Btn } from '../Components/Btn';
 import { TextInput } from '../Components/Input';
 import { ModalPane } from '../Views/ModalPane';
-// import './chatfusion-pane.css';
 import {
   ChatsIcon,
   ConnectWalletIcon,
@@ -42,6 +39,7 @@ import {
 } from './ChatFusionComponent/icons';
 import { Notification } from './ChatFusionComponent/Notification/Notification';
 import { useLogin } from './ChatFusionComponent/utils/useLogin';
+
 declare type MainKeysType = {
   publicKey: string;
   privateKey: string;
@@ -60,6 +58,7 @@ enum showTypeEnum {
   'modal' = 'modal',
 }
 const showNotificationType: showTypeEnum = showTypeEnum['list'];
+
 const PCTabs: TabType[] = [
   {
     title: 'Rooms',
@@ -82,51 +81,103 @@ const PCTabs: TabType[] = [
   },
 ];
 
+const OperationContainer = styled.div`
+  padding: 24px;
+  background: #fafafa;
+`;
+
+const Operation = styled.div`
+  display: flex;
+`;
+
+const Warning = styled.div`
+  display: flex;
+  align-items: center;
+  font-weight: 400;
+  font-size: 10px;
+  color: #bdbdbd;
+`;
+
+const Icon = styled.div`
+  margin-right: 5px;
+`;
+
+const InputBox = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 13px 30px;
+  box-shadow: 0px -12px 10px rgba(30, 83, 133, 0.03);
+`;
+
+const AuditBox = styled.div`
+  margin-right: 10px;
+`;
+
 const MsgInput: React.FC = () => {
   const [visible, setVisible] = useState<boolean>(false);
   // const { appType } = useChatContext('MsgInput');
   const RenderOperation = useCallback(() => {
     return (
-      <div className='operationContainer'>
-        <div className='operation'>
+      <OperationContainer>
+        <Operation>
           <Notify />
-        </div>
-        <div className='warning'>
-          <WarningIcon className='icon' />
+        </Operation>
+
+        <Warning>
+          <Icon>
+            <WarningIcon />
+          </Icon>
           General smart contract support is coming soon
-        </div>
-      </div>
+        </Warning>
+      </OperationContainer>
     );
   }, []);
 
   return (
     <>
       <div className='inputBox'>
-        <OpenModalIcon className='auditBox' onClick={() => setVisible(!visible)} />
-        <ChatAutoComplete />
+        <InputBox>
+          <AuditBox>
+            <OpenModalIcon onClick={() => setVisible(!visible)} />
+          </AuditBox>
+          <ChatAutoComplete />
+        </InputBox>
       </div>
       {visible && <RenderOperation />}
     </>
   );
 };
 
+const Hide = styled.div`
+  display: none;
+`;
+
 const Main = () => {
   const { activeNotification } = useChatContext('Main');
 
   return (
     <div style={{ height: '100%', width: '100%' }}>
-      <Channel
-        className={cx({
-          hide: activeNotification,
-        })}
-      >
-        <Window>
-          <MessageHeader avatarSize={40} />
-          <MessageList />
-          {/* <MessageInput Input={MsgInput} /> */}
-          <MessageConsole Input={<MessageInput Input={MsgInput} />} />
-        </Window>
-      </Channel>
+      {activeNotification ? (
+        <Channel>
+          <Hide>
+            <Window>
+              <MessageHeader avatarSize={40} />
+              <MessageList />
+              {/* <MessageInput Input={MsgInput} /> */}
+              <MessageConsole Input={<MessageInput Input={MsgInput} />} />
+            </Window>
+          </Hide>
+        </Channel>
+      ) : (
+        <Channel>
+          <Window>
+            <MessageHeader avatarSize={40} />
+            <MessageList />
+            {/* <MessageInput Input={MsgInput} /> */}
+            <MessageConsole Input={<MessageInput Input={MsgInput} />} />
+          </Window>
+        </Channel>
+      )}
       <Notification />
     </div>
   );
@@ -202,7 +253,7 @@ const LoginModule = (props: any) => {
     if (!userId) {
       return 'user not exist';
     } else {
-      const simpleStr = userId.substring(0, 8) + '***' + userId.substring(userId.length - 5);
+      const simpleStr = userId.substring(0, 4) + '***' + userId.substring(userId.length - 4);
       return simpleStr;
     }
   };
@@ -213,7 +264,7 @@ const LoginModule = (props: any) => {
         <Loading />
       ) : (
         <>
-          <div className='reg-form'>
+          <div>
             LoginUser:
             {getSimpleId(userInfo.userid)}
           </div>
@@ -272,7 +323,7 @@ const RegistModule = (props: any) => {
         did_type: walletType,
       });
       const mainKeySignature = await wallet.signMessage(mainKeysSignContent);
-      //获取web3mq的publicKey
+      // get web3mq publicKey
       const { publicKey: mainPublicKey, secretKey: mainPrivateKey } =
         await Client.register.getMainKeypairBySignature(mainKeySignature, password);
 
@@ -291,14 +342,14 @@ const RegistModule = (props: any) => {
         did_pubkey: '',
         didType: walletType,
         nickname: nickName,
-        // avatar_url: '/public/img/chat-user-icon.png',
+        avatar_url: '/public/img/chat-user-icon.png',
         signature: registerSignature,
       };
       debugger;
       const registerRes = await Client.register.register(params);
       // reset password
       // const resetRes = await Client.register.resetPassword(params);
-      console.log('注册结果' + registerRes);
+      console.log('register res' + registerRes);
       setStep(0);
       handleLoginEvent({
         type: 'register',
@@ -369,6 +420,56 @@ const ChatFusionContent = styled.div`
   text-align: justify;
 `;
 
+const LoginContainer = styled.div`
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+`;
+
+const ConnectBtnBox = styled.div`
+  width: 700px;
+  /* background: black; */
+  /* border: 1px solid #e4e4e7; */
+  /* box-shadow: 0px 4px 6px -2px rgba(0, 0, 0, 0.05), 0px 6px 15px -3px rgba(0, 0, 0, 0.1); */
+  border-radius: 18px;
+  text-align: center;
+  padding: 56px 48px;
+`;
+
+const ConnectBtnBoxTitle = styled.div`
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 26px;
+  text-align: center;
+  color: white;
+  margin-top: 24px;
+`;
+
+const ConnectBtnBoxText = styled.div`
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  text-align: center;
+  color: #71717a;
+  margin-top: 12px;
+`;
+
+const WalletConnectBtnBox = styled.div`
+  width: 100%;
+  margin-top: 34px;
+`;
+
+const WalletConnectBtn = styled.div`
+  width: 100%;
+  height: 44px;
+  border-radius: 8px;
+`;
+
 export function ChatFusionPane({ visible, onClose }: { visible: boolean; onClose: () => void }) {
   const {
     keys,
@@ -427,8 +528,6 @@ export function ChatFusionPane({ visible, onClose }: { visible: boolean; onClose
       };
       console.log(mainKeys);
     }
-    //如果keys不存在，mainKeys也不存在 判断是否存在此账号，存在进入登陆，不存在
-    //进入注册
 
     return (
       <ModalPane id={ModalName.ChatFusion} title='ChatFusion' visible={visible} onClose={onClose}>
@@ -436,13 +535,16 @@ export function ChatFusionPane({ visible, onClose }: { visible: boolean; onClose
           {loading ? (
             <Loading />
           ) : (
-            <div className='login_container'>
-              <div className={'connectBtnBox'}>
-                <LoginCenterIcon />
-                <div className='connectBtnBoxTitle'>Welcome to Web3MQ</div>
-                <div className='connectBtnBoxText'>
+            <LoginContainer>
+              <ConnectBtnBox>
+                <LoginCenterIcon style={{ margin: '0 auto', textAlign: 'center' }} />
+
+                <ConnectBtnBoxTitle>Welcome to Web3MQ</ConnectBtnBoxTitle>
+
+                <ConnectBtnBoxText>
                   Let's get started with your decentralized trip now!
-                </div>
+                </ConnectBtnBoxText>
+
                 {step === 1 && (
                   <>
                     {userInfo.userExist ? (
@@ -465,20 +567,23 @@ export function ChatFusionPane({ visible, onClose }: { visible: boolean; onClose
                   </>
                 )}
                 {step === 0 && (
-                  <div className='walletConnect-btnBox'>
-                    <Button
-                      icon={<ConnectWalletIcon />}
-                      type={'primary'}
-                      className='walletConnect-btn'
-                      disabled={!fastestUrl}
-                      onClick={getAccount}
-                    >
-                      {fastestUrl ? 'Connect' : 'Initializing'}
-                    </Button>
-                  </div>
+                  <WalletConnectBtnBox>
+                    <div className='walletConnect-btnBox'>
+                      <WalletConnectBtn>
+                        <Button
+                          icon={<ConnectWalletIcon />}
+                          type={'primary'}
+                          disabled={!fastestUrl}
+                          onClick={getAccount}
+                        >
+                          {fastestUrl ? 'Connect' : 'Initializing'}
+                        </Button>
+                      </WalletConnectBtn>
+                    </div>
+                  </WalletConnectBtnBox>
                 )}
-              </div>
-            </div>
+              </ConnectBtnBox>
+            </LoginContainer>
           )}
         </ChatFusionContent>
       </ModalPane>
@@ -491,7 +596,7 @@ export function ChatFusionPane({ visible, onClose }: { visible: boolean; onClose
 
   const client = Client.getInstance(keys);
   return (
-    <ModalPane id={ModalName.ChatFusion} title='ChatFusion' visible={visible} onClose={onClose}>
+    <ModalPane id={ModalName.ChatFusion} title='Chat Fusion' visible={visible} onClose={onClose}>
       <ChatFusionContent>
         <Chat client={client} appType={appType} logout={logout}>
           <ConnectMessage />

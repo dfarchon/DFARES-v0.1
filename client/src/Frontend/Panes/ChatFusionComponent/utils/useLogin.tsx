@@ -19,9 +19,11 @@ export const useLogin = () => {
   const init = async () => {
     const tempPubkey = localStorage.getItem('PUBLIC_KEY') || '';
     const didKey = localStorage.getItem('DID_KEY') || '';
+    const appKey = process.env.WEB3MQ_APP_KEY!;
+
     const fastUrl = await Client.init({
       connectUrl: localStorage.getItem('FAST_URL'),
-      app_key: 'SDrulLdGJGQSOkkK',
+      app_key: appKey.toString(),
       didKey,
       tempPubkey,
     });
