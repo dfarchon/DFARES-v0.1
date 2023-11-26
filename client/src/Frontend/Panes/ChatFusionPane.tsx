@@ -194,12 +194,13 @@ const LoginModule = (props: any) => {
   const account = useAccount(uiManager);
   const [password, setPassword] = useState('');
   const [maskPassword, setMaskPassword] = useState('');
+  const [buttonInfo, setButtonInfo] = useState('Login');
 
   const handleLogin = async () => {
     // The public-private key pair returned after registration
     try {
       setLoading(true);
-      debugger;
+      // debugger;
       let localMainPrivateKey = localStorage.getItem('MAIN_PRIVATE_KEY') || '';
       let localMainPublicKey = localStorage.getItem('MAIN_PUBLIC_KEY') || '';
       const tempTime = Number(localStorage.getItem('PUBKEY_EXPIRED_TIMESTAMP')) || undefined;
@@ -245,7 +246,7 @@ const LoginModule = (props: any) => {
     } catch (error) {
       setLoading(false);
       console.log(error);
-      message.error('Login failed!');
+      setButtonInfo('Please Enter Right Password');
     }
   };
 
@@ -268,51 +269,48 @@ const LoginModule = (props: any) => {
 
   return (
     <div>
-      {loading ? (
-        <Loading />
-      ) : (
-        <>
-          <Row>
-            <div>Public Key</div>
-            <div>
-              <TextPreview
-                style={{ color: dfstyles.colors.subtext }}
-                text={account}
-                focusedWidth={'200px'}
-                unFocusedWidth={'200px'}
-              />
-            </div>
-          </Row>
+      <Row>
+        <div>Public Key</div>
+        <div>
+          <TextPreview
+            style={{ color: dfstyles.colors.subtext }}
+            text={account}
+            focusedWidth={'200px'}
+            unFocusedWidth={'200px'}
+          />
+        </div>
+      </Row>
 
-          <Spacer height={4} />
-          <Row>
-            <div>User ID</div>
+      <Spacer height={4} />
+      <Row>
+        <div>User ID</div>
 
-            <div>
-              <TextPreview
-                style={{ color: dfstyles.colors.subtext }}
-                text={getSimpleId(userInfo.userid)}
-                focusedWidth={'200px'}
-                unFocusedWidth={'200px'}
-              />
-            </div>
-          </Row>
+        <div>
+          <TextPreview
+            style={{ color: dfstyles.colors.subtext }}
+            text={getSimpleId(userInfo.userid)}
+            focusedWidth={'200px'}
+            unFocusedWidth={'200px'}
+          />
+        </div>
+      </Row>
 
-          <Spacer height={4} />
-          <Row>
-            <div>Password</div>
-            <div>
-              <TextInput onChange={onPasswordChange} placeholder='Please Enter Password' />
-            </div>
-          </Row>
-          <div style={{ padding: '10px 20px' }}>
-            <Button type={'primary'} disabled={!password} onClick={handleLogin}>
-              <span style={{ fontSize: '20px', lineHeight: '20px' }}>Login</span>
-            </Button>
-          </div>
-          <div>Powered by Web3MQ</div>
-        </>
-      )}
+      <Spacer height={4} />
+      <Row>
+        <div>Password</div>
+        <div>
+          <TextInput onChange={onPasswordChange} placeholder='Please Enter Password' />
+        </div>
+      </Row>
+
+      <Spacer height={18} />
+      <div style={{ padding: '10px 20px' }}>
+        <Button type={'primary'} onClick={handleLogin} style={{ width: '320px' }}>
+          <span>{buttonInfo}</span>
+        </Button>
+      </div>
+      <Spacer height={10} />
+      <div>Powered by Web3MQ</div>
     </div>
   );
 };
@@ -550,23 +548,6 @@ export function ChatFusionPane({ visible, onClose }: { visible: boolean; onClose
   };
 
   if (!keys) {
-    let mainKeys: MainKeysType = {
-      publicKey: '',
-      privateKey: '',
-      walletAddress: '',
-    };
-    const mainPrivateKey = localStorage.getItem(`MAIN_PRIVATE_KEY`);
-    const mainPublicKey = localStorage.getItem(`MAIN_PUBLIC_KEY`);
-    // const address = localStorage.getItem('WALLET_ADDRESS');
-    if (mainPublicKey && mainPrivateKey && address) {
-      mainKeys = {
-        publicKey: mainPublicKey,
-        privateKey: mainPrivateKey,
-        walletAddress: address,
-      };
-      console.log(mainKeys);
-    }
-
     // step 0: try to get fast_url
     // step 1: have already got fast_url
 
@@ -642,7 +623,16 @@ export function ChatFusionPane({ visible, onClose }: { visible: boolean; onClose
   }
 
   if (!fastestUrl) {
-    return null;
+    console.log('test');
+    console.log(fastestUrl);
+
+    return (
+      <ModalPane id={ModalName.ChatFusion} title='DFARE Chat' visible={visible} onClose={onClose}>
+        <ChatFusionContent>
+          <div style={{ color: 'red' }}>Something happens, please contact the admin !</div>
+        </ChatFusionContent>
+      </ModalPane>
+    );
   }
 
   const client = Client.getInstance(keys);
