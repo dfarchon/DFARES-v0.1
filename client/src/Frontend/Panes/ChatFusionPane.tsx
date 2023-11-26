@@ -253,7 +253,7 @@ const LoginModule = (props: any) => {
     if (!userId) {
       return 'user not exist';
     } else {
-      const simpleStr = userId.substring(0, 4) + '***' + userId.substring(userId.length - 4);
+      const simpleStr = userId.substring(5);
       return simpleStr;
     }
   };
@@ -264,8 +264,10 @@ const LoginModule = (props: any) => {
         <Loading />
       ) : (
         <>
+          <div>Your account:</div>
+
           <div>
-            LoginUser:
+            Chat userid:
             {getSimpleId(userInfo.userid)}
           </div>
           <div>
@@ -494,6 +496,7 @@ export function ChatFusionPane({ visible, onClose }: { visible: boolean; onClose
 
   useEffect(() => {
     init();
+    getAccount();
     document.getElementsByTagName('body')[0].setAttribute('data-theme', 'dark');
   }, []);
 
@@ -533,18 +536,27 @@ export function ChatFusionPane({ visible, onClose }: { visible: boolean; onClose
       <ModalPane id={ModalName.ChatFusion} title='ChatFusion' visible={visible} onClose={onClose}>
         <ChatFusionContent>
           {loading ? (
-            <Loading />
+            <div
+              style={{
+                height: '90%',
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Loading />
+              <span style={{ marginTop: '20px' }}>Login module is loading ...</span>
+            </div>
           ) : (
             <LoginContainer>
+              <LoginCenterIcon />
+              <ConnectBtnBoxTitle>Welcome to Web3MQ</ConnectBtnBoxTitle>
+              <ConnectBtnBoxText>
+                Let's get started with your decentralized trip now!
+              </ConnectBtnBoxText>
               <ConnectBtnBox>
-                <LoginCenterIcon style={{ margin: '0 auto', textAlign: 'center' }} />
-
-                <ConnectBtnBoxTitle>Welcome to Web3MQ</ConnectBtnBoxTitle>
-
-                <ConnectBtnBoxText>
-                  Let's get started with your decentralized trip now!
-                </ConnectBtnBoxText>
-
                 {step === 1 && (
                   <>
                     {userInfo.userExist ? (
@@ -567,8 +579,8 @@ export function ChatFusionPane({ visible, onClose }: { visible: boolean; onClose
                   </>
                 )}
                 {step === 0 && (
-                  <WalletConnectBtnBox>
-                    <div className='walletConnect-btnBox'>
+                  <>
+                    <WalletConnectBtnBox>
                       <WalletConnectBtn>
                         <Button
                           icon={<ConnectWalletIcon />}
@@ -579,8 +591,8 @@ export function ChatFusionPane({ visible, onClose }: { visible: boolean; onClose
                           {fastestUrl ? 'Connect' : 'Initializing'}
                         </Button>
                       </WalletConnectBtn>
-                    </div>
-                  </WalletConnectBtnBox>
+                    </WalletConnectBtnBox>
+                  </>
                 )}
               </ConnectBtnBox>
             </LoginContainer>
