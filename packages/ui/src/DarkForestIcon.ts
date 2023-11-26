@@ -52,7 +52,7 @@ export const IconType = {
   Capturable: 'Capturable' as IconType,
   Destroyed: 'Destroyed' as IconType,
   Frozen: 'Frozen' as IconType,
-  ChatFusion: 'ChatFusion' as IconType,
+  ChatFusion: 'DFARES Chat' as IconType,
 } as const;
 
 export class DarkForestIcon extends LitElement {

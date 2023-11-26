@@ -43,7 +43,7 @@ export function SidebarPane({
         <ModalToggleButton
           modal={ModalName.ChatFusion}
           hook={chatFusionHook}
-          text={sidebarHovered ? 'Chat Fusion' : undefined}
+          text={sidebarHovered ? 'DFARES Chat' : undefined}
           size='stretch'
           shortcutKey={TOGGLE_CHAT_FUSION_PANE}
           shortcutText={sidebarHovered ? TOGGLE_CHAT_FUSION_PANE : undefined}

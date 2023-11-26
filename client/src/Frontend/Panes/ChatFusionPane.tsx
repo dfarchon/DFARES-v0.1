@@ -27,20 +27,22 @@ import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Btn } from '../Components/Btn';
 import { TextInput } from '../Components/Input';
+import dfstyles from '../Styles/dfstyles';
+import { useAccount, useUIManager } from '../Utils/AppHooks';
 import { ModalPane } from '../Views/ModalPane';
 import {
   ChatsIcon,
   ConnectWalletIcon,
-  LoginCenterIcon,
   NotificationIcon,
   OpenModalIcon,
   RoomsIcon,
   WarningIcon,
 } from './ChatFusionComponent/icons';
+import { ChatFusionLabel } from './ChatFusionComponent/Label/ChatFusionLabel';
 import { Notification } from './ChatFusionComponent/Notification/Notification';
 import { useLogin } from './ChatFusionComponent/utils/useLogin';
 
-declare type MainKeysType = {
+type MainKeysType = {
   publicKey: string;
   privateKey: string;
   walletAddress: string;
@@ -188,6 +190,8 @@ const LoginModule = (props: any) => {
   const walletType = 'eth';
   const [loading, setLoading] = useState(false);
   const [formRef] = Form.useForm();
+  const uiManager = useUIManager();
+  const account = useAccount(uiManager);
 
   const handleLogin = async () => {
     // The public-private key pair returned after registration
@@ -264,12 +268,15 @@ const LoginModule = (props: any) => {
         <Loading />
       ) : (
         <>
-          <div>Your account:</div>
+          <Row>
+            <span>Public Key</span>
+            <span>{account}</span>
+          </Row>
+          <Row>
+            <span> Chat User ID</span>
+            <span> {getSimpleId(userInfo.userid)}</span>
+          </Row>
 
-          <div>
-            Chat userid:
-            {getSimpleId(userInfo.userid)}
-          </div>
           <div>
             <Form
               name='basic'
@@ -414,8 +421,8 @@ const RegistModule = (props: any) => {
 };
 
 const ChatFusionContent = styled.div`
-  width: 900px;
-  height: 700px;
+  width: 700px;
+  height: 500px;
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
@@ -442,23 +449,24 @@ const ConnectBtnBox = styled.div`
 `;
 
 const ConnectBtnBoxTitle = styled.div`
-  font-family: 'Inter', sans-serif;
+  /* font-family: 'Inter', sans-serif; */
   font-style: normal;
   font-weight: 600;
-  font-size: 26px;
+  font-size: 50px;
   text-align: center;
-  color: white;
+  color: rgba(82, 25, 233);
   margin-top: 24px;
 `;
 
 const ConnectBtnBoxText = styled.div`
-  font-family: 'Inter', sans-serif;
+  /* font-family: 'Inter', sans-serif; */
   font-style: normal;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 12pt;
+
   text-align: center;
-  color: #71717a;
-  margin-top: 12px;
+  color: ${dfstyles.colors.subtext};
+  /* margin-top: 12px; */
 `;
 
 const WalletConnectBtnBox = styled.div`
@@ -470,6 +478,19 @@ const WalletConnectBtn = styled.div`
   width: 100%;
   height: 44px;
   border-radius: 8px;
+`;
+
+const Row = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+
+  justify-content: space-between;
+  align-items: center;
+
+  & > span:first-child {
+    flex-grow: 1;
+  }
 `;
 
 export function ChatFusionPane({ visible, onClose }: { visible: boolean; onClose: () => void }) {
@@ -532,8 +553,11 @@ export function ChatFusionPane({ visible, onClose }: { visible: boolean; onClose
       console.log(mainKeys);
     }
 
+    // step 0: try to get fast_url
+    // step 1: have already got fast_url
+
     return (
-      <ModalPane id={ModalName.ChatFusion} title='ChatFusion' visible={visible} onClose={onClose}>
+      <ModalPane id={ModalName.ChatFusion} title='DFARES Chat' visible={visible} onClose={onClose}>
         <ChatFusionContent>
           {loading ? (
             <div
@@ -551,10 +575,11 @@ export function ChatFusionPane({ visible, onClose }: { visible: boolean; onClose
             </div>
           ) : (
             <LoginContainer>
-              <LoginCenterIcon />
-              <ConnectBtnBoxTitle>Welcome to Web3MQ</ConnectBtnBoxTitle>
+              <ConnectBtnBoxTitle>
+                <ChatFusionLabel />
+              </ConnectBtnBoxTitle>
               <ConnectBtnBoxText>
-                Let's get started with your decentralized trip now!
+                Messaging app in decentralized & privacy-preserving way.
               </ConnectBtnBoxText>
               <ConnectBtnBox>
                 {step === 1 && (
@@ -608,7 +633,7 @@ export function ChatFusionPane({ visible, onClose }: { visible: boolean; onClose
 
   const client = Client.getInstance(keys);
   return (
-    <ModalPane id={ModalName.ChatFusion} title='Chat Fusion' visible={visible} onClose={onClose}>
+    <ModalPane id={ModalName.ChatFusion} title='DFARE Chat' visible={visible} onClose={onClose}>
       <ChatFusionContent>
         <Chat client={client} appType={appType} logout={logout}>
           <ConnectMessage />
