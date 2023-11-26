@@ -25,9 +25,8 @@ import { Button as AntdBtn, Form, Input, message } from 'antd';
 import { ethers } from 'ethers';
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Btn } from '../Components/Btn';
 import { Spacer } from '../Components/CoreUI';
-import { TextInput } from '../Components/Input';
+import { DarkForestTextInput, TextInput } from '../Components/Input';
 import { TextPreview } from '../Components/TextPreview';
 import dfstyles from '../Styles/dfstyles';
 import { useAccount, useUIManager } from '../Utils/AppHooks';
@@ -191,20 +190,19 @@ const LoginModule = (props: any) => {
   const { wallet, handleLoginEvent, userInfo, address, setStep } = props;
   const walletType = 'eth';
   const [loading, setLoading] = useState(false);
-  const [formRef] = Form.useForm();
   const uiManager = useUIManager();
   const account = useAccount(uiManager);
+  const [password, setPassword] = useState('');
+  const [maskPassword, setMaskPassword] = useState('');
 
   const handleLogin = async () => {
     // The public-private key pair returned after registration
     try {
       setLoading(true);
-      const values = formRef.getFieldsValue(true);
       debugger;
       let localMainPrivateKey = localStorage.getItem('MAIN_PRIVATE_KEY') || '';
       let localMainPublicKey = localStorage.getItem('MAIN_PUBLIC_KEY') || '';
       const tempTime = Number(localStorage.getItem('PUBKEY_EXPIRED_TIMESTAMP')) || undefined;
-      const password = values.password;
       if (!localMainPublicKey) {
         const { signContent } = await Client.register.getMainKeypairSignContent({
           password,
@@ -259,9 +257,13 @@ const LoginModule = (props: any) => {
     if (!userId) {
       return 'user not exist';
     } else {
-      let simpleStr = userId;
+      const simpleStr = userId;
       return simpleStr;
     }
+  };
+
+  const onPasswordChange = (e: Event & React.ChangeEvent<DarkForestTextInput>) => {
+    setPassword(e.target.value);
   };
 
   return (
@@ -300,38 +302,13 @@ const LoginModule = (props: any) => {
           <Row>
             <div>Password</div>
             <div>
-              <TextInput placeholder='Please Enter Password' />
+              <TextInput onChange={onPasswordChange} placeholder='Please Enter Password' />
             </div>
           </Row>
-
-          <div>
-            <Form
-              name='basic'
-              labelCol={{ span: 8 }}
-              wrapperCol={{ span: 16 }}
-              style={{ maxWidth: 600 }}
-              onFinish={handleLogin}
-              autoComplete='off'
-              form={formRef}
-              initialValues={{ password: '' }}
-            >
-              <Form.Item
-                label='Password'
-                name='password'
-                rules={[{ required: true, message: 'Please input your password!' }]}
-              >
-                <TextInput placeholder='input your password' />
-              </Form.Item>
-
-              <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                <div style={{ display: 'flex' }}>
-                  <Btn size='stretch' onClick={handleLogin}>
-                    Login
-                  </Btn>
-                  <Btn onClick={backToLastStep}>Back to connecting</Btn>
-                </div>
-              </Form.Item>
-            </Form>
+          <div style={{ padding: '10px 20px' }}>
+            <Button type={'primary'} disabled={!password} onClick={handleLogin}>
+              <span style={{ fontSize: '20px', lineHeight: '20px' }}>Login</span>
+            </Button>
           </div>
           <div>Powered by Web3MQ</div>
         </>
