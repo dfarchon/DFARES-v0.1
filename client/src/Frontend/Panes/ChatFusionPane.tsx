@@ -269,12 +269,16 @@ const LoginModule = (props: any) => {
       ) : (
         <>
           <Row>
-            <span>Public Key</span>
-            <span>{account}</span>
+            <div>Public Key</div>
+            <div>{account}</div>
           </Row>
           <Row>
-            <span> Chat User ID</span>
-            <span> {getSimpleId(userInfo.userid)}</span>
+            <div>User ID</div>
+            <div> {getSimpleId(userInfo.userid)}</div>
+          </Row>
+          <Row>
+            <div>Password</div>
+            <TextInput placeholder='input your password' />
           </Row>
 
           <div>
@@ -481,15 +485,23 @@ const WalletConnectBtn = styled.div`
 `;
 
 const Row = styled.div`
-  width: 100%;
+  width: 90%;
+  margin: 0 auto;
   display: flex;
   flex-direction: row;
 
   justify-content: space-between;
   align-items: center;
 
-  & > span:first-child {
+  & > div:first-child {
     flex-grow: 1;
+    width: 110px;
+    text-align: left;
+  }
+
+  & > div:nth-child(2) {
+    width: 100%;
+    text-align: left;
   }
 `;
 
