@@ -21,12 +21,14 @@ import {
   useChatContext,
   Window,
 } from '@web3mq/react-components';
-import { Button as AntdBtn, Form, Input, message, Space } from 'antd';
+import { Button as AntdBtn, Form, Input, message } from 'antd';
 import { ethers } from 'ethers';
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Btn } from '../Components/Btn';
+import { Spacer } from '../Components/CoreUI';
 import { TextInput } from '../Components/Input';
+import { TextPreview } from '../Components/TextPreview';
 import dfstyles from '../Styles/dfstyles';
 import { useAccount, useUIManager } from '../Utils/AppHooks';
 import { ModalPane } from '../Views/ModalPane';
@@ -257,7 +259,7 @@ const LoginModule = (props: any) => {
     if (!userId) {
       return 'user not exist';
     } else {
-      const simpleStr = userId.substring(5);
+      let simpleStr = userId;
       return simpleStr;
     }
   };
@@ -270,15 +272,36 @@ const LoginModule = (props: any) => {
         <>
           <Row>
             <div>Public Key</div>
-            <div>{account}</div>
+            <div>
+              <TextPreview
+                style={{ color: dfstyles.colors.subtext }}
+                text={account}
+                focusedWidth={'200px'}
+                unFocusedWidth={'200px'}
+              />
+            </div>
           </Row>
+
+          <Spacer height={4} />
           <Row>
             <div>User ID</div>
-            <div> {getSimpleId(userInfo.userid)}</div>
+
+            <div>
+              <TextPreview
+                style={{ color: dfstyles.colors.subtext }}
+                text={getSimpleId(userInfo.userid)}
+                focusedWidth={'200px'}
+                unFocusedWidth={'200px'}
+              />
+            </div>
           </Row>
+
+          <Spacer height={4} />
           <Row>
             <div>Password</div>
-            <TextInput placeholder='input your password' />
+            <div>
+              <TextInput placeholder='Please Enter Password' />
+            </div>
           </Row>
 
           <div>
@@ -301,12 +324,12 @@ const LoginModule = (props: any) => {
               </Form.Item>
 
               <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                <Space style={{ display: 'flex' }}>
+                <div style={{ display: 'flex' }}>
                   <Btn size='stretch' onClick={handleLogin}>
                     Login
                   </Btn>
                   <Btn onClick={backToLastStep}>Back to connecting</Btn>
-                </Space>
+                </div>
               </Form.Item>
             </Form>
           </div>
@@ -485,22 +508,24 @@ const WalletConnectBtn = styled.div`
 `;
 
 const Row = styled.div`
-  width: 90%;
+  width: 50%;
   margin: 0 auto;
   display: flex;
   flex-direction: row;
 
-  justify-content: space-between;
   align-items: center;
 
   & > div:first-child {
     flex-grow: 1;
     width: 110px;
+    min-width: 110px;
     text-align: left;
   }
 
   & > div:nth-child(2) {
-    width: 100%;
+    width: 200px;
+    max-width: 200px;
+    min-width: 200px;
     text-align: left;
   }
 `;
