@@ -12,7 +12,7 @@ export function LandingPageRoundArt() {
     <Container>
       <ImgContainer>
         <LandingPageRoundArtImg
-          src={'/public/DFARESLogo-v2.png'}
+          src={'/public/DFARESLogo-v3.svg'}
           onClick={() => history.push(`/play/${defaultAddress}`)}
         />
         {/* <Smaller>
@@ -32,7 +32,7 @@ const Container = styled.div`
 const ImgContainer = styled.div`
   display: inline-block;
   text-align: right;
-  width: 360px; //750px;
+  width: 200px; //750px;
   max-width: 80vw;
 
   @media only screen and (max-device-width: 1000px) {

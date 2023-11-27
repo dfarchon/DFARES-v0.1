@@ -1,12 +1,12 @@
+import { PICTURE_URL } from '@dfares/constants';
 import { AvatarType } from '@dfares/types';
-
 export type Avatar = {
   legacy: boolean;
   topLayer: Array<string>;
   bottomLayer: Array<string>;
   // image?: () => Promise<HTMLImageElement>;
 };
-const PICTURE_URL = 'https://dfares.xyz/public';
+
 const URL = PICTURE_URL;
 
 const Jasonlool = {

@@ -92,7 +92,7 @@ export default function LandingPage() {
               <Spacer height={16} />
             </HideOnMobile> */}
 
-            <Spacer height={100} />
+            <Spacer height={180} />
             <LandingPageRoundArt />
 
             {/*
@@ -358,7 +358,7 @@ const Page = styled.div`
   max-width: 100vw;
   height: 100%;
   color: white;
-  background-color: #021452;
+  background-color: #ffb4c1;
   font-size: ${dfstyles.fontSize};
   display: flex;
   flex-direction: column;

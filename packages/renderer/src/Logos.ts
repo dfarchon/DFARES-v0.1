@@ -1,3 +1,4 @@
+import { PICTURE_URL } from '@dfares/constants';
 import { LogoType } from '@dfares/types';
 
 export type Logo = {
@@ -9,7 +10,6 @@ export type Logo = {
   // image?: () => Promise<HTMLImageElement>;
 };
 
-const PICTURE_URL = 'https://dfares.xyz/public';
 const URL = PICTURE_URL;
 
 const DF = {
