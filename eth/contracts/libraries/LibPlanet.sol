@@ -400,4 +400,5 @@ library LibPlanet {
         scoreGained = (scoreGained * gameConstants().SILVER_SCORE_VALUE) / 100;
         gs().players[msg.sender].score += scoreGained;
     }
+    
 }

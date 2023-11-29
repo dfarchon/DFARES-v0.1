@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 // Type imports
-import {Planet, PlanetEventMetadata, PlanetDefaultStats, Upgrade, RevealedCoords, Player, ArrivalData, Artifact} from "../DFTypes.sol";
+import {Planet, PlanetEventMetadata, PlanetDefaultStats, Upgrade, RevealedCoords, Player, ArrivalData, Artifact,ClaimedCoords} from "../DFTypes.sol";
 
 struct WhitelistStorage {
     bool enabled;
@@ -26,6 +26,7 @@ struct GameStorage {
     // admin controls
     bool paused;
     uint256 TOKEN_MINT_END_TIMESTAMP;
+    uint256 CLAIM_END_TIMESTAMP;
     uint256 planetLevelsCount;
     uint256[] cumulativeRarities;
     uint256[] initializedPlanetCountByLevel;
@@ -51,6 +52,22 @@ struct GameStorage {
     // Capture Zones
     uint256 nextChangeBlock;
     uint256 dynamicTimeFactor;
+
+    // Claim Planet to get Score
+    /**
+     * Map from player address to the list of planets they have claimed.
+     */
+    mapping(address => uint256[])  claimedPlanetsOwners;
+    /**
+     * List of all claimed planetIds
+     */
+    uint256[] claimedIds;
+    /**
+     * Map from planet id to claim data.
+     */
+    mapping(uint256 => ClaimedCoords)  claimedCoords;
+    mapping(address => uint256) lastClaimTimestamp;
+
 }
 
 // Game config
@@ -77,6 +94,7 @@ struct GameConstants {
     uint256 PHOTOID_ACTIVATION_DELAY;
     uint256 STELLAR_ACTIVATION_DELAY;
     uint256 LOCATION_REVEAL_COOLDOWN;
+    uint256 CLAIM_PLANET_COOLDOWN;
     uint8[5][10][4] PLANET_TYPE_WEIGHTS; // spaceType (enum 0-3) -> planetLevel (0-9) -> planetType (enum 0-4)
     uint256 SILVER_SCORE_VALUE;
     uint256[6] ARTIFACT_POINT_VALUES;
@@ -188,6 +206,7 @@ library LibStorage {
     bytes32 constant PLANET_DEFAULT_STATS_POSITION =
         keccak256("darkforest.constants.planetDefaultStats");
     bytes32 constant UPGRADE_POSITION = keccak256("darkforest.constants.upgrades");
+
 
     function gameStorage() internal pure returns (GameStorage storage gs) {
         bytes32 position = GAME_STORAGE_POSITION;

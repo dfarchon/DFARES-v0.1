@@ -277,3 +277,21 @@ enum Biome {
     Lava,
     Corrupted
 }
+
+
+/**
+    * Each time someone claims a planet, we insert an instance of this struct into `claimedCoords`
+ */
+struct ClaimedCoords {
+    uint256 locationId;
+    uint256 x;
+    uint256 y;
+    address claimer;
+    uint256 score;
+    uint256 claimedAt;
+}
+
+struct LastClaimedStruct {
+    address player;
+    uint256 lastClaimTimestamp;
+}

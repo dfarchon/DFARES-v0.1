@@ -20,6 +20,7 @@ export const decodeInitializers = decoders.guard(
     START_PAUSED: decoders.boolean,
     ADMIN_CAN_ADD_PLANETS: decoders.boolean,
     TOKEN_MINT_END_TIMESTAMP: dateInSeconds,
+    CLAIM_END_TIMESTAMP: dateInSeconds,
     WORLD_RADIUS_LOCKED: decoders.boolean,
     WORLD_RADIUS_MIN: decoders.number,
     /**
@@ -55,6 +56,7 @@ export const decodeInitializers = decoders.guard(
     STELLAR_ACTIVATION_DELAY: decoders.number,
     SPAWN_RIM_AREA: decoders.number,
     LOCATION_REVEAL_COOLDOWN: decoders.number,
+    CLAIM_PLANET_COOLDOWN: decoders.number,
     PLANET_TYPE_WEIGHTS: exactArray4(exactArray10(exactArray5(between(decoders.number, 0, 255)))),
     SILVER_SCORE_VALUE: decoders.number,
     ARTIFACT_POINT_VALUES: array6(decoders.number),

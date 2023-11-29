@@ -101,6 +101,12 @@ contract DFAdminFacet is WithStorage {
         gameConstants().LOCATION_REVEAL_COOLDOWN = newCooldown;
     }
 
+    function changeClaimPlanetCooldown(uint256 newCooldown) public onlyAdmin {
+        gameConstants().CLAIM_PLANET_COOLDOWN = newCooldown;
+    }
+   
+
+
     function withdraw() public onlyAdmin {
         // TODO: Don't send to msg.sender, instead send to contract admin
         payable(msg.sender).transfer(address(this).balance);

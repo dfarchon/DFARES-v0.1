@@ -42,7 +42,9 @@ struct InitArgs {
     bool START_PAUSED;
     bool ADMIN_CAN_ADD_PLANETS;
     uint256 LOCATION_REVEAL_COOLDOWN;
+    uint256 CLAIM_PLANET_COOLDOWN;
     uint256 TOKEN_MINT_END_TIMESTAMP;
+    uint256 CLAIM_END_TIMESTAMP;
     bool WORLD_RADIUS_LOCKED;
     uint256 WORLD_RADIUS_MIN;
     // SNARK keys and perlin params
@@ -175,6 +177,7 @@ contract DFInitialize is WithStorage {
         gameConstants().PHOTOID_ACTIVATION_DELAY = initArgs.PHOTOID_ACTIVATION_DELAY;
         gameConstants().STELLAR_ACTIVATION_DELAY = initArgs.STELLAR_ACTIVATION_DELAY;
         gameConstants().LOCATION_REVEAL_COOLDOWN = initArgs.LOCATION_REVEAL_COOLDOWN;
+        gameConstants().CLAIM_PLANET_COOLDOWN = initArgs.CLAIM_PLANET_COOLDOWN;
         gameConstants().PLANET_TYPE_WEIGHTS = initArgs.PLANET_TYPE_WEIGHTS;
         gameConstants().SILVER_SCORE_VALUE = initArgs.SILVER_SCORE_VALUE;
         gameConstants().ARTIFACT_POINT_VALUES = initArgs.ARTIFACT_POINT_VALUES;
@@ -208,6 +211,7 @@ contract DFInitialize is WithStorage {
 
         gs().paused = initArgs.START_PAUSED;
         gs().TOKEN_MINT_END_TIMESTAMP = initArgs.TOKEN_MINT_END_TIMESTAMP;
+        gs().CLAIM_END_TIMESTAMP = initArgs.CLAIM_END_TIMESTAMP;
 
         gameConstants().ROUND_END_REWARDS_BY_RANK = initArgs.ROUND_END_REWARDS_BY_RANK;
 

@@ -8,6 +8,7 @@ PLANET_TRANSFER_ENABLED = false
 WORLD_RADIUS_LOCKED = false
 WORLD_RADIUS_MIN = 53000
 
+
 ##################################
 # SNARK keys & Perlin parameters #
 ##################################
@@ -120,6 +121,10 @@ PLANET_RARITY = 16384
 # (100 is 100%)
 SILVER_SCORE_VALUE = 100
 LOCATION_REVEAL_COOLDOWN = 86400 # seconds
+CLAIM_PLANET_COOLDOWN = 10800 # seconds
+
+CLAIM_END_TIMESTAMP = 2023-12-31T04:00:00.000Z # Mon Oct 04 2022 21:00:00 GMT-0700 (Pacific Daylight Time)
+
 
 
 PLANET_TYPE_WEIGHTS = [
@@ -252,3 +257,10 @@ WHALE = false
 ##########################
 # Planets to add to game #
 ##########################
+[[planets]]
+  x = 0
+  y = 0
+  level = 9
+  planetType = 0
+  requireValidLocationId = false
+  revealLocation = true

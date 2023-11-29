@@ -270,6 +270,7 @@ export interface ContractConstants {
   PHOTOID_ACTIVATION_DELAY: number;
   STELLAR_ACTIVATION_DELAY: number;
   LOCATION_REVEAL_COOLDOWN: number;
+  CLAIM_PLANET_COOLDOWN: number;
 
   defaultPopulationCap: number[];
   defaultPopulationGrowth: number[];

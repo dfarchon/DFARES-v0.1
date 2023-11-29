@@ -16,7 +16,7 @@ import {LibPlanet} from "../libraries/LibPlanet.sol";
 import {WithStorage} from "../libraries/LibStorage.sol";
 
 // Type imports
-import {SpaceType, Planet, Player, ArtifactType, DFPInitPlanetArgs, DFPMoveArgs, DFPFindArtifactArgs, AdminCreatePlanetArgs, Artifact} from "../DFTypes.sol";
+import {SpaceType, Planet, Player, ArtifactType, DFPInitPlanetArgs, DFPMoveArgs, DFPFindArtifactArgs, AdminCreatePlanetArgs, Artifact,ClaimedCoords} from "../DFTypes.sol";
 
 contract DFCoreFacet is WithStorage {
     using ABDKMath64x64 for *;
@@ -28,6 +28,9 @@ contract DFCoreFacet is WithStorage {
     event LocationRevealed(address revealer, uint256 loc, uint256 x, uint256 y);
 
     event PlanetSilverWithdrawn(address player, uint256 loc, uint256 amount);
+
+    event LocationClaimed(address revealer, address previousClaimer, uint256 loc);
+
 
     //////////////////////
     /// ACCESS CONTROL ///
@@ -263,4 +266,165 @@ contract DFCoreFacet is WithStorage {
         LibPlanet.withdrawSilver(locationId, amount);
         emit PlanetSilverWithdrawn(msg.sender, locationId, amount);
     }
+
+     /**
+     * Sums up all the distances of all the planets this player has claimed.
+     */
+    function getScore(address player) public view returns (uint256) {
+        uint256 bestScore = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
+        uint256[] storage planetIds = gs().claimedPlanetsOwners[player];
+
+        for (uint256 i = 0; i < planetIds.length; i++) {
+            ClaimedCoords memory claimed = gs().claimedCoords[planetIds[i]];
+            if (
+                bestScore > claimed.score &&
+                !gs().planets[planetIds[i]].destroyed
+            ) {
+                bestScore = claimed.score;
+            }
+        }
+
+        return bestScore;
+    }
+
+    /**
+     * If this planet has been claimed, gets information about the circumstances of that claim.
+     */
+    function getClaimedCoords(uint256 locationId) public view returns (ClaimedCoords memory) {
+        return gs().claimedCoords[locationId];
+    }
+
+
+     /**
+     * Assuming that the given player is allowed to claim the given planet, and that the distance is
+      correct, update the data that the scoring function will need.
+     */
+    function storePlayerClaim(
+        address player,
+        uint256 planetId,
+        uint256 distance,
+        uint256 x,
+        uint256 y
+    ) internal returns (address) {
+        ClaimedCoords memory oldClaim = getClaimedCoords(planetId);
+        uint256[] storage playerClaims = gs().claimedPlanetsOwners[player];
+        uint256[] storage oldPlayerClaimed = gs().claimedPlanetsOwners[oldClaim.claimer];
+
+        if (gs().claimedCoords[planetId].claimer == address(0)) {
+            gs().claimedIds.push(planetId);
+            playerClaims.push(planetId);
+            gs().claimedCoords[planetId] = ClaimedCoords({
+                locationId: planetId,
+                x: x,
+                y: y,
+                claimer: player,
+                score: distance,
+                claimedAt: block.timestamp
+            });
+            // Only execute if player is not current claimer
+        } else if (gs().claimedCoords[planetId].claimer != player) {
+            playerClaims.push(planetId);
+            gs().claimedCoords[planetId].claimer = player;
+            gs().claimedCoords[planetId].claimedAt = block.timestamp;
+            for (uint256 i = 0; i < oldPlayerClaimed.length; i++) {
+                if (oldPlayerClaimed[i] == planetId) {
+                    oldPlayerClaimed[i] = oldPlayerClaimed[oldPlayerClaimed.length - 1];
+                    oldPlayerClaimed.pop();
+                    break;
+                }
+            }
+        }
+        // return previous claimer for event emission
+        return oldClaim.claimer;
+    }
+
+
+    /**
+     * Calculates the distance of the given coordinate from (0, 0).
+     */
+    function distanceFromCenter(uint256 x, uint256 y) private pure returns (uint256) {
+        if (x == 0 && y == 0) {
+            return 0;
+        }
+
+        uint256 distance =
+            ABDKMath64x64.toUInt(
+                ABDKMath64x64.sqrt(
+                    ABDKMath64x64.add(
+                        ABDKMath64x64.pow(ABDKMath64x64.fromUInt(x), 2),
+                        ABDKMath64x64.pow(ABDKMath64x64.fromUInt(y), 2)
+                    )
+                )
+            );
+
+        return distance;
+    }
+
+
+    // `x`, `y` are in `{0, 1, 2, ..., LOCATION_ID_UB - 1}` by convention, if a number `n` is
+    // greater than `LOCATION_ID_UB / 2`, it is considered a negative number whose "actual" value is
+    // `n - LOCATION_ID_UB` this code snippet calculates the absolute value of `x` or `y` (given the
+    // above convention)
+    function getAbsoluteModP(uint256 n) private pure returns (uint256) {
+        uint256 LOCATION_ID_UB =
+            21888242871839275222246405745257275088548364400416034343698204186575808495617;
+        require(n < LOCATION_ID_UB, "Number outside of AbsoluteModP Range");
+        // if (n > SafeMathUpgradeable.div(LOCATION_ID_UB, 2)) {
+        //     return SafeMathUpgradeable.sub(LOCATION_ID_UB, n);
+        // }
+        uint256 tmp = LOCATION_ID_UB / 2;
+        if(n > tmp) return LOCATION_ID_UB - n;
+        else return n;
+
+    }
+
+    //  In dark forest v0.6 r3, players can claim planets that own. This will reveal a planets a
+    //  coordinates to all other players. A Player's score is determined by taking the distance of
+    //  their closest planet from the center of the universe. A planet can be claimed multiple
+    //  times, but only the last player to claim a planet can use it as part of their score.
+   function claim(
+        uint256[2] memory _a,
+        uint256[2][2] memory _b,
+        uint256[2] memory _c,
+        uint256[9] memory _input
+    ) public {
+        require(block.timestamp < gs().CLAIM_END_TIMESTAMP, "Cannot claim planets after the round has ended");
+        require(
+            block.timestamp - gs().lastClaimTimestamp[msg.sender] >
+                gameConstants().CLAIM_PLANET_COOLDOWN,
+            "wait for cooldown before revealing again"
+        );
+
+        uint256 locationId = _input[0];
+
+        require(
+            gs().planets[locationId].isInitialized,
+            "Cannot claim uninitialized planet"
+        );
+
+        require( checkRevealProof(_a, _b, _c, _input), "Failed reveal pf check");
+        uint256 x = _input[2];
+        uint256 y = _input[3];
+
+        LibPlanet.refreshPlanet(locationId);
+        Planet memory planet = gs().planets[locationId];
+        require(planet.owner == msg.sender, "Only planet owner can perform operation on planets");
+        require(planet.planetLevel >= 3, "Planet level must >= 3");
+        require(
+            !planet.destroyed,
+            "Cannot claim destroyed planet"
+        );
+        gs().lastClaimTimestamp[msg.sender] = block.timestamp;
+        address previousClaimer =
+            storePlayerClaim(
+                msg.sender,
+                _input[0],
+                distanceFromCenter(getAbsoluteModP(x), getAbsoluteModP(y)),
+                x,
+                y
+            );
+        emit LocationClaimed(msg.sender, previousClaimer, _input[0]);
+    }
+
+
 }
