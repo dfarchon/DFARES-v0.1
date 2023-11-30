@@ -37,7 +37,12 @@ function BoardPlacement({ account }: { account: EthAddress | undefined }) {
     content = <Sub>n/a</Sub>;
   } else {
     let formattedScore = 'n/a';
-    if (player.value.score !== undefined && player.value.score !== null) {
+
+    if (
+      player.value.score !== undefined &&
+      player.value.score !== null &&
+      player.value.lastClaimTimestamp !== 0
+    ) {
       formattedScore = player.value.score.toLocaleString();
     }
 

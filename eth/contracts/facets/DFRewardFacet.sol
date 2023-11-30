@@ -31,7 +31,7 @@ contract DFRewardFacet is WithStorage {
             sortedPlayerAddresses.length == sortedScores.length,
             "score and player array lengths do not match"
         );
-        require(block.timestamp > gs().TOKEN_MINT_END_TIMESTAMP, "game is not over");
+        require(block.timestamp > gameConstants().TOKEN_MINT_END_TIMESTAMP, "game is not over");
 
         Player storage claimingPlayer = gs().players[msg.sender];
 

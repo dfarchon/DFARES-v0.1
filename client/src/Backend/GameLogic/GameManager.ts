@@ -3,6 +3,7 @@ import {
   CONTRACT_PRECISION,
   EMPTY_ADDRESS,
   MIN_PLANET_LEVEL,
+  PLANET_CLAIM_MIN_LEVEL,
 } from '@dfares/constants';
 import type { DarkForest } from '@dfares/contracts/typechain';
 import { monomitter, Monomitter, Subscription } from '@dfares/events';
@@ -29,6 +30,7 @@ import {
   isUnconfirmedBuyHatTx,
   isUnconfirmedCapturePlanetTx,
   isUnconfirmedChangeArtifactImageTypeTx,
+  isUnconfirmedClaimTx,
   isUnconfirmedDeactivateArtifactTx,
   isUnconfirmedDepositArtifactTx,
   isUnconfirmedFindArtifactTx,
@@ -80,6 +82,7 @@ import {
   UnconfirmedBuyHat,
   UnconfirmedCapturePlanet,
   UnconfirmedChangeArtifactImageType,
+  UnconfirmedClaim,
   UnconfirmedClaimReward,
   UnconfirmedDeactivateArtifact,
   UnconfirmedDepositArtifact,
@@ -123,7 +126,11 @@ import {
   ZKArgIdx,
 } from '../../_types/darkforest/api/ContractsAPITypes';
 import { AddressTwitterMap } from '../../_types/darkforest/api/UtilityServerAPITypes';
-import { HashConfig, RevealCountdownInfo } from '../../_types/global/GlobalTypes';
+import {
+  ClaimCountdownInfo,
+  HashConfig,
+  RevealCountdownInfo,
+} from '../../_types/global/GlobalTypes';
 import MinerManager, { HomePlanetMinerChunkStore, MinerManagerEvent } from '../Miner/MinerManager';
 import {
   MiningPattern,
@@ -601,6 +608,7 @@ class GameManager extends EventEmitter {
     terminal.current?.newline();
 
     const initialState = await gameStateDownloader.download(contractsAPI, persistentChunkStore);
+
     const possibleHomes = await persistentChunkStore.getHomeLocations();
 
     terminal.current?.println('');
@@ -608,6 +616,7 @@ class GameManager extends EventEmitter {
 
     await persistentChunkStore.saveTouchedPlanetIds(initialState.allTouchedPlanetIds);
     await persistentChunkStore.saveRevealedCoords(initialState.allRevealedCoords);
+    await persistentChunkStore.saveClaimedCoords(initialState.allClaimedCoords);
 
     const knownArtifacts: Map<ArtifactId, Artifact> = new Map();
 
@@ -753,6 +762,11 @@ class GameManager extends EventEmitter {
           gameManager.emit(GameManagerEvent.PlanetUpdate);
         }
       )
+      .on(ContractsAPIEvent.PlanetClaimed, async (planetId: LocationId, _revealer: EthAddress) => {
+        // TODO: hook notifs or emit event to UI if you want
+        await gameManager.hardRefreshPlanet(planetId);
+        gameManager.emit(GameManagerEvent.PlanetUpdate);
+      })
       .on(ContractsAPIEvent.TxQueued, (tx: Transaction) => {
         gameManager.entityStore.onTxIntent(tx);
       })
@@ -1138,7 +1152,14 @@ class GameManager extends EventEmitter {
    * Dark Forest tokens can only be minted up to a certain time - get this time measured in seconds from epoch.
    */
   public getTokenMintEndTimeSeconds(): number {
-    return this.contractConstants.TOKEN_MINT_END_SECONDS;
+    return this.contractConstants.TOKEN_MINT_END_TIMESTAMP;
+  }
+
+  /**
+   * Dark Forest planets can only be claimed to a certain time - get this time measured in seconds from epoch.
+   */
+  public getClaimEndTimeSeconds(): number {
+    return this.contractConstants.CLAIM_END_TIMESTAMP;
   }
 
   /**
@@ -1416,6 +1437,21 @@ class GameManager extends EventEmitter {
       myLastRevealTimestamp: myLastRevealTimestamp || undefined,
       currentlyRevealing: this.entityStore.transactions.hasTransaction(isUnconfirmedRevealTx),
       revealCooldownTime: this.contractConstants.LOCATION_REVEAL_COOLDOWN,
+    };
+  }
+
+  /**
+   * Returns info about the next time you can claim a Planet
+   */
+  getNextClaimCountdownInfo(): ClaimCountdownInfo {
+    if (!this.account) {
+      throw new Error('no account set');
+    }
+    const myLastClaimTimestamp = this.players.get(this.account)?.lastClaimTimestamp;
+    return {
+      myLastClaimTimestamp: myLastClaimTimestamp || undefined,
+      currentlyClaiming: !!this.entityStore.transactions.hasTransaction(isUnconfirmedClaimTx),
+      claimCooldownTime: this.contractConstants.CLAIM_PLANET_COOLDOWN,
     };
   }
 
@@ -1774,6 +1810,23 @@ class GameManager extends EventEmitter {
     );
   }
 
+  /**
+   * Gets the timestamp (ms) of the next time that we can claim a planet.
+   */
+  public getNextClaimAvailableTimestamp() {
+    if (!this.account) {
+      throw new Error('no account set');
+    }
+    const myLastClaimTimestamp = this.players.get(this.account)?.lastClaimTimestamp;
+
+    if (!myLastClaimTimestamp) {
+      return Date.now();
+    }
+
+    // both the variables in the next line are denominated in seconds
+    return (myLastClaimTimestamp + this.contractConstants.CLAIM_PLANET_COOLDOWN) * 1000;
+  }
+
   public getCaptureZones(): Set<CaptureZone> {
     return this.captureZoneGenerator?.getZones() || new Set();
   }
@@ -1844,12 +1897,99 @@ class GameManager extends EventEmitter {
         args: getArgs(),
       };
 
+      console.log(txIntent);
+
       // Always await the submitTransaction so we can catch rejections
       const tx = await this.contractsAPI.submitTransaction(txIntent);
 
       return tx;
     } catch (e) {
       this.getNotificationsManager().txInitError('revealLocation', e.message);
+      throw e;
+    }
+  }
+
+  /**
+   * Reveals a planet's location on-chain.
+   */
+  public async claimLocation(planetId: LocationId): Promise<Transaction<UnconfirmedClaim>> {
+    try {
+      if (!this.account) {
+        throw new Error('no account set');
+      }
+
+      const planet = this.entityStore.getPlanetWithId(planetId);
+
+      if (!planet) {
+        throw new Error("you can't claim a planet you haven't discovered");
+      }
+
+      if (planet.owner !== this.account) {
+        throw new Error("you can't claim a planet you down't own");
+      }
+
+      if (planet.claimer === this.account) {
+        throw new Error("you've already claimed this planet");
+      }
+
+      if (!isLocatable(planet)) {
+        throw new Error("you can't reveal a planet whose coordinates you don't know");
+      }
+
+      if (planet.transactions?.hasTransaction(isUnconfirmedClaimTx)) {
+        throw new Error("you're already claiming this planet's location");
+      }
+
+      if (planet.planetLevel < PLANET_CLAIM_MIN_LEVEL) {
+        throw new Error(
+          `you can't claim a planet whose level is less than ${PLANET_CLAIM_MIN_LEVEL}`
+        );
+      }
+
+      if (this.entityStore.transactions.hasTransaction(isUnconfirmedClaimTx)) {
+        throw new Error("you're already broadcasting coordinates");
+      }
+
+      const myLastClaimTimestamp = this.players.get(this.account)?.lastClaimTimestamp;
+      if (myLastClaimTimestamp && Date.now() < this.getNextClaimAvailableTimestamp()) {
+        throw new Error('still on cooldown for claiming');
+      }
+
+      // this is shitty. used for the popup window
+      localStorage.setItem(`${this.getAccount()?.toLowerCase()}-claimLocationId`, planetId);
+
+      const getArgs = async () => {
+        const revealArgs = await this.snarkHelper.getRevealArgs(
+          planet.location.coords.x,
+          planet.location.coords.y
+        );
+        this.terminal.current?.println(
+          'REVEAL: calculated SNARK with args:',
+          TerminalTextStyle.Sub
+        );
+        this.terminal.current?.println(
+          JSON.stringify(hexifyBigIntNestedArray(revealArgs.slice(0, 3))),
+          TerminalTextStyle.Sub
+        );
+        this.terminal.current?.newline();
+
+        return revealArgs;
+      };
+
+      const txIntent: UnconfirmedClaim = {
+        methodName: 'claimLocation',
+        locationId: planetId,
+        location: planet.location,
+        contract: this.contractsAPI.contract,
+        args: getArgs(),
+      };
+
+      // Always await the submitTransaction so we can catch rejections
+      const tx = await this.contractsAPI.submitTransaction(txIntent);
+
+      return tx;
+    } catch (e) {
+      this.getNotificationsManager().txInitError('claimLocation', e.message);
       throw e;
     }
   }

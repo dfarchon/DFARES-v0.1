@@ -210,8 +210,8 @@ contract DFInitialize is WithStorage {
         gs().worldRadius = initArgs.WORLD_RADIUS_MIN; // will be overridden by `LibGameUtils.updateWorldRadius()` if !WORLD_RADIUS_LOCKED
 
         gs().paused = initArgs.START_PAUSED;
-        gs().TOKEN_MINT_END_TIMESTAMP = initArgs.TOKEN_MINT_END_TIMESTAMP;
-        gs().CLAIM_END_TIMESTAMP = initArgs.CLAIM_END_TIMESTAMP;
+        gameConstants().TOKEN_MINT_END_TIMESTAMP = initArgs.TOKEN_MINT_END_TIMESTAMP;
+        gameConstants().CLAIM_END_TIMESTAMP = initArgs.CLAIM_END_TIMESTAMP;
 
         gameConstants().ROUND_END_REWARDS_BY_RANK = initArgs.ROUND_END_REWARDS_BY_RANK;
 

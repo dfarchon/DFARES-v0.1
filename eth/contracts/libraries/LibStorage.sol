@@ -25,8 +25,7 @@ struct GameStorage {
     address diamondAddress;
     // admin controls
     bool paused;
-    uint256 TOKEN_MINT_END_TIMESTAMP;
-    uint256 CLAIM_END_TIMESTAMP;
+
     uint256 planetLevelsCount;
     uint256[] cumulativeRarities;
     uint256[] initializedPlanetCountByLevel;
@@ -132,6 +131,8 @@ struct GameConstants {
     uint256 CAPTURE_ZONES_PER_5000_WORLD_RADIUS;
     SpaceshipConstants SPACESHIPS;
     uint256[64] ROUND_END_REWARDS_BY_RANK;
+    uint256 TOKEN_MINT_END_TIMESTAMP;
+    uint256 CLAIM_END_TIMESTAMP;
 }
 
 struct SpaceshipConstants {

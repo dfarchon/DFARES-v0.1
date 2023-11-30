@@ -92,7 +92,7 @@ export default function LandingPage() {
               <Spacer height={16} />
             </HideOnMobile> */}
 
-            <Spacer height={180} />
+            <Spacer height={120} />
             <LandingPageRoundArt />
 
             {/*

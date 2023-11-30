@@ -5,6 +5,7 @@ import type { WorldLocation } from './world';
 
 export type ContractMethodName =
   | 'revealLocation'
+  | 'claimLocation'
   | 'initializePlayer'
   | 'move'
   | 'upgradePlanet'
@@ -193,6 +194,15 @@ export type UnconfirmedWithdrawSilver = TxIntent & {
  */
 export type UnconfirmedReveal = TxIntent & {
   methodName: 'revealLocation';
+  locationId: LocationId;
+  location: WorldLocation;
+};
+
+/**
+ * @hidden
+ */
+export type UnconfirmedClaim = TxIntent & {
+  methodName: 'claimLocation';
   locationId: LocationId;
   location: WorldLocation;
 };

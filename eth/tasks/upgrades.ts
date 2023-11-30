@@ -7,7 +7,8 @@ import {
   deployCaptureFacet,
   deployCoreFacet,
   deployDebugFacet,
-  deployGetterFacet,
+  deployGetterOneFacet,
+  deployGetterTwoFacet,
   deployLibraries,
   deployLobbyFacet,
   deployMoveFacet,
@@ -49,9 +50,13 @@ async function upgrade({}, hre: HardhatRuntimeEnvironment) {
     libraries,
     hre
   );
-  console.log('getterFacets');
+  console.log('getterOneFacets');
 
-  const getterFacet = await deployGetterFacet({}, libraries, hre);
+  const getterOneFacet = await deployGetterOneFacet({}, libraries, hre);
+
+  console.log('getterTwoFacets');
+  const getterTwoFacet = await deployGetterTwoFacet({}, libraries, hre);
+
   console.log('whitelistFacets');
 
   const whitelistFacet = await deployWhitelistFacet({}, libraries, hre);
@@ -77,7 +82,8 @@ async function upgrade({}, hre: HardhatRuntimeEnvironment) {
     ...changes.getFacetCuts('DFCoreFacet', coreFacet),
     ...changes.getFacetCuts('DFMoveFacet', moveFacet),
     ...changes.getFacetCuts('DFArtifactFacet', artifactFacet),
-    ...changes.getFacetCuts('DFGetterFacet', getterFacet),
+    ...changes.getFacetCuts('DFGetterOneFacet', getterOneFacet),
+    ...changes.getFacetCuts('DFGetterTwoFacet', getterTwoFacet),
     ...changes.getFacetCuts('DFWhitelistFacet', whitelistFacet),
     ...changes.getFacetCuts('DFVerifierFacet', verifierFacet),
     ...changes.getFacetCuts('DFAdminFacet', adminFacet),

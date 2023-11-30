@@ -39,6 +39,10 @@ export type LobbyConfigAction =
       type: 'TOKEN_MINT_END_TIMESTAMP';
       value: Initializers['TOKEN_MINT_END_TIMESTAMP'] | undefined;
     }
+  | {
+      type: 'CLAIM_END_TIMESTAMP';
+      value: Initializers['CLAIM_END_TIMESTAMP'] | undefined;
+    }
   | { type: 'WORLD_RADIUS_LOCKED'; value: Initializers['WORLD_RADIUS_LOCKED'] | undefined }
   | { type: 'WORLD_RADIUS_MIN'; value: Initializers['WORLD_RADIUS_MIN'] | undefined }
   | { type: 'DISABLE_ZK_CHECKS'; value: Initializers['DISABLE_ZK_CHECKS'] | undefined }
@@ -87,6 +91,10 @@ export type LobbyConfigAction =
   | {
       type: 'LOCATION_REVEAL_COOLDOWN';
       value: Initializers['LOCATION_REVEAL_COOLDOWN'] | undefined;
+    }
+  | {
+      type: 'CLAIM_PLANET_COOLDOWN';
+      value: Initializers['CLAIM_PLANET_COOLDOWN'] | undefined;
     }
   | { type: 'PLANET_TYPE_WEIGHTS'; value: Initializers['PLANET_TYPE_WEIGHTS'] | undefined }
   | { type: 'SILVER_SCORE_VALUE'; value: Initializers['SILVER_SCORE_VALUE'] | undefined }
@@ -154,6 +162,11 @@ export function lobbyConfigReducer(state: LobbyConfigState, action: LobbyAction)
       break;
     }
     case 'TOKEN_MINT_END_TIMESTAMP': {
+      // TODO: Date
+      update = ofAny(action, state);
+      break;
+    }
+    case 'CLAIM_END_TIMESTAMP': {
       // TODO: Date
       update = ofAny(action, state);
       break;
@@ -267,6 +280,10 @@ export function lobbyConfigReducer(state: LobbyConfigState, action: LobbyAction)
       break;
     }
     case 'LOCATION_REVEAL_COOLDOWN': {
+      update = ofPositiveInteger(action, state);
+      break;
+    }
+    case 'CLAIM_PLANET_COOLDOWN': {
       update = ofPositiveInteger(action, state);
       break;
     }
@@ -394,6 +411,19 @@ export function lobbyConfigInit(startingConfig: LobbyInitializers) {
         };
         break;
       }
+
+      case 'CLAIM_END_TIMESTAMP': {
+        // TODO: Handle dates
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+
       case 'WORLD_RADIUS_LOCKED': {
         const defaultValue = startingConfig[key];
         state[key] = {
@@ -666,6 +696,17 @@ export function lobbyConfigInit(startingConfig: LobbyInitializers) {
         break;
       }
       case 'LOCATION_REVEAL_COOLDOWN': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+
+      case 'CLAIM_PLANET_COOLDOWN': {
         const defaultValue = startingConfig[key];
         state[key] = {
           currentValue: defaultValue,

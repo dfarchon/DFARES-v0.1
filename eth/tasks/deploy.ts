@@ -245,7 +245,9 @@ export async function deployAndCut(
     libraries,
     hre
   );
-  const getterFacet = await deployGetterFacet({}, libraries, hre);
+  const getterOneFacet = await deployGetterOneFacet({}, libraries, hre);
+  const getterTwoFacet = await deployGetterTwoFacet({}, libraries, hre);
+
   const whitelistFacet = await deployWhitelistFacet({}, libraries, hre);
   const verifierFacet = await deployVerifierFacet({}, libraries, hre);
   const adminFacet = await deployAdminFacet({}, libraries, hre);
@@ -258,7 +260,8 @@ export async function deployAndCut(
     ...changes.getFacetCuts('DFMoveFacet', moveFacet),
     ...changes.getFacetCuts('DFCaptureFacet', captureFacet),
     ...changes.getFacetCuts('DFArtifactFacet', artifactFacet),
-    ...changes.getFacetCuts('DFGetterFacet', getterFacet),
+    ...changes.getFacetCuts('DFGetterOneFacet', getterOneFacet),
+    ...changes.getFacetCuts('DFGetterTwoFacet', getterTwoFacet),
     ...changes.getFacetCuts('DFWhitelistFacet', whitelistFacet),
     ...changes.getFacetCuts('DFVerifierFacet', verifierFacet),
     ...changes.getFacetCuts('DFAdminFacet', adminFacet),
@@ -309,19 +312,31 @@ export async function deployAndCut(
   return [diamond, diamondInit, initReceipt] as const;
 }
 
-export async function deployGetterFacet(
+export async function deployGetterOneFacet(
   {},
   { LibGameUtils }: Libraries,
   hre: HardhatRuntimeEnvironment
 ) {
-  const factory = await hre.ethers.getContractFactory('DFGetterFacet', {
+  const factory = await hre.ethers.getContractFactory('DFGetterOneFacet', {
     libraries: {
       LibGameUtils,
     },
   });
   const contract = await factory.deploy();
   await contract.deployTransaction.wait();
-  console.log('DFGetterFacet deployed to:', contract.address);
+  console.log('DFGetterOneFacet deployed to:', contract.address);
+  return contract;
+}
+
+export async function deployGetterTwoFacet(
+  {},
+  libraries: Libraries,
+  hre: HardhatRuntimeEnvironment
+) {
+  const factory = await hre.ethers.getContractFactory('DFGetterTwoFacet', {});
+  const contract = await factory.deploy();
+  await contract.deployTransaction.wait();
+  console.log('DFGetterTwoFacet deployed to:', contract.address);
   return contract;
 }
 

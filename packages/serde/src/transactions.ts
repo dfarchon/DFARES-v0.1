@@ -6,6 +6,7 @@ import {
   UnconfirmedBuyHat,
   UnconfirmedCapturePlanet,
   UnconfirmedChangeArtifactImageType,
+  UnconfirmedClaim,
   UnconfirmedDeactivateArtifact,
   UnconfirmedDepositArtifact,
   UnconfirmedFindArtifact,
@@ -28,6 +29,10 @@ import {
 
 export function isUnconfirmedReveal(txIntent: TxIntent): txIntent is UnconfirmedReveal {
   return txIntent.methodName === 'revealLocation';
+}
+
+export function isUnconfirmedClaim(txIntent: TxIntent): txIntent is UnconfirmedClaim {
+  return txIntent.methodName === 'claimLocation';
 }
 
 export function isUnconfirmedInit(txIntent: TxIntent): txIntent is UnconfirmedInit {
@@ -120,6 +125,10 @@ export function isUnconfirmedInvadePlanet(txIntent: TxIntent): txIntent is Uncon
 
 export function isUnconfirmedRevealTx(tx: Transaction): tx is Transaction<UnconfirmedReveal> {
   return isUnconfirmedReveal(tx.intent);
+}
+
+export function isUnconfirmedClaimTx(tx: Transaction): tx is Transaction<UnconfirmedReveal> {
+  return isUnconfirmedClaim(tx.intent);
 }
 
 export function isUnconfirmedInitTx(tx: Transaction): tx is Transaction<UnconfirmedInit> {

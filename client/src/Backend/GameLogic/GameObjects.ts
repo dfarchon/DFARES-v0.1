@@ -13,6 +13,8 @@ import {
   isUnconfirmedCapturePlanetTx,
   isUnconfirmedChangeArtifactImageType,
   isUnconfirmedChangeArtifactImageTypeTx,
+  isUnconfirmedClaim,
+  isUnconfirmedClaimTx,
   isUnconfirmedDeactivateArtifact,
   isUnconfirmedDeactivateArtifactTx,
   isUnconfirmedDepositArtifact,
@@ -312,6 +314,7 @@ export class GameObjects {
         }
 
         this.setPlanet(planet);
+        this.updateScore(planetId as LocationId);
       }
     });
 
@@ -537,6 +540,7 @@ export class GameObjects {
         }
       }
     }
+    this.updateScore(planet.locationId);
   }
 
   // returns an empty planet if planet is not in contract
@@ -684,7 +688,13 @@ export class GameObjects {
   public onTxIntent(tx: Transaction) {
     this.transactions.addTransaction(tx);
 
-    if (isUnconfirmedRevealTx(tx)) {
+    if (isUnconfirmedClaimTx(tx)) {
+      const planet = this.getPlanetWithId(tx.intent.locationId);
+      if (planet) {
+        planet.transactions?.addTransaction(tx);
+        this.setPlanet(planet);
+      }
+    } else if (isUnconfirmedRevealTx(tx)) {
       const planet = this.getPlanetWithId(tx.intent.locationId);
       if (planet) {
         planet.transactions?.addTransaction(tx);
@@ -836,6 +846,12 @@ export class GameObjects {
     if (isUnconfirmedReveal(tx.intent)) {
       const planet = this.getPlanetWithId(tx.intent.locationId);
 
+      if (planet) {
+        planet.transactions?.removeTransaction(tx);
+        this.setPlanet(planet);
+      }
+    } else if (isUnconfirmedClaim(tx.intent)) {
+      const planet = this.getPlanetWithId(tx.intent.locationId);
       if (planet) {
         planet.transactions?.removeTransaction(tx);
         this.setPlanet(planet);
@@ -1220,6 +1236,8 @@ export class GameObjects {
         console.error(`error occurred processing arrival for updated planet ${planetId}: ${e}`);
       }
     }
+
+    this.updateScore(planetId);
     return arrivalsWithTimers;
   }
 
@@ -1581,5 +1599,26 @@ export class GameObjects {
    */
   public isGettingSpaceships(): boolean {
     return this.transactions.hasTransaction(isUnconfirmedGetShipsTx);
+  }
+
+  private calculateSilverSpent(planet: Planet): number {
+    const upgradeCosts = [20, 40, 60, 80, 100];
+    let totalUpgrades = 0;
+    for (let i = 0; i < planet.upgradeState.length; i++) {
+      totalUpgrades += planet.upgradeState[i];
+    }
+    let totalUpgradeCostPercent = 0;
+    for (let i = 0; i < totalUpgrades; i++) {
+      totalUpgradeCostPercent += upgradeCosts[i];
+    }
+    return (totalUpgradeCostPercent / 100) * planet.silverCap;
+  }
+
+  private updateScore(planetId: LocationId) {
+    const planet = this.planets.get(planetId);
+    if (!planet) {
+      return;
+    }
+    planet.silverSpent = this.calculateSilverSpent(planet);
   }
 }

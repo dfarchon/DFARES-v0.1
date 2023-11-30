@@ -49,7 +49,7 @@ contract DFArtifactFacet is WithStorage, ERC721 {
     }
 
     modifier notTokenEnded() {
-        require(block.timestamp < gs().TOKEN_MINT_END_TIMESTAMP, "Token mint period has ended");
+        require(block.timestamp < gameConstants().TOKEN_MINT_END_TIMESTAMP, "Token mint period has ended");
         _;
     }
 

@@ -382,13 +382,13 @@ contract DFCoreFacet is WithStorage {
     //  coordinates to all other players. A Player's score is determined by taking the distance of
     //  their closest planet from the center of the universe. A planet can be claimed multiple
     //  times, but only the last player to claim a planet can use it as part of their score.
-   function claim(
+   function claimLocation(
         uint256[2] memory _a,
         uint256[2][2] memory _b,
         uint256[2] memory _c,
         uint256[9] memory _input
     ) public {
-        require(block.timestamp < gs().CLAIM_END_TIMESTAMP, "Cannot claim planets after the round has ended");
+        require(block.timestamp < gameConstants().CLAIM_END_TIMESTAMP, "Cannot claim planets after the round has ended");
         require(
             block.timestamp - gs().lastClaimTimestamp[msg.sender] >
                 gameConstants().CLAIM_PLANET_COOLDOWN,

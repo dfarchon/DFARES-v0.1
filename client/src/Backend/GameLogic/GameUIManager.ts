@@ -466,6 +466,10 @@ class GameUIManager extends EventEmitter {
     this.gameManager.revealLocation(locationId);
   }
 
+  public claimLocation(locationId: LocationId) {
+    this.gameManager.claimLocation(locationId);
+  }
+
   public getNextBroadcastAvailableTimestamp() {
     return this.gameManager.getNextBroadcastAvailableTimestamp();
   }
@@ -1195,6 +1199,10 @@ class GameUIManager extends EventEmitter {
 
   public isCurrentlyRevealing(): boolean {
     return this.gameManager.getNextRevealCountdownInfo().currentlyRevealing;
+  }
+
+  public isCurrentlyClaiming(): boolean {
+    return this.gameManager.getNextClaimCountdownInfo().currentlyClaiming;
   }
 
   public getUnconfirmedLinkActivations(): Transaction<UnconfirmedActivateArtifact>[] {

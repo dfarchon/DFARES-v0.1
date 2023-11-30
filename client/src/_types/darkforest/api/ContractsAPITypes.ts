@@ -46,6 +46,7 @@ export const enum ContractEvent {
   PlanetInvaded = 'PlanetInvaded',
   PlanetCaptured = 'PlanetCaptured',
   LocationRevealed = 'LocationRevealed',
+  PlanetClaimed = 'PlanetClaimed',
   ArtifactFound = 'ArtifactFound',
   ArtifactDeposited = 'ArtifactDeposited',
   ArtifactWithdrawn = 'ArtifactWithdrawn',
@@ -66,6 +67,7 @@ export const enum ContractsAPIEvent {
   ArtifactUpdate = 'ArtifactUpdate',
   RadiusUpdated = 'RadiusUpdated',
   LocationRevealed = 'LocationRevealed',
+
   /**
    * The transaction has been queued for future execution.
    */
@@ -167,26 +169,23 @@ export type PlanetTypeWeightsBySpaceType = [
 ];
 
 export interface ContractConstants {
-  ADMIN_CAN_ADD_PLANETS: boolean;
-  WORLD_RADIUS_LOCKED: boolean;
-  WORLD_RADIUS_MIN: number;
-
+  //SnarkConstants
   DISABLE_ZK_CHECKS: boolean;
-
   PLANETHASH_KEY: number;
   SPACETYPE_KEY: number;
   BIOMEBASE_KEY: number;
-  PERLIN_LENGTH_SCALE: number;
   PERLIN_MIRROR_X: boolean;
   PERLIN_MIRROR_Y: boolean;
+  PERLIN_LENGTH_SCALE: number;
 
-  TOKEN_MINT_END_SECONDS: number;
-
+  //GameConstants
+  ADMIN_CAN_ADD_PLANETS: boolean;
+  WORLD_RADIUS_LOCKED: boolean;
+  WORLD_RADIUS_MIN: number;
   MAX_NATURAL_PLANET_LEVEL: number;
   MAX_ARTIFACT_PER_PLANET: number;
   MAX_SENDING_PLANET: number;
   MAX_RECEIVING_PLANET: number;
-
   TIME_FACTOR_HUNDREDTHS: number;
   /**
    * The perlin value at each coordinate determines the space type. There are four space
@@ -202,7 +201,6 @@ export interface ContractConstants {
   SPAWN_RIM_AREA: number;
   BIOME_THRESHOLD_1: number;
   BIOME_THRESHOLD_2: number;
-  PLANET_RARITY: number;
   /**
      The chance for a planet to be a specific level.
      Each index corresponds to a planet level (index 5 is level 5 planet).
@@ -222,15 +220,23 @@ export interface ContractConstants {
     number,
     number
   ];
+
+  PLANET_RARITY: number;
   PLANET_TRANSFER_ENABLED: boolean;
+  PHOTOID_ACTIVATION_DELAY: number;
+  STELLAR_ACTIVATION_DELAY: number;
+  LOCATION_REVEAL_COOLDOWN: number;
+  CLAIM_PLANET_COOLDOWN: number;
   PLANET_TYPE_WEIGHTS: PlanetTypeWeightsBySpaceType;
-  ARTIFACT_POINT_VALUES: ArtifactPointValues;
+
   /**
    * How much score silver gives when withdrawing.
    * Expressed as a percentage integer.
    * (100 is 100%)
    */
   SILVER_SCORE_VALUE: number;
+
+  ARTIFACT_POINT_VALUES: ArtifactPointValues;
   // Space Junk
   SPACE_JUNK_ENABLED: boolean;
   /**
@@ -239,6 +245,7 @@ export interface ContractConstants {
      this value for a specific player in storage.
    */
   SPACE_JUNK_LIMIT: number;
+
   /**
      The amount of junk that each level of planet
      gives the player when moving to it for the
@@ -256,6 +263,7 @@ export interface ContractConstants {
     number,
     number
   ];
+
   /**
      The speed boost a movement receives when abandoning
      a planet.
@@ -266,28 +274,6 @@ export interface ContractConstants {
      a planet.
    */
   ABANDON_RANGE_CHANGE_PERCENT: number;
-
-  PHOTOID_ACTIVATION_DELAY: number;
-  STELLAR_ACTIVATION_DELAY: number;
-  LOCATION_REVEAL_COOLDOWN: number;
-  CLAIM_PLANET_COOLDOWN: number;
-
-  defaultPopulationCap: number[];
-  defaultPopulationGrowth: number[];
-
-  defaultSilverCap: number[];
-  defaultSilverGrowth: number[];
-
-  defaultRange: number[];
-  defaultSpeed: number[];
-  defaultDefense: number[];
-  defaultBarbarianPercentage: number[];
-
-  planetCumulativeRarities: number[];
-
-  upgrades: UpgradeBranches;
-
-  adminAddress: EthAddress;
 
   // Capture Zones
   GAME_START_BLOCK: number;
@@ -308,6 +294,8 @@ export interface ContractConstants {
   ];
   CAPTURE_ZONE_HOLD_BLOCKS_REQUIRED: number;
   CAPTURE_ZONES_PER_5000_WORLD_RADIUS: number;
+
+  //SpaceshipConstants
   SPACESHIPS: {
     GEAR: boolean;
     MOTHERSHIP: boolean;
@@ -382,6 +370,25 @@ export interface ContractConstants {
     number,
     number
   ];
+
+  TOKEN_MINT_END_TIMESTAMP: number;
+  CLAIM_END_TIMESTAMP: number;
+
+  defaultPopulationCap: number[];
+  defaultPopulationGrowth: number[];
+
+  defaultSilverCap: number[];
+  defaultSilverGrowth: number[];
+
+  defaultRange: number[];
+  defaultSpeed: number[];
+  defaultDefense: number[];
+  defaultBarbarianPercentage: number[];
+
+  planetCumulativeRarities: number[];
+
+  upgrades: UpgradeBranches;
+  adminAddress: EthAddress;
 }
 
 export type ClientMockchainData =
