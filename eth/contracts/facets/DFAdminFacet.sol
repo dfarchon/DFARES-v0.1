@@ -104,7 +104,7 @@ contract DFAdminFacet is WithStorage {
     function changeClaimPlanetCooldown(uint256 newCooldown) public onlyAdmin {
         gameConstants().CLAIM_PLANET_COOLDOWN = newCooldown;
     }
-   
+
 
 
     function withdraw() public onlyAdmin {
@@ -114,6 +114,10 @@ contract DFAdminFacet is WithStorage {
 
     function setTokenMintEndTime(uint256 newTokenMintEndTime) public onlyAdmin {
         gs().TOKEN_MINT_END_TIMESTAMP = newTokenMintEndTime;
+    }
+
+    function setClaimEndTime(uint256 newClaimEndTime) public onlyAdmin{
+        gs().CLAIM_END_TIMESTAMP =newClaimEndTime;
     }
 
     function createPlanet(AdminCreatePlanetArgs memory args) public onlyAdmin {
