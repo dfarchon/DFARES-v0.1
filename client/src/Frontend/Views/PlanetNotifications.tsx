@@ -15,6 +15,7 @@ export const enum PlanetNotifType {
   Claimed,
   DistanceFromCenter,
   CanAddEmoji,
+  //todo: invade & capture
 }
 
 const StyledPlanetNotifications = styled.div`
@@ -32,6 +33,9 @@ export function getNotifsForPlanet(
     if (GameObjects.planetCanUpgrade(planet)) notifs.push(PlanetNotifType.PlanetCanUpgrade);
     if (process.env.DF_WEBSERVER_URL) notifs.push(PlanetNotifType.CanAddEmoji);
   }
+
+  if (planet.claimer !== undefined) notifs.push(PlanetNotifType.Claimed);
+  notifs.push(PlanetNotifType.DistanceFromCenter);
 
   return notifs;
 }
