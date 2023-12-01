@@ -16,10 +16,11 @@ This pane contains misc info about the planet, which does not have a place in th
 
 #### Parameters
 
-| Name                                | Type                        |
-| :---------------------------------- | :-------------------------- |
-| `__namedParameters`                 | `Object`                    |
-| `__namedParameters.initialPlanetId` | `undefined` \| `LocationId` |
+| Name                                | Type                                                                   |
+| :---------------------------------- | :--------------------------------------------------------------------- |
+| `__namedParameters`                 | `Object`                                                               |
+| `__namedParameters.initialPlanetId` | `undefined` \| `LocationId`                                            |
+| `__namedParameters.modal`           | [`ModalHandle`](../interfaces/Frontend_Views_ModalPane.ModalHandle.md) |
 
 #### Returns
 

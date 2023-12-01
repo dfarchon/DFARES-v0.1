@@ -103,6 +103,7 @@
 - [Frontend/Panes/ArtifactsList](modules/Frontend_Panes_ArtifactsList.md)
 - [Frontend/Panes/BroadcastPane](modules/Frontend_Panes_BroadcastPane.md)
 - [Frontend/Panes/BuyArtifactPane](modules/Frontend_Panes_BuyArtifactPane.md)
+- [Frontend/Panes/ClaimPlanetPane](modules/Frontend_Panes_ClaimPlanetPane.md)
 - [Frontend/Panes/CoordsPane](modules/Frontend_Panes_CoordsPane.md)
 - [Frontend/Panes/DiagnosticsPane](modules/Frontend_Panes_DiagnosticsPane.md)
 - [Frontend/Panes/ExplorePane](modules/Frontend_Panes_ExplorePane.md)

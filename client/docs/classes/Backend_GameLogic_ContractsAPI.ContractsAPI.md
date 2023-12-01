@@ -47,6 +47,8 @@ reading and writing to and from the blockchain.
 - [getArrival](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getarrival)
 - [getArrivalsForPlanet](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getarrivalsforplanet)
 - [getArtifactById](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getartifactbyid)
+- [getClaimedCoordsByIdIfExists](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getclaimedcoordsbyidifexists)
+- [getClaimedPlanetsCoords](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getclaimedplanetscoords)
 - [getConstants](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getconstants)
 - [getContractAddress](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getcontractaddress)
 - [getGasFeeForTransaction](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getgasfeefortransaction)
@@ -57,6 +59,7 @@ reading and writing to and from the blockchain.
 - [getPlayers](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getplayers)
 - [getRevealedCoordsByIdIfExists](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getrevealedcoordsbyidifexists)
 - [getRevealedPlanetsCoords](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getrevealedplanetscoords)
+- [getScoreV3](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getscorev3)
 - [getTokenMintEndTimestamp](Backend_GameLogic_ContractsAPI.ContractsAPI.md#gettokenmintendtimestamp)
 - [getTouchedPlanetIds](Backend_GameLogic_ContractsAPI.ContractsAPI.md#gettouchedplanetids)
 - [getWorldRadius](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getworldradius)
@@ -371,6 +374,40 @@ game - these {@code ContractsAPIEvent} events.
 
 ---
 
+### getClaimedCoordsByIdIfExists
+
+▸ **getClaimedCoordsByIdIfExists**(`planetId`): `Promise`<`undefined` \| `ClaimedCoords`\>
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
+
+#### Returns
+
+`Promise`<`undefined` \| `ClaimedCoords`\>
+
+---
+
+### getClaimedPlanetsCoords
+
+▸ **getClaimedPlanetsCoords**(`startingAt`, `onProgressIds?`, `onProgressCoords?`): `Promise`<`ClaimedCoords`[]\>
+
+#### Parameters
+
+| Name                | Type                                      |
+| :------------------ | :---------------------------------------- |
+| `startingAt`        | `number`                                  |
+| `onProgressIds?`    | (`fractionCompleted`: `number`) => `void` |
+| `onProgressCoords?` | (`fractionCompleted`: `number`) => `void` |
+
+#### Returns
+
+`Promise`<`ClaimedCoords`[]\>
+
+---
+
 ### getConstants
 
 ▸ **getConstants**(): `Promise`<[`ContractConstants`](../interfaces/types_darkforest_api_ContractsAPITypes.ContractConstants.md)\>
@@ -517,6 +554,25 @@ a string representing that we want to use an auto gas setting.
 #### Returns
 
 `Promise`<`RevealedCoords`[]\>
+
+---
+
+### getScoreV3
+
+▸ **getScoreV3**(`address`): `Promise`<`undefined` \| `number`\>
+
+If this player has a claimed planet, their score is the distance between the claimed planet and
+the center. If this player does not have a claimed planet, then the score is undefined.
+
+#### Parameters
+
+| Name      | Type                        |
+| :-------- | :-------------------------- |
+| `address` | `undefined` \| `EthAddress` |
+
+#### Returns
+
+`Promise`<`undefined` \| `number`\>
 
 ---
 

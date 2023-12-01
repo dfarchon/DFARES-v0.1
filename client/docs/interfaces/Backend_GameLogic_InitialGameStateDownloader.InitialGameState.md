@@ -29,7 +29,7 @@
 
 ### allClaimedCoords
 
-• `Optional` **allClaimedCoords**: `ClaimedCoords`[]
+• **allClaimedCoords**: `ClaimedCoords`[]
 
 ---
 
@@ -59,7 +59,7 @@
 
 ### claimedCoordsMap
 
-• `Optional` **claimedCoordsMap**: `Map`<`LocationId`, `ClaimedCoords`\>
+• **claimedCoordsMap**: `Map`<`LocationId`, `ClaimedCoords`\>
 
 ---
 

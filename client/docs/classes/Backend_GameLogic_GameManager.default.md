@@ -64,7 +64,7 @@
 - [capturePlanet](Backend_GameLogic_GameManager.default.md#captureplanet)
 - [changeArtifactImageType](Backend_GameLogic_GameManager.default.md#changeartifactimagetype)
 - [checkGameHasEnded](Backend_GameLogic_GameManager.default.md#checkgamehasended)
-- [claimRoundEndReward](Backend_GameLogic_GameManager.default.md#claimroundendreward)
+- [claimLocation](Backend_GameLogic_GameManager.default.md#claimlocation)
 - [clearEmoji](Backend_GameLogic_GameManager.default.md#clearemoji)
 - [deactivateArtifact](Backend_GameLogic_GameManager.default.md#deactivateartifact)
 - [depositArtifact](Backend_GameLogic_GameManager.default.md#depositartifact)
@@ -87,6 +87,7 @@
 - [getCaptureZones](Backend_GameLogic_GameManager.default.md#getcapturezones)
 - [getChunk](Backend_GameLogic_GameManager.default.md#getchunk)
 - [getChunkStore](Backend_GameLogic_GameManager.default.md#getchunkstore)
+- [getClaimEndTimeSeconds](Backend_GameLogic_GameManager.default.md#getclaimendtimeseconds)
 - [getClaimedLocations](Backend_GameLogic_GameManager.default.md#getclaimedlocations)
 - [getConstructors](Backend_GameLogic_GameManager.default.md#getconstructors)
 - [getContract](Backend_GameLogic_GameManager.default.md#getcontract)
@@ -125,6 +126,8 @@
 - [getMyPlanetsUpdated$](Backend_GameLogic_GameManager.default.md#getmyplanetsupdated$)
 - [getMyScore](Backend_GameLogic_GameManager.default.md#getmyscore)
 - [getNextBroadcastAvailableTimestamp](Backend_GameLogic_GameManager.default.md#getnextbroadcastavailabletimestamp)
+- [getNextClaimAvailableTimestamp](Backend_GameLogic_GameManager.default.md#getnextclaimavailabletimestamp)
+- [getNextClaimCountdownInfo](Backend_GameLogic_GameManager.default.md#getnextclaimcountdowninfo)
 - [getNextRevealCountdownInfo](Backend_GameLogic_GameManager.default.md#getnextrevealcountdowninfo)
 - [getNotificationsManager](Backend_GameLogic_GameManager.default.md#getnotificationsmanager)
 - [getPaused](Backend_GameLogic_GameManager.default.md#getpaused)
@@ -781,21 +784,21 @@ world, more money means more hat.
 
 ---
 
-### claimRoundEndReward
+### claimLocation
 
-▸ **claimRoundEndReward**(`bypassChecks?`): `Promise`<`Transaction`<`UnconfirmedClaimReward`\>\>
+▸ **claimLocation**(`planetId`): `Promise`<`Transaction`<`UnconfirmedClaim`\>\>
 
-Receive XDAI for the claiming player based on their score rank at the end of the round.
+Reveals a planet's location on-chain.
 
 #### Parameters
 
-| Name           | Type      | Default value |
-| :------------- | :-------- | :------------ |
-| `bypassChecks` | `boolean` | `false`       |
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
 
 #### Returns
 
-`Promise`<`Transaction`<`UnconfirmedClaimReward`\>\>
+`Promise`<`Transaction`<`UnconfirmedClaim`\>\>
 
 ---
 
@@ -1105,6 +1108,18 @@ represented by `undefined`.
 #### Returns
 
 [`default`](Backend_Storage_PersistentChunkStore.default.md)
+
+---
+
+### getClaimEndTimeSeconds
+
+▸ **getClaimEndTimeSeconds**(): `number`
+
+Dark Forest planets can only be claimed to a certain time - get this time measured in seconds from epoch.
+
+#### Returns
+
+`number`
 
 ---
 
@@ -1633,6 +1648,30 @@ Gets the timestamp (ms) of the next time that we can broadcast the coordinates o
 #### Returns
 
 `number`
+
+---
+
+### getNextClaimAvailableTimestamp
+
+▸ **getNextClaimAvailableTimestamp**(): `number`
+
+Gets the timestamp (ms) of the next time that we can claim a planet.
+
+#### Returns
+
+`number`
+
+---
+
+### getNextClaimCountdownInfo
+
+▸ **getNextClaimCountdownInfo**(): [`ClaimCountdownInfo`](../interfaces/types_global_GlobalTypes.ClaimCountdownInfo.md)
+
+Returns info about the next time you can claim a Planet
+
+#### Returns
+
+[`ClaimCountdownInfo`](../interfaces/types_global_GlobalTypes.ClaimCountdownInfo.md)
 
 ---
 

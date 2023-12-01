@@ -220,11 +220,16 @@ export class InitialGameStateDownloader {
 const tips = [
   'Beware of pirates! To capture a planet with pirates, simply send an attack large enough to overcome its current energy.',
   <>
-    Navigate the Dark Forest with allies (and enemies) - join the{' '}
-    <Link to='https://discord.gg/C23An5qNGv'>Dark Forest Discord</Link>!
+    Navigate the Dark Forest ARES with allies (and enemies) - join the{' '}
+    <Link to='https://discord.com/invite/f3FrFA4T25'>DFArchon Discord</Link>!
+    <br />
+    <br />
+    Dark Forest ARES is a modified version of Dark Forest v0.6.5.
+    <br />
+    DFArchon is a dev team focused on fully on-chain games.
   </>,
   'There are many different artifact types, each with unique properties... try activating one on a planet!',
-  'The top 63 players get NFT rewards at the end of each v0.6 round!',
+  'The top players get special rewards at the end of each DFARESv0.1 round!',
   "There are many different ways to enjoy Dark Forest - as long as you're having fun, you're doing it right.",
   'Be careful when capturing planets - if you attack a player-owned planet, it may look like an act of war!',
   'A planet can have at most one active artifact.',
@@ -233,13 +238,15 @@ const tips = [
   'Quasars can store lots of energy and silver, at the expense of being able to generate neither.',
   'Never share your private key with anyone else!',
   'Broadcasting a planet reveals its location to ALL other players!',
+  'Claiming a planet reveals its location to ALL other players!',
   'You can spend silver to upgrade your planets.',
   'Planets in Nebula are more difficult to capture than planets in Deep Space.',
   'Some of the universe is corrupted, and contains special versions of the artifacts.',
   'You can import and export maps! Be careful importing maps from others, they may contain fabricated map data.',
   <>
     If mining the universe is slow on your computer, you can try the Remote Miner plugin. Find that
-    and other plugins on <Link to='https://plugins.zkga.me'>plugins.zkga.me</Link>.
+    and other plugins on{' '}
+    <Link to='https://dfares-plugins.netlify.app/'>dfares-plugins.netlify.app</Link>.
   </>,
   "A planet can only have 6 artifacts on it at any given time. Sometimes more if you get lucky. It's the blockchain, after all.",
   'A foundry must be prospected before you can attempt to find an artifact, but make sure to click "Find" before 256 blocks or it will be lost forever.',

@@ -18,6 +18,7 @@
 - [LocationRevealed](types_darkforest_api_ContractsAPITypes.ContractEvent.md#locationrevealed)
 - [PauseStateChanged](types_darkforest_api_ContractsAPITypes.ContractEvent.md#pausestatechanged)
 - [PlanetCaptured](types_darkforest_api_ContractsAPITypes.ContractEvent.md#planetcaptured)
+- [PlanetClaimed](types_darkforest_api_ContractsAPITypes.ContractEvent.md#planetclaimed)
 - [PlanetHatBought](types_darkforest_api_ContractsAPITypes.ContractEvent.md#planethatbought)
 - [PlanetInvaded](types_darkforest_api_ContractsAPITypes.ContractEvent.md#planetinvaded)
 - [PlanetSilverWithdrawn](types_darkforest_api_ContractsAPITypes.ContractEvent.md#planetsilverwithdrawn)
@@ -96,6 +97,12 @@
 ### PlanetCaptured
 
 • **PlanetCaptured** = `"PlanetCaptured"`
+
+---
+
+### PlanetClaimed
+
+• **PlanetClaimed** = `"PlanetClaimed"`
 
 ---
 

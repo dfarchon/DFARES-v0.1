@@ -19,6 +19,8 @@
 - [CAPTURE_ZONE_HOLD_BLOCKS_REQUIRED](types_darkforest_api_ContractsAPITypes.ContractConstants.md#capture_zone_hold_blocks_required)
 - [CAPTURE_ZONE_PLANET_LEVEL_SCORE](types_darkforest_api_ContractsAPITypes.ContractConstants.md#capture_zone_planet_level_score)
 - [CAPTURE_ZONE_RADIUS](types_darkforest_api_ContractsAPITypes.ContractConstants.md#capture_zone_radius)
+- [CLAIM_END_TIMESTAMP](types_darkforest_api_ContractsAPITypes.ContractConstants.md#claim_end_timestamp)
+- [CLAIM_PLANET_COOLDOWN](types_darkforest_api_ContractsAPITypes.ContractConstants.md#claim_planet_cooldown)
 - [DISABLE_ZK_CHECKS](types_darkforest_api_ContractsAPITypes.ContractConstants.md#disable_zk_checks)
 - [GAME_START_BLOCK](types_darkforest_api_ContractsAPITypes.ContractConstants.md#game_start_block)
 - [INIT_PERLIN_MAX](types_darkforest_api_ContractsAPITypes.ContractConstants.md#init_perlin_max)
@@ -50,7 +52,7 @@
 - [SPAWN_RIM_AREA](types_darkforest_api_ContractsAPITypes.ContractConstants.md#spawn_rim_area)
 - [STELLAR_ACTIVATION_DELAY](types_darkforest_api_ContractsAPITypes.ContractConstants.md#stellar_activation_delay)
 - [TIME_FACTOR_HUNDREDTHS](types_darkforest_api_ContractsAPITypes.ContractConstants.md#time_factor_hundredths)
-- [TOKEN_MINT_END_SECONDS](types_darkforest_api_ContractsAPITypes.ContractConstants.md#token_mint_end_seconds)
+- [TOKEN_MINT_END_TIMESTAMP](types_darkforest_api_ContractsAPITypes.ContractConstants.md#token_mint_end_timestamp)
 - [WORLD_RADIUS_LOCKED](types_darkforest_api_ContractsAPITypes.ContractConstants.md#world_radius_locked)
 - [WORLD_RADIUS_MIN](types_darkforest_api_ContractsAPITypes.ContractConstants.md#world_radius_min)
 - [adminAddress](types_darkforest_api_ContractsAPITypes.ContractConstants.md#adminaddress)
@@ -148,6 +150,18 @@ a planet.
 ### CAPTURE_ZONE_RADIUS
 
 • **CAPTURE_ZONE_RADIUS**: `number`
+
+---
+
+### CLAIM_END_TIMESTAMP
+
+• **CLAIM_END_TIMESTAMP**: `number`
+
+---
+
+### CLAIM_PLANET_COOLDOWN
+
+• **CLAIM_PLANET_COOLDOWN**: `number`
 
 ---
 
@@ -370,9 +384,9 @@ this value for a specific player in storage.
 
 ---
 
-### TOKEN_MINT_END_SECONDS
+### TOKEN_MINT_END_TIMESTAMP
 
-• **TOKEN_MINT_END_SECONDS**: `number`
+• **TOKEN_MINT_END_TIMESTAMP**: `number`
 
 ---
 

@@ -36,6 +36,7 @@ Representation of the objects which exist in the world.
 ### Methods
 
 - [addPlanetLocation](Backend_GameLogic_GameObjects.GameObjects.md#addplanetlocation)
+- [calculateSilverSpent](Backend_GameLogic_GameObjects.GameObjects.md#calculatesilverspent)
 - [clearOldArrivals](Backend_GameLogic_GameObjects.GameObjects.md#clearoldarrivals)
 - [clearUnconfirmedTxIntent](Backend_GameLogic_GameObjects.GameObjects.md#clearunconfirmedtxintent)
 - [defaultPlanetFromLocation](Backend_GameLogic_GameObjects.GameObjects.md#defaultplanetfromlocation)
@@ -88,6 +89,7 @@ Representation of the objects which exist in the world.
 - [updateArtifact](Backend_GameLogic_GameObjects.GameObjects.md#updateartifact)
 - [updatePlanet](Backend_GameLogic_GameObjects.GameObjects.md#updateplanet)
 - [updatePlanetIfStale](Backend_GameLogic_GameObjects.GameObjects.md#updateplanetifstale)
+- [updateScore](Backend_GameLogic_GameObjects.GameObjects.md#updatescore)
 - [getSilverNeeded](Backend_GameLogic_GameObjects.GameObjects.md#getsilverneeded)
 - [planetCanUpgrade](Backend_GameLogic_GameObjects.GameObjects.md#planetcanupgrade)
 
@@ -336,6 +338,22 @@ IMPORTANT: Idempotent
 #### Returns
 
 `void`
+
+---
+
+### calculateSilverSpent
+
+▸ `Private` **calculateSilverSpent**(`planet`): `number`
+
+#### Parameters
+
+| Name     | Type     |
+| :------- | :------- |
+| `planet` | `Planet` |
+
+#### Returns
+
+`number`
 
 ---
 
@@ -1216,6 +1234,22 @@ If the planet was updated, then also publish the appropriate event.
 | Name     | Type     |
 | :------- | :------- |
 | `planet` | `Planet` |
+
+#### Returns
+
+`void`
+
+---
+
+### updateScore
+
+▸ `Private` **updateScore**(`planetId`): `void`
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
 
 #### Returns
 

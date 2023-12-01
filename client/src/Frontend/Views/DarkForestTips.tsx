@@ -46,7 +46,7 @@ export function DarkForestTips({
 
   return (
     <TipsContainer>
-      <HeaderText style={{ textDecoration: 'none' }}>{title ?? 'Dark Forest Tips'}</HeaderText>{' '}
+      <HeaderText style={{ textDecoration: 'none' }}>{title ?? 'Dark Forest ARES Tips'}</HeaderText>{' '}
       <PrevNextContainer>
         <TextButton onClick={() => incrementTipIndex(-1, true)}>previous</TextButton>
         <Spacer width={16} />

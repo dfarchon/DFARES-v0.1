@@ -69,6 +69,7 @@
 - [centerLocationId](Backend_GameLogic_GameUIManager.default.md#centerlocationid)
 - [centerPlanet](Backend_GameLogic_GameUIManager.default.md#centerplanet)
 - [changeArtifactImageType](Backend_GameLogic_GameUIManager.default.md#changeartifactimagetype)
+- [claimLocation](Backend_GameLogic_GameUIManager.default.md#claimlocation)
 - [deactivateArtifact](Backend_GameLogic_GameUIManager.default.md#deactivateartifact)
 - [depositArtifact](Backend_GameLogic_GameUIManager.default.md#depositartifact)
 - [destroy](Backend_GameLogic_GameUIManager.default.md#destroy)
@@ -188,6 +189,7 @@
 - [hasMinedChunk](Backend_GameLogic_GameUIManager.default.md#hasminedchunk)
 - [isAbandoning](Backend_GameLogic_GameUIManager.default.md#isabandoning)
 - [isAdmin](Backend_GameLogic_GameUIManager.default.md#isadmin)
+- [isCurrentlyClaiming](Backend_GameLogic_GameUIManager.default.md#iscurrentlyclaiming)
 - [isCurrentlyRevealing](Backend_GameLogic_GameUIManager.default.md#iscurrentlyrevealing)
 - [isMining](Backend_GameLogic_GameUIManager.default.md#ismining)
 - [isOverOwnPlanet](Backend_GameLogic_GameUIManager.default.md#isoverownplanet)
@@ -692,6 +694,22 @@ choose to render themselves into this overlay container using React Portals.
 #### Returns
 
 `Promise`<`void`\>
+
+---
+
+### claimLocation
+
+▸ **claimLocation**(`locationId`): `void`
+
+#### Parameters
+
+| Name         | Type         |
+| :----------- | :----------- |
+| `locationId` | `LocationId` |
+
+#### Returns
+
+`void`
 
 ---
 
@@ -2175,6 +2193,16 @@ drill fields like this anymore.
 ### isAdmin
 
 ▸ **isAdmin**(): `boolean`
+
+#### Returns
+
+`boolean`
+
+---
+
+### isCurrentlyClaiming
+
+▸ **isCurrentlyClaiming**(): `boolean`
 
 #### Returns
 
