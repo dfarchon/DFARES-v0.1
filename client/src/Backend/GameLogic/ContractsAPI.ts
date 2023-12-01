@@ -713,12 +713,12 @@ export class ContractsAPI extends EventEmitter {
     const lastClaimTimestamps = await aggregateBulkGetter(
       nPlayers,
       5,
-      (start: number, end: number) =>
+      async (start: number, end: number) =>
         this.contractCaller.makeCall(this.contract.bulkGetLastClaimTimestamp, [start, end])
     );
     const playerLastClaimTimestampMap = lastClaimTimestamps.reduce(
       (acc, pair): Map<string, EthersBN> => {
-        acc.set(pair.player, pair.lastClaimTimestamp);
+        acc.set(pair.player.toLowerCase(), pair.lastClaimTimestamp);
         return acc;
       },
       new Map<string, EthersBN>()
@@ -730,6 +730,7 @@ export class ContractsAPI extends EventEmitter {
       player.lastClaimTimestamp = playerLastClaimTimestampMap.get(player.address)?.toNumber() || 0;
       playerMap.set(player.address, player);
     }
+
     return playerMap;
   }
 

@@ -981,10 +981,17 @@ class GameManager extends EventEmitter {
     const artifactsOnPlanet = artifactsOnPlanets[0];
 
     const revealedCoords = await this.contractsAPI.getRevealedCoordsByIdIfExists(planetId);
-    let revealedLocation: RevealedLocation | undefined;
-    let claimedCoords: ClaimedCoords | undefined;
+    const claimedCoords = await this.contractsAPI.getClaimedCoordsByIdIfExists(planetId);
 
-    if (revealedCoords) {
+    let revealedLocation: RevealedLocation | undefined;
+
+    if (claimedCoords) {
+      revealedLocation = {
+        ...this.locationFromCoords(claimedCoords),
+        revealer: claimedCoords.revealer,
+      };
+      this.getGameObjects().setClaimedLocation(revealedLocation);
+    } else if (revealedCoords) {
       revealedLocation = {
         ...this.locationFromCoords(revealedCoords),
         revealer: revealedCoords.revealer,
