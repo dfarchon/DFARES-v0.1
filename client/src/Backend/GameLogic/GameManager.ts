@@ -542,9 +542,10 @@ class GameManager extends EventEmitter {
 
       for (const entry of leaderboard.entries) {
         const player = this.players.get(entry.ethAddress);
+
         if (player) {
           // current player's score is updated via `this.playerInterval`
-          if (player.address !== this.account && entry.score !== undefined) {
+          if (player.address !== this.account) {
             player.score = entry.score;
           }
         }
