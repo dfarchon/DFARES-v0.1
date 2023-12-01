@@ -903,6 +903,11 @@ class GameManager extends EventEmitter {
             gameManager.hardRefreshPlayer(gameManager.getAccount()),
             gameManager.hardRefreshPlanet(tx.intent.locationId),
           ]);
+        } else if (isUnconfirmedClaimTx(tx)) {
+          gameManager.entityStore.updatePlanet(
+            tx.intent.locationId,
+            (p) => (p.claimer = gameManager.getAccount())
+          );
         }
         gameManager.entityStore.clearUnconfirmedTxIntent(tx);
         gameManager.onTxConfirmed(tx);

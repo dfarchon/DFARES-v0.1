@@ -8,7 +8,6 @@ import { MineArtifactButton } from '../Components/MineArtifactButton';
 import {
   OpenBroadcastPaneButton,
   OpenBuyArtifactPaneButton,
-  OpenClaimPlanetPane,
   OpenHatPaneButton,
   OpenManagePlanetArtifactsButton,
   OpenPlanetInfoButton,
@@ -64,11 +63,6 @@ function PlanetContextPaneContent({
     hatRow = <OpenHatPaneButton modal={modal} planetId={p?.locationId} />;
   }
 
-  let claimRow = null;
-  if (!p?.destroyed && !p?.frozen && owned) {
-    claimRow = <OpenClaimPlanetPane modal={modal} planetId={p?.locationId} />;
-  }
-
   let buyArtifactRow = null;
   if (!p?.destroyed && !p?.frozen && owned) {
     buyArtifactRow = <OpenBuyArtifactPaneButton modal={modal} planetId={p?.locationId} />;
@@ -104,7 +98,6 @@ function PlanetContextPaneContent({
         <>
           <OpenManagePlanetArtifactsButton modal={modal} planetId={p?.locationId} />
           {hatRow}
-          {claimRow}
           {buyArtifactRow}
         </>
       </VerticalSplit>

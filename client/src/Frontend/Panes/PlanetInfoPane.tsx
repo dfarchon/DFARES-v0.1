@@ -3,16 +3,25 @@ import { LocationId, TooltipName } from '@dfares/types';
 import React from 'react';
 import { CenterBackgroundSubtext } from '../Components/CoreUI';
 import { AccountLabel } from '../Components/Labels/Labels';
+import { Text } from '../Components/Text';
 import { TextPreview } from '../Components/TextPreview';
 import dfstyles from '../Styles/dfstyles';
 import { usePlanet, useUIManager } from '../Utils/AppHooks';
 import { useEmitterValue } from '../Utils/EmitterHooks';
+import { ModalHandle } from '../Views/ModalPane';
+import { ClaimPlanetPane } from './ClaimPlanetPane';
 import { TooltipTrigger } from './Tooltip';
 
 /**
  * This pane contains misc info about the planet, which does not have a place in the main Planet Context Pane.
  */
-export function PlanetInfoPane({ initialPlanetId }: { initialPlanetId: LocationId | undefined }) {
+export function PlanetInfoPane({
+  initialPlanetId,
+  modal,
+}: {
+  initialPlanetId: LocationId | undefined;
+  modal: ModalHandle;
+}) {
   const uiManager = useUIManager();
   const planetId = useEmitterValue(uiManager.selectedPlanetId$, initialPlanetId);
   const planet = usePlanet(uiManager, planetId).value;
@@ -27,6 +36,8 @@ export function PlanetInfoPane({ initialPlanetId }: { initialPlanetId: LocationI
     return (
       <>
         <TooltipTrigger name={TooltipName.Empty} extraContent={<>id</>}>
+          <Text>Info </Text>
+          <br />
           <TextPreview
             style={{ color: dfstyles.colors.subtext }}
             text={planet?.locationId}
@@ -51,6 +62,12 @@ export function PlanetInfoPane({ initialPlanetId }: { initialPlanetId: LocationI
             includeAddressIfHasTwitter
           />
         </TooltipTrigger>
+        <br />
+        <br />
+        <Text>Claim </Text>
+        <br />
+
+        <ClaimPlanetPane modal={modal} initialPlanetId={planetId} />
       </>
     );
   }

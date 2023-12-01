@@ -2,7 +2,6 @@ import { LocationId } from '@dfares/types';
 import React, { useCallback } from 'react';
 import { BroadcastPane, BroadcastPaneHelpContent } from '../Panes/BroadcastPane';
 import { BuyArtifactPane } from '../Panes/BuyArtifactPane';
-import { ClaimPlanetPane } from '../Panes/ClaimPlanetPane';
 import { HatPane } from '../Panes/HatPane';
 import {
   ManagePlanetArtifactsHelpContent,
@@ -14,7 +13,6 @@ import { UpgradeDetailsPane, UpgradeDetailsPaneHelpContent } from '../Panes/Upgr
 import {
   TOGGLE_BROADCAST_PANE,
   TOGGLE_BUY_ARTIFACT_PANE,
-  TOGGLE_CLAIM_PLANET_PANE,
   TOGGLE_HAT_PANE,
   TOGGLE_PLANET_ARTIFACTS_PANE,
   TOGGLE_PLANET_INFO_PANE,
@@ -70,23 +68,6 @@ export function OpenHatPaneButton({
       title='Hat'
       shortcut={TOGGLE_HAT_PANE}
       element={() => <HatPane modal={modal} initialPlanetId={planetId} />}
-    />
-  );
-}
-
-export function OpenClaimPlanetPane({
-  modal,
-  planetId,
-}: {
-  modal: ModalHandle;
-  planetId: LocationId | undefined;
-}) {
-  return (
-    <OpenPaneButton
-      modal={modal}
-      title='Claim'
-      shortcut={TOGGLE_CLAIM_PLANET_PANE}
-      element={() => <ClaimPlanetPane modal={modal} initialPlanetId={planetId} />}
     />
   );
 }
@@ -171,9 +152,9 @@ export function OpenPlanetInfoButton({
   return (
     <OpenPaneButton
       modal={modal}
-      title='Info'
+      title='Info/Claim'
       shortcut={TOGGLE_PLANET_INFO_PANE}
-      element={() => <PlanetInfoPane initialPlanetId={planetId} />}
+      element={() => <PlanetInfoPane initialPlanetId={planetId} modal={modal} />}
       helpContent={PlanetInfoHelpContent()}
     />
   );
