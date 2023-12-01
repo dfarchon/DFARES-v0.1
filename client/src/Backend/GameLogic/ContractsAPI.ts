@@ -218,6 +218,7 @@ export class ContractsAPI extends EventEmitter {
           contract.filters.ArtifactFound(null, null, null).topics,
           contract.filters.ArtifactWithdrawn(null, null, null).topics,
           contract.filters.LocationRevealed(null, null, null, null).topics,
+          contract.filters.LocationClaimed(null, null, null).topics,
           contract.filters.PlanetHatBought(null, null, null).topics,
           contract.filters.PlanetProspected(null, null).topics,
           contract.filters.PlanetSilverWithdrawn(null, null, null).topics,
@@ -420,6 +421,24 @@ export class ContractsAPI extends EventEmitter {
 
   public getContractAddress(): EthAddress {
     return this.contractAddress;
+  }
+
+  /**
+   * If this player has a claimed planet, their score is the distance between the claimed planet and
+   * the center. If this player does not have a claimed planet, then the score is undefined.
+   */
+  async getScoreV3(address: EthAddress | undefined): Promise<number | undefined> {
+    if (address === undefined) return undefined;
+
+    const score = await this.makeCall<EthersBN>(this.contract.getScore, [address]);
+
+    if (
+      score.eq(EthersBN.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'))
+    ) {
+      return undefined;
+    }
+
+    return score.toNumber();
   }
 
   async getConstants(): Promise<ContractConstants> {
@@ -691,8 +710,24 @@ export class ContractsAPI extends EventEmitter {
       onProgress
     );
 
+    const lastClaimTimestamps = await aggregateBulkGetter(
+      nPlayers,
+      5,
+      (start: number, end: number) =>
+        this.contractCaller.makeCall(this.contract.bulkGetLastClaimTimestamp, [start, end])
+    );
+    const playerLastClaimTimestampMap = lastClaimTimestamps.reduce(
+      (acc, pair): Map<string, EthersBN> => {
+        acc.set(pair.player, pair.lastClaimTimestamp);
+        return acc;
+      },
+      new Map<string, EthersBN>()
+    );
+
     const playerMap: Map<EthAddress, Player> = new Map();
+
     for (const player of players) {
+      player.lastClaimTimestamp = playerLastClaimTimestampMap.get(player.address)?.toNumber() || 0;
       playerMap.set(player.address, player);
     }
     return playerMap;
@@ -700,8 +735,15 @@ export class ContractsAPI extends EventEmitter {
 
   public async getPlayerById(playerId: EthAddress): Promise<Player | undefined> {
     const rawPlayer = await this.makeCall(this.contract.players, [playerId]);
+    const lastClaimedTimestamp = await this.makeCall(this.contract.getLastClaimTimestamp, [
+      playerId,
+    ]);
+    const scoreFromBlockchain = await this.getScoreV3(playerId);
     if (!rawPlayer.isInitialized) return undefined;
+
     const player = decodePlayer(rawPlayer);
+    player.lastClaimTimestamp = lastClaimedTimestamp.toNumber();
+    player.score = scoreFromBlockchain;
     return player;
   }
 

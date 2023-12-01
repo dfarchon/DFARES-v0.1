@@ -83,7 +83,6 @@ import {
   UnconfirmedCapturePlanet,
   UnconfirmedChangeArtifactImageType,
   UnconfirmedClaim,
-  UnconfirmedClaimReward,
   UnconfirmedDeactivateArtifact,
   UnconfirmedDepositArtifact,
   UnconfirmedFindArtifact,
@@ -3335,39 +3334,39 @@ class GameManager extends EventEmitter {
     }
   }
 
-  /**
-   * Receive XDAI for the claiming player based on their score rank at the end of the round.
-   */
-  async claimRoundEndReward(bypassChecks = false): Promise<Transaction<UnconfirmedClaimReward>> {
-    try {
-      if (!bypassChecks) {
-        if (!this.checkGameHasEnded()) {
-          throw new Error('game has not ended');
-        }
-      }
+  // /**
+  //  * Receive XDAI for the claiming player based on their score rank at the end of the round.
+  //  */
+  // async claimRoundEndReward(bypassChecks = false): Promise<Transaction<UnconfirmedClaimReward>> {
+  //   try {
+  //     if (!bypassChecks) {
+  //       if (!this.checkGameHasEnded()) {
+  //         throw new Error('game has not ended');
+  //       }
+  //     }
 
-      const allPlayers = await this.contractsAPI.getPlayers();
-      const sortedPlayers = Array.from(allPlayers.values()).sort((a, b) => b.score - a.score);
-      const sortedPlayerAddresses = sortedPlayers.map((p) => p.address);
-      const sortedScores = sortedPlayers.map((p) => p.score);
+  //     const allPlayers = await this.contractsAPI.getPlayers();
+  //     const sortedPlayers = Array.from(allPlayers.values()).sort((a, b) => b.score - a.score);
+  //     const sortedPlayerAddresses = sortedPlayers.map((p) => p.address);
+  //     const sortedScores = sortedPlayers.map((p) => p.score);
 
-      const txIntent: UnconfirmedClaimReward = {
-        methodName: 'claimReward',
-        contract: this.contractsAPI.contract,
-        args: Promise.resolve([sortedPlayerAddresses, sortedScores]),
-        sortedPlayerAddresses,
-        sortedScores,
-      };
+  //     const txIntent: UnconfirmedClaimReward = {
+  //       methodName: 'claimReward',
+  //       contract: this.contractsAPI.contract,
+  //       args: Promise.resolve([sortedPlayerAddresses, sortedScores]),
+  //       sortedPlayerAddresses,
+  //       sortedScores,
+  //     };
 
-      // Always await the submitTransaction so we can catch rejections
-      const tx = await this.contractsAPI.submitTransaction(txIntent);
+  //     // Always await the submitTransaction so we can catch rejections
+  //     const tx = await this.contractsAPI.submitTransaction(txIntent);
 
-      return tx;
-    } catch (e) {
-      this.getNotificationsManager().txInitError('claimReward', e.message);
-      throw e;
-    }
-  }
+  //     return tx;
+  //   } catch (e) {
+  //     this.getNotificationsManager().txInitError('claimReward', e.message);
+  //     throw e;
+  //   }
+  // }
 
   /**
    * Makes this game manager aware of a new chunk - which includes its location, size,
