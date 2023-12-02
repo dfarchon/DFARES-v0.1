@@ -139,7 +139,6 @@ import {
   TowardsCenterPatternV2,
 } from '../Miner/MiningPatterns';
 import { eventLogger, EventType } from '../Network/EventLogger';
-import { loadLeaderboard } from '../Network/LeaderboardApi';
 import { addMessage, deleteMessages, getMessagesOnPlanets } from '../Network/MessageAPI';
 import { loadNetworkHealth } from '../Network/NetworkHealthApi';
 import {
@@ -538,24 +537,80 @@ class GameManager extends EventEmitter {
 
   private async refreshScoreboard() {
     try {
-      const leaderboard = await loadLeaderboard();
+      const knownScoringPlanets = [];
+      for (const planet of this.getAllPlanets()) {
+        if (!isLocatable(planet)) continue;
+        if (planet.destroyed) continue;
+        if (planet.planetLevel < 3) continue;
+        if (!planet?.location?.coords) continue;
+        if (planet.claimer === EMPTY_ADDRESS) continue;
+        if (planet.claimer === undefined) continue;
+        knownScoringPlanets.push({
+          locationId: planet.locationId,
+          claimer: planet.claimer,
+          score: Math.floor(df.getDistCoords(planet.location.coords, { x: 0, y: 0 })),
+        });
+      }
 
-      for (const entry of leaderboard.entries) {
-        const player = this.players.get(entry.ethAddress);
+      // console.log(knownScoringPlanets);
+      const cntMap = new Map<string, number>();
 
-        if (player) {
-          // current player's score is updated via `this.playerInterval`
-          if (player.address !== this.account) {
-            player.score = entry.score;
-          }
+      for (const planet of knownScoringPlanets) {
+        const claimer = planet.claimer;
+        if (claimer === undefined) continue;
+        const player = this.players.get(claimer);
+        if (player === undefined) continue;
+
+        let cnt = cntMap.get(claimer);
+        if (cnt === undefined) cnt = 0;
+        cnt = cnt + 1;
+        cntMap.set(claimer, cnt);
+
+        // console.log(player.address, ' ', this.account, ' ', planet.score);
+
+        if (player.address !== this.account) {
+          const score = planet.score;
+          if (player.score === 0 && player.lastClaimTimestamp) player.score = score;
+          else if (player.score === undefined) player.score = score;
+          else if (cnt <= 1) player.score = score;
+          else player.score = Math.min(player.score, score);
         }
       }
 
+      // for (const player of df.getAllPlayers()) {
+      //   console.log(
+      //     player.address,
+      //     ' ',
+      //     player.lastClaimTimestamp === 0 ? undefined : player.score
+      //   );
+      // }
       this.playersUpdated$.publish();
     } catch (e) {
       // @todo - what do we do if we can't connect to the webserver? in general this should be a
       // valid state of affairs because arenas is a thing.
     }
+
+    return;
+
+    // try {
+    //   const leaderboard = await loadLeaderboard();
+
+    //   for (const entry of leaderboard.entries) {
+    //     const player = this.players.get(entry.ethAddress);
+
+    //     if (player) {
+    //       // current player's score is updated via `this.playerInterval`
+    //       if (player.address !== this.account) {
+    //         player.score = entry.score;
+    //       }
+    //     }
+    //   }
+
+    //   this.playersUpdated$.publish();
+    // } catch (e) {
+    //   // @todo - what do we do if we can't connect to the webserver? in general this should be a
+    //   // valid state of affairs because arenas is a thing.
+    // }
   }
 
   public getEthConnection() {
