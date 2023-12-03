@@ -456,6 +456,10 @@ function PluginsTooltipPane() {
   return <>Manage plugins, which allow you to add functionality to the client.</>;
 }
 
+function ChatPane() {
+  return <> Chat with allies or enemies. </>;
+}
+
 function SettingsPane() {
   return <>Manage settings - export SKEY, manage maps, and more.</>;
 }
@@ -530,6 +534,7 @@ export function TooltipContent({ name }: { name: TooltipName | undefined }) {
   if (name === TooltipName.ArtifactBuff) return <ArtifactBuffPane />;
   if (name === TooltipName.ModalPlugins) return <PluginsTooltipPane />;
   if (name === TooltipName.ModalSettings) return <SettingsPane />;
+  if (name === TooltipName.ModalChat) return <ChatPane />;
   if (name === TooltipName.ModalYourArtifacts) return <YourArtifacts />;
   if (name === TooltipName.ModalHats) return <Hats />;
   if (name === TooltipName.FindArtifact) return <FindArtifact />;

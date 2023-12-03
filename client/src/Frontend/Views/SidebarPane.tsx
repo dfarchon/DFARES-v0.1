@@ -5,6 +5,7 @@ import { Hook } from '../../_types/global/GlobalTypes';
 import { BorderlessPane, EmSpacer } from '../Components/CoreUI';
 import { DFZIndex } from '../Utils/constants';
 import {
+  TOGGLE_CHAT_PANE,
   TOGGLE_HELP_PANE,
   TOGGLE_PLUGINS_PANE,
   TOGGLE_SETTINGS_PANE,
@@ -15,6 +16,7 @@ import {
 import { ModalToggleButton } from './ModalIcon';
 
 export function SidebarPane({
+  chatHook,
   settingsHook,
   helpHook,
   pluginsHook,
@@ -22,6 +24,7 @@ export function SidebarPane({
   planetdexHook,
   transactionLogHook,
 }: {
+  chatHook: Hook<boolean>;
   settingsHook: Hook<boolean>;
   helpHook: Hook<boolean>;
   pluginsHook: Hook<boolean>;
@@ -37,6 +40,16 @@ export function SidebarPane({
       onMouseLeave={() => setSidebarHovered(false)}
     >
       <BorderlessPane style={{ zIndex: sidebarHovered ? DFZIndex.Tooltip : undefined }}>
+        <ModalToggleButton
+          modal={ModalName.Chat}
+          hook={chatHook}
+          text={sidebarHovered ? 'Chat' : undefined}
+          size='stretch'
+          shortcutKey={TOGGLE_CHAT_PANE}
+          shortcutText={sidebarHovered ? TOGGLE_CHAT_PANE : undefined}
+        />
+        <EmSpacer height={0.5} />
+
         <ModalToggleButton
           modal={ModalName.Settings}
           hook={settingsHook}

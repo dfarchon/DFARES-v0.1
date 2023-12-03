@@ -3,11 +3,10 @@ import { address } from '@dfares/serde';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import { EmSpacer, Link, Spacer, Title } from '../Components/CoreUI';
+import { Link, Spacer, Title } from '../Components/CoreUI';
 import { Modal } from '../Components/Modal';
 import dfstyles from '../Styles/dfstyles';
 import { LandingPageRoundArt } from '../Views/LandingPageRoundArt';
-
 export const enum LandingPageZIndex {
   Background = 0,
   Canvas = 1,
@@ -43,6 +42,18 @@ const ButtonWrapper = styled.div`
   --df-button-hover-border: 1px solid ${dfstyles.colors.dfgreen};
 `;
 
+const UndreamWrapper = styled.div`
+  width: 300px;
+  height: 300px;
+  /* border-radius: 128px;
+  border: solid 16px #ffffff; */
+  margin-top: -150px;
+  margin-left: -150px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+`;
+
 export default function LandingPage() {
   const history = useHistory();
 
@@ -59,9 +70,13 @@ export default function LandingPage() {
           <Spacer height={150} />
         </HideOnMobile>
 
+        <UndreamWrapper>
+          <LandingPageRoundArt />
+        </UndreamWrapper>
+
         <MainContentContainer>
-          <Header>
-            {/* <LinkContainer>
+          {/* <Header> */}
+          {/* <LinkContainer>
               <Link to={links.email}>email</Link>
               <Spacer width={4} />
               <Link to={links.blog}>blog</Link>
@@ -92,10 +107,10 @@ export default function LandingPage() {
               <Spacer height={16} />
             </HideOnMobile> */}
 
-            <Spacer height={120} />
-            <LandingPageRoundArt />
+          {/* <Spacer height={140} />
+            <LandingPageRoundArt /> */}
 
-            {/*
+          {/*
             <p>
               <White>Dark Forest</White> <Text>zkSNARK space warfare</Text>
               <br />
@@ -103,29 +118,29 @@ export default function LandingPage() {
               <White>The Junk Wars</White>
             </p> */}
 
-            <Spacer height={20} />
-
+          {/* <Spacer height={20} /> */}
+          {/*
             <p>
-              {/* <White>DF ARES v0.1 </White> <Text> </Text> */}
-              {/* <br />
+              <White>DF ARES v0.1 </White> <Text> </Text>
+              <br />
               <Text>Round 1: </Text>
-              <White>Artifact Combat</White> */}
-            </p>
+              <White>Artifact Combat</White>
+            </p> */}
 
-            {/* <Spacer height={16} /> */}
+          {/* <Spacer height={16} /> */}
 
-            <ButtonWrapper>
-              {/* <Btn size='large' onClick={() => history.push(`/lobby/${defaultAddress}`)}>
+          {/* <ButtonWrapper>
+            <Btn size='large' onClick={() => history.push(`/lobby/${defaultAddress}`)}>
                 Create Lobby
-              </Btn> */}
-              {/* <Btn size='large' onClick={() => history.push(`/play/${defaultAddress}`)}>
-                Enter Round 1
-              </Btn> */}
-              {/* <Btn size='large' onClick={() => history.push(`/events`)}>
-                Events
-              </Btn> */}
-            </ButtonWrapper>
-          </Header>
+              </Btn>
+            <Btn size='large' onClick={() => history.push(`/play/${defaultAddress}`)}>
+              Enter Round 1
+            </Btn>
+            <Btn size='large' onClick={() => history.push(`/events`)}>
+              Events
+            </Btn>
+          </ButtonWrapper> */}
+          {/* </Header> */}
           {/* <EmSpacer height={3} />
           Ways to get Involved
           <EmSpacer height={1} /> */}
@@ -161,7 +176,7 @@ export default function LandingPage() {
               }}
             ></InvolvedItem>
           </Involved> */}
-          <EmSpacer height={3} />
+          {/* <EmSpacer height={3} /> */}
           {/* <HallOfFame style={{ color: dfstyles.colors.text }}>
             <HallOfFameTitle>Space Masters</HallOfFameTitle>
             <Spacer height={8} />
@@ -294,7 +309,7 @@ export default function LandingPage() {
               </tbody>
             </table>
           </HallOfFame> */}
-          <Spacer height={32} />
+          {/* <Spacer height={32} /> */}
           {/* <EmailWrapper>
             <EmailCTA mode={EmailCTAMode.SUBSCRIBE} />
           </EmailWrapper> */}
