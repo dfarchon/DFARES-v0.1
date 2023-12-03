@@ -600,6 +600,19 @@ function ArtifactDescription({
         </Text>
       );
       break;
+
+    case ArtifactType.ShipPink:
+      //mytodo: update intro of pink ship
+      content = (
+        <Text>
+          Activate Pink Ship to drop a nuclear bomb.
+          Nuclear bomb will put all planets in the pink circular area in danger.
+
+          {genericSpaceshipDescription}
+        </Text>
+      );
+      break;
+
     case ArtifactType.ShipWhale:
       content = (
         <Text>

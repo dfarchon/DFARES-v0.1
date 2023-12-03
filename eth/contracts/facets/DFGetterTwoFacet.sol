@@ -5,11 +5,11 @@ pragma solidity ^0.8.0;
 import {WithStorage, GameConstants} from "../libraries/LibStorage.sol";
 
 // Type imports
-import {RevealedCoords,  ClaimedCoords,LastClaimedStruct} from "../DFTypes.sol";
+import {RevealedCoords, ClaimedCoords, BurnedCoords, LastClaimedStruct, LastBurnedStruct} from "../DFTypes.sol";
 
 contract DFGetterTwoFacet is WithStorage {
-
-    function CLAIM_END_TIMESTAMP() public view returns (uint256){
+    //About Claim
+    function CLAIM_END_TIMESTAMP() public view returns (uint256) {
         return gameConstants().CLAIM_END_TIMESTAMP;
     }
 
@@ -17,7 +17,7 @@ contract DFGetterTwoFacet is WithStorage {
         return gs().claimedCoords[key];
     }
 
-      /**
+    /**
      * Returns the total amount of planets that have been claimed. A planet does not get counted
      * more than once if it's been claimed by multiple people.
      */
@@ -78,5 +78,78 @@ contract DFGetterTwoFacet is WithStorage {
      */
     function getLastClaimTimestamp(address player) public view returns (uint256) {
         return gs().lastClaimTimestamp[player];
+    }
+
+    //About Drop Bomb to Burn Planet
+    function BURN_END_TIMESTAMP() public view returns (uint256) {
+        return gameConstants().BURN_END_TIMESTAMP;
+    }
+
+    function burnedCoords(uint256 key) public view returns (BurnedCoords memory) {
+        return gs().burnedCoords[key];
+    }
+
+    /**
+     * Returns the total amount of planets that have been burned.
+     * A planet can only be dropped by one bomb.
+     */
+    function getNBurnedPlanets() public view returns (uint256) {
+        return gs().burnedIds.length;
+    }
+
+    /**
+     * API for loading a sublist of the set of burned planets, so that clients can download this
+     * info without DDOSing xDai.
+     */
+    function bulkGetBurnedPlanetIds(uint256 startIdx, uint256 endIdx)
+        public
+        view
+        returns (uint256[] memory ret)
+    {
+        // return slice of revealedPlanetIds array from startIdx through endIdx - 1
+        ret = new uint256[](endIdx - startIdx);
+        for (uint256 i = startIdx; i < endIdx; i++) {
+            ret[i - startIdx] = gs().burnedIds[i];
+        }
+    }
+
+    /**
+     * API for loading a sublist of the set of claimed planets, so that clients can download this
+     * info without DDOSing xDai.
+     */
+    function bulkGetBurnedCoordssByIds(uint256[] calldata ids)
+        public
+        view
+        returns (BurnedCoords[] memory ret)
+    {
+        ret = new BurnedCoords[](ids.length);
+
+        for (uint256 i = 0; i < ids.length; i++) {
+            ret[i] = gs().burnedCoords[ids[i]];
+        }
+    }
+
+    function bulkGetLastBurnedTimestamp(uint256 startIdx, uint256 endIdx)
+        public
+        view
+        returns (LastBurnedStruct[] memory ret)
+    {
+        ret = new LastBurnedStruct[](endIdx - startIdx);
+
+        for (uint256 i = startIdx; i < endIdx; i++) {
+            address player = gs().playerIds[i];
+
+            ret[i - startIdx] = LastBurnedStruct({
+                player: player,
+                lastBurnTimestamp: gs().lastBurnTimestamp[player]
+            });
+        }
+    }
+
+    /**
+     * Returns the last time that the given player dropped a bomb.
+     */
+    function getLastBurnTimestamp(address player) public view returns (uint256) {
+        return gs().lastBurnTimestamp[player];
     }
 }

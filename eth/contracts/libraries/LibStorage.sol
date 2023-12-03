@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 // Type imports
-import {Planet, PlanetEventMetadata, PlanetDefaultStats, Upgrade, RevealedCoords, Player, ArrivalData, Artifact,ClaimedCoords} from "../DFTypes.sol";
+import {Planet, PlanetEventMetadata, PlanetDefaultStats, Upgrade, RevealedCoords, Player, ArrivalData, Artifact, ClaimedCoords, BurnedCoords} from "../DFTypes.sol";
 
 struct WhitelistStorage {
     bool enabled;
@@ -25,7 +25,6 @@ struct GameStorage {
     address diamondAddress;
     // admin controls
     bool paused;
-
     uint256 planetLevelsCount;
     uint256[] cumulativeRarities;
     uint256[] initializedPlanetCountByLevel;
@@ -51,12 +50,11 @@ struct GameStorage {
     // Capture Zones
     uint256 nextChangeBlock;
     uint256 dynamicTimeFactor;
-
     // Claim Planet to get Score
     /**
      * Map from player address to the list of planets they have claimed.
      */
-    mapping(address => uint256[])  claimedPlanetsOwners;
+    mapping(address => uint256[]) claimedPlanetsOwners;
     /**
      * List of all claimed planetIds
      */
@@ -64,9 +62,19 @@ struct GameStorage {
     /**
      * Map from planet id to claim data.
      */
-    mapping(uint256 => ClaimedCoords)  claimedCoords;
+    mapping(uint256 => ClaimedCoords) claimedCoords;
     mapping(address => uint256) lastClaimTimestamp;
-
+    //drop bomb to burn planet
+    /**
+     * Map from player address to the list of planets they have burned.
+     */
+    mapping(address => uint256[]) burnedPlanets;
+    /**
+     * List of all burned planetIds
+     */
+    uint256[] burnedIds;
+    mapping(uint256 => BurnedCoords) burnedCoords;
+    mapping(address => uint256) lastBurnTimestamp;
 }
 
 // Game config
@@ -133,6 +141,9 @@ struct GameConstants {
     uint256[64] ROUND_END_REWARDS_BY_RANK;
     uint256 TOKEN_MINT_END_TIMESTAMP;
     uint256 CLAIM_END_TIMESTAMP;
+    uint256 BURN_END_TIMESTAMP;
+    uint256 BURN_PLANET_COOLDOWN;
+    uint256 BURN_PLANET_EFFECT_RADIUS;
 }
 
 struct SpaceshipConstants {
@@ -141,6 +152,7 @@ struct SpaceshipConstants {
     bool TITAN;
     bool CRESCENT;
     bool WHALE;
+    // bool PINKSHIP;
 }
 
 // SNARK keys and perlin params
@@ -207,7 +219,6 @@ library LibStorage {
     bytes32 constant PLANET_DEFAULT_STATS_POSITION =
         keccak256("darkforest.constants.planetDefaultStats");
     bytes32 constant UPGRADE_POSITION = keccak256("darkforest.constants.upgrades");
-
 
     function gameStorage() internal pure returns (GameStorage storage gs) {
         bytes32 position = GAME_STORAGE_POSITION;

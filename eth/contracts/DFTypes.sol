@@ -279,9 +279,8 @@ enum Biome {
     Corrupted
 }
 
-
 /**
-    * Each time someone claims a planet, we insert an instance of this struct into `claimedCoords`
+ * Each time someone claims a planet, we insert an instance of this struct into `claimedCoords`
  */
 struct ClaimedCoords {
     uint256 locationId;
@@ -295,4 +294,20 @@ struct ClaimedCoords {
 struct LastClaimedStruct {
     address player;
     uint256 lastClaimTimestamp;
+}
+
+/**
+ * Each time someone drop pinkbomb to a planet, we insert an instance of this struct into `burnedCoords`
+ */
+struct BurnedCoords {
+    uint256 locationId;
+    uint256 x;
+    uint256 y;
+    address operator;
+    uint256 burnedAt; //block.timestamp
+}
+
+struct LastBurnedStruct {
+    address player;
+    uint256 lastBurnTimestamp;
 }

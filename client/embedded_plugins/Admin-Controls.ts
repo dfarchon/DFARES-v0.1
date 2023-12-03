@@ -91,7 +91,7 @@ const ArtifactTypeNames = [
   'Whale',
   'Gear',
   'Titan',
-  'Pink Ship'
+  'Pinkship'
 ];
 
 const MIN_LOGO_TYPE = 1;

@@ -66,7 +66,7 @@ export const ArtifactTypeNames = {
   [ArtifactType.ShipWhale]: 'Whale',
   [ArtifactType.ShipGear]: 'Gear',
   [ArtifactType.ShipTitan]: 'Titan',
-  [ArtifactType.ShipPink]: 'Pink Ship',
+  [ArtifactType.ShipPink]: 'Pinkship',
 } as const;
 
 /**

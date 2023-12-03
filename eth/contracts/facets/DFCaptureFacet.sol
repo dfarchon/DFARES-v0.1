@@ -58,7 +58,10 @@ contract DFCaptureFacet is WithStorage {
 
         uint256 locationId = _input[0];
 
-        DFCoreFacet(address(this)).checkRevealProof(_a, _b, _c, _input);
+        require(
+            DFCoreFacet(address(this)).checkRevealProof(_a, _b, _c, _input),
+            "Failed reveal pf check"
+        );
 
         require(planetInCaptureZone(_input[2], _input[3]), "planet is not in capture zone");
 
