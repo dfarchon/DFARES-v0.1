@@ -275,7 +275,11 @@ contract DFCoreFacet is WithStorage {
 
         for (uint256 i = 0; i < planetIds.length; i++) {
             ClaimedCoords memory claimed = gs().claimedCoords[planetIds[i]];
-            if (bestScore > claimed.score && !gs().planets[planetIds[i]].destroyed) {
+            if (
+                bestScore > claimed.score &&
+                !gs().planets[planetIds[i]].destroyed &&
+                !gs().planets[planetIds[i]].frozen
+            ) {
                 bestScore = claimed.score;
             }
         }
@@ -401,6 +405,7 @@ contract DFCoreFacet is WithStorage {
         require(planet.owner == msg.sender, "Only planet owner can perform operation on planets");
         require(planet.planetLevel >= 3, "Planet level must >= 3");
         require(!planet.destroyed, "Cannot claim destroyed planet");
+        require(!planet.frozen, "Cannot claim frozen planet");
         gs().lastClaimTimestamp[msg.sender] = block.timestamp;
         address previousClaimer = storePlayerClaim(
             msg.sender,

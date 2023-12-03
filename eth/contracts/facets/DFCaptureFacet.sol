@@ -159,7 +159,7 @@ contract DFCaptureFacet is WithStorage {
         return Zone((int256(distance) * cos) / 1e18, (int256(distance) * sin) / 1e18);
     }
 
-    function sqrt(uint256 x) private pure returns (uint256 y) {
+    function sqrt(uint256 x) public pure returns (uint256 y) {
         uint256 z = (x + 1) / 2;
         y = x;
         while (z < y) {
