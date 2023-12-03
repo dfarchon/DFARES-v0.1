@@ -90,7 +90,7 @@ export const MIN_ARTIFACT_TYPE = ArtifactType.Monolith;
 /**
  * The value of the maximum, valid artifact type
  */
-export const MAX_ARTIFACT_TYPE = ArtifactType.ShipTitan;
+export const MAX_ARTIFACT_TYPE = ArtifactType.ShipPink;
 
 /**
  * The value of the minimum, valid spaceship type
@@ -99,7 +99,7 @@ export const MIN_SPACESHIP_TYPE = ArtifactType.ShipMothership;
 /**
  * The value of the maximum, valid spaceship type
  */
-export const MAX_SPACESHIP_TYPE = ArtifactType.ShipTitan;
+export const MAX_SPACESHIP_TYPE = ArtifactType.ShipPink;
 
 /**
  * The value of the minimum, valid artifact rarity

@@ -223,7 +223,8 @@ enum ArtifactType {
     ShipCrescent,
     ShipWhale,
     ShipGear,
-    ShipTitan
+    ShipTitan,
+    ShipPink
 }
 
 enum ArtifactRarity {

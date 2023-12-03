@@ -209,6 +209,7 @@ export function spriteFromArtifact(artifact: RenderedArtifact): SpriteRectangle 
       [ArtifactType.ShipWhale]: 2,
       [ArtifactType.ShipGear]: 3,
       [ArtifactType.ShipTitan]: 4,
+      [ArtifactType.ShipPink]: 5,
     };
     return spriteRectangleFromIndex(idx[artifact.artifactType], 12);
   }

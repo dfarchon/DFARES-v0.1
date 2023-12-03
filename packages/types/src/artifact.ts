@@ -35,6 +35,7 @@ export const ArtifactType = {
   ShipWhale: 19 as ArtifactType,
   ShipGear: 20 as ArtifactType,
   ShipTitan: 21 as ArtifactType,
+  ShipPink: 22 as ArtifactType
 
   // Don't forget to update MIN_ARTIFACT_TYPE and/or MAX_ARTIFACT_TYPE in the `constants` package
 } as const;
@@ -65,6 +66,7 @@ export const ArtifactTypeNames = {
   [ArtifactType.ShipWhale]: 'Whale',
   [ArtifactType.ShipGear]: 'Gear',
   [ArtifactType.ShipTitan]: 'Titan',
+  [ArtifactType.ShipPink]: 'Pink Ship',
 } as const;
 
 /**

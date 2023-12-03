@@ -189,6 +189,8 @@ export function artifactFileName(
         return '64-gear.png';
       case ArtifactType.ShipTitan:
         return '64-titan.png';
+      case ArtifactType.ShipPink:
+        return '64-pink.png';
     }
   }
 

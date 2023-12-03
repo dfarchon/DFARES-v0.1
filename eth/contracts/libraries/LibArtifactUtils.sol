@@ -60,7 +60,7 @@ library LibArtifactUtils {
         address owner,
         ArtifactType shipType
     ) public returns (uint256) {
-        require(shipType <= ArtifactType.ShipTitan && shipType >= ArtifactType.ShipMothership);
+        require(shipType <= ArtifactType.ShipPink && shipType >= ArtifactType.ShipMothership);
 
         uint256 id = uint256(keccak256(abi.encodePacked(planetId, gs().miscNonce++)));
 
@@ -645,6 +645,6 @@ library LibArtifactUtils {
 
     function isSpaceship(ArtifactType artifactType) public pure returns (bool) {
         return
-            artifactType >= ArtifactType.ShipMothership && artifactType <= ArtifactType.ShipTitan;
+            artifactType >= ArtifactType.ShipMothership && artifactType <= ArtifactType.ShipPink;
     }
 }

@@ -18,7 +18,7 @@ import {
 } from 'https://cdn.skypack.dev/@dfares/constants';
 const MIN_ARTIFACT_TYPE = 1;
 const MIN_SPACESHIP_TYPE = 17;
-const MAX_SPACESHIP_TYPE = 21;
+const MAX_SPACESHIP_TYPE = 22;
 //@ts-ignore
 import { getPlanetNameHash } from 'https://cdn.skypack.dev/@dfares/procedural';
 import {
@@ -61,7 +61,7 @@ enum ArtifactType {
   ShipWhale,
   ShipGear,
   ShipTitan,
-
+  ShipPink
   // Don't forget to update MIN_ARTIFACT_TYPE and/or MAX_ARTIFACT_TYPE in the `constants` package
 }
 
@@ -91,6 +91,7 @@ const ArtifactTypeNames = [
   'Whale',
   'Gear',
   'Titan',
+  'Pink Ship'
 ];
 
 const MIN_LOGO_TYPE = 1;
