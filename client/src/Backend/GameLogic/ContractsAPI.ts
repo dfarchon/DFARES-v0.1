@@ -374,8 +374,10 @@ export class ContractsAPI extends EventEmitter {
         _: Event
       ) => {
         this.emit(ContractsAPIEvent.PlanetUpdate, locationIdFromEthersBN(location));
+        //mytodo: update right ContractAPIEvent.PlanetClaimed function
+        //to be honest, claim planet is the same way as LocationRevealed
         this.emit(
-          ContractsAPIEvent.PlanetClaimed,
+          ContractsAPIEvent.LocationRevealed,
           locationIdFromEthersBN(location),
           address(revealerAddr.toLowerCase())
         );
