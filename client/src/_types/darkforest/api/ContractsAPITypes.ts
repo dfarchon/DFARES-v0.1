@@ -46,7 +46,7 @@ export const enum ContractEvent {
   PlanetInvaded = 'PlanetInvaded',
   PlanetCaptured = 'PlanetCaptured',
   LocationRevealed = 'LocationRevealed',
-  PlanetClaimed = 'PlanetClaimed',
+  LocationClaimed = 'LocationClaimed',
   ArtifactFound = 'ArtifactFound',
   ArtifactDeposited = 'ArtifactDeposited',
   ArtifactWithdrawn = 'ArtifactWithdrawn',
@@ -103,7 +103,7 @@ export const enum ContractsAPIEvent {
    */
   TxCancelled = 'TxCancelled',
   PlanetTransferred = 'PlanetTransferred',
-  PlanetClaimed = 'PlanetClaimed',
+  LocationClaimed = 'LocationClaimed',
   LobbyCreated = 'LobbyCreated',
 }
 

@@ -817,11 +817,16 @@ class GameManager extends EventEmitter {
           gameManager.emit(GameManagerEvent.PlanetUpdate);
         }
       )
-      .on(ContractsAPIEvent.PlanetClaimed, async (planetId: LocationId, _revealer: EthAddress) => {
-        // TODO: hook notifs or emit event to UI if you want
-        await gameManager.hardRefreshPlanet(planetId);
-        gameManager.emit(GameManagerEvent.PlanetUpdate);
-      })
+      .on(
+        ContractsAPIEvent.LocationClaimed,
+        async (planetId: LocationId, _revealer: EthAddress) => {
+          // TODO: hook notifs or emit event to UI if you want
+
+          // console.log('[testInfo]: ContractsAPIEvent.LocationClaimed');
+          await gameManager.hardRefreshPlanet(planetId);
+          gameManager.emit(GameManagerEvent.PlanetUpdate);
+        }
+      )
       .on(ContractsAPIEvent.TxQueued, (tx: Transaction) => {
         gameManager.entityStore.onTxIntent(tx);
       })
