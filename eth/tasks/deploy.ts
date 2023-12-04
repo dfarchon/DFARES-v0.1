@@ -240,6 +240,8 @@ export async function deployAndCut(
   const coreFacet = await deployCoreFacet({}, libraries, hre);
   const moveFacet = await deployMoveFacet({}, libraries, hre);
   const captureFacet = await deployCaptureFacet({}, libraries, hre);
+  const pinkBombFacet = await deployPinkBombFacet({}, libraries, hre);
+
   const artifactFacet = await deployArtifactFacet(
     { diamondAddress: diamond.address },
     libraries,
@@ -259,6 +261,7 @@ export async function deployAndCut(
     ...changes.getFacetCuts('DFCoreFacet', coreFacet),
     ...changes.getFacetCuts('DFMoveFacet', moveFacet),
     ...changes.getFacetCuts('DFCaptureFacet', captureFacet),
+    ...changes.getFacetCuts('DFPinkBombFacet', pinkBombFacet),
     ...changes.getFacetCuts('DFArtifactFacet', artifactFacet),
     ...changes.getFacetCuts('DFGetterOneFacet', getterOneFacet),
     ...changes.getFacetCuts('DFGetterTwoFacet', getterTwoFacet),
@@ -497,6 +500,21 @@ export async function deployCaptureFacet(
   return contract;
 }
 
+export async function deployPinkBombFacet(
+  {},
+  { LibPlanet }: Libraries,
+  hre: HardhatRuntimeEnvironment
+) {
+  const factory = await hre.ethers.getContractFactory('DFPinkBombFacet', {
+    libraries: {
+      LibPlanet,
+    },
+  });
+  const contract = await factory.deploy();
+  await contract.deployTransaction.wait();
+  console.log(`DFPinkBombFacet deployed to: ${contract.address}`);
+  return contract;
+}
 async function deployDiamondCutFacet({}, libraries: Libraries, hre: HardhatRuntimeEnvironment) {
   const factory = await hre.ethers.getContractFactory('DiamondCutFacet');
   const contract = await factory.deploy();

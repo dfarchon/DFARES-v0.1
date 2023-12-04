@@ -280,6 +280,7 @@ export interface ContractConstants {
   CAPTURE_ZONES_ENABLED: boolean;
   CAPTURE_ZONE_CHANGE_BLOCK_INTERVAL: number;
   CAPTURE_ZONE_RADIUS: number;
+
   CAPTURE_ZONE_PLANET_LEVEL_SCORE: [
     number,
     number,
@@ -389,6 +390,10 @@ export interface ContractConstants {
 
   upgrades: UpgradeBranches;
   adminAddress: EthAddress;
+
+  BURN_END_TIMESTAMP: number;
+  BURN_PLANET_COOLDOWN: number;
+  BURN_PLANET_EFFECT_RADIUS: number;
 }
 
 export type ClientMockchainData =

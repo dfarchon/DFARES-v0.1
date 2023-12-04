@@ -141,6 +141,9 @@ export function CreateLobby({ match }: RouteComponentProps<{ contract: string }>
             ROUND_END_REWARDS_BY_RANK: config.ROUND_END_REWARDS_BY_RANK,
             CLAIM_END_TIMESTAMP: config.CLAIM_END_TIMESTAMP,
             CLAIM_PLANET_COOLDOWN: config.CLAIM_PLANET_COOLDOWN,
+            BURN_END_TIMESTAMP: config.BURN_END_TIMESTAMP,
+            BURN_PLANET_COOLDOWN: config.BURN_PLANET_COOLDOWN,
+            BURN_PLANET_EFFECT_RADIUS: config.BURN_PLANET_EFFECT_RADIUS,
           });
         })
         .catch((e) => {

@@ -43,6 +43,10 @@ export type LobbyConfigAction =
       type: 'CLAIM_END_TIMESTAMP';
       value: Initializers['CLAIM_END_TIMESTAMP'] | undefined;
     }
+  | {
+      type: 'BURN_END_TIMESTAMP';
+      value: Initializers['BURN_END_TIMESTAMP'] | undefined;
+    }
   | { type: 'WORLD_RADIUS_LOCKED'; value: Initializers['WORLD_RADIUS_LOCKED'] | undefined }
   | { type: 'WORLD_RADIUS_MIN'; value: Initializers['WORLD_RADIUS_MIN'] | undefined }
   | { type: 'DISABLE_ZK_CHECKS'; value: Initializers['DISABLE_ZK_CHECKS'] | undefined }
@@ -96,6 +100,10 @@ export type LobbyConfigAction =
       type: 'CLAIM_PLANET_COOLDOWN';
       value: Initializers['CLAIM_PLANET_COOLDOWN'] | undefined;
     }
+  | {
+      type: 'BURN_PLANET_COOLDOWN';
+      value: Initializers['BURN_PLANET_COOLDOWN'] | undefined;
+    }
   | { type: 'PLANET_TYPE_WEIGHTS'; value: Initializers['PLANET_TYPE_WEIGHTS'] | undefined }
   | { type: 'SILVER_SCORE_VALUE'; value: Initializers['SILVER_SCORE_VALUE'] | undefined }
   | {
@@ -120,6 +128,10 @@ export type LobbyConfigAction =
       value: Initializers['CAPTURE_ZONE_CHANGE_BLOCK_INTERVAL'] | undefined;
     }
   | { type: 'CAPTURE_ZONE_RADIUS'; value: Initializers['CAPTURE_ZONE_RADIUS'] | undefined }
+  | {
+      type: 'BURN_PLANET_EFFECT_RADIUS';
+      value: Initializers['BURN_PLANET_EFFECT_RADIUS'] | undefined;
+    }
   | {
       type: 'CAPTURE_ZONE_PLANET_LEVEL_SCORE';
       value: number | undefined;
@@ -167,6 +179,11 @@ export function lobbyConfigReducer(state: LobbyConfigState, action: LobbyAction)
       break;
     }
     case 'CLAIM_END_TIMESTAMP': {
+      // TODO: Date
+      update = ofAny(action, state);
+      break;
+    }
+    case 'BURN_END_TIMESTAMP': {
       // TODO: Date
       update = ofAny(action, state);
       break;
@@ -287,6 +304,11 @@ export function lobbyConfigReducer(state: LobbyConfigState, action: LobbyAction)
       update = ofPositiveInteger(action, state);
       break;
     }
+
+    case 'BURN_PLANET_COOLDOWN': {
+      update = ofPositiveInteger(action, state);
+      break;
+    }
     case 'PLANET_TYPE_WEIGHTS': {
       // TODO: Add this
       update = ofNoop(action, state);
@@ -330,6 +352,10 @@ export function lobbyConfigReducer(state: LobbyConfigState, action: LobbyAction)
     }
     case 'CAPTURE_ZONE_RADIUS': {
       update = ofCaptureZoneRadius(action, state);
+      break;
+    }
+    case 'BURN_PLANET_EFFECT_RADIUS': {
+      update = ofBurnPlanetEffectRadius(action, state);
       break;
     }
     case 'CAPTURE_ZONE_PLANET_LEVEL_SCORE': {
@@ -413,6 +439,18 @@ export function lobbyConfigInit(startingConfig: LobbyInitializers) {
       }
 
       case 'CLAIM_END_TIMESTAMP': {
+        // TODO: Handle dates
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+
+      case 'BURN_END_TIMESTAMP': {
         // TODO: Handle dates
         const defaultValue = startingConfig[key];
         state[key] = {
@@ -716,6 +754,18 @@ export function lobbyConfigInit(startingConfig: LobbyInitializers) {
         };
         break;
       }
+
+      case 'BURN_PLANET_COOLDOWN': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+
       case 'PLANET_TYPE_WEIGHTS': {
         const defaultValue = startingConfig[key];
         state[key] = {
@@ -826,6 +876,17 @@ export function lobbyConfigInit(startingConfig: LobbyInitializers) {
         };
         break;
       }
+
+      case 'BURN_PLANET_EFFECT_RADIUS': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
       case 'CAPTURE_ZONE_PLANET_LEVEL_SCORE': {
         const defaultValue = startingConfig[key];
         state[key] = {
@@ -887,6 +948,7 @@ export function lobbyConfigInit(startingConfig: LobbyInitializers) {
         };
         break;
       }
+
       default: {
         // https://www.typescriptlang.org/docs/handbook/2/narrowing.html#exhaustiveness-checking
         const _exhaustive: never = key;
@@ -1713,6 +1775,58 @@ export function ofArtifactPointValues(
 
 export function ofCaptureZoneRadius(
   { type, value }: Extract<LobbyConfigAction, { type: 'CAPTURE_ZONE_RADIUS' }>,
+  state: LobbyConfigState
+) {
+  if (value === undefined) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: undefined,
+    };
+  }
+
+  if (typeof value !== 'number') {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be a number`,
+    };
+  }
+
+  if (value < 1) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be a greater than 0`,
+    };
+  }
+
+  if (value > SAFE_UPPER_BOUNDS) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value is too large`,
+    };
+  }
+
+  if (Math.floor(value) !== value) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be an integer`,
+    };
+  }
+
+  return {
+    ...state[type],
+    currentValue: value,
+    displayValue: value,
+    warning: undefined,
+  };
+}
+
+export function ofBurnPlanetEffectRadius(
+  { type, value }: Extract<LobbyConfigAction, { type: 'BURN_PLANET_EFFECT_RADIUS' }>,
   state: LobbyConfigState
 ) {
   if (value === undefined) {

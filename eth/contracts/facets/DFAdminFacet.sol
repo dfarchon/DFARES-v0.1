@@ -97,6 +97,14 @@ contract DFAdminFacet is WithStorage {
         gs().worldRadius = _newRadius;
     }
 
+    function changeCaptureZoneRadius(uint256 _newRadius) public onlyAdmin {
+        gameConstants().CAPTURE_ZONE_RADIUS = _newRadius;
+    }
+
+    function changeBurnPlanetEffectRadius(uint256 _newRadius) public onlyAdmin {
+        gameConstants().BURN_PLANET_EFFECT_RADIUS = _newRadius;
+    }
+
     function changeLocationRevealCooldown(uint256 newCooldown) public onlyAdmin {
         gameConstants().LOCATION_REVEAL_COOLDOWN = newCooldown;
     }
@@ -105,7 +113,9 @@ contract DFAdminFacet is WithStorage {
         gameConstants().CLAIM_PLANET_COOLDOWN = newCooldown;
     }
 
-
+    function changeBurnPlanetCooldown(uint256 newCooldown) public onlyAdmin {
+        gameConstants().BURN_PLANET_COOLDOWN = newCooldown;
+    }
 
     function withdraw() public onlyAdmin {
         // TODO: Don't send to msg.sender, instead send to contract admin
@@ -113,11 +123,15 @@ contract DFAdminFacet is WithStorage {
     }
 
     function setTokenMintEndTime(uint256 newTokenMintEndTime) public onlyAdmin {
-         gameConstants().TOKEN_MINT_END_TIMESTAMP = newTokenMintEndTime;
+        gameConstants().TOKEN_MINT_END_TIMESTAMP = newTokenMintEndTime;
     }
 
-    function setClaimEndTime(uint256 newClaimEndTime) public onlyAdmin{
-        gameConstants().CLAIM_END_TIMESTAMP =newClaimEndTime;
+    function setClaimEndTime(uint256 newClaimEndTime) public onlyAdmin {
+        gameConstants().CLAIM_END_TIMESTAMP = newClaimEndTime;
+    }
+
+    function setBurnEndTime(uint256 newBurnEndTime) public onlyAdmin {
+        gameConstants().BURN_END_TIMESTAMP = newBurnEndTime;
     }
 
     function createPlanet(AdminCreatePlanetArgs memory args) public onlyAdmin {

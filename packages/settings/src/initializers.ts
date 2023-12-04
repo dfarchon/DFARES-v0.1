@@ -77,6 +77,14 @@ export const decodeInitializers = decoders.guard(
     CAPTURE_ZONE_PLANET_LEVEL_SCORE: exactArray10(decoders.number),
     CAPTURE_ZONE_HOLD_BLOCKS_REQUIRED: decoders.number,
     CAPTURE_ZONES_PER_5000_WORLD_RADIUS: decoders.number,
+
+    /**
+     * Pink
+     */
+    BURN_END_TIMESTAMP: dateInSeconds,
+    BURN_PLANET_COOLDOWN: decoders.number,
+    BURN_PLANET_EFFECT_RADIUS: decoders.number,
+
     SPACESHIPS: decoders.object({
       GEAR: decoders.boolean,
       MOTHERSHIP: decoders.boolean,

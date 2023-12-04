@@ -496,6 +496,9 @@ export class ContractsAPI extends EventEmitter {
       ROUND_END_REWARDS_BY_RANK,
       TOKEN_MINT_END_TIMESTAMP,
       CLAIM_END_TIMESTAMP,
+      BURN_END_TIMESTAMP,
+      BURN_PLANET_COOLDOWN,
+      BURN_PLANET_EFFECT_RADIUS,
     } = await this.makeCall(this.contract.getGameConstants);
 
     // const TOKEN_MINT_END_TIMESTAMP = (
@@ -692,6 +695,10 @@ export class ContractsAPI extends EventEmitter {
       planetCumulativeRarities,
       upgrades,
       adminAddress,
+
+      BURN_END_TIMESTAMP: BURN_END_TIMESTAMP.toNumber(),
+      BURN_PLANET_COOLDOWN: BURN_PLANET_COOLDOWN.toNumber(),
+      BURN_PLANET_EFFECT_RADIUS: BURN_PLANET_EFFECT_RADIUS.toNumber(),
     };
     // console.log(constants);
     return constants;

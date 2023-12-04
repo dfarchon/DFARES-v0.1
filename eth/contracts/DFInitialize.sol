@@ -110,6 +110,9 @@ struct InitArgs {
     uint256 CAPTURE_ZONES_PER_5000_WORLD_RADIUS;
     SpaceshipConstants SPACESHIPS;
     uint256[64] ROUND_END_REWARDS_BY_RANK;
+    uint256 BURN_END_TIMESTAMP;
+    uint256 BURN_PLANET_COOLDOWN;
+    uint256 BURN_PLANET_EFFECT_RADIUS;
 }
 
 contract DFInitialize is WithStorage {
@@ -212,9 +215,11 @@ contract DFInitialize is WithStorage {
         gs().paused = initArgs.START_PAUSED;
         gameConstants().TOKEN_MINT_END_TIMESTAMP = initArgs.TOKEN_MINT_END_TIMESTAMP;
         gameConstants().CLAIM_END_TIMESTAMP = initArgs.CLAIM_END_TIMESTAMP;
-
         gameConstants().ROUND_END_REWARDS_BY_RANK = initArgs.ROUND_END_REWARDS_BY_RANK;
 
+        gameConstants().BURN_END_TIMESTAMP = initArgs.BURN_END_TIMESTAMP;
+        gameConstants().BURN_PLANET_COOLDOWN = initArgs.BURN_PLANET_COOLDOWN;
+        gameConstants().BURN_PLANET_EFFECT_RADIUS = initArgs.BURN_PLANET_EFFECT_RADIUS;
         initializeDefaults();
         initializeUpgrades();
 

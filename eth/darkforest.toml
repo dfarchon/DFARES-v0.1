@@ -82,6 +82,7 @@ CAPTURE_ZONE_HOLD_BLOCKS_REQUIRED =  255 # MyTodo: need to change to a non-zero 
 # Number of capture zones that spawn each time they generate
 CAPTURE_ZONES_PER_5000_WORLD_RADIUS = 5  # 3
 
+
 ######################
 # Game configuration #
 ######################
@@ -126,6 +127,9 @@ CLAIM_PLANET_COOLDOWN = 60 #10800 seconds
 CLAIM_END_TIMESTAMP = 2023-12-31T04:00:00.000Z # Mon Oct 04 2022 21:00:00 GMT-0700 (Pacific Daylight Time)
 
 
+BURN_END_TIMESTAMP = 2023-12-31T04:00:00.000Z
+BURN_PLANET_COOLDOWN = 60
+BURN_PLANET_EFFECT_RADIUS = 1000
 
 PLANET_TYPE_WEIGHTS = [
   [
@@ -247,12 +251,15 @@ ROUND_END_REWARDS_BY_RANK=[
 ]
 
 
+# not include PinkShip yet
 [initializers.SPACESHIPS]
 GEAR = true
 MOTHERSHIP = true
 TITAN = true
 CRESCENT = true
 WHALE = false
+
+
 
 ##########################
 # Planets to add to game #

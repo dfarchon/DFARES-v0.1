@@ -5,6 +5,7 @@ pragma solidity ^0.8.0;
 import {DFCoreFacet} from "./DFCoreFacet.sol";
 import {DFWhitelistFacet} from "./DFWhitelistFacet.sol";
 import {DFCaptureFacet} from "./DFCaptureFacet.sol";
+import {DFArtifactFacet} from "./DFArtifactFacet.sol";
 
 // Library imports
 import {LibPlanet} from "../libraries/LibPlanet.sol";
@@ -19,7 +20,6 @@ import {ABDKMath64x64} from "../vendor/libraries/ABDKMath64x64.sol";
 
 // Type imports
 import {Planet, BurnedCoords, Artifact, ArtifactType} from "../DFTypes.sol";
-import {DFArtifactFacet} from "../facets/DFArtifactFacet.sol";
 
 contract DFPinkBombFacet is WithStorage {
     modifier notPaused() {

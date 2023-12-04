@@ -12,6 +12,7 @@ import {
   deployLibraries,
   deployLobbyFacet,
   deployMoveFacet,
+  deployPinkBombFacet,
   deployRewardFacet,
   deployVerifierFacet,
   deployWhitelistFacet,
@@ -73,14 +74,20 @@ async function upgrade({}, hre: HardhatRuntimeEnvironment) {
   console.log('captureFacets');
 
   const captureFacet = await deployCaptureFacet({}, libraries, hre);
+  console.log('pinkBombFacets');
+
+  const pinkBombFacet = await deployPinkBombFacet({}, libraries, hre);
   console.log('rewardFacets');
 
   const rewardFacet = await deployRewardFacet({}, libraries, hre);
 
   // The `cuts` to perform for Dark Forest facets
+
   const darkForestCuts = [
     ...changes.getFacetCuts('DFCoreFacet', coreFacet),
     ...changes.getFacetCuts('DFMoveFacet', moveFacet),
+    ...changes.getFacetCuts('DFCaptureFacet', captureFacet),
+    ...changes.getFacetCuts('DFPinkBombFacet', pinkBombFacet),
     ...changes.getFacetCuts('DFArtifactFacet', artifactFacet),
     ...changes.getFacetCuts('DFGetterOneFacet', getterOneFacet),
     ...changes.getFacetCuts('DFGetterTwoFacet', getterTwoFacet),
@@ -88,7 +95,6 @@ async function upgrade({}, hre: HardhatRuntimeEnvironment) {
     ...changes.getFacetCuts('DFVerifierFacet', verifierFacet),
     ...changes.getFacetCuts('DFAdminFacet', adminFacet),
     ...changes.getFacetCuts('DFLobbyFacet', lobbyFacet),
-    ...changes.getFacetCuts('DFCaptureFacet', captureFacet),
     ...changes.getFacetCuts('DFRewardFacet', rewardFacet),
   ];
 
