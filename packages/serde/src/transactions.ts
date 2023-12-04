@@ -2,6 +2,7 @@ import {
   Transaction,
   TxIntent,
   UnconfirmedActivateArtifact,
+  UnconfirmedBurn,
   UnconfirmedBuyArtifact,
   UnconfirmedBuyHat,
   UnconfirmedCapturePlanet,
@@ -14,6 +15,7 @@ import {
   UnconfirmedInit,
   UnconfirmedInvadePlanet,
   UnconfirmedMove,
+  UnconfirmedPink,
   UnconfirmedPlanetTransfer,
   UnconfirmedProspectPlanet,
   UnconfirmedReveal,
@@ -119,6 +121,13 @@ export function isUnconfirmedCapturePlanet(
   return txIntent.methodName === 'capturePlanet';
 }
 
+export function isUnconfirmedBurn(txIntent: TxIntent): txIntent is UnconfirmedBurn {
+  return txIntent.methodName === 'burnLocation';
+}
+
+export function isUnconfirmedPink(txIntent: TxIntent): txIntent is UnconfirmedPink {
+  return txIntent.methodName === 'pinkLocation';
+}
 export function isUnconfirmedInvadePlanet(txIntent: TxIntent): txIntent is UnconfirmedInvadePlanet {
   return txIntent.methodName === 'invadePlanet';
 }
@@ -225,4 +234,12 @@ export function isUnconfirmedCapturePlanetTx(
   tx: Transaction
 ): tx is Transaction<UnconfirmedCapturePlanet> {
   return isUnconfirmedCapturePlanet(tx.intent);
+}
+
+export function isUnconfirmedBurnTx(tx: Transaction): tx is Transaction<UnconfirmedBurn> {
+  return isUnconfirmedBurn(tx.intent);
+}
+
+export function isUnconfirmedPinkTx(tx: Transaction): tx is Transaction<UnconfirmedPink> {
+  return isUnconfirmedPink(tx.intent);
 }

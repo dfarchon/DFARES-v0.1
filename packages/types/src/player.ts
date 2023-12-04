@@ -17,6 +17,8 @@ export type Player = {
    */
   lastRevealTimestamp: number;
   lastClaimTimestamp: number;
+  lastBurnTimestamp: number;
+
   score?: number;
 
   spaceJunk: number;

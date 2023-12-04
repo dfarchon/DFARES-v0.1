@@ -20,6 +20,7 @@ export function decodePlayer(rawPlayer: RawPlayer): Player {
     homePlanetId: locationIdFromEthersBN(rawPlayer.homePlanetId),
     lastRevealTimestamp: rawPlayer.lastRevealTimestamp.toNumber(),
     lastClaimTimestamp: rawPlayer.lastRevealTimestamp.toNumber(),
+    lastBurnTimestamp: rawPlayer.lastRevealTimestamp.toNumber(),
     score: rawPlayer.score.toNumber(),
     spaceJunk: rawPlayer.spaceJunk.toNumber(),
     spaceJunkLimit: rawPlayer.spaceJunkLimit.toNumber(),

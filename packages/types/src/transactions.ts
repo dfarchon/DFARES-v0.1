@@ -27,7 +27,9 @@ export type ContractMethodName =
   | 'createLobby'
   | 'invadePlanet'
   | 'capturePlanet'
-  | 'claimReward';
+  | 'claimReward'
+  | 'burnLocation'
+  | 'pinkLocation';
 
 export type EthTxStatus =
   | 'Init'
@@ -257,4 +259,22 @@ export type UnconfirmedInvadePlanet = TxIntent & {
 export type UnconfirmedCapturePlanet = TxIntent & {
   methodName: 'capturePlanet';
   locationId: LocationId;
+};
+
+/**
+ * @hidden
+ */
+export type UnconfirmedBurn = TxIntent & {
+  methodName: 'burnLocation';
+  locationId: LocationId;
+  location: WorldLocation;
+};
+
+/**
+ * @hidden
+ */
+export type UnconfirmedPink = TxIntent & {
+  methodName: 'pinkLocation';
+  locationId: LocationId;
+  location: WorldLocation;
 };

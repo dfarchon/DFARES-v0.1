@@ -26,6 +26,7 @@ import { getPlanetName } from '@dfares/procedural';
 import {
   artifactIdToDecStr,
   isUnconfirmedActivateArtifactTx,
+  isUnconfirmedBurnTx,
   isUnconfirmedBuyArtifactTx,
   isUnconfirmedBuyHatTx,
   isUnconfirmedCapturePlanetTx,
@@ -78,6 +79,7 @@ import {
   Transaction,
   TxIntent,
   UnconfirmedActivateArtifact,
+  UnconfirmedBurn,
   UnconfirmedBuyArtifact,
   UnconfirmedBuyHat,
   UnconfirmedCapturePlanet,
@@ -1982,7 +1984,7 @@ class GameManager extends EventEmitter {
   }
 
   /**
-   * Reveals a planet's location on-chain.
+   * claimLocation reveals a planet's location on-chain.
    */
   public async claimLocation(planetId: LocationId): Promise<Transaction<UnconfirmedClaim>> {
     try {
@@ -2024,6 +2026,94 @@ class GameManager extends EventEmitter {
 
       const myLastClaimTimestamp = this.players.get(this.account)?.lastClaimTimestamp;
       if (myLastClaimTimestamp && Date.now() < this.getNextClaimAvailableTimestamp()) {
+        throw new Error('still on cooldown for claiming');
+      }
+
+      // this is shitty. used for the popup window
+      localStorage.setItem(`${this.getAccount()?.toLowerCase()}-claimLocationId`, planetId);
+
+      const getArgs = async () => {
+        const revealArgs = await this.snarkHelper.getRevealArgs(
+          planet.location.coords.x,
+          planet.location.coords.y
+        );
+        this.terminal.current?.println(
+          'REVEAL: calculated SNARK with args:',
+          TerminalTextStyle.Sub
+        );
+        this.terminal.current?.println(
+          JSON.stringify(hexifyBigIntNestedArray(revealArgs.slice(0, 3))),
+          TerminalTextStyle.Sub
+        );
+        this.terminal.current?.newline();
+
+        return revealArgs;
+      };
+
+      const txIntent: UnconfirmedClaim = {
+        methodName: 'claimLocation',
+        locationId: planetId,
+        location: planet.location,
+        contract: this.contractsAPI.contract,
+        args: getArgs(),
+      };
+
+      // Always await the submitTransaction so we can catch rejections
+      const tx = await this.contractsAPI.submitTransaction(txIntent);
+
+      return tx;
+    } catch (e) {
+      this.getNotificationsManager().txInitError('claimLocation', e.message);
+      throw e;
+    }
+  }
+
+  /**
+   * burnLocation reveals a planet's location on-chain.
+   */
+
+  //mytodo: continue to update burnLocation
+  public async burnLocation(planetId: LocationId): Promise<Transaction<UnconfirmedBurn>> {
+    try {
+      if (!this.account) {
+        throw new Error('no account set');
+      }
+
+      const planet = this.entityStore.getPlanetWithId(planetId);
+
+      if (!planet) {
+        throw new Error("you can't claim a planet you haven't discovered");
+      }
+
+      // if (planet.owner !== this.account) {
+      //   throw new Error("you can't claim a planet you down't own");
+      // }
+
+      // if (planet.claimer === this.account) {
+      //   throw new Error("you've already claimed this planet");
+      // }
+
+      if (!isLocatable(planet)) {
+        throw new Error("you can't reveal a planet whose coordinates you don't know");
+      }
+
+      if (planet.transactions?.hasTransaction(isUnconfirmedBurnTx)) {
+        throw new Error("you're already claiming this planet's location");
+      }
+
+      // if (planet.planetLevel < PLANET_CLAIM_MIN_LEVEL) {
+      //   throw new Error(
+      //     `you can't claim a planet whose level is less than ${PLANET_CLAIM_MIN_LEVEL}`
+      //   );
+      // }
+
+      if (this.entityStore.transactions.hasTransaction(isUnconfirmedBurnTx)) {
+        throw new Error("you're already broadcasting coordinates");
+      }
+
+      const myLastBurnTimestamp = this.players.get(this.account)?.lastBurnTimestamp;
+
+      if (myLastBurnTimestamp && Date.now() < this.getNextClaimAvailableTimestamp()) {
         throw new Error('still on cooldown for claiming');
       }
 
