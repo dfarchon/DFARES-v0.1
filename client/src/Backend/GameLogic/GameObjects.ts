@@ -323,7 +323,7 @@ export class GameObjects {
 
     for (const [_locId, claimedLoc] of claimedLocations) {
       this.updatePlanet(claimedLoc.hash, (p) => {
-        p.claimer = claimedLoc.revealer;
+        p.claimer = claimedLoc.claimer;
       });
     }
 

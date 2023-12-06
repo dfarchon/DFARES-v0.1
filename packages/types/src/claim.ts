@@ -6,10 +6,10 @@ import type { WorldCoords, WorldLocation } from './world';
  */
 export type ClaimedCoords = WorldCoords & {
   hash: LocationId;
-  revealer: EthAddress;
+  claimer: EthAddress;
   score: number;
 };
 
 export type ClaimedLocation = WorldLocation & {
-  revealer: EthAddress;
+  claimer: EthAddress;
 };

@@ -57,6 +57,7 @@ export const enum ContractEvent {
   AdminGiveSpaceship = 'AdminGiveSpaceship',
   PauseStateChanged = 'PauseStateChanged',
   LobbyCreated = 'LobbyCreated',
+  LocationBurned = 'LocationBurned',
 }
 
 export const enum ContractsAPIEvent {
@@ -67,7 +68,6 @@ export const enum ContractsAPIEvent {
   ArtifactUpdate = 'ArtifactUpdate',
   RadiusUpdated = 'RadiusUpdated',
   LocationRevealed = 'LocationRevealed',
-
   /**
    * The transaction has been queued for future execution.
    */
@@ -104,6 +104,7 @@ export const enum ContractsAPIEvent {
   TxCancelled = 'TxCancelled',
   PlanetTransferred = 'PlanetTransferred',
   LocationClaimed = 'LocationClaimed',
+  LocationBurned = 'LocationBurned',
   LobbyCreated = 'LobbyCreated',
 }
 

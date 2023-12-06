@@ -111,7 +111,6 @@ contract DFPinkBombFacet is WithStorage {
         return false;
     }
 
-    //mytodo: add pinkPlanet function
 
     function pinkLocation(
         uint256[2] memory _a,
@@ -146,6 +145,7 @@ contract DFPinkBombFacet is WithStorage {
         require(planetInPinkZone(x, y), "planet is not in your pink zone");
 
         planet.destroyed = true;
+        
     }
 
     function planetInPinkZone(uint256 x, uint256 y) public returns (bool) {

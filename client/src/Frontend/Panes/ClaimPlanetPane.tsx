@@ -40,9 +40,9 @@ export function ClaimPlanetPane({
 
   const existingClaim = gameManager.getClaimedLocations().get(planetId);
   const claimedByThisPlayer =
-    (!!existingClaim && existingClaim.revealer === player.value?.address) ||
+    (!!existingClaim && existingClaim.claimer === player.value?.address) ||
     (planet.claimer === player.value?.address && !!planet.claimer);
-  const claimedByOtherPlayer = !!existingClaim && existingClaim.revealer !== player.value?.address;
+  const claimedByOtherPlayer = !!existingClaim && existingClaim.claimer !== player.value?.address;
   const planetIsLargeEnough = planet.planetLevel >= PLANET_CLAIM_MIN_LEVEL;
   const planetOwnedByMe = player.value?.address && planet.owner === player.value?.address;
 
@@ -77,8 +77,8 @@ export function ClaimPlanetPane({
   } else if (claimedByOtherPlayer && existingClaim) {
     description = (
       <>
-        This planet is claimed by <AccountLabel ethAddress={existingClaim.revealer} />! You can
-        claim it for yourself, making it count towards your score, and not theirs.
+        This planet is claimed by <AccountLabel ethAddress={existingClaim.claimer} />! You can claim
+        it for yourself, making it count towards your score, and not theirs.
         <EmSpacer height={1} />
       </>
     );

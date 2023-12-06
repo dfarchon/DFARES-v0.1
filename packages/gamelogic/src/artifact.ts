@@ -302,3 +302,11 @@ export function getPlayerControlledSpaceships(
   if (!owner) return [];
   return (artifacts || []).filter((a) => a?.controller === owner);
 }
+
+export function canOperatePinkShip(artifact: Artifact, planet: Planet | undefined) {
+  if (isSpaceShip(artifact.artifactType)) {
+    return planet && artifact.artifactType === ArtifactType.ShipPink;
+  }
+
+  return false;
+}

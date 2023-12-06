@@ -464,10 +464,12 @@ class GameManager extends EventEmitter {
           biomebase: this.biomebasePerlin(coords, true),
         };
 
-        const revealedLocation = { ...location, revealer: coords.revealer };
+        const revealedLocation = { ...location, revealer: coords.claimer };
 
         revealedLocations.set(locationId, revealedLocation);
-        claimedLocations.set(locationId, revealedLocation);
+
+        const claimedLocation = { ...location, claimer: coords.claimer };
+        claimedLocations.set(locationId, claimedLocation);
       }
     }
 
@@ -1047,13 +1049,13 @@ class GameManager extends EventEmitter {
     const claimedCoords = await this.contractsAPI.getClaimedCoordsByIdIfExists(planetId);
 
     let revealedLocation: RevealedLocation | undefined;
-
+    let claimedLocation: ClaimedLocation | undefined;
     if (claimedCoords) {
-      revealedLocation = {
+      claimedLocation = {
         ...this.locationFromCoords(claimedCoords),
-        revealer: claimedCoords.revealer,
+        claimer: claimedCoords.claimer,
       };
-      this.getGameObjects().setClaimedLocation(revealedLocation);
+      this.getGameObjects().setClaimedLocation(claimedLocation);
     } else if (revealedCoords) {
       revealedLocation = {
         ...this.locationFromCoords(revealedCoords),
@@ -1066,7 +1068,7 @@ class GameManager extends EventEmitter {
       arrivals,
       artifactsOnPlanet.map((a) => a.id),
       revealedLocation,
-      claimedCoords?.revealer
+      claimedCoords?.claimer
     );
 
     // it's important that we reload the artifacts that are on the planet after the move
@@ -1901,6 +1903,23 @@ class GameManager extends EventEmitter {
     return (myLastClaimTimestamp + this.contractConstants.CLAIM_PLANET_COOLDOWN) * 1000;
   }
 
+  /**
+   * Gets the timestamp (ms) of the next time that we can burn a planet.
+   */
+  public getNextBurnAvailableTimestamp() {
+    if (!this.account) {
+      throw new Error('no account set');
+    }
+    const myLastBurnTimestamp = this.players.get(this.account)?.lastBurnTimestamp;
+
+    if (!myLastBurnTimestamp) {
+      return Date.now();
+    }
+
+    // both the variables in the next line are denominated in seconds
+    return (myLastBurnTimestamp + this.contractConstants.BURN_PLANET_COOLDOWN) * 1000;
+  }
+
   public getCaptureZones(): Set<CaptureZone> {
     return this.captureZoneGenerator?.getZones() || new Set();
   }
@@ -1992,6 +2011,10 @@ class GameManager extends EventEmitter {
         throw new Error('no account set');
       }
 
+      if (this.checkGameHasEnded()) {
+        throw new Error('game has ended');
+      }
+
       const planet = this.entityStore.getPlanetWithId(planetId);
 
       if (!planet) {
@@ -2072,40 +2095,37 @@ class GameManager extends EventEmitter {
    * burnLocation reveals a planet's location on-chain.
    */
 
-  //mytodo: continue to update burnLocation
   public async burnLocation(planetId: LocationId): Promise<Transaction<UnconfirmedBurn>> {
     try {
       if (!this.account) {
         throw new Error('no account set');
       }
 
+      if (this.checkGameHasEnded()) {
+        throw new Error('game has ended');
+      }
+
       const planet = this.entityStore.getPlanetWithId(planetId);
 
       if (!planet) {
-        throw new Error("you can't claim a planet you haven't discovered");
+        throw new Error("you can't burn a planet you haven't discovered");
       }
-
-      // if (planet.owner !== this.account) {
-      //   throw new Error("you can't claim a planet you down't own");
-      // }
-
-      // if (planet.claimer === this.account) {
-      //   throw new Error("you've already claimed this planet");
-      // }
 
       if (!isLocatable(planet)) {
         throw new Error("you can't reveal a planet whose coordinates you don't know");
       }
 
-      if (planet.transactions?.hasTransaction(isUnconfirmedBurnTx)) {
-        throw new Error("you're already claiming this planet's location");
+      if (planet.destroyed || planet.frozen) {
+        throw new Error("you can't burn destroyed/frozen planets");
       }
 
-      // if (planet.planetLevel < PLANET_CLAIM_MIN_LEVEL) {
-      //   throw new Error(
-      //     `you can't claim a planet whose level is less than ${PLANET_CLAIM_MIN_LEVEL}`
-      //   );
-      // }
+      if (planet.operator !== undefined) {
+        throw new Error('someone already burn this planet');
+      }
+
+      if (planet.transactions?.hasTransaction(isUnconfirmedBurnTx)) {
+        throw new Error("you're already burning this planet's location");
+      }
 
       if (this.entityStore.transactions.hasTransaction(isUnconfirmedBurnTx)) {
         throw new Error("you're already broadcasting coordinates");
@@ -2113,12 +2133,12 @@ class GameManager extends EventEmitter {
 
       const myLastBurnTimestamp = this.players.get(this.account)?.lastBurnTimestamp;
 
-      if (myLastBurnTimestamp && Date.now() < this.getNextClaimAvailableTimestamp()) {
-        throw new Error('still on cooldown for claiming');
+      if (myLastBurnTimestamp && Date.now() < this.getNextBurnAvailableTimestamp()) {
+        throw new Error('still on cooldown for burning');
       }
 
       // this is shitty. used for the popup window
-      localStorage.setItem(`${this.getAccount()?.toLowerCase()}-claimLocationId`, planetId);
+      localStorage.setItem(`${this.getAccount()?.toLowerCase()}-burnLocationId`, planetId);
 
       const getArgs = async () => {
         const revealArgs = await this.snarkHelper.getRevealArgs(
@@ -2138,8 +2158,8 @@ class GameManager extends EventEmitter {
         return revealArgs;
       };
 
-      const txIntent: UnconfirmedClaim = {
-        methodName: 'claimLocation',
+      const txIntent: UnconfirmedBurn = {
+        methodName: 'burnLocation',
         locationId: planetId,
         location: planet.location,
         contract: this.contractsAPI.contract,
@@ -2151,7 +2171,7 @@ class GameManager extends EventEmitter {
 
       return tx;
     } catch (e) {
-      this.getNotificationsManager().txInitError('claimLocation', e.message);
+      this.getNotificationsManager().txInitError('burnLocation', e.message);
       throw e;
     }
   }
