@@ -374,8 +374,7 @@ export class ContractsAPI extends EventEmitter {
         _: Event
       ) => {
         this.emit(ContractsAPIEvent.PlanetUpdate, locationIdFromEthersBN(location));
-        //mytodo: update right ContractAPIEvent.PlanetClaimed function
-        //to be honest, claim planet is the same way as LocationRevealed
+
         this.emit(
           ContractsAPIEvent.LocationClaimed,
           locationIdFromEthersBN(location),
@@ -395,6 +394,21 @@ export class ContractsAPI extends EventEmitter {
       },
       [ContractEvent.LobbyCreated]: (ownerAddr: string, lobbyAddr: string) => {
         this.emit(ContractsAPIEvent.LobbyCreated, address(ownerAddr), address(lobbyAddr));
+      },
+      [ContractEvent.LocationBurned]: async (
+        revealerAddr: string,
+        location: EthersBN,
+        _x: EthersBN,
+        _y: EthersBN,
+        _: Event
+      ) => {
+        this.emit(ContractsAPIEvent.PlanetUpdate, locationIdFromEthersBN(location));
+        this.emit(
+          ContractsAPIEvent.LocationBurned,
+          locationIdFromEthersBN(location),
+          address(revealerAddr.toLowerCase())
+        );
+        this.emit(ContractsAPIEvent.PlayerUpdate, address(revealerAddr));
       },
     };
 
@@ -419,6 +433,7 @@ export class ContractsAPI extends EventEmitter {
     contract.removeAllListeners(ContractEvent.PlanetSilverWithdrawn);
     contract.removeAllListeners(ContractEvent.PlanetInvaded);
     contract.removeAllListeners(ContractEvent.PlanetCaptured);
+    contract.removeAllListeners(ContractEvent.LocationBurned);
   }
 
   public getContractAddress(): EthAddress {

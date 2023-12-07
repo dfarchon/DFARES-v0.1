@@ -470,6 +470,10 @@ class GameUIManager extends EventEmitter {
     this.gameManager.claimLocation(locationId);
   }
 
+  public burnLocation(locationId: LocationId) {
+    this.gameManager.burnLocation(locationId);
+  }
+
   public getNextBroadcastAvailableTimestamp() {
     return this.gameManager.getNextBroadcastAvailableTimestamp();
   }
@@ -1205,6 +1209,9 @@ class GameUIManager extends EventEmitter {
     return this.gameManager.getNextClaimCountdownInfo().currentlyClaiming;
   }
 
+  public isCurrentlyBurning(): boolean {
+    return this.gameManager.getNextBurnCountdownInfo().currentlyBurning;
+  }
   public getUnconfirmedLinkActivations(): Transaction<UnconfirmedActivateArtifact>[] {
     return this.gameManager.getUnconfirmedLinkActivations();
   }

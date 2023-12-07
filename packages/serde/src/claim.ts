@@ -34,6 +34,6 @@ export function decodeClaimedCoords(rawClaimedCoords: RawClaimedCoords): Claimed
     x,
     y,
     score: rawClaimedCoords.score.toNumber(),
-    revealer: address(rawClaimedCoords.claimer),
+    claimer: address(rawClaimedCoords.claimer),
   };
 }

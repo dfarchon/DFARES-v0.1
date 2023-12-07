@@ -67,3 +67,9 @@ export interface ClaimCountdownInfo {
   currentlyClaiming: boolean; // true iff player has an unconfirmedReveal currently being processed
   claimCooldownTime: number; // in seconds
 }
+
+export interface BurnCountdownInfo {
+  myLastBurnTimestamp?: number; // if undefined, never revealed before
+  currentlyBurning: boolean; // true iff player has an unconfirmedReveal currently being processed
+  burnCooldownTime: number; // in seconds
+}

@@ -128,6 +128,7 @@ import {
 } from '../../_types/darkforest/api/ContractsAPITypes';
 import { AddressTwitterMap } from '../../_types/darkforest/api/UtilityServerAPITypes';
 import {
+  BurnCountdownInfo,
   ClaimCountdownInfo,
   HashConfig,
   RevealCountdownInfo,
@@ -831,6 +832,13 @@ class GameManager extends EventEmitter {
           gameManager.emit(GameManagerEvent.PlanetUpdate);
         }
       )
+      .on(ContractsAPIEvent.LocationBurned, async (planetId: LocationId, _revealer: EthAddress) => {
+        // TODO: hook notifs or emit event to UI if you want
+
+        // console.log('[testInfo]: ContractsAPIEvent.LocationClaimed');
+        await gameManager.hardRefreshPlanet(planetId);
+        gameManager.emit(GameManagerEvent.PlanetUpdate);
+      })
       .on(ContractsAPIEvent.TxQueued, (tx: Transaction) => {
         gameManager.entityStore.onTxIntent(tx);
       })
@@ -1528,6 +1536,21 @@ class GameManager extends EventEmitter {
       myLastClaimTimestamp: myLastClaimTimestamp || undefined,
       currentlyClaiming: !!this.entityStore.transactions.hasTransaction(isUnconfirmedClaimTx),
       claimCooldownTime: this.contractConstants.CLAIM_PLANET_COOLDOWN,
+    };
+  }
+
+  /**
+   * Returns info about the next time you can burn a Planet
+   */
+  getNextBurnCountdownInfo(): BurnCountdownInfo {
+    if (!this.account) {
+      throw new Error('no account set');
+    }
+    const myLastBurnTimestamp = this.players.get(this.account)?.lastBurnTimestamp;
+    return {
+      myLastBurnTimestamp: myLastBurnTimestamp || undefined,
+      currentlyBurning: !!this.entityStore.transactions.hasTransaction(isUnconfirmedBurnTx),
+      burnCooldownTime: this.contractConstants.BURN_PLANET_COOLDOWN,
     };
   }
 
