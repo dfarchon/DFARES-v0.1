@@ -1037,7 +1037,7 @@ export class GameObjects {
     return this.burnedLocations;
   }
 
-  public setBurnedLocations(burnedLocation: BurnedLocation) {
+  public setBurnedLocation(burnedLocation: BurnedLocation) {
     this.burnedLocations.set(burnedLocation.hash, burnedLocation);
   }
 

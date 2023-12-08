@@ -11,6 +11,7 @@ import {
   MineBodyRendererType,
   MineRendererType,
   PerlinRendererType,
+  PinkZoneRendererType,
   PlanetRendererType,
   PlanetRenderManagerType,
   QuasarBodyRendererType,
@@ -135,4 +136,8 @@ export function isQuasarRayRenderer(renderer: BaseRenderer): renderer is QuasarR
 
 export function isCaptureZoneRenderer(renderer: BaseRenderer): renderer is CaptureZoneRendererType {
   return renderer.rendererType === RendererType.CaptureZone;
+}
+
+export function isPinkZoneRenderer(renderer: BaseRenderer): renderer is PinkZoneRendererType {
+  return renderer.rendererType === RendererType.PinkZone;
 }

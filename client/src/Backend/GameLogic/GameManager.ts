@@ -65,6 +65,7 @@ import {
   LocatablePlanet,
   LocationId,
   NetworkHealthSummary,
+  PinkZone,
   Planet,
   PlanetLevel,
   PlanetMessageType,
@@ -1081,9 +1082,11 @@ class GameManager extends EventEmitter {
 
     const revealedCoords = await this.contractsAPI.getRevealedCoordsByIdIfExists(planetId);
     const claimedCoords = await this.contractsAPI.getClaimedCoordsByIdIfExists(planetId);
+    const burnedCoords = await this.contractsAPI.getBurnedCoordsByIdIfExists(planetId);
 
     let revealedLocation: RevealedLocation | undefined;
     let claimedLocation: ClaimedLocation | undefined;
+    let burnedLocation: BurnedLocation | undefined;
     if (claimedCoords) {
       claimedLocation = {
         ...this.locationFromCoords(claimedCoords),
@@ -1095,6 +1098,12 @@ class GameManager extends EventEmitter {
         ...this.locationFromCoords(revealedCoords),
         revealer: revealedCoords.revealer,
       };
+    } else if (burnedCoords) {
+      burnedLocation = {
+        ...this.locationFromCoords(burnedCoords),
+        operator: burnedCoords.operator,
+      };
+      this.getGameObjects().setBurnedLocation(burnedLocation);
     }
 
     this.entityStore.replacePlanetFromContractData(
@@ -1713,6 +1722,13 @@ class GameManager extends EventEmitter {
   }
 
   /**
+   * Gets a map of all location IDs which have been claimed.
+   */
+  getBurnedLocations(): Map<LocationId, BurnedLocation> {
+    return this.entityStore.getBurnedLocations();
+  }
+
+  /**
    * Each coordinate lives in a particular type of space, determined by a smooth random
    * function called 'perlin noise.
    */
@@ -2005,6 +2021,21 @@ class GameManager extends EventEmitter {
 
   public getCaptureZones(): Set<CaptureZone> {
     return this.captureZoneGenerator?.getZones() || new Set();
+  }
+
+  public getPinkZones(): Set<PinkZone> {
+    const pinkZones = new Set<PinkZone>();
+    const burnedLocations = this.getBurnedLocations();
+    const allBurnedCoords = Array.from(burnedLocations.values());
+
+    for (const item of allBurnedCoords) {
+      pinkZones.add({
+        coords: item.coords,
+        radius: this.getContractConstants().BURN_PLANET_EFFECT_RADIUS,
+      });
+    }
+
+    return pinkZones || new Set();
   }
 
   /**

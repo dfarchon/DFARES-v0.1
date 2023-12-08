@@ -1256,6 +1256,10 @@ class GameUIManager extends EventEmitter {
     return this.gameManager.getCaptureZones();
   }
 
+  public getPinkZones() {
+    return this.gameManager.getPinkZones();
+  }
+
   public getCaptureZoneGenerator() {
     return this.gameManager.getCaptureZoneGenerator();
   }

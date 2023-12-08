@@ -24,6 +24,8 @@ import {
   MineRendererType,
   PerlinConfig,
   PerlinRendererType,
+  PinkZone,
+  PinkZoneRendererType,
   Planet,
   PlanetLevel,
   PlanetRendererType,
@@ -65,6 +67,7 @@ import { LinkRenderer } from './Entities/LinkRenderer';
 import { MineBodyRenderer } from './Entities/MineBodyRenderer';
 import { MineRenderer } from './Entities/MineRenderer';
 import { PerlinRenderer } from './Entities/PerlinRenderer';
+import { PinkZoneRenderer } from './Entities/PinkZoneRenderer';
 import { PlanetRenderer } from './Entities/PlanetRenderer';
 import { PlanetRenderManager } from './Entities/PlanetRenderManager';
 import { QuasarBodyRenderer } from './Entities/QuasarBodyRenderer';
@@ -92,6 +95,7 @@ import {
   isMineBodyRenderer,
   isMineRenderer,
   isPerlinRenderer,
+  isPinkZoneRenderer,
   isPlanetRenderer,
   isPlanetRendererManager,
   isQuasarBodyRenderer,
@@ -161,6 +165,7 @@ export interface RendererGameContext extends DiagnosticUpdater {
   getArtifactSending(planetId: LocationId): Artifact | undefined;
   getAbandonRangeChangePercent(): number;
   getCaptureZones(): Iterable<CaptureZone>;
+  getPinkZones(): Iterable<PinkZone>;
 }
 
 export class Renderer {
@@ -201,6 +206,7 @@ export class Renderer {
   spriteRenderer: SpriteRendererType;
   blackDomainRenderer: BlackDomainRendererType;
   captureZoneRenderer: CaptureZoneRendererType;
+  pinkZoneRenderer: PinkZoneRendererType;
 
   //planet entities
   planetRenderer: PlanetRendererType;
@@ -285,6 +291,7 @@ export class Renderer {
       new QuasarBodyRenderer(this.glManager),
       new QuasarRayRenderer(this.glManager),
       new CaptureZoneRenderer(this.glManager),
+      new PinkZoneRenderer(this.glManager),
     ];
     for (const index in this.rendererStack) {
       this.setRenderer(this.rendererStack[index]);
@@ -377,6 +384,9 @@ export class Renderer {
 
     this.captureZoneRenderer.queueCaptureZones();
     this.captureZoneRenderer.flush();
+
+    this.pinkZoneRenderer.queuePinkZones();
+    this.pinkZoneRenderer.flush();
 
     this.uiRenderManager.queueSelectedRangeRing();
     this.uiRenderManager.queueSelectedRect();
@@ -631,6 +641,22 @@ export class Renderer {
           break;
         }
         console.log('Renderer is not a CaptureZoneRenderer');
+        return false;
+
+      case RendererType.PinkZone:
+        if (isPinkZoneRenderer(renderer)) {
+          this.pinkZoneRenderer = renderer;
+          break;
+        }
+        console.log('Renderer is not a PinkZoneRenderer');
+        return false;
+
+      case RendererType.PinkZone:
+        if (isPinkZoneRenderer(renderer)) {
+          this.pinkZoneRenderer = renderer;
+          break;
+        }
+        console.log('Renderer is not a PinkZoneRenderer');
         return false;
 
       default:

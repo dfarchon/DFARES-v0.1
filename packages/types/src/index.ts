@@ -39,6 +39,7 @@ export * from './identifier';
 export * from './logo';
 export * from './meme';
 export * from './modal';
+export * from './pink_zones';
 export * from './planet';
 export * from './planetmessage';
 export * from './player';
