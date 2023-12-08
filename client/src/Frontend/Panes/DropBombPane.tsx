@@ -1,6 +1,6 @@
 import { isUnconfirmedBurnTx } from '@dfares/serde';
-import { EthAddress, LocationId } from '@dfares/types';
-import React, { useEffect, useState } from 'react';
+import { ArtifactType, EthAddress, LocationId } from '@dfares/types';
+import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { Btn } from '../Components/Btn';
 import { CenterBackgroundSubtext, Spacer } from '../Components/CoreUI';
@@ -52,7 +52,7 @@ export function DropBombPane({
   initialPlanetId,
   modal: _modal,
 }: {
-  modal: ModalHandle;
+  modal?: ModalHandle;
   initialPlanetId: LocationId | undefined;
 }) {
   const uiManager = useUIManager();
@@ -79,7 +79,16 @@ export function DropBombPane({
   const burnLocationCooldownPassed = uiManager.getNextBurnAvailableTimestamp() <= Date.now();
   const currentlyBurningAnyPlanet = uiManager.isCurrentlyBurning();
 
-  //mytodo: add limits to Pink Ship
+  const hasOwnedShipPink = useMemo(
+    () =>
+      planet?.heldArtifactIds
+        .map((id) => uiManager.getArtifactWithId(id))
+        .find(
+          (artifact) =>
+            artifact?.artifactType === ArtifactType.ShipPink && artifact.controller === account
+        ),
+    [account, planet, uiManager]
+  );
 
   useEffect(() => {
     if (!uiManager) return;
@@ -97,6 +106,8 @@ export function DropBombPane({
       </Btn>
     );
   } else if (!burnLocationCooldownPassed) {
+    burnBtn = <Btn disabled={true}>Drop Bomb</Btn>;
+  } else if (!hasOwnedShipPink) {
     burnBtn = <Btn disabled={true}>Drop Bomb</Btn>;
   } else {
     burnBtn = (
@@ -130,6 +141,11 @@ export function DropBombPane({
           burn another planet.
         </p>
       )}
+      {!hasOwnedShipPink && (
+        <p>
+          <Blue>INFO:</Blue> Your pink Ship needs to be above this planet.
+        </p>
+      )}
     </div>
   );
 
@@ -141,19 +157,6 @@ export function DropBombPane({
           <White>{formatDuration(uiManager.contractConstants.BURN_PLANET_COOLDOWN * 1000)}</White>.
         </div>
 
-        <div>
-          {' '}
-          <button
-            onClick={() => {
-              console.log(uiManager.getNextBurnAvailableTimestamp());
-              console.log(Date.now());
-              console.log(burnLocationCooldownPassed);
-            }}
-          >
-            {' '}
-            show{' '}
-          </button>
-        </div>
         <div className='message'>{warningsSection}</div>
         <div className='row'>
           <span>Coordinates</span>

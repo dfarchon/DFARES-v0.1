@@ -28,6 +28,7 @@ import {
   useUIManager,
 } from '../../Utils/AppHooks';
 import { useEmitterValue } from '../../Utils/EmitterHooks';
+import { DropBombPane } from '../DropBombPane';
 import { TooltipTrigger, TooltipTriggerProps } from '../Tooltip';
 
 export function ArtifactActions({
@@ -231,6 +232,16 @@ export function ArtifactActions({
           <Spacer width={4} />
         </span>
       ))}
+
+      {onPlanet &&
+        artifact.artifactType === ArtifactType.ShipPink &&
+        artifact.controller === account && (
+          <div>
+            <br />
+            <div> Drop Bomb </div>
+            <DropBombPane initialPlanetId={onPlanet.locationId} />
+          </div>
+        )}
     </div>
   );
 }
