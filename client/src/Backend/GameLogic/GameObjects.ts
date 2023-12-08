@@ -488,7 +488,8 @@ export class GameObjects {
     updatedArrivals?: QueuedArrival[],
     updatedArtifactsOnPlanet?: ArtifactId[],
     revealedLocation?: RevealedLocation,
-    claimerEthAddress?: EthAddress // TODO: Remove this
+    claimerEthAddress?: EthAddress, // TODO: Remove this
+    operatorEthAddress?: EthAddress
   ): void {
     this.touchedPlanetIds.add(planet.locationId);
     // does not modify unconfirmed txs
@@ -539,7 +540,9 @@ export class GameObjects {
     if (claimerEthAddress) {
       planet.claimer = claimerEthAddress;
     }
-
+    if (operatorEthAddress) {
+      planet.operator = operatorEthAddress;
+    }
     this.setPlanet(planet);
 
     if (updatedArrivals) {

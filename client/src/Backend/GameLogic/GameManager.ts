@@ -1111,7 +1111,8 @@ class GameManager extends EventEmitter {
       arrivals,
       artifactsOnPlanet.map((a) => a.id),
       revealedLocation,
-      claimedCoords?.claimer
+      claimedCoords?.claimer,
+      burnedCoords?.operator
     );
 
     // it's important that we reload the artifacts that are on the planet after the move
