@@ -1,4 +1,4 @@
-import { isUnconfirmedRevealTx } from '@dfares/serde';
+import { isUnconfirmedBurnTx } from '@dfares/serde';
 import { EthAddress, LocationId } from '@dfares/types';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -76,59 +76,58 @@ export function DropBombPane({
 
   const [account, setAccount] = useState<EthAddress | undefined>(undefined); // consider moving this one to parent
   const isDestoryedOrFrozen = planet?.destroyed || planet?.frozen;
+  const burnLocationCooldownPassed = uiManager.getNextBurnAvailableTimestamp() <= Date.now();
+  const currentlyBurningAnyPlanet = uiManager.isCurrentlyBurning();
 
-  const isRevealed = planet?.coordsRevealed;
-  const broadcastCooldownPassed = uiManager.getNextBroadcastAvailableTimestamp() <= Date.now();
-  const currentlyBroadcastingAnyPlanet = uiManager.isCurrentlyRevealing();
+  //mytodo: add limits to Pink Ship
 
   useEffect(() => {
     if (!uiManager) return;
     setAccount(uiManager.getAccount());
   }, [uiManager]);
 
-  let revealBtn = undefined;
+  let burnBtn = undefined;
 
-  if (isRevealed) {
-    revealBtn = <Btn disabled={true}>Broadcast Coordinates</Btn>;
-  } else if (planet?.transactions?.hasTransaction(isUnconfirmedRevealTx)) {
-    revealBtn = (
+  if (isDestoryedOrFrozen) {
+    burnBtn = <Btn disabled={true}>Drop Bomb</Btn>;
+  } else if (planet?.transactions?.hasTransaction(isUnconfirmedBurnTx)) {
+    burnBtn = (
       <Btn disabled={true}>
-        <LoadingSpinner initialText={'Broadcasting...'} />
+        <LoadingSpinner initialText={'Dropping Bomb...'} />
       </Btn>
     );
-  } else if (!broadcastCooldownPassed) {
-    revealBtn = <Btn disabled={true}>Broadcast Coordinates</Btn>;
+  } else if (!burnLocationCooldownPassed) {
+    burnBtn = <Btn disabled={true}>Drop Bomb</Btn>;
   } else {
-    revealBtn = (
-      <Btn disabled={currentlyBroadcastingAnyPlanet} onClick={broadcast}>
-        Broadcast Coordinates
+    burnBtn = (
+      <Btn disabled={currentlyBurningAnyPlanet} onClick={dropBomb}>
+        Drop Bomb
       </Btn>
     );
   }
 
   const warningsSection = (
     <div>
-      {currentlyBroadcastingAnyPlanet && (
+      {currentlyBurningAnyPlanet && (
         <p>
-          <Blue>INFO:</Blue> Revealing...
+          <Blue>INFO:</Blue> Dropping Bomb...
         </p>
       )}
       {planet?.owner === account && (
         <p>
-          <Blue>INFO:</Blue> You own this planet! Revealing its location is a dangerous flex.
+          <Blue>INFO:</Blue> You own this planet! Dropping Bomb to this planet is not a good choice.
         </p>
       )}
-      {isRevealed && (
+      {isDestoryedOrFrozen && (
         <p>
-          <Blue>INFO:</Blue> This planet's location is already revealed, and can't be revealed
-          again!
+          <Blue>INFO:</Blue> You can't drop bomb to a destoryed/frozen planet.
         </p>
       )}
-      {!broadcastCooldownPassed && (
+      {!burnLocationCooldownPassed && (
         <p>
           <Blue>INFO:</Blue> You must wait{' '}
-          <TimeUntil timestamp={uiManager.getNextBroadcastAvailableTimestamp()} ifPassed={'now!'} />{' '}
-          to reveal another planet.
+          <TimeUntil timestamp={uiManager.getNextBurnAvailableTimestamp()} ifPassed={'now!'} /> to
+          burn another planet.
         </p>
       )}
     </div>
@@ -136,14 +135,24 @@ export function DropBombPane({
 
   if (planet) {
     return (
-      <BroadcastWrapper>
+      <DropBombWrapper>
         <div>
-          You can broadcast a planet to publically reveal its location on the map. You can only
-          broadcast a planet's location once every{' '}
-          <White>
-            {formatDuration(uiManager.contractConstants.LOCATION_REVEAL_COOLDOWN * 1000)}
-          </White>
-          .
+          You can only drop bomb to a planet once every{' '}
+          <White>{formatDuration(uiManager.contractConstants.BURN_PLANET_COOLDOWN * 1000)}</White>.
+        </div>
+
+        <div>
+          {' '}
+          <button
+            onClick={() => {
+              console.log(uiManager.getNextBurnAvailableTimestamp());
+              console.log(Date.now());
+              console.log(burnLocationCooldownPassed);
+            }}
+          >
+            {' '}
+            show{' '}
+          </button>
         </div>
         <div className='message'>{warningsSection}</div>
         <div className='row'>
@@ -151,8 +160,8 @@ export function DropBombPane({
           <span>{`(${getLoc().x}, ${getLoc().y})`}</span>
         </div>
         <Spacer height={8} />
-        <p style={{ textAlign: 'right' }}>{revealBtn}</p>
-      </BroadcastWrapper>
+        <p style={{ textAlign: 'right' }}>{burnBtn}</p>
+      </DropBombWrapper>
     );
   } else {
     return (

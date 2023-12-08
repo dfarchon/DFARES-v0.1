@@ -117,7 +117,7 @@ contract DFGetterTwoFacet is WithStorage {
      * API for loading a sublist of the set of claimed planets, so that clients can download this
      * info without DDOSing xDai.
      */
-    function bulkGetBurnedCoordssByIds(uint256[] calldata ids)
+    function bulkGetBurnedCoordsByIds(uint256[] calldata ids)
         public
         view
         returns (BurnedCoords[] memory ret)
@@ -129,7 +129,7 @@ contract DFGetterTwoFacet is WithStorage {
         }
     }
 
-    function bulkGetLastBurnedTimestamp(uint256 startIdx, uint256 endIdx)
+    function bulkGetLastBurnTimestamp(uint256 startIdx, uint256 endIdx)
         public
         view
         returns (LastBurnedStruct[] memory ret)

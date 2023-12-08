@@ -15,6 +15,7 @@ import {
   decodeArrival,
   decodeArtifact,
   decodeArtifactPointValues,
+  decodeBurnedCoords,
   decodeClaimedCoords,
   decodePlanet,
   decodePlanetDefaults,
@@ -29,6 +30,7 @@ import {
   ArtifactId,
   ArtifactType,
   AutoGasSetting,
+  BurnedCoords,
   ClaimedCoords,
   DiagnosticUpdater,
   EthAddress,
@@ -219,6 +221,7 @@ export class ContractsAPI extends EventEmitter {
           contract.filters.ArtifactWithdrawn(null, null, null).topics,
           contract.filters.LocationRevealed(null, null, null, null).topics,
           contract.filters.LocationClaimed(null, null, null).topics,
+          contract.filters.LocationBurned(null, null, null, null).topics,
           contract.filters.PlanetHatBought(null, null, null).topics,
           contract.filters.PlanetProspected(null, null).topics,
           contract.filters.PlanetSilverWithdrawn(null, null, null).topics,
@@ -402,6 +405,9 @@ export class ContractsAPI extends EventEmitter {
         _y: EthersBN,
         _: Event
       ) => {
+        // console.log('[testInfo] ContractEvent.LocationBurned');
+        console.log(revealerAddr);
+        console.log(locationIdFromEthersBN(location));
         this.emit(ContractsAPIEvent.PlanetUpdate, locationIdFromEthersBN(location));
         this.emit(
           ContractsAPIEvent.LocationBurned,
@@ -748,10 +754,25 @@ export class ContractsAPI extends EventEmitter {
       new Map<string, EthersBN>()
     );
 
+    const lastBurnTimestamps = await aggregateBulkGetter(
+      nPlayers,
+      5,
+      async (start: number, end: number) =>
+        this.contractCaller.makeCall(this.contract.bulkGetLastBurnTimestamp, [start, end])
+    );
+    const playerLastBurnTimestampMap = lastBurnTimestamps.reduce(
+      (acc, pair): Map<string, EthersBN> => {
+        acc.set(pair.player.toLowerCase(), pair.lastBurnTimestamp);
+        return acc;
+      },
+      new Map<string, EthersBN>()
+    );
+
     const playerMap: Map<EthAddress, Player> = new Map();
 
     for (const player of players) {
       player.lastClaimTimestamp = playerLastClaimTimestampMap.get(player.address)?.toNumber() || 0;
+      player.lastBurnTimestamp = playerLastBurnTimestampMap.get(player.address)?.toNumber() || 0;
       playerMap.set(player.address, player);
     }
 
@@ -763,11 +784,15 @@ export class ContractsAPI extends EventEmitter {
     const lastClaimedTimestamp = await this.makeCall(this.contract.getLastClaimTimestamp, [
       playerId,
     ]);
+
+    const lastBurnedTimestamp = await this.makeCall(this.contract.getLastBurnTimestamp, [playerId]);
     const scoreFromBlockchain = await this.getScoreV3(playerId);
     if (!rawPlayer.isInitialized) return undefined;
 
     const player = decodePlayer(rawPlayer);
     player.lastClaimTimestamp = lastClaimedTimestamp.toNumber();
+    player.lastBurnTimestamp = lastBurnedTimestamp.toNumber();
+
     player.score = scoreFromBlockchain;
     return player;
   }
@@ -926,6 +951,51 @@ export class ContractsAPI extends EventEmitter {
     );
 
     return rawClaimedCoords.map(decodeClaimedCoords);
+  }
+
+  public async getBurnedCoordsByIdIfExists(
+    planetId: LocationId
+  ): Promise<BurnedCoords | undefined> {
+    const decStrId = locationIdToDecStr(planetId);
+    const rawBurnedCoords = await this.makeCall(this.contract.burnedCoords, [decStrId]);
+    const ret = decodeBurnedCoords(rawBurnedCoords);
+    if (ret.hash === EMPTY_LOCATION_ID) {
+      return undefined;
+    }
+    return ret;
+  }
+
+  public async getBurnedPlanetsCoords(
+    startingAt: number,
+    onProgressIds?: (fractionCompleted: number) => void,
+    onProgressCoords?: (fractionCompleted: number) => void
+  ): Promise<BurnedCoords[]> {
+    const nBurnedPlanets: number = (
+      await this.makeCall<EthersBN>(this.contract.getNBurnedPlanets)
+    ).toNumber();
+
+    const rawBurnedPlanetIds = await aggregateBulkGetter<EthersBN>(
+      nBurnedPlanets - startingAt,
+      500,
+      async (start, end) =>
+        await this.makeCall(this.contract.bulkGetBurnedPlanetIds, [
+          start + startingAt,
+          end + startingAt,
+        ]),
+      onProgressIds
+    );
+
+    const rawBurnedCoords = await aggregateBulkGetter(
+      rawBurnedPlanetIds.length,
+      500,
+      async (start, end) =>
+        await this.makeCall(this.contract.bulkGetBurnedCoordsByIds, [
+          rawBurnedPlanetIds.slice(start, end),
+        ]),
+      onProgressCoords
+    );
+
+    return rawBurnedCoords.map(decodeBurnedCoords);
   }
 
   public async bulkGetPlanets(

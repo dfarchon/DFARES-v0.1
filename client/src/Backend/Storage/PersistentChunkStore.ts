@@ -1,4 +1,5 @@
 import {
+  BurnedCoords,
   Chunk,
   ClaimedCoords,
   DiagnosticUpdater,
@@ -277,10 +278,26 @@ class PersistentChunkStore implements ChunkStore {
       const parsed = JSON.parse(claimedPlanetIds);
       // changed the type on 6/1/21 to include revealer field
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if (parsed.length === 0 || !(parsed[0] as any).revealer) {
+      if (parsed.length === 0 || !(parsed[0] as any).claimer) {
         return [];
       }
       return parsed as ClaimedCoords[];
+    }
+
+    return [];
+  }
+
+  public async getSavedBurnedCoords(): Promise<BurnedCoords[]> {
+    const burnedPlanetIds = await this.getKey('burnedPlanetIds');
+
+    if (burnedPlanetIds) {
+      const parsed = JSON.parse(burnedPlanetIds);
+      // changed the type on 6/1/21 to include revealer field
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (parsed.length === 0 || !(parsed[0] as any).operator) {
+        return [];
+      }
+      return parsed as BurnedCoords[];
     }
 
     return [];

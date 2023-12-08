@@ -26,6 +26,7 @@
 export * from './arrival';
 export * from './artifact';
 export * from './avatar';
+export * from './burn';
 export * from './capture_zones';
 export * from './claim';
 export * from './database_types';

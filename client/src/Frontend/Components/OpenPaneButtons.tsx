@@ -2,6 +2,7 @@ import { LocationId } from '@dfares/types';
 import React, { useCallback } from 'react';
 import { BroadcastPane, BroadcastPaneHelpContent } from '../Panes/BroadcastPane';
 import { BuyArtifactPane } from '../Panes/BuyArtifactPane';
+import { DropBombPane } from '../Panes/DropBombPane';
 import { HatPane } from '../Panes/HatPane';
 import {
   ManagePlanetArtifactsHelpContent,
@@ -13,6 +14,7 @@ import { UpgradeDetailsPane, UpgradeDetailsPaneHelpContent } from '../Panes/Upgr
 import {
   TOGGLE_BROADCAST_PANE,
   TOGGLE_BUY_ARTIFACT_PANE,
+  TOGGLE_DROP_BOMB_PANE,
   TOGGLE_HAT_PANE,
   TOGGLE_PLANET_ARTIFACTS_PANE,
   TOGGLE_PLANET_INFO_PANE,
@@ -155,6 +157,24 @@ export function OpenPlanetInfoButton({
       title='Info/Claim'
       shortcut={TOGGLE_PLANET_INFO_PANE}
       element={() => <PlanetInfoPane initialPlanetId={planetId} modal={modal} />}
+      helpContent={PlanetInfoHelpContent()}
+    />
+  );
+}
+
+export function OpenDropBombButton({
+  modal,
+  planetId,
+}: {
+  modal: ModalHandle;
+  planetId: LocationId | undefined;
+}) {
+  return (
+    <OpenPaneButton
+      modal={modal}
+      title='Drop Bomb'
+      shortcut={TOGGLE_DROP_BOMB_PANE}
+      element={() => <DropBombPane initialPlanetId={planetId} modal={modal} />}
       helpContent={PlanetInfoHelpContent()}
     />
   );

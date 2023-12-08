@@ -52,6 +52,8 @@ import {
   ArtifactRarity,
   ArtifactType,
   Biome,
+  BurnedCoords,
+  BurnedLocation,
   CaptureZone,
   Chunk,
   ClaimedCoords,
@@ -376,6 +378,7 @@ class GameManager extends EventEmitter {
     allTouchedPlanetIds: Set<LocationId>,
     revealedCoords: Map<LocationId, RevealedCoords>,
     claimedCoords: Map<LocationId, ClaimedCoords>,
+    burnedCoords: Map<LocationId, BurnedCoords>,
     worldRadius: number,
     unprocessedArrivals: Map<VoyageId, QueuedArrival>,
     unprocessedPlanetArrivalIds: Map<LocationId, VoyageId[]>,
@@ -468,9 +471,28 @@ class GameManager extends EventEmitter {
         const revealedLocation = { ...location, revealer: coords.claimer };
 
         revealedLocations.set(locationId, revealedLocation);
-
         const claimedLocation = { ...location, claimer: coords.claimer };
         claimedLocations.set(locationId, claimedLocation);
+      }
+    }
+
+    const burnedLocations = new Map<LocationId, BurnedLocation>();
+
+    for (const [locationId, coords] of burnedCoords) {
+      const planet = touchedPlanets.get(locationId);
+
+      if (planet) {
+        const location: WorldLocation = {
+          hash: locationId,
+          coords,
+          perlin: planet.perlin,
+          biomebase: this.biomebasePerlin(coords, true),
+        };
+
+        const revealedLocation = { ...location, revealer: coords.operator };
+        revealedLocations.set(locationId, revealedLocation);
+        const burnedLocation = { ...location, operator: coords.operator };
+        burnedLocations.set(locationId, burnedLocation);
       }
     }
 
@@ -480,6 +502,7 @@ class GameManager extends EventEmitter {
       allTouchedPlanetIds,
       revealedLocations,
       claimedLocations,
+      burnedLocations,
       artifacts,
       persistentChunkStore.allChunks(),
       unprocessedArrivals,
@@ -735,6 +758,9 @@ class GameManager extends EventEmitter {
       initialState.claimedCoordsMap
         ? initialState.claimedCoordsMap
         : new Map<LocationId, ClaimedCoords>(),
+      initialState.burnedCoordsMap
+        ? initialState.burnedCoordsMap
+        : new Map<LocationId, BurnedCoords>(),
       initialState.worldRadius,
       initialState.arrivals,
       initialState.planetVoyageIdMap,
@@ -835,7 +861,7 @@ class GameManager extends EventEmitter {
       .on(ContractsAPIEvent.LocationBurned, async (planetId: LocationId, _revealer: EthAddress) => {
         // TODO: hook notifs or emit event to UI if you want
 
-        // console.log('[testInfo]: ContractsAPIEvent.LocationClaimed');
+        // console.log('[testInfo]: ContractsAPIEvent.LocationBurned');
         await gameManager.hardRefreshPlanet(planetId);
         gameManager.emit(GameManagerEvent.PlanetUpdate);
       })
@@ -1927,6 +1953,23 @@ class GameManager extends EventEmitter {
   }
 
   /**
+   * Gets the amount of time (ms) until the next time the current player can claim a planet.
+   */
+  public timeUntilNextClaimAvailable() {
+    if (!this.account) {
+      throw new Error('no account set');
+    }
+
+    const myLastClaimTimestamp = this.players.get(this.account)?.lastClaimTimestamp;
+
+    // Calculation formula is the same
+    return timeUntilNextBroadcastAvailable(
+      myLastClaimTimestamp,
+      this.contractConstants.CLAIM_PLANET_COOLDOWN
+    );
+  }
+
+  /**
    * Gets the timestamp (ms) of the next time that we can burn a planet.
    */
   public getNextBurnAvailableTimestamp() {
@@ -1941,6 +1984,23 @@ class GameManager extends EventEmitter {
 
     // both the variables in the next line are denominated in seconds
     return (myLastBurnTimestamp + this.contractConstants.BURN_PLANET_COOLDOWN) * 1000;
+  }
+
+  /**
+   * Gets the amount of time (ms) until the next time the current player can burn a planet.
+   */
+  public timeUntilNextBurnAvailable() {
+    if (!this.account) {
+      throw new Error('no account set');
+    }
+
+    const myLastBurnTimestamp = this.players.get(this.account)?.lastBurnTimestamp;
+
+    // Calculation formula is the same
+    return timeUntilNextBroadcastAvailable(
+      myLastBurnTimestamp,
+      this.contractConstants.BURN_PLANET_COOLDOWN
+    );
   }
 
   public getCaptureZones(): Set<CaptureZone> {

@@ -94,6 +94,7 @@ contract DFPinkBombFacet is WithStorage {
             operator: msg.sender,
             burnedAt: block.timestamp
         });
+        emit LocationBurned(msg.sender, _input[0], _input[2], _input[3]);
     }
 
     function containsPinkShip(uint256 locationId) public view returns (bool) {
@@ -145,7 +146,7 @@ contract DFPinkBombFacet is WithStorage {
         require(planetInPinkZone(x, y), "planet is not in your pink zone");
 
         planet.destroyed = true;
-        
+
     }
 
     function planetInPinkZone(uint256 x, uint256 y) public returns (bool) {

@@ -482,6 +482,22 @@ class GameUIManager extends EventEmitter {
     return this.gameManager.timeUntilNextBroadcastAvailable();
   }
 
+  public getNextClaimAvailableTimestamp() {
+    return this.gameManager.getNextClaimAvailableTimestamp();
+  }
+
+  public timeUntilNextClaimAvailable() {
+    return this.gameManager.timeUntilNextClaimAvailable();
+  }
+
+  public getNextBurnAvailableTimestamp() {
+    return this.gameManager.getNextBurnAvailableTimestamp();
+  }
+
+  public timeUntilNextBurnAvailable() {
+    return this.gameManager.timeUntilNextBurnAvailable();
+  }
+
   public getEnergyArrivingForMove(
     from: LocationId,
     to: LocationId | undefined,

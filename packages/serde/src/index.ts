@@ -28,6 +28,7 @@
 export * from './address';
 export * from './arrival';
 export * from './artifact';
+export * from './burn';
 export * from './claim';
 export * from './event';
 export * from './location';

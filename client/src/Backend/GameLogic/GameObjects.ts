@@ -45,6 +45,7 @@ import {
   ArtifactId,
   ArtifactType,
   Biome,
+  BurnedLocation,
   Chunk,
   ClaimedLocation,
   EthAddress,
@@ -187,6 +188,13 @@ export class GameObjects {
   private readonly claimedLocations: Map<LocationId, ClaimedLocation>;
 
   /**
+   * Map from location ids to, if that location id has been burned on-chain, the world coordinates
+   * of that location id, as well as some extra information regarding the circumstances of the
+   * revealing of this planet.
+   */
+  private readonly burnedLocations: Map<LocationId, BurnedLocation>;
+
+  /**
    * Some of the game's parameters are downloaded from the blockchain. This allows the client to be
    * flexible, and connect to any compatible set of Dark Forest contracts, download the parameters,
    * and join the game, taking into account the unique configuration of those specific Dark Forest
@@ -236,6 +244,7 @@ export class GameObjects {
     allTouchedPlanetIds: Set<LocationId>,
     revealedLocations: Map<LocationId, RevealedLocation>,
     claimedLocations: Map<LocationId, ClaimedLocation>,
+    burnedLocations: Map<LocationId, BurnedLocation>,
     artifacts: Map<ArtifactId, Artifact>,
     allChunks: Iterable<Chunk>,
     unprocessedArrivals: Map<VoyageId, QueuedArrival>,
@@ -251,6 +260,7 @@ export class GameObjects {
     this.touchedPlanetIds = allTouchedPlanetIds;
     this.revealedLocations = revealedLocations;
     this.claimedLocations = claimedLocations;
+    this.burnedLocations = burnedLocations;
     this.artifacts = artifacts;
     this.myArtifacts = new Map();
     this.contractConstants = contractConstants;
@@ -324,6 +334,12 @@ export class GameObjects {
     for (const [_locId, claimedLoc] of claimedLocations) {
       this.updatePlanet(claimedLoc.hash, (p) => {
         p.claimer = claimedLoc.claimer;
+      });
+    }
+
+    for (const [_locId, burnedLoc] of burnedLocations) {
+      this.updatePlanet(burnedLoc.hash, (p) => {
+        p.operator = burnedLoc.operator;
       });
     }
 
@@ -1015,6 +1031,14 @@ export class GameObjects {
 
   public setClaimedLocation(claimedLocation: ClaimedLocation) {
     this.claimedLocations.set(claimedLocation.hash, claimedLocation);
+  }
+
+  public getBurnedLocations(): Map<LocationId, BurnedLocation> {
+    return this.burnedLocations;
+  }
+
+  public setBurnedLocations(burnedLocation: BurnedLocation) {
+    this.burnedLocations.set(burnedLocation.hash, burnedLocation);
   }
 
   /**
