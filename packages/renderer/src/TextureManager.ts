@@ -114,15 +114,16 @@ const biomeSpriteInfo = (): BiomeSpriteLocations => {
       }
     } else if (isRelic(type)) {
       let yIdx = 8;
-      let relicNo = type - ArtifactType.Wormhole;
+      const relicNo = type - ArtifactType.Wormhole;
       let xIdx = relicNo * 2;
 
-      if (type === ArtifactType.StellarShield) relicNo -= 2;
-      else if (type === ArtifactType.Bomb) {
+      if (type === ArtifactType.StellarShield) {
+        xIdx = 14;
+        yIdx = 8;
+      } else if (type === ArtifactType.Bomb) {
         xIdx = 0;
         yIdx = 11;
       }
-
       for (let biome: Biome = Biome.UNKNOWN; biome <= MAX_BIOME; biome++) {
         biomeInfo[biome] = {
           shiny: spriteRectangleFromIndex(xIdx, yIdx),
