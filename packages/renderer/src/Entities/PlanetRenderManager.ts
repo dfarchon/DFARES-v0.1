@@ -171,6 +171,7 @@ export class PlanetRenderManager implements PlanetRenderManagerType {
     // render black domain
     if (planet.destroyed) {
       this.queueBlackDomain(planet, planet.location.coords, renderInfo.radii.radiusWorld);
+
       return;
     }
 
@@ -461,9 +462,13 @@ export class PlanetRenderManager implements PlanetRenderManagerType {
   }
 
   private queueBlackDomain(planet: Planet, center: WorldCoords, radius: number) {
-    const { blackDomainRenderer: bR } = this.renderer;
+    const { blackDomainRenderer: bR, circleRenderer: cR } = this.renderer;
 
     bR.queueBlackDomain(planet, center, radius);
+
+    //mytodo: pink effect to planet
+
+    cR.queueCircleWorld(center, radius * 1.2, [255, 192, 203, 160]);
   }
 
   private queueAsteroids(planet: Planet, center: WorldCoords, radius: number) {

@@ -21,6 +21,7 @@ export class BlackDomainRenderer
 
   viewport: GameViewport;
   rendererType = RendererType.BlackDomain;
+
   constructor(manager: GameGLManager) {
     super(manager, BLACKDOMAIN_PROGRAM_DEFINITION);
 
