@@ -1172,6 +1172,20 @@ class GameManager extends EventEmitter {
     this.entityStore.replaceArtifactFromContractData(artifact);
   }
 
+  //mytodo: test more
+  public async hardRefreshPinkZones(): Promise<void> {
+    const loadedBurnedCoords = await this.contractsAPI.getBurnedPlanetsCoords(0);
+
+    for (const item of loadedBurnedCoords) {
+      const burnedLocation = {
+        ...this.locationFromCoords(item),
+        operator: item.operator,
+      };
+
+      this.getGameObjects().setBurnedLocation(burnedLocation);
+    }
+  }
+
   private onTxSubmit(tx: Transaction): void {
     this.terminal.current?.print(`${tx.intent.methodName} transaction (`, TerminalTextStyle.Blue);
     this.terminal.current?.printLink(
