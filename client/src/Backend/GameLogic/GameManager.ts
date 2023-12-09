@@ -38,6 +38,7 @@ import {
   isUnconfirmedInitTx,
   isUnconfirmedInvadePlanetTx,
   isUnconfirmedMoveTx,
+  isUnconfirmedPinkTx,
   isUnconfirmedProspectPlanetTx,
   isUnconfirmedRevealTx,
   isUnconfirmedUpgradeTx,
@@ -94,6 +95,7 @@ import {
   UnconfirmedInit,
   UnconfirmedInvadePlanet,
   UnconfirmedMove,
+  UnconfirmedPink,
   UnconfirmedPlanetTransfer,
   UnconfirmedProspectPlanet,
   UnconfirmedReveal,
@@ -2301,6 +2303,91 @@ class GameManager extends EventEmitter {
       return tx;
     } catch (e) {
       this.getNotificationsManager().txInitError('burnLocation', e.message);
+      throw e;
+    }
+  }
+
+  /**
+   * burnLocation reveals a planet's location on-chain.
+   */
+
+  public async pinkLocation(planetId: LocationId): Promise<Transaction<UnconfirmedPink>> {
+    try {
+      if (!this.account) {
+        throw new Error('no account set');
+      }
+
+      if (this.checkGameHasEnded()) {
+        throw new Error('game has ended');
+      }
+
+      const planet = this.entityStore.getPlanetWithId(planetId);
+
+      if (!planet) {
+        throw new Error("you can't pink a planet you haven't discovered");
+      }
+
+      if (!isLocatable(planet)) {
+        throw new Error("you can't pink a planet whose coordinates you don't know");
+      }
+
+      if (planet.destroyed || planet.frozen) {
+        throw new Error("you can't pink destroyed/frozen planets");
+      }
+
+      if (planet.operator !== undefined) {
+        throw new Error('someone already burn this planet');
+      }
+
+      if (planet.transactions?.hasTransaction(isUnconfirmedPinkTx)) {
+        throw new Error("you're already pinking this planet's location");
+      }
+
+      if (this.entityStore.transactions.hasTransaction(isUnconfirmedPinkTx)) {
+        throw new Error("you're already pinking this planet's location");
+      }
+
+      // const myLastBurnTimestamp = this.players.get(this.account)?.lastBurnTimestamp;
+
+      // if (myLastBurnTimestamp && Date.now() < this.getNextBurnAvailableTimestamp()) {
+      //   throw new Error('still on cooldown for burning');
+      // }
+
+      // this is shitty. used for the popup window
+      localStorage.setItem(`${this.getAccount()?.toLowerCase()}-pinkLocationId`, planetId);
+
+      const getArgs = async () => {
+        const revealArgs = await this.snarkHelper.getRevealArgs(
+          planet.location.coords.x,
+          planet.location.coords.y
+        );
+        this.terminal.current?.println(
+          'REVEAL: calculated SNARK with args:',
+          TerminalTextStyle.Sub
+        );
+        this.terminal.current?.println(
+          JSON.stringify(hexifyBigIntNestedArray(revealArgs.slice(0, 3))),
+          TerminalTextStyle.Sub
+        );
+        this.terminal.current?.newline();
+
+        return revealArgs;
+      };
+
+      const txIntent: UnconfirmedPink = {
+        methodName: 'pinkLocation',
+        locationId: planetId,
+        location: planet.location,
+        contract: this.contractsAPI.contract,
+        args: getArgs(),
+      };
+
+      // Always await the submitTransaction so we can catch rejections
+      const tx = await this.contractsAPI.submitTransaction(txIntent);
+
+      return tx;
+    } catch (e) {
+      this.getNotificationsManager().txInitError('pinkLocation', e.message);
       throw e;
     }
   }

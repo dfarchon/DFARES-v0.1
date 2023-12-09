@@ -416,6 +416,25 @@ export class ContractsAPI extends EventEmitter {
         );
         this.emit(ContractsAPIEvent.PlayerUpdate, address(revealerAddr));
       },
+
+      [ContractEvent.LocationBurned]: async (
+        revealerAddr: string,
+        location: EthersBN,
+        _x: EthersBN,
+        _y: EthersBN,
+        _: Event
+      ) => {
+        // console.log('[testInfo] ContractEvent.LocationBurned');
+        // console.log(revealerAddr);
+        // console.log(locationIdFromEthersBN(location));
+        this.emit(ContractsAPIEvent.PlanetUpdate, locationIdFromEthersBN(location));
+        this.emit(
+          ContractsAPIEvent.LocationBurned,
+          locationIdFromEthersBN(location),
+          address(revealerAddr.toLowerCase())
+        );
+        this.emit(ContractsAPIEvent.PlayerUpdate, address(revealerAddr));
+      },
     };
 
     this.ethConnection.subscribeToContractEvents(contract, eventHandlers, filter);

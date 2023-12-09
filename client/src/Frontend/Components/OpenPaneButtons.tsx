@@ -9,6 +9,7 @@ import {
   ManagePlanetArtifactsPane,
   PlanetInfoHelpContent,
 } from '../Panes/ManagePlanetArtifacts/ManagePlanetArtifactsPane';
+import { PinkPane } from '../Panes/PinkPane';
 import { PlanetInfoPane } from '../Panes/PlanetInfoPane';
 import { UpgradeDetailsPane, UpgradeDetailsPaneHelpContent } from '../Panes/UpgradeDetailsPane';
 import {
@@ -16,6 +17,7 @@ import {
   TOGGLE_BUY_ARTIFACT_PANE,
   TOGGLE_DROP_BOMB_PANE,
   TOGGLE_HAT_PANE,
+  TOGGLE_PINK_PANE,
   TOGGLE_PLANET_ARTIFACTS_PANE,
   TOGGLE_PLANET_INFO_PANE,
   TOGGLE_UPGRADES_PANE,
@@ -175,6 +177,24 @@ export function OpenDropBombButton({
       title='Drop Bomb'
       shortcut={TOGGLE_DROP_BOMB_PANE}
       element={() => <DropBombPane initialPlanetId={planetId} modal={modal} />}
+      helpContent={PlanetInfoHelpContent()}
+    />
+  );
+}
+
+export function OpenPinkButton({
+  modal,
+  planetId,
+}: {
+  modal: ModalHandle;
+  planetId: LocationId | undefined;
+}) {
+  return (
+    <OpenPaneButton
+      modal={modal}
+      title='Pink'
+      shortcut={TOGGLE_PINK_PANE}
+      element={() => <PinkPane initialPlanetId={planetId} modal={modal} />}
       helpContent={PlanetInfoHelpContent()}
     />
   );

@@ -15,7 +15,8 @@ export const TOGGLE_PLANET_ARTIFACTS_PANE = 's';
 export const TOGGLE_HAT_PANE = 'x';
 
 export const TOGGLE_BUY_ARTIFACT_PANE = 'd';
-export const TOGGLE_DROP_BOMB_PANE = 'p';
+export const TOGGLE_DROP_BOMB_PANE = 'o';
+export const TOGGLE_PINK_PANE = 'p';
 
 export const TOGGLE_ABANDON = 'r';
 export const INVADE = 'y';

@@ -1,18 +1,17 @@
-import { isUnconfirmedBurnTx } from '@dfares/serde';
-import { ArtifactType, EthAddress, LocationId } from '@dfares/types';
-import React, { useEffect, useMemo, useState } from 'react';
+import { isUnconfirmedPinkTx } from '@dfares/serde';
+import { EthAddress, LocationId } from '@dfares/types';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Btn } from '../Components/Btn';
 import { CenterBackgroundSubtext, Spacer } from '../Components/CoreUI';
 import { LoadingSpinner } from '../Components/LoadingSpinner';
-import { Blue, White } from '../Components/Text';
-import { formatDuration, TimeUntil } from '../Components/TimeUntil';
+import { Blue } from '../Components/Text';
 import dfstyles from '../Styles/dfstyles';
 import { usePlanet, useUIManager } from '../Utils/AppHooks';
 import { useEmitterValue } from '../Utils/EmitterHooks';
 import { ModalHandle } from '../Views/ModalPane';
 
-const DropBombWrapper = styled.div`
+const PinkWrapper = styled.div`
   & .row {
     display: flex;
     flex-direction: row;
@@ -37,7 +36,7 @@ const DropBombWrapper = styled.div`
   }
 `;
 
-// export function DropBombPaneHelpContent() {
+// export function PinkPaneHelpContent() {
 //   return (
 //     <div>
 //       Reveal this planet's location to all other players on-chain!
@@ -48,7 +47,7 @@ const DropBombWrapper = styled.div`
 //   );
 // }
 
-export function DropBombPane({
+export function PinkPane({
   initialPlanetId,
   modal: _modal,
 }: {
@@ -66,84 +65,55 @@ export function DropBombPane({
     return loc.coords;
   };
 
-  const dropBomb = () => {
+  const pinkLocation = () => {
     if (!planet || !uiManager) return;
     const loc = uiManager.getLocationOfPlanet(planet.locationId);
     if (!loc) return;
 
-    uiManager.burnLocation(loc.hash);
+    uiManager.pinkLocation(loc.hash);
   };
 
   const [account, setAccount] = useState<EthAddress | undefined>(undefined); // consider moving this one to parent
   const isDestoryedOrFrozen = planet?.destroyed || planet?.frozen;
-  const burnLocationCooldownPassed = uiManager.getNextBurnAvailableTimestamp() <= Date.now();
-  const currentlyBurningAnyPlanet = uiManager.isCurrentlyBurning();
 
-  const hasOwnedShipPink = useMemo(
-    () =>
-      planet?.heldArtifactIds
-        .map((id) => uiManager.getArtifactWithId(id))
-        .find(
-          (artifact) =>
-            artifact?.artifactType === ArtifactType.ShipPink && artifact.controller === account
-        ),
-    [account, planet, uiManager]
-  );
+  //mytodo: add mcheck
+  const pinkZonePassed = true;
 
   useEffect(() => {
     if (!uiManager) return;
     setAccount(uiManager.getAccount());
   }, [uiManager]);
 
-  let burnBtn = undefined;
+  let pinkBtn = undefined;
 
   if (isDestoryedOrFrozen) {
-    burnBtn = <Btn disabled={true}>Drop Bomb</Btn>;
-  } else if (planet?.transactions?.hasTransaction(isUnconfirmedBurnTx)) {
-    burnBtn = (
+    pinkBtn = <Btn disabled={true}>Pink It </Btn>;
+  } else if (planet?.transactions?.hasTransaction(isUnconfirmedPinkTx)) {
+    pinkBtn = (
       <Btn disabled={true}>
-        <LoadingSpinner initialText={'Dropping Bomb...'} />
+        <LoadingSpinner initialText={'Pinking It...'} />
       </Btn>
     );
-  } else if (!burnLocationCooldownPassed) {
-    burnBtn = <Btn disabled={true}>Drop Bomb</Btn>;
-  } else if (!hasOwnedShipPink) {
-    burnBtn = <Btn disabled={true}>Drop Bomb</Btn>;
+  } else if (!pinkZonePassed) {
+    pinkBtn = <Btn disabled={true}>Pink It </Btn>;
   } else {
-    burnBtn = (
-      <Btn disabled={currentlyBurningAnyPlanet} onClick={dropBomb}>
-        Drop Bomb
+    pinkBtn = (
+      <Btn disabled={false} onClick={pinkLocation}>
+        Pink It
       </Btn>
     );
   }
 
   const warningsSection = (
     <div>
-      {currentlyBurningAnyPlanet && (
-        <p>
-          <Blue>INFO:</Blue> Dropping Bomb...
-        </p>
-      )}
-      {planet?.owner === account && (
-        <p>
-          <Blue>INFO:</Blue> You own this planet! Dropping Bomb to this planet is not a good choice.
-        </p>
-      )}
       {isDestoryedOrFrozen && (
         <p>
           <Blue>INFO:</Blue> You can't drop bomb to a destoryed/frozen planet.
         </p>
       )}
-      {!burnLocationCooldownPassed && (
+      {!pinkZonePassed && (
         <p>
-          <Blue>INFO:</Blue> You must wait{' '}
-          <TimeUntil timestamp={uiManager.getNextBurnAvailableTimestamp()} ifPassed={'now!'} /> to
-          burn another planet.
-        </p>
-      )}
-      {!hasOwnedShipPink && (
-        <p>
-          <Blue>INFO:</Blue> Your pink Ship needs to be above this planet.
+          <Blue>INFO:</Blue> You only can pink planets in your pink circle.
         </p>
       )}
     </div>
@@ -151,20 +121,15 @@ export function DropBombPane({
 
   if (planet) {
     return (
-      <DropBombWrapper>
-        <div>
-          You can only drop bomb to a planet once every{' '}
-          <White>{formatDuration(uiManager.contractConstants.BURN_PLANET_COOLDOWN * 1000)}</White>.
-        </div>
-
+      <PinkWrapper>
         <div className='message'>{warningsSection}</div>
         <div className='row'>
           <span>Coordinates</span>
           <span>{`(${getLoc().x}, ${getLoc().y})`}</span>
         </div>
         <Spacer height={8} />
-        <p style={{ textAlign: 'right' }}>{burnBtn}</p>
-      </DropBombWrapper>
+        <p style={{ textAlign: 'right' }}>{pinkBtn}</p>
+      </PinkWrapper>
     );
   } else {
     return (

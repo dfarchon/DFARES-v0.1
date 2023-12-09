@@ -11,6 +11,7 @@ import {
   OpenDropBombButton,
   OpenHatPaneButton,
   OpenManagePlanetArtifactsButton,
+  OpenPinkButton,
   OpenPlanetInfoButton,
   OpenUpgradeDetailsPaneButton,
 } from '../Components/OpenPaneButtons';
@@ -99,6 +100,7 @@ function PlanetContextPaneContent({
         <>
           <OpenManagePlanetArtifactsButton modal={modal} planetId={p?.locationId} />
           <OpenDropBombButton modal={modal} planetId={p?.locationId} />
+          <OpenPinkButton modal={modal} planetId={p?.locationId} />
           {hatRow}
           {buyArtifactRow}
         </>

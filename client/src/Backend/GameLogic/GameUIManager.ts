@@ -474,6 +474,10 @@ class GameUIManager extends EventEmitter {
     this.gameManager.burnLocation(locationId);
   }
 
+  public pinkLocation(locationId: LocationId) {
+    this.gameManager.pinkLocation(locationId);
+  }
+
   public getNextBroadcastAvailableTimestamp() {
     return this.gameManager.getNextBroadcastAvailableTimestamp();
   }
