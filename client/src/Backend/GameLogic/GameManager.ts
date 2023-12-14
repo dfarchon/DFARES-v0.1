@@ -2729,16 +2729,22 @@ class GameManager extends EventEmitter {
           const planetPerlin = homePlanetLocation.perlin;
           const planetX = homePlanetLocation.coords.x;
           const planetY = homePlanetLocation.coords.y;
+          const distFromOrigin = Math.sqrt(planetX ** 2 + planetY ** 2);
+
+          //###############
+          //  NEW MAP ALGO
+          //###############
           const planetLevel = this.entityStore.planetLevelFromHexPerlin(
             homePlanetLocation.hash,
-            homePlanetLocation.perlin
+            homePlanetLocation.perlin,
+            distFromOrigin
           );
           const planetType = this.entityStore.planetTypeFromHexPerlin(
             homePlanetLocation.hash,
             homePlanetLocation.perlin
           );
           const planet = this.getPlanetWithId(homePlanetLocation.hash);
-          const distFromOrigin = Math.sqrt(planetX ** 2 + planetY ** 2);
+
           if (
             planetPerlin < initPerlinMax &&
             planetPerlin >= initPerlinMin &&
@@ -3499,6 +3505,12 @@ class GameManager extends EventEmitter {
       const xDiff = newX - oldX;
       const yDiff = newY - oldY;
 
+      //###############
+      //  NEW MAP ALGO
+      //###############
+      const distFromOrigin = Math.sqrt(newX ** 2 + newY ** 2);
+
+
       const distMax = Math.ceil(Math.sqrt(xDiff ** 2 + yDiff ** 2));
 
       // Contract will automatically send full forces/silver on abandon
@@ -3557,7 +3569,7 @@ class GameManager extends EventEmitter {
         methodName: 'move',
         contract: this.contractsAPI.contract,
         args: getArgs(),
-        from: oldLocation.hash,
+        from: oldLocation.hash,   //以下的东西没屁用
         to: newLocation.hash,
         forces: shipsMoved,
         silver: silverMoved,

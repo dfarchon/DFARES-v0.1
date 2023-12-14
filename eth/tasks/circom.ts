@@ -25,8 +25,8 @@ async function circomTemplate(
   for (const zkey of zkeys) {
     const name = camelcase(zkey.name, {
       pascalCase: true,
-      preserveConsecutiveUppercase: true,
-      locale: false,
+      // preserveConsecutiveUppercase: true,
+      // locale: false,
     });
     const verifyingKeyName = `${name}VerifyingKey`;
     const verifyProofName = `verify${name}Proof`;

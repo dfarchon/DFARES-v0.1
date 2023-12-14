@@ -103,6 +103,9 @@ contract DFCoreFacet is WithStorage {
         return true;
     }
 
+    //###############
+    //  NEW MAP ALGO
+    //###############
     function revealLocation(
         uint256[2] memory _a,
         uint256[2][2] memory _b,
@@ -111,8 +114,13 @@ contract DFCoreFacet is WithStorage {
     ) public notPaused onlyWhitelisted {
         require(checkRevealProof(_a, _b, _c, _input), "Failed reveal pf check");
 
+        // if (!gs().planets[_input[0]].isInitialized) {
+        //     LibPlanet.initializePlanetWithDefaults(_input[0], _input[1], false);
+        // }
+
+        uint256 distFromOriginSquare = _input[2] ** 2 + _input[3] ** 2;
         if (!gs().planets[_input[0]].isInitialized) {
-            LibPlanet.initializePlanetWithDefaults(_input[0], _input[1], false);
+            LibPlanet.initializePlanetWithDefaults(_input[0], _input[1],distFromOriginSquare, false);
         }
 
         LibPlanet.revealLocation(
@@ -129,9 +137,10 @@ contract DFCoreFacet is WithStorage {
         uint256[2] memory _a,
         uint256[2][2] memory _b,
         uint256[2] memory _c,
-        uint256[8] memory _input
+        uint256[8] memory _input,
+        uint256 distFromOriginSquare
     ) public onlyWhitelisted returns (uint256) {
-        LibPlanet.initializePlanet(_a, _b, _c, _input, true);
+        LibPlanet.initializePlanet(_a, _b, _c, _input,distFromOriginSquare, true);
 
         uint256 _location = _input[0];
         uint256 _perlin = _input[1];
@@ -161,6 +170,8 @@ contract DFCoreFacet is WithStorage {
         emit PlayerInitialized(msg.sender, _location);
         return _location;
     }
+
+
 
     function upgradePlanet(uint256 _location, uint256 _branch)
         public

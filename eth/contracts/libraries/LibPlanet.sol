@@ -82,6 +82,36 @@ library LibPlanet {
             );
     }
 
+    //###############
+    //  NEW MAP ALGO
+    //###############
+    function getDefaultInitPlanetArgs(
+        uint256 _location,
+        uint256 _perlin,
+        uint256 _distFromOriginSquare,
+        bool _isHomePlanet
+    ) public view returns (DFPInitPlanetArgs memory) {
+        (uint256 level, PlanetType planetType, SpaceType spaceType) = LibGameUtils
+            ._getPlanetLevelTypeAndSpaceType(_location, _perlin, _distFromOriginSquare);
+
+        if (_isHomePlanet) {
+            require(level == 0, "Can only initialize on planet level 0");
+            require(planetType == PlanetType.PLANET, "Can only initialize on regular planets");
+        }
+
+        return
+            DFPInitPlanetArgs(
+                _location,
+                _perlin,
+                level,
+                gameConstants().TIME_FACTOR_HUNDREDTHS,
+                spaceType,
+                planetType,
+                _isHomePlanet
+            );
+    }
+
+
     /**
      * Same SNARK args as `initializePlayer`. Adds a planet to the smart contract without setting an owner.
      */
@@ -90,6 +120,7 @@ library LibPlanet {
         uint256[2][2] memory _b,
         uint256[2] memory _c,
         uint256[8] memory _input,
+        uint256 distFromOriginSquare,
         bool isHomePlanet
     ) public {
         if (!snarkConstants().DISABLE_ZK_CHECKS) {
@@ -108,7 +139,7 @@ library LibPlanet {
         );
 
         // Initialize planet information
-        initializePlanetWithDefaults(_location, _perlin, isHomePlanet);
+        initializePlanetWithDefaults(_location, _perlin, distFromOriginSquare, isHomePlanet);
     }
 
     function initializePlanetWithDefaults(
@@ -121,6 +152,30 @@ library LibPlanet {
         DFPInitPlanetArgs memory initArgs = getDefaultInitPlanetArgs(
             _location,
             _perlin,
+            _isHomePlanet
+        );
+
+        _initializePlanet(initArgs);
+        gs().planetIds.push(_location);
+        gs().initializedPlanetCountByLevel[initArgs.level] += 1;
+    }
+
+
+    //###############
+    //  NEW MAP ALGO
+    //###############
+    function initializePlanetWithDefaults(
+        uint256 _location,
+        uint256 _perlin,
+        uint256 _distFromOriginSquare,
+        bool _isHomePlanet
+    ) public {
+        require(LibGameUtils._locationIdValid(_location), "Not a valid planet location");
+
+        DFPInitPlanetArgs memory initArgs = getDefaultInitPlanetArgs(
+            _location,
+            _perlin,
+            _distFromOriginSquare,
             _isHomePlanet
         );
 
@@ -400,5 +455,5 @@ library LibPlanet {
         scoreGained = (scoreGained * gameConstants().SILVER_SCORE_VALUE) / 100;
         gs().players[msg.sender].score += scoreGained;
     }
-    
+
 }
