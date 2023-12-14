@@ -332,7 +332,7 @@ async function takeOwnership(
     Math.floor(Math.sqrt(planet.location.coords.x ** 2 + planet.location.coords.y ** 2)) + 1 // floor(sqrt(x^2 + y^2)) + 1
   );
 
-  const args = Promise.resolve([newOwner, ...snarkArgs]);
+  const args = Promise.resolve([newOwner, ...snarkArgs, planet.location.coords.x ** 2 + planet.location.coords.y ** 2 ]);
 
   const tx = await df.submitTransaction({
     locationId: planet.locationId,

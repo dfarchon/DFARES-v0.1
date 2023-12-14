@@ -2526,6 +2526,7 @@ class GameManager extends EventEmitter {
       this.terminal.current?.println('');
 
       await this.persistentChunkStore.addHomeLocation(planet.location);
+      const distFromOriginSquare = planet.location.coords.x ** 2 + planet.location.coords.y ** 2;
 
       const getArgs = async () => {
         const args = await this.snarkHelper.getInitArgs(
@@ -2539,15 +2540,16 @@ class GameManager extends EventEmitter {
           TerminalTextStyle.Sub
         );
         this.terminal.current?.newline();
-        return args;
+        return [...args, distFromOriginSquare];
       };
+
 
       const txIntent: UnconfirmedInit = {
         methodName: 'initializePlayer',
         contract: this.contractsAPI.contract,
         locationId: planet.location.hash,
         location: planet.location,
-        args: getArgs(),
+        args: getArgs()
       };
 
       this.terminal.current?.println('INIT: proving that planet exists', TerminalTextStyle.Sub);
@@ -2741,7 +2743,8 @@ class GameManager extends EventEmitter {
           );
           const planetType = this.entityStore.planetTypeFromHexPerlin(
             homePlanetLocation.hash,
-            homePlanetLocation.perlin
+            homePlanetLocation.perlin,
+            distFromOrigin
           );
           const planet = this.getPlanetWithId(homePlanetLocation.hash);
 
@@ -3508,7 +3511,7 @@ class GameManager extends EventEmitter {
       //###############
       //  NEW MAP ALGO
       //###############
-      const distFromOrigin = Math.sqrt(newX ** 2 + newY ** 2);
+      const distFromOriginSquare = newX ** 2 + newY ** 2;
 
 
       const distMax = Math.ceil(Math.sqrt(xDiff ** 2 + yDiff ** 2));
@@ -3548,6 +3551,7 @@ class GameManager extends EventEmitter {
           (shipsMoved * CONTRACT_PRECISION).toString(),
           (silverMoved * CONTRACT_PRECISION).toString(),
           '0',
+          distFromOriginSquare.toString(),
           abandoning ? '1' : '0',
         ] as MoveArgs;
 

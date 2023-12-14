@@ -39,8 +39,8 @@ contract DFMoveFacet is WithStorage {
         uint256 popMoved,
         uint256 silverMoved,
         uint256 movedArtifactId,
-        uint256 isAbandoning,
-        uint256  distFromOriginSquare
+        uint256  distFromOriginSquare,
+        uint256 isAbandoning
     ) public notPaused returns (uint256) {
         LibGameUtils.revertIfBadSnarkPerlinFlags(
             [_input[5], _input[6], _input[7], _input[8], _input[9]],
