@@ -405,31 +405,13 @@ export class ContractsAPI extends EventEmitter {
         _y: EthersBN,
         _: Event
       ) => {
-        // console.log('[testInfo] ContractEvent.LocationBurned');
-        // console.log(revealerAddr);
-        // console.log(locationIdFromEthersBN(location));
+        //mytodo:
+        console.log('[testInfo] ContractEvent.LocationBurned');
+        console.log(revealerAddr);
+        console.log(locationIdFromEthersBN(location));
         this.emit(ContractsAPIEvent.PlanetUpdate, locationIdFromEthersBN(location));
         this.emit(
-          ContractsAPIEvent.LocationBurned,
-          locationIdFromEthersBN(location),
-          address(revealerAddr.toLowerCase())
-        );
-        this.emit(ContractsAPIEvent.PlayerUpdate, address(revealerAddr));
-      },
-
-      [ContractEvent.LocationBurned]: async (
-        revealerAddr: string,
-        location: EthersBN,
-        _x: EthersBN,
-        _y: EthersBN,
-        _: Event
-      ) => {
-        // console.log('[testInfo] ContractEvent.LocationBurned');
-        // console.log(revealerAddr);
-        // console.log(locationIdFromEthersBN(location));
-        this.emit(ContractsAPIEvent.PlanetUpdate, locationIdFromEthersBN(location));
-        this.emit(
-          ContractsAPIEvent.LocationBurned,
+          ContractsAPIEvent.LocationRevealed,
           locationIdFromEthersBN(location),
           address(revealerAddr.toLowerCase())
         );
@@ -540,7 +522,7 @@ export class ContractsAPI extends EventEmitter {
       CLAIM_END_TIMESTAMP,
       BURN_END_TIMESTAMP,
       BURN_PLANET_COOLDOWN,
-      BURN_PLANET_EFFECT_RADIUS,
+      BURN_PLANET_LEVEL_EFFECT_RADIUS,
     } = await this.makeCall(this.contract.getGameConstants);
 
     // const TOKEN_MINT_END_TIMESTAMP = (
@@ -740,7 +722,18 @@ export class ContractsAPI extends EventEmitter {
 
       BURN_END_TIMESTAMP: BURN_END_TIMESTAMP.toNumber(),
       BURN_PLANET_COOLDOWN: BURN_PLANET_COOLDOWN.toNumber(),
-      BURN_PLANET_EFFECT_RADIUS: BURN_PLANET_EFFECT_RADIUS.toNumber(),
+      BURN_PLANET_LEVEL_EFFECT_RADIUS: [
+        BURN_PLANET_LEVEL_EFFECT_RADIUS[0].toNumber(),
+        BURN_PLANET_LEVEL_EFFECT_RADIUS[1].toNumber(),
+        BURN_PLANET_LEVEL_EFFECT_RADIUS[2].toNumber(),
+        BURN_PLANET_LEVEL_EFFECT_RADIUS[3].toNumber(),
+        BURN_PLANET_LEVEL_EFFECT_RADIUS[4].toNumber(),
+        BURN_PLANET_LEVEL_EFFECT_RADIUS[5].toNumber(),
+        BURN_PLANET_LEVEL_EFFECT_RADIUS[6].toNumber(),
+        BURN_PLANET_LEVEL_EFFECT_RADIUS[7].toNumber(),
+        BURN_PLANET_LEVEL_EFFECT_RADIUS[8].toNumber(),
+        BURN_PLANET_LEVEL_EFFECT_RADIUS[9].toNumber(),
+      ],
     };
     // console.log(constants);
     return constants;

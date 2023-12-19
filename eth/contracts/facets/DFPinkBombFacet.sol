@@ -19,7 +19,7 @@ import {LibTrig} from "../vendor/libraries/LibTrig.sol";
 import {ABDKMath64x64} from "../vendor/libraries/ABDKMath64x64.sol";
 
 // Type imports
-import {Planet, BurnedCoords, Artifact, ArtifactType} from "../DFTypes.sol";
+import {Planet, BurnedCoords, Artifact, ArtifactType,RevealedCoords} from "../DFTypes.sol";
 
 contract DFPinkBombFacet is WithStorage {
     modifier notPaused() {
@@ -37,6 +37,7 @@ contract DFPinkBombFacet is WithStorage {
     }
 
     event LocationBurned(address player, uint256 loc, uint256 x, uint256 y);
+    event LocationRevealed(address revealer, uint256 loc, uint256 x, uint256 y);
 
     /**
      * Same snark args as DFCoreFacet#revealLocation
@@ -78,12 +79,17 @@ contract DFPinkBombFacet is WithStorage {
 
         require(!planet.destroyed, "planet is destroyed");
         require(!planet.frozen, "planet is frozen");
+        require(planet.owner == msg.sender,"you can only burn planets you own");
 
         require(containsPinkShip(planetId), "pink ship must be present on planet");
 
         planet.destroyed = true;
+        planet.operator = msg.sender;
 
         gs().lastBurnTimestamp[msg.sender] = block.timestamp;
+
+
+        require(gs().burnedCoords[planetId].locationId == 0, "Location already burned");
 
         gs().burnedIds.push(planetId);
         gs().burnedPlanets[msg.sender].push(planetId);
@@ -146,8 +152,19 @@ contract DFPinkBombFacet is WithStorage {
         require(planetInPinkZone(x, y), "planet is not in your pink zone");
 
         planet.destroyed = true;
-        emit LocationBurned(msg.sender, _input[0], _input[2], _input[3]);
+        planet.operator = msg.sender;
 
+        if(gs().revealedCoords[planetId].locationId == 0){
+            gs().revealedPlanetIds.push(planetId);
+            gs().revealedCoords[planetId] = RevealedCoords({
+                locationId: planetId,
+                x: x,
+                y: y,
+                revealer: msg.sender
+            });
+            gs().players[msg.sender].lastRevealTimestamp = block.timestamp;
+            emit LocationRevealed(msg.sender, _input[0], _input[2], _input[3]);
+        }
     }
 
     function planetInPinkZone(uint256 x, uint256 y) public returns (bool) {
@@ -157,6 +174,7 @@ contract DFPinkBombFacet is WithStorage {
         uint256[] memory burnedPlanets = gs().burnedPlanets[msg.sender];
         for (uint256 i = 0; i < burnedPlanets.length; i++) {
             uint256 planetId = burnedPlanets[i];
+            Planet memory planet =  gs().planets[planetId];
             BurnedCoords memory center = gs().burnedCoords[planetId];
 
             int256 centerX = DFCaptureFacet(address(this)).getIntFromUInt(center.x);
@@ -168,7 +186,7 @@ contract DFPinkBombFacet is WithStorage {
                 uint256(xDiff * xDiff + yDiff * yDiff)
             );
 
-            if (distanceToZone <= gameConstants().BURN_PLANET_EFFECT_RADIUS) {
+            if (distanceToZone <= gameConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[planet.planetLevel]) {
                 return true;
             }
         }

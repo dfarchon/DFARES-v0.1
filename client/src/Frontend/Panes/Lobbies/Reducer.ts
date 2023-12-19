@@ -129,8 +129,8 @@ export type LobbyConfigAction =
     }
   | { type: 'CAPTURE_ZONE_RADIUS'; value: Initializers['CAPTURE_ZONE_RADIUS'] | undefined }
   | {
-      type: 'BURN_PLANET_EFFECT_RADIUS';
-      value: Initializers['BURN_PLANET_EFFECT_RADIUS'] | undefined;
+      type: 'BURN_PLANET_LEVEL_EFFECT_RADIUS';
+      value: Initializers['BURN_PLANET_LEVEL_EFFECT_RADIUS'] | undefined;
     }
   | {
       type: 'CAPTURE_ZONE_PLANET_LEVEL_SCORE';
@@ -354,7 +354,7 @@ export function lobbyConfigReducer(state: LobbyConfigState, action: LobbyAction)
       update = ofCaptureZoneRadius(action, state);
       break;
     }
-    case 'BURN_PLANET_EFFECT_RADIUS': {
+    case 'BURN_PLANET_LEVEL_EFFECT_RADIUS': {
       update = ofBurnPlanetEffectRadius(action, state);
       break;
     }
@@ -877,7 +877,7 @@ export function lobbyConfigInit(startingConfig: LobbyInitializers) {
         break;
       }
 
-      case 'BURN_PLANET_EFFECT_RADIUS': {
+      case 'BURN_PLANET_LEVEL_EFFECT_RADIUS': {
         const defaultValue = startingConfig[key];
         state[key] = {
           currentValue: defaultValue,
@@ -1826,7 +1826,7 @@ export function ofCaptureZoneRadius(
 }
 
 export function ofBurnPlanetEffectRadius(
-  { type, value }: Extract<LobbyConfigAction, { type: 'BURN_PLANET_EFFECT_RADIUS' }>,
+  { type, value }: Extract<LobbyConfigAction, { type: 'BURN_PLANET_LEVEL_EFFECT_RADIUS' }>,
   state: LobbyConfigState
 ) {
   if (value === undefined) {

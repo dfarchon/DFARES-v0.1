@@ -144,7 +144,7 @@ export type Planet = {
   coordsRevealed: boolean;
   revealer?: EthAddress;
   claimer?: EthAddress;
-  operator?: EthAddress; //only record burn operator
+  operator?: EthAddress; //only record burn/pink operator
   messages?: PlanetMessage<unknown>[];
 
   bonus: PlanetBonus;

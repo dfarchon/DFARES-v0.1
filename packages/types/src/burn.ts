@@ -11,4 +11,5 @@ export type BurnedCoords = WorldCoords & {
 
 export type BurnedLocation = WorldLocation & {
   operator: EthAddress;
+  radius: number;
 };

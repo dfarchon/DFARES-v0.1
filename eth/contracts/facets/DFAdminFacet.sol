@@ -101,8 +101,8 @@ contract DFAdminFacet is WithStorage {
         gameConstants().CAPTURE_ZONE_RADIUS = _newRadius;
     }
 
-    function changeBurnPlanetEffectRadius(uint256 _newRadius) public onlyAdmin {
-        gameConstants().BURN_PLANET_EFFECT_RADIUS = _newRadius;
+    function changeBurnPlanetEffectRadius(uint256 level,uint256 _newRadius) public onlyAdmin {
+        gameConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[level] = _newRadius;
     }
 
     function changeLocationRevealCooldown(uint256 newCooldown) public onlyAdmin {

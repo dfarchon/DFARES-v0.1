@@ -77,6 +77,7 @@ struct Planet {
     uint256 invadeStartBlock;
     address capturer;
     uint256 locationId;
+    address operator; // operate bomb to burn/pink planet
 }
 
 struct RevealedCoords {

@@ -494,7 +494,11 @@ class GameManager extends EventEmitter {
 
         const revealedLocation = { ...location, revealer: coords.operator };
         revealedLocations.set(locationId, revealedLocation);
-        const burnedLocation = { ...location, operator: coords.operator };
+        const burnedLocation = {
+          ...location,
+          operator: coords.operator,
+          radius: this.getContractConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[planet.planetLevel],
+        };
         burnedLocations.set(locationId, burnedLocation);
       }
     }
@@ -861,13 +865,7 @@ class GameManager extends EventEmitter {
           gameManager.emit(GameManagerEvent.PlanetUpdate);
         }
       )
-      .on(ContractsAPIEvent.LocationBurned, async (planetId: LocationId, _revealer: EthAddress) => {
-        // TODO: hook notifs or emit event to UI if you want
 
-        // console.log('[testInfo]: ContractsAPIEvent.LocationBurned');
-        await gameManager.hardRefreshPlanet(planetId);
-        gameManager.emit(GameManagerEvent.PlanetUpdate);
-      })
       .on(ContractsAPIEvent.TxQueued, (tx: Transaction) => {
         gameManager.entityStore.onTxIntent(tx);
       })
@@ -880,6 +878,10 @@ class GameManager extends EventEmitter {
         gameManager.persistentChunkStore.onEthTxComplete(tx.hash);
 
         if (isUnconfirmedRevealTx(tx)) {
+          await gameManager.hardRefreshPlanet(tx.intent.locationId);
+        } else if (isUnconfirmedBurnTx(tx)) {
+          await gameManager.hardRefreshPlanet(tx.intent.locationId);
+        } else if (isUnconfirmedPinkTx(tx)) {
           await gameManager.hardRefreshPlanet(tx.intent.locationId);
         } else if (isUnconfirmedInitTx(tx)) {
           terminal.current?.println('Loading Home Planet from Blockchain...');
@@ -1095,6 +1097,12 @@ class GameManager extends EventEmitter {
         claimer: claimedCoords.claimer,
       };
       this.getGameObjects().setClaimedLocation(claimedLocation);
+
+      //to show planet in map
+      revealedLocation = {
+        ...this.locationFromCoords(claimedCoords),
+        revealer: claimedCoords.claimer,
+      };
     } else if (revealedCoords) {
       revealedLocation = {
         ...this.locationFromCoords(revealedCoords),
@@ -1104,6 +1112,13 @@ class GameManager extends EventEmitter {
       burnedLocation = {
         ...this.locationFromCoords(burnedCoords),
         operator: burnedCoords.operator,
+        radius: this.getContractConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[planet.planetLevel],
+      };
+
+      //to show planet in map
+      revealedLocation = {
+        ...this.locationFromCoords(burnedCoords),
+        revealer: burnedCoords.operator,
       };
       this.getGameObjects().setBurnedLocation(burnedLocation);
     }
@@ -1179,9 +1194,14 @@ class GameManager extends EventEmitter {
     const loadedBurnedCoords = await this.contractsAPI.getBurnedPlanetsCoords(0);
 
     for (const item of loadedBurnedCoords) {
+      const locationId = item.hash;
+      const planet = this.getPlanetWithId(locationId);
+      if (planet === undefined) continue;
+
       const burnedLocation = {
         ...this.locationFromCoords(item),
         operator: item.operator,
+        radius: this.getContractConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[planet.planetLevel],
       };
 
       this.getGameObjects().setBurnedLocation(burnedLocation);
@@ -2046,9 +2066,14 @@ class GameManager extends EventEmitter {
     const allBurnedCoords = Array.from(burnedLocations.values());
 
     for (const item of allBurnedCoords) {
+      const planet = this.getPlanetWithId(item.hash);
+      if (planet === undefined) continue;
+
       pinkZones.add({
         coords: item.coords,
-        radius: this.getContractConstants().BURN_PLANET_EFFECT_RADIUS,
+
+        //mytodo: add different radius
+        radius: this.getContractConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[planet.planetLevel],
       });
     }
 
@@ -2250,7 +2275,7 @@ class GameManager extends EventEmitter {
         throw new Error("you can't burn destroyed/frozen planets");
       }
 
-      if (planet.operator !== undefined) {
+      if (planet.operator !== undefined && planet.operator !== EMPTY_ADDRESS) {
         throw new Error('someone already burn this planet');
       }
 
@@ -2335,7 +2360,7 @@ class GameManager extends EventEmitter {
         throw new Error("you can't pink destroyed/frozen planets");
       }
 
-      if (planet.operator !== undefined) {
+      if (planet.operator !== undefined && planet.operator !== EMPTY_ADDRESS) {
         throw new Error('someone already burn this planet');
       }
 
