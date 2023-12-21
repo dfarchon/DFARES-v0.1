@@ -191,9 +191,9 @@ library LibGameUtils {
         //     }
         // }
 
-        uint32[5] memory MAX_LEVEL_DIST = [47000 ** 2, 36000 ** 2, 25000 ** 2, 14000 ** 2, 8000 ** 2];
-        uint8[6] memory MAX_LEVEL_LIMIT = [1, 3, 5, 7, 9, 9];
-        uint8[6] memory MIN_LEVEL_BIAS = [0, 0, 0, 1, 1, 2];
+        uint32[5] memory MAX_LEVEL_DIST = [40000 ** 2, 30000 ** 2,20000 ** 2, 10000 ** 2, 5000 ** 2];
+        uint8[6] memory MAX_LEVEL_LIMIT = [1, 6, 7, 8, 9, 9];
+        uint8[6] memory MIN_LEVEL_BIAS = [0, 0, 1, 1, 2, 2];
 
         level = _distFromOriginSquare > MAX_LEVEL_DIST[0] ? (level > MAX_LEVEL_LIMIT[0] ? MAX_LEVEL_LIMIT[0] : level) : level;
         for (uint i = 0; i < MAX_LEVEL_DIST.length - 1; i++) {

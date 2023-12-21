@@ -1294,7 +1294,11 @@ export class GameObjects {
     this.planetArrivalIds.set(planetId, []);
   }
 
-  public planetLevelFromHexPerlin(hex: LocationId, perlin: number, distFromOrigin = -1): PlanetLevel {
+  public planetLevelFromHexPerlin(
+    hex: LocationId,
+    perlin: number,
+    distFromOrigin = -1
+  ): PlanetLevel {
     const spaceType = this.spaceTypeFromPerlin(perlin);
 
     const levelBigInt = getBytesFromHex(hex, 4, 7);
@@ -1318,7 +1322,6 @@ export class GameObjects {
       ret = this.contractConstants.MAX_NATURAL_PLANET_LEVEL as PlanetLevel;
     }
 
-
     //###############
     //  NEW MAP ALGO
     //###############
@@ -1333,25 +1336,38 @@ export class GameObjects {
     //   }
     // }
 
-    if(distFromOrigin > 0){
+    if (distFromOrigin > 0) {
+      const MAX_LEVEL_DIST = [40000, 30000, 20000, 10000, 5000];
+      const MAX_LEVEL_LIMIT = [
+        PlanetLevel.ONE,
+        PlanetLevel.SIX,
+        PlanetLevel.SEVEN,
+        PlanetLevel.EIGHT,
+        PlanetLevel.NINE,
+        PlanetLevel.NINE,
+      ];
+      const MIN_LEVEL_BIAS = [0, 0, 1, 1, 2, 2];
 
-      const MAX_LEVEL_DIST = [47000, 36000, 25000 , 14000, 8000];
-      const MAX_LEVEL_LIMIT = [PlanetLevel.ONE, PlanetLevel.THREE, PlanetLevel.FIVE, PlanetLevel.SEVEN, PlanetLevel.NINE, PlanetLevel.NINE];
-      const MIN_LEVEL_BIAS = [0, 0, 0, 1, 1, 2];
-
-      ret = distFromOrigin >= MAX_LEVEL_DIST[0] ? (ret > MAX_LEVEL_LIMIT[0] ? MAX_LEVEL_LIMIT[0] : ret) : ret;
+      ret =
+        distFromOrigin >= MAX_LEVEL_DIST[0]
+          ? ret > MAX_LEVEL_LIMIT[0]
+            ? MAX_LEVEL_LIMIT[0]
+            : ret
+          : ret;
       for (let i = 0; i < MAX_LEVEL_DIST.length - 1; i++) {
-          if(distFromOrigin < MAX_LEVEL_DIST[i] && distFromOrigin >= MAX_LEVEL_DIST[i+1]){
-              ret = (ret + MIN_LEVEL_BIAS[i + 1]) as PlanetLevel;
-              ret = MAX_LEVEL_LIMIT[i + 1] > ret ? ret : MAX_LEVEL_LIMIT[i + 1];
-              break;
-          }
+        if (distFromOrigin < MAX_LEVEL_DIST[i] && distFromOrigin >= MAX_LEVEL_DIST[i + 1]) {
+          ret = (ret + MIN_LEVEL_BIAS[i + 1]) as PlanetLevel;
+          ret = MAX_LEVEL_LIMIT[i + 1] > ret ? ret : MAX_LEVEL_LIMIT[i + 1];
+          break;
+        }
       }
-      ret = distFromOrigin < MAX_LEVEL_DIST[4] ? ( (ret + MIN_LEVEL_BIAS[5]) > MAX_LEVEL_LIMIT[5] ? MAX_LEVEL_LIMIT[5] : (ret + MIN_LEVEL_BIAS[5]) as PlanetLevel) : ret;
-
+      ret =
+        distFromOrigin < MAX_LEVEL_DIST[4]
+          ? ret + MIN_LEVEL_BIAS[5] > MAX_LEVEL_LIMIT[5]
+            ? MAX_LEVEL_LIMIT[5]
+            : ((ret + MIN_LEVEL_BIAS[5]) as PlanetLevel)
+          : ret;
     }
-
-
 
     return ret;
   }
