@@ -37,6 +37,7 @@ struct Player {
     bool claimedReward;
     uint256 activateArtifactAmount;
     uint256 buyArtifactAmount;
+    uint256 silver;
 }
 
 struct Planet {
