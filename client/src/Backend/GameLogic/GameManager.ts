@@ -2510,13 +2510,16 @@ class GameManager extends EventEmitter {
   /**
    * Attempts to join the game. Should not be called once you've already joined.
    */
-  public async joinGame(beforeRetry: (e: Error) => Promise<boolean>): Promise<void> {
+  public async joinGame(
+    beforeRetry: (e: Error) => Promise<boolean>,
+    _selectedCoords: { x: number; y: number }
+  ): Promise<void> {
     try {
       if (this.checkGameHasEnded()) {
         throw new Error('game has ended');
       }
 
-      const planet = await this.findRandomHomePlanet();
+      const planet = await this.findRandomHomePlanet(_selectedCoords);
       this.homeLocation = planet.location;
       this.terminal.current?.println('');
       this.terminal.current?.println(`Found Suitable Home Planet: ${getPlanetName(planet)} `);
@@ -2543,13 +2546,12 @@ class GameManager extends EventEmitter {
         return [...args, distFromOriginSquare];
       };
 
-
       const txIntent: UnconfirmedInit = {
         methodName: 'initializePlayer',
         contract: this.contractsAPI.contract,
         locationId: planet.location.hash,
         location: planet.location,
-        args: getArgs()
+        args: getArgs(),
       };
 
       this.terminal.current?.println('INIT: proving that planet exists', TerminalTextStyle.Sub);
@@ -2633,16 +2635,18 @@ class GameManager extends EventEmitter {
     return true;
   }
 
-  private async findRandomHomePlanet(): Promise<LocatablePlanet> {
+  private async findRandomHomePlanet(_selectedCoords: {
+    x: number;
+    y: number;
+  }): Promise<LocatablePlanet> {
     return new Promise<LocatablePlanet>((resolve, reject) => {
       const initPerlinMin = this.contractConstants.INIT_PERLIN_MIN;
       const initPerlinMax = this.contractConstants.INIT_PERLIN_MAX;
       let minedChunksCount = 0;
-
-      let x: number;
-      let y: number;
-      let d: number;
-      let p: number;
+      const x: number = _selectedCoords.x;
+      const y: number = _selectedCoords.y;
+      const d: number = Math.sqrt(x ** 2 + y ** 2);
+      const p: number = this.spaceTypePerlin({ x, y }, false);
 
       // if this.contractConstants.SPAWN_RIM_AREA is non-zero, then players must spawn in that
       // area, distributed evenly in the inner perimeter of the world
@@ -2655,18 +2659,27 @@ class GameManager extends EventEmitter {
         spawnInnerRadius = 0;
       }
 
-      do {
-        // sample from square
-        x = Math.random() * this.worldRadius * 2 - this.worldRadius;
-        y = Math.random() * this.worldRadius * 2 - this.worldRadius;
-        d = Math.sqrt(x ** 2 + y ** 2);
-        p = this.spaceTypePerlin({ x, y }, false);
-      } while (
-        p >= initPerlinMax || // keep searching if above or equal to the max
-        p < initPerlinMin || // keep searching if below the minimum
-        d >= this.worldRadius || // can't be out of bound
-        d <= spawnInnerRadius // can't be inside spawn area ring
-      );
+      // do {
+      //   // sample from square
+
+      //   d = Math.sqrt(x ** 2 + y ** 2);
+      //   p = this.spaceTypePerlin({ x, y }, false);
+      // } while (
+      //   p >= initPerlinMax || // keep searching if above or equal to the max
+      //   p < initPerlinMin || // keep searching if below the minimum
+      //   d >= this.worldRadius || // can't be out of bound
+      //   d <= spawnInnerRadius // can't be inside spawn area ring
+      // );
+
+      // if (
+      //     p >= initPerlinMax || // keep searching if above or equal to the max
+      //     p < initPerlinMin || // keep searching if below the minimum
+      //   d >= this.worldRadius || // can't be out of bound
+      //   d <= spawnInnerRadius
+      // ) {
+      //   // can't be inside spawn area ring
+      //   return;
+      // }
 
       // when setting up a new account in development mode, you can tell
       // the game where to start searching for planets using this query
@@ -2674,17 +2687,6 @@ class GameManager extends EventEmitter {
       //
       // ?searchCenter=2866,5627
       //
-
-      const params = new URLSearchParams(window.location.search);
-
-      if (params.has('searchCenter')) {
-        const parts = params.get('searchCenter')?.split(',');
-
-        if (parts) {
-          x = parseInt(parts[0], 10);
-          y = parseInt(parts[1], 10);
-        }
-      }
 
       const pattern: MiningPattern = new SpiralPattern({ x, y }, MIN_CHUNK_SIZE);
       const chunkStore = new HomePlanetMinerChunkStore(
@@ -3513,7 +3515,6 @@ class GameManager extends EventEmitter {
       //###############
       const distFromOriginSquare = newX ** 2 + newY ** 2;
 
-
       const distMax = Math.ceil(Math.sqrt(xDiff ** 2 + yDiff ** 2));
 
       // Contract will automatically send full forces/silver on abandon
@@ -3573,7 +3574,7 @@ class GameManager extends EventEmitter {
         methodName: 'move',
         contract: this.contractsAPI.contract,
         args: getArgs(),
-        from: oldLocation.hash,   //以下的东西没屁用
+        from: oldLocation.hash, //以下的东西没屁用
         to: newLocation.hash,
         forces: shipsMoved,
         silver: silverMoved,

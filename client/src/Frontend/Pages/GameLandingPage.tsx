@@ -23,6 +23,7 @@ import {
   submitInterestedEmail,
   submitPlayerEmail,
 } from '../../Backend/Network/UtilityServerAPI';
+import MinimapSpawnPlugin from '../../Backend/Plugins/minimapSpawn';
 import { getWhitelistArgs } from '../../Backend/Utils/WhitelistSnarkArgsHelper';
 import { ZKArgIdx } from '../../_types/darkforest/api/ContractsAPITypes';
 import {
@@ -62,6 +63,7 @@ const enum TerminalPromptStep {
   TERMINATED,
   ERROR,
 }
+const minimapPlugin = new MinimapSpawnPlugin();
 
 export function GameLandingPage({ match, location }: RouteComponentProps<{ contract: string }>) {
   const history = useHistory();
@@ -75,6 +77,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
   const [ethConnection, setEthConnection] = useState<EthConnection | undefined>();
   const [step, setStep] = useState(TerminalPromptStep.NONE);
 
+  const [isMiniMapOn, setMiniMapOn] = useState(false);
   const params = new URLSearchParams(location.search);
   const useZkWhitelist = params.has('zkWhitelist');
   const selectedAddress = params.get('account');
@@ -802,6 +805,17 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
 
       terminal.current?.newline();
 
+      // todo
+      //
+      //
+      // Run the Minimap and get the selected coordinates
+      setMiniMapOn(true);
+
+      const selectedCoords = await minimapPlugin.runAndGetUserCoords();
+      terminal.current?.println(
+        `Minimap selected coordinates: (${selectedCoords.x}, ${selectedCoords.y})`
+      );
+
       terminal.current?.println('Press ENTER to find a home planet. This may take up to 120s.');
       terminal.current?.println('This will consume a lot of CPU.');
 
@@ -837,7 +851,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
 
           await terminal.current?.getInput();
           return true;
-        })
+        }, selectedCoords)
         .catch((error: Error) => {
           terminal.current?.println(
             `[ERROR] An error occurred: ${error.toString().slice(0, 10000)}`,
@@ -980,6 +994,28 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
     }
   }, [terminalHandle, topLevelContainer, advanceState]);
 
+  interface MinimapPluginWrapperProps {
+    plugin: MinimapSpawnPlugin; // Replace with the actual type of your MinimapSpawnPlugin
+  }
+  const MinimapPluginWrapper: React.FC<MinimapPluginWrapperProps> = ({ plugin }) => {
+    const containerRef = useRef(null);
+
+    useEffect(() => {
+      if (containerRef.current && plugin) {
+        plugin.render(containerRef.current);
+      }
+
+      return () => {
+        // Cleanup the plugin when the component unmounts
+        if (plugin) {
+          plugin.destroy();
+        }
+      };
+    }, [containerRef, plugin]);
+
+    return <div ref={containerRef}></div>;
+  };
+
   return (
     <Wrapper initRender={initRenderState} terminalEnabled={terminalVisible}>
       <GameWindowWrapper initRender={initRenderState} terminalEnabled={terminalVisible}>
@@ -1001,7 +1037,9 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       <TerminalWrapper initRender={initRenderState} terminalEnabled={terminalVisible}>
         <Terminal ref={terminalHandle} promptCharacter={'$'} />
       </TerminalWrapper>
+
       <div ref={topLevelContainer}></div>
+      <div>{isMiniMapOn && <MinimapPluginWrapper plugin={minimapPlugin} />}</div>
     </Wrapper>
   );
 }

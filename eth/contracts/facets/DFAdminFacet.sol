@@ -80,7 +80,7 @@ contract DFAdminFacet is WithStorage {
         uint256 planetId = _input[0];
 
         if (!gs().planets[planetId].isInitialized) {
-            LibPlanet.initializePlanet(_a, _b, _c, _input,distFromOrigin, false);
+            LibPlanet.initializePlanet(_a, _b, _c, _input, distFromOrigin, false);
         }
 
         gs().planets[planetId].silver = gs().planets[planetId].silverCap;
@@ -186,10 +186,14 @@ contract DFAdminFacet is WithStorage {
     //###############
     //  NEW MAP ALGO
     //###############
-    function adminInitializePlanet(uint256 locationId, uint256 perlin, uint256 distFromOriginSquare) public onlyAdmin {
+    function adminInitializePlanet(
+        uint256 locationId,
+        uint256 perlin,
+        uint256 distFromOriginSquare
+    ) public onlyAdmin {
         require(!gs().planets[locationId].isInitialized, "planet is already initialized");
 
-        LibPlanet.initializePlanetWithDefaults(locationId, perlin,distFromOriginSquare, false);
+        LibPlanet.initializePlanetWithDefaults(locationId, perlin, distFromOriginSquare, false);
     }
 
     function setPlanetTransferEnabled(bool enabled) public onlyAdmin {
