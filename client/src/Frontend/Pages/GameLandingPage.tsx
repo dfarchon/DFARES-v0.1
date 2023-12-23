@@ -805,17 +805,61 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
 
       terminal.current?.newline();
 
-      // todo
-      //
-      //
+      // ##############
+      // NEW
+      // ##############
       // Run the Minimap and get the selected coordinates
       setMiniMapOn(true);
 
-      const selectedCoords = await minimapPlugin.runAndGetUserCoords();
-      terminal.current?.println(
-        `Minimap selected coordinates: (${selectedCoords.x}, ${selectedCoords.y})`
-      );
+      let selectedCoords = { x: 0, y: 0 };
+      let distFromOriginSquare = 0;
+      const worldRadius = df.getContractConstants().WORLD_RADIUS_MIN;
+      const rimRadius = df.getContractConstants().SPAWN_RIM_AREA;
 
+      let _run = false;
+      do {
+        try {
+          _run = true;
+          terminal.current?.println('Select new home planet area on Minimap');
+          terminal.current?.println(`In WorldRadius = ${worldRadius.toFixed(2).toString()}`);
+          terminal.current?.println(
+            `Out of SpawnRimRadius limit = ${Math.sqrt(rimRadius).toFixed(2).toString()}`
+          );
+          // todo timer 0.1s
+
+          // Introduce a 100ms (0.1s) delay using a timer
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          //  debugger;
+          selectedCoords = await minimapPlugin.runAndGetUserCoords();
+
+          distFromOriginSquare = selectedCoords.x ** 2 + selectedCoords.y ** 2;
+
+          if (selectedCoords.x !== 0 && selectedCoords.y !== 0) {
+            terminal.current?.println(
+              `Minimap selected coordinates: (${selectedCoords.x}, ${selectedCoords.y})`
+            );
+            terminal.current?.println(`SELECTED IN SPAWN RIM !!!`);
+          } else {
+            terminal.current?.println(
+              `Minimap selected coordinates: (${selectedCoords.x}, ${selectedCoords.y})`
+            );
+            terminal.current?.println(`WRONG SELECTION REFRESH AND START AGAIN!!!`);
+          }
+
+          _run = false;
+        } catch (error) {
+          console.error('Error in the loop:', error);
+          // Handle the error or break out of the loop as needed
+          _run = false;
+        }
+      } while (
+        distFromOriginSquare < rimRadius &&
+        selectedCoords.x !== 0 &&
+        selectedCoords.y !== 0
+      );
+      terminal.current?.println(
+        `Your selection is ${Math.sqrt(distFromOriginSquare).toFixed(0)} away from center`
+      );
       terminal.current?.println('Press ENTER to find a home planet. This may take up to 120s.');
       terminal.current?.println('This will consume a lot of CPU.');
 
@@ -1013,7 +1057,14 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       };
     }, [containerRef, plugin]);
 
-    return <div ref={containerRef}></div>;
+    return (
+      <>
+        <div>
+          <p></p>
+        </div>
+        <div ref={containerRef}></div>
+      </>
+    );
   };
 
   return (
@@ -1039,7 +1090,17 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       </TerminalWrapper>
 
       <div ref={topLevelContainer}></div>
-      <div>{isMiniMapOn && <MinimapPluginWrapper plugin={minimapPlugin} />}</div>
+      <div>
+        {isMiniMapOn && (
+          <>
+            <div>
+              <p>{''}</p>
+              <p>{''}</p>
+              <MinimapPluginWrapper plugin={minimapPlugin} />
+            </div>
+          </>
+        )}
+      </div>
     </Wrapper>
   );
 }
