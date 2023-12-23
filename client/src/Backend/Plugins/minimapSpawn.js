@@ -6,8 +6,8 @@ class MinimapSpawnPlugin {
     this.canvas = document.createElement('canvas');
     this.sizeFactor = 500;
     this.clickOccurred = false;
-    this.step = 1800;
-    this.dot = 4;
+    this.step = 1500;
+    this.dot = 5.5;
     this.canvasSize = 400;
   }
 
@@ -45,7 +45,7 @@ class MinimapSpawnPlugin {
       div.style.height = '100%';
       this.canvas.width = this.canvasSize;
       this.canvas.height = this.canvasSize;
-      this.sizeFactor = this.canvasSize - 20;
+      this.sizeFactor = this.canvasSize - 18;
       let data = [];
 
       // Generate x coordinates
@@ -78,24 +78,27 @@ class MinimapSpawnPlugin {
         } else if (data[i].type === 3) {
           ctx.fillStyle = '#460046'; // Corrupted slightly brighter for better visibility
         }
-        ctx.fillRect(normalize(data[i].x), normalize(data[i].y * -1), this.dot, this.dot);
+        ctx.fillRect(normalize(data[i].x) - 1, normalize(data[i].y * -1) - 1, this.dot, this.dot);
       }
 
       // Recenter viewport based on click location
 
       this.canvas.style = 'cursor: pointer;';
 
-      // draw boarder of map
+      // draw outside of map
 
       let radiusNormalized = normalize(radius) / 2;
 
       ctx.beginPath();
       ctx.arc(radiusNormalized, radiusNormalized, radiusNormalized, 0, 2 * Math.PI);
       ctx.strokeStyle = '#DDDDDD';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 4;
       ctx.stroke();
-      let rimNormalized = (normalize(rim) / 2) * 0.91;
+
       // draw inner cicrle of map
+
+      let rimNormalized = (normalize(rim) / 2) * 0.91; // idk why here need to be corection??
+
       ctx.beginPath();
       ctx.arc(
         radiusNormalized, // centerX
@@ -107,12 +110,13 @@ class MinimapSpawnPlugin {
       ctx.fillStyle = '#ffb4c1'; // Fill color
       ctx.fill();
 
+      // draw img to centre
       const drawImageAtCenter = (ctx, image, worldRadius) => {
         // Calculate the position and size for the image
         const centerX = ctx.canvas.width / 2;
         const centerY = ctx.canvas.height / 2;
-        const trueWidth = worldRadius * 1.2; // Adjust as needed
-        const trueHeight = worldRadius * 1.2; // Adjust as needed
+        const trueWidth = worldRadius * 1.19; // Adjust as needed
+        const trueHeight = worldRadius * 1.19; // Adjust as needed
 
         // Draw the image at the center
         ctx.drawImage(
