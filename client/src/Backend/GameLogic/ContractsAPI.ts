@@ -523,6 +523,7 @@ export class ContractsAPI extends EventEmitter {
       BURN_END_TIMESTAMP,
       BURN_PLANET_COOLDOWN,
       BURN_PLANET_LEVEL_EFFECT_RADIUS,
+      BURN_PLANET_REQUIRE_SILVER_AMOUNTS,
     } = await this.makeCall(this.contract.getGameConstants);
 
     // const TOKEN_MINT_END_TIMESTAMP = (
@@ -733,6 +734,18 @@ export class ContractsAPI extends EventEmitter {
         BURN_PLANET_LEVEL_EFFECT_RADIUS[7].toNumber(),
         BURN_PLANET_LEVEL_EFFECT_RADIUS[8].toNumber(),
         BURN_PLANET_LEVEL_EFFECT_RADIUS[9].toNumber(),
+      ],
+      BURN_PLANET_REQUIRE_SILVER_AMOUNTS: [
+        BURN_PLANET_REQUIRE_SILVER_AMOUNTS[0].toNumber(),
+        BURN_PLANET_REQUIRE_SILVER_AMOUNTS[1].toNumber(),
+        BURN_PLANET_REQUIRE_SILVER_AMOUNTS[2].toNumber(),
+        BURN_PLANET_REQUIRE_SILVER_AMOUNTS[3].toNumber(),
+        BURN_PLANET_REQUIRE_SILVER_AMOUNTS[4].toNumber(),
+        BURN_PLANET_REQUIRE_SILVER_AMOUNTS[5].toNumber(),
+        BURN_PLANET_REQUIRE_SILVER_AMOUNTS[6].toNumber(),
+        BURN_PLANET_REQUIRE_SILVER_AMOUNTS[7].toNumber(),
+        BURN_PLANET_REQUIRE_SILVER_AMOUNTS[8].toNumber(),
+        BURN_PLANET_REQUIRE_SILVER_AMOUNTS[9].toNumber(),
       ],
     };
     // console.log(constants);

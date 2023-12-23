@@ -405,6 +405,19 @@ export interface ContractConstants {
     number,
     number
   ];
+
+  BURN_PLANET_REQUIRE_SILVER_AMOUNTS: [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number
+  ];
 }
 
 export type ClientMockchainData =

@@ -113,6 +113,7 @@ struct InitArgs {
     uint256 BURN_END_TIMESTAMP;
     uint256 BURN_PLANET_COOLDOWN;
     uint256[10] BURN_PLANET_LEVEL_EFFECT_RADIUS;
+    uint256[10] BURN_PLANET_REQUIRE_SILVER_AMOUNTS;
 }
 
 contract DFInitialize is WithStorage {
@@ -220,6 +221,8 @@ contract DFInitialize is WithStorage {
         gameConstants().BURN_END_TIMESTAMP = initArgs.BURN_END_TIMESTAMP;
         gameConstants().BURN_PLANET_COOLDOWN = initArgs.BURN_PLANET_COOLDOWN;
         gameConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS = initArgs.BURN_PLANET_LEVEL_EFFECT_RADIUS;
+        gameConstants().BURN_PLANET_REQUIRE_SILVER_AMOUNTS = initArgs
+            .BURN_PLANET_REQUIRE_SILVER_AMOUNTS;
         initializeDefaults();
         initializeUpgrades();
 
