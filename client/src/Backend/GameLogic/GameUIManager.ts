@@ -1232,6 +1232,7 @@ class GameUIManager extends EventEmitter {
   public isCurrentlyBurning(): boolean {
     return this.gameManager.getNextBurnCountdownInfo().currentlyBurning;
   }
+
   public getUnconfirmedLinkActivations(): Transaction<UnconfirmedActivateArtifact>[] {
     return this.gameManager.getUnconfirmedLinkActivations();
   }
@@ -1313,6 +1314,10 @@ class GameUIManager extends EventEmitter {
   }
   public getPlayerBuyArtifactAmount(player: EthAddress): number | undefined {
     return this.gameManager.getPlayerBuyArtifactAmount(player);
+  }
+
+  public getPlayerSilver(player: EthAddress): number | undefined {
+    return this.gameManager.getPlayerSilver(player);
   }
 
   public upgrade(planet: Planet, branch: number): void {
@@ -1408,6 +1413,14 @@ class GameUIManager extends EventEmitter {
 
   public potentialCaptureScore(planetLevel: number): number {
     return this.contractConstants.CAPTURE_ZONE_PLANET_LEVEL_SCORE[planetLevel];
+  }
+
+  public getRadiusOfPinkCircle(planetLevel: number): number {
+    return this.contractConstants.BURN_PLANET_LEVEL_EFFECT_RADIUS[planetLevel];
+  }
+
+  public getSilverOfBurnPlanet(planetLevel: number): number {
+    return this.contractConstants.BURN_PLANET_REQUIRE_SILVER_AMOUNTS[planetLevel];
   }
 
   public getDefaultSpaceJunkForPlanetLevel(level: number): number {

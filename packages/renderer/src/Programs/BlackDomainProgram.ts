@@ -66,7 +66,9 @@ export const BLACKDOMAIN_PROGRAM_DEFINITION = {
 
       float n = snoise(vec4(rx, ry, z, ${u.now}));
 
-      outColor = vec4(vec3(n), 0.8);
+      // outColor = vec4(vec3(n),0.8);
+      // outColor = vec4(0.99609375*n,0.75*n, 0.79296875*n  ,0.8);
+      outColor = vec4(0.99609375*n,0.75*n, 0.79296875*n  ,0.3);
     }
   `,
 };

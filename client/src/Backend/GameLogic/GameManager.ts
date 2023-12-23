@@ -1481,6 +1481,10 @@ class GameManager extends EventEmitter {
     return player?.buyArtifactAmount;
   }
 
+  public getPlayerSilver(addr: EthAddress): number | undefined {
+    const player = this.players.get(addr);
+    return player?.silver;
+  }
   public getDefaultSpaceJunkForPlanetLevel(level: number) {
     return this.contractConstants.PLANET_LEVEL_JUNK[level];
   }
@@ -2293,6 +2297,14 @@ class GameManager extends EventEmitter {
         throw new Error('still on cooldown for burning');
       }
 
+      const playerSilver = this.players.get(this.account)?.silver;
+      if (
+        playerSilver &&
+        playerSilver < this.contractConstants.BURN_PLANET_REQUIRE_SILVER_AMOUNTS[planet.planetLevel]
+      ) {
+        throw new Error('player silver is not enough');
+      }
+
       // this is shitty. used for the popup window
       localStorage.setItem(`${this.getAccount()?.toLowerCase()}-burnLocationId`, planetId);
 
@@ -2333,7 +2345,7 @@ class GameManager extends EventEmitter {
   }
 
   /**
-   * burnLocation reveals a planet's location on-chain.
+   * pinkLocation reveals a planet's location on-chain.
    */
 
   public async pinkLocation(planetId: LocationId): Promise<Transaction<UnconfirmedPink>> {

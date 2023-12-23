@@ -79,6 +79,21 @@ export function DropBombPane({
   const burnLocationCooldownPassed = uiManager.getNextBurnAvailableTimestamp() <= Date.now();
   const currentlyBurningAnyPlanet = uiManager.isCurrentlyBurning();
 
+  const getSilverPassed = () => {
+    if (!planet) return false;
+    if (!account) return false;
+    const playerSilver = uiManager.getPlayerSilver(account);
+    if (playerSilver === undefined) return false;
+    const requireSilver = uiManager.getSilverOfBurnPlanet(planet.planetLevel);
+
+    return Math.floor(playerSilver) >= Math.ceil(requireSilver);
+  };
+
+  const formatSilverAmount = planet
+    ? uiManager.getSilverOfBurnPlanet(planet.planetLevel).toLocaleString()
+    : 'n/a';
+
+  const silverPassed = getSilverPassed();
   const hasOwnedShipPink = useMemo(
     () =>
       planet?.heldArtifactIds
@@ -109,6 +124,8 @@ export function DropBombPane({
     burnBtn = <Btn disabled={true}>Drop Bomb</Btn>;
   } else if (!hasOwnedShipPink) {
     burnBtn = <Btn disabled={true}>Drop Bomb</Btn>;
+  } else if (!silverPassed) {
+    burnBtn = <Btn disabled={true}>Drop Bomb</Btn>;
   } else {
     burnBtn = (
       <Btn disabled={currentlyBurningAnyPlanet} onClick={dropBomb}>
@@ -124,11 +141,17 @@ export function DropBombPane({
           <Blue>INFO:</Blue> Dropping Bomb...
         </p>
       )}
-      {planet?.owner === account && (
+      {/* {planet?.owner === account && (
         <p>
           <Blue>INFO:</Blue> You own this planet! Dropping Bomb to this planet is not a good choice.
         </p>
+      )} */}
+      {planet?.owner !== account && (
+        <p>
+          <Blue>INFO:</Blue> You can only drop bomb to your own planet.
+        </p>
       )}
+
       {isDestoryedOrFrozen && (
         <p>
           <Blue>INFO:</Blue> You can't drop bomb to a destoryed/frozen planet.
@@ -144,6 +167,12 @@ export function DropBombPane({
       {!hasOwnedShipPink && (
         <p>
           <Blue>INFO:</Blue> Your pink Ship needs to be above this planet.
+        </p>
+      )}
+
+      {!silverPassed && (
+        <p>
+          <Blue>INFO:</Blue> You need at least {formatSilverAmount} silver.
         </p>
       )}
     </div>
