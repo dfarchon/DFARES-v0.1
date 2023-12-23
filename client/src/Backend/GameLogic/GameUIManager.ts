@@ -474,6 +474,10 @@ class GameUIManager extends EventEmitter {
     this.gameManager.burnLocation(locationId);
   }
 
+  public checkPlanetCanPink(planetId: LocationId): boolean {
+    return this.gameManager.checkPlanetCanPink(planetId);
+  }
+
   public pinkLocation(locationId: LocationId) {
     this.gameManager.pinkLocation(locationId);
   }
@@ -1263,6 +1267,10 @@ class GameUIManager extends EventEmitter {
 
   public getPinkZones() {
     return this.gameManager.getPinkZones();
+  }
+
+  public getMyPinkZones() {
+    return this.gameManager.getMyPinkZones();
   }
 
   public getCaptureZoneGenerator() {

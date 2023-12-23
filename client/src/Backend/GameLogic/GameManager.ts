@@ -2084,6 +2084,27 @@ class GameManager extends EventEmitter {
     return pinkZones || new Set();
   }
 
+  public getMyPinkZones(): Set<PinkZone> {
+    const pinkZones = new Set<PinkZone>();
+    const burnedLocations = this.getBurnedLocations();
+    const allBurnedCoords = Array.from(burnedLocations.values());
+
+    for (const item of allBurnedCoords) {
+      const planet = this.getPlanetWithId(item.hash);
+      if (planet === undefined) continue;
+      if (planet.owner !== this.account) continue;
+
+      pinkZones.add({
+        coords: item.coords,
+
+        //mytodo: add different radius
+        radius: this.getContractConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[planet.planetLevel],
+      });
+    }
+
+    return pinkZones || new Set();
+  }
+
   /**
    * Reveals a planet's location on-chain.
    */
@@ -2344,6 +2365,22 @@ class GameManager extends EventEmitter {
     }
   }
 
+  public checkPlanetCanPink(planetId: LocationId): boolean {
+    if (!this.account) return false;
+    const planet = this.getPlanetWithId(planetId);
+    if (!planet) return false;
+    if (!isLocatable(planet)) return false;
+    const myPinkZones = this.getMyPinkZones();
+    for (const pinkZone of myPinkZones) {
+      const coords = pinkZone.coords;
+      const radius = pinkZone.radius;
+
+      const dis = this.getDistCoords(coords, planet.location.coords);
+
+      if (dis <= radius) return true;
+    }
+    return false;
+  }
   /**
    * pinkLocation reveals a planet's location on-chain.
    */
@@ -2389,6 +2426,9 @@ class GameManager extends EventEmitter {
       // if (myLastBurnTimestamp && Date.now() < this.getNextBurnAvailableTimestamp()) {
       //   throw new Error('still on cooldown for burning');
       // }
+      if (!this.checkPlanetCanPink(planet.locationId)) {
+        throw new Error("this planet don't in your pink zones");
+      }
 
       // this is shitty. used for the popup window
       localStorage.setItem(`${this.getAccount()?.toLowerCase()}-pinkLocationId`, planetId);
