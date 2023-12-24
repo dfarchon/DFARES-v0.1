@@ -820,7 +820,10 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       do {
         try {
           _run = true;
-          terminal.current?.println('Select new home planet area on Minimap');
+          terminal.current?.println(
+            'Select area where is cursor pointer "👆🏻" on Minimap. You can choose "Inner Nebula" only. *Dark Blue...'
+          );
+          terminal.current?.println(' ');
           // terminal.current?.println(`In WorldRadius = ${worldRadius.toFixed(2).toString()}`);
           // terminal.current?.println(
           //   `Out of SpawnRimRadius limit = ${Math.sqrt(rimRadius).toFixed(2).toString()}`
@@ -835,10 +838,10 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           distFromOriginSquare = selectedCoords.x ** 2 + selectedCoords.y ** 2;
 
           if (selectedCoords.x !== 0 && selectedCoords.y !== 0) {
+            terminal.current?.println(`SELECTION IN SPAWN AREA. WELL DONE !!!`);
             terminal.current?.println(
               `Minimap selected coordinates: (${selectedCoords.x}, ${selectedCoords.y})`
             );
-            terminal.current?.println(`SELECTION IN SPAWN AREA. WELL DONE !!!`);
             terminal.current?.println(
               `Your selection is ${Math.sqrt(distFromOriginSquare).toFixed(0)} away from center.`
             );
@@ -861,10 +864,12 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         selectedCoords.x !== 0 &&
         selectedCoords.y !== 0
       );
-   
+
       setMiniMapOn(false);
-      terminal.current?.println('Press ENTER to find a home planet. This may take up to 120s.');
-      terminal.current?.println('This will consume a lot of CPU.');
+      terminal.current?.println(
+        'To select different spawn area please refresh page otherwise press ENTER to find a home planet.  '
+      );
+      terminal.current?.println('This may take up to 120s a will consume a lot of CPU.');
 
       await terminal.current?.getInput();
 
