@@ -821,10 +821,10 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         try {
           _run = true;
           terminal.current?.println('Select new home planet area on Minimap');
-          terminal.current?.println(`In WorldRadius = ${worldRadius.toFixed(2).toString()}`);
-          terminal.current?.println(
-            `Out of SpawnRimRadius limit = ${Math.sqrt(rimRadius).toFixed(2).toString()}`
-          );
+          // terminal.current?.println(`In WorldRadius = ${worldRadius.toFixed(2).toString()}`);
+          // terminal.current?.println(
+          //   `Out of SpawnRimRadius limit = ${Math.sqrt(rimRadius).toFixed(2).toString()}`
+          // );
           // todo timer 0.1s
 
           // Introduce a 100ms (0.1s) delay using a timer
@@ -838,7 +838,10 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
             terminal.current?.println(
               `Minimap selected coordinates: (${selectedCoords.x}, ${selectedCoords.y})`
             );
-            terminal.current?.println(`SELECTED IN SPAWN RIM !!!`);
+            terminal.current?.println(`SELECTION IN SPAWN AREA. WELL DONE !!!`);
+            terminal.current?.println(
+              `Your selection is ${Math.sqrt(distFromOriginSquare).toFixed(0)} away from center.`
+            );
           } else {
             terminal.current?.println(
               `Minimap selected coordinates: (${selectedCoords.x}, ${selectedCoords.y})`
@@ -854,12 +857,12 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         }
       } while (
         distFromOriginSquare < rimRadius &&
+        //distFromOriginSquare > worldRadius &&
         selectedCoords.x !== 0 &&
         selectedCoords.y !== 0
       );
-      terminal.current?.println(
-        `Your selection is ${Math.sqrt(distFromOriginSquare).toFixed(0)} away from center`
-      );
+   
+      setMiniMapOn(false);
       terminal.current?.println('Press ENTER to find a home planet. This may take up to 120s.');
       terminal.current?.println('This will consume a lot of CPU.');
 

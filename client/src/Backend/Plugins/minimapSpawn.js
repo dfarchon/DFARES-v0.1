@@ -8,14 +8,14 @@ class MinimapSpawnPlugin {
     this.clickOccurred = false;
     this.step = 1500;
     this.dot = 5.5;
-    this.canvasSize = 400;
+    this.canvasSize = 800;
   }
 
   async render(div) {
     // Default values
 
-    div.style.width = '400px';
-    div.style.height = '400px';
+    div.style.width = '780px';
+    div.style.height = '780px';
 
     const radius = ui.getWorldRadius();
     const rim = Math.sqrt(df.getContractConstants().SPAWN_RIM_AREA);
