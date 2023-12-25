@@ -25,8 +25,8 @@ class MinimapSpawnPlugin {
   async render(div) {
     // Default values
 
-    div.style.width = '600px';
-    div.style.height = '600px';
+    div.style.width = '400px';
+    div.style.height = '400px';
 
 
 
@@ -55,8 +55,8 @@ class MinimapSpawnPlugin {
     // Sample points in a grid and determine space type
 
     const generate = () => {
-      div.style.width = '100%';
-      div.style.height = '100%';
+      div.style.width = '99%';
+      div.style.height = '99%';
       this.canvas.width = this.canvasSize;
       this.canvas.height = this.canvasSize;
       this.sizeFactor = this.canvasSize - 18;
@@ -92,7 +92,7 @@ class MinimapSpawnPlugin {
         } else if (data[i].type === 3) {
           ctx.fillStyle = this.CorruptedSpaceColor; // Corrupted slightly brighter for better visibility
         }
-        ctx.fillRect(normalize(data[i].x) - 1, normalize(data[i].y * -1) - 1, this.dot, this.dot);
+        ctx.fillRect(normalize(data[i].x) - 1, normalize(data[i].y * -1) + 1, this.dot, this.dot);
       }
 
       // Recenter viewport based on click location
@@ -104,7 +104,7 @@ class MinimapSpawnPlugin {
       let radiusNormalized = normalize(radius) / 2;
 
       ctx.beginPath();
-      ctx.arc(radiusNormalized, radiusNormalized, radiusNormalized, 0, 2 * Math.PI);
+      ctx.arc(radiusNormalized + 2, radiusNormalized + 3, radiusNormalized, 0, 2 * Math.PI);
       ctx.strokeStyle = 'pink';
       ctx.lineWidth = 4;
       ctx.stroke();
@@ -121,7 +121,7 @@ class MinimapSpawnPlugin {
         0,
         2 * Math.PI
       );
-      ctx.fillStyle = 'rgb(255,180,193,0.9 )';//#ffb4c1'; // Fill color
+      ctx.fillStyle = 'rgb(255,180,193,1)';//#ffb4c1'; // Fill color
       ctx.fill();
 
       // draw img to centre
