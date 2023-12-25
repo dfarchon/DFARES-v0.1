@@ -2526,13 +2526,12 @@ class GameManager extends EventEmitter {
       this.terminal.current?.println('');
 
       await this.persistentChunkStore.addHomeLocation(planet.location);
-      const distFromOriginSquare = planet.location.coords.x ** 2 + planet.location.coords.y ** 2;
 
       const getArgs = async () => {
         const args = await this.snarkHelper.getInitArgs(
           planet.location.coords.x,
           planet.location.coords.y,
-          Math.floor(Math.sqrt(planet.location.coords.x ** 2 + planet.location.coords.y ** 2)) + 1 // floor(sqrt(x^2 + y^2)) + 1
+          Math.floor(Math.sqrt(planet.location.coords.x ** 2 + planet.location.coords.y ** 2)) + 1
         );
         this.terminal.current?.println('INIT: calculated SNARK with args:', TerminalTextStyle.Sub);
         this.terminal.current?.println(
@@ -2540,7 +2539,8 @@ class GameManager extends EventEmitter {
           TerminalTextStyle.Sub
         );
         this.terminal.current?.newline();
-        return [...args, distFromOriginSquare];
+        return args;
+        // return [...args, distFromOriginSquare];
       };
 
 
@@ -3511,7 +3511,7 @@ class GameManager extends EventEmitter {
       //###############
       //  NEW MAP ALGO
       //###############
-      const distFromOriginSquare = newX ** 2 + newY ** 2;
+      // const distFromOriginSquare = newX ** 2 + newY ** 2;
 
 
       const distMax = Math.ceil(Math.sqrt(xDiff ** 2 + yDiff ** 2));
@@ -3551,7 +3551,6 @@ class GameManager extends EventEmitter {
           (shipsMoved * CONTRACT_PRECISION).toString(),
           (silverMoved * CONTRACT_PRECISION).toString(),
           '0',
-          distFromOriginSquare.toString(),
           abandoning ? '1' : '0',
         ] as MoveArgs;
 

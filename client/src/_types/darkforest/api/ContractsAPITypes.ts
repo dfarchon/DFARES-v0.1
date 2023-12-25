@@ -137,7 +137,7 @@ export type MoveArgs = [
   string, // ships sent
   string, // silver sent
   string, // artifactId sent
-  string, // dist from origin
+  // string, // dist from origin
   string // is planet being released (1 true, 0 false)
 ];
 

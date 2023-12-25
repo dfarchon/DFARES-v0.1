@@ -120,7 +120,6 @@ library LibPlanet {
         uint256[2][2] memory _b,
         uint256[2] memory _c,
         uint256[9] memory _input,
-        uint256 distFromOriginSquare,
         bool isHomePlanet
     ) public {
         if (!snarkConstants().DISABLE_ZK_CHECKS) {

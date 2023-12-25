@@ -74,13 +74,12 @@ contract DFAdminFacet is WithStorage {
         uint256[2] memory _a,
         uint256[2][2] memory _b,
         uint256[2] memory _c,
-        uint256[9] memory _input,
-        uint32 distFromOrigin
+        uint256[9] memory _input
     ) public onlyAdmin {
         uint256 planetId = _input[0];
 
         if (!gs().planets[planetId].isInitialized) {
-            LibPlanet.initializePlanet(_a, _b, _c, _input,distFromOrigin, false);
+            LibPlanet.initializePlanet(_a, _b, _c, _input, false);
         }
 
         gs().planets[planetId].silver = gs().planets[planetId].silverCap;
