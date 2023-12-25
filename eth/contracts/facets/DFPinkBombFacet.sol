@@ -82,6 +82,7 @@ contract DFPinkBombFacet is WithStorage {
         require(planet.owner == msg.sender, "you can only burn planets you own");
 
         require(containsPinkShip(planetId), "pink ship must be present on planet");
+        require(planet.planetLevel >= 1, "planet level >=1");
 
         require(
             gs().players[msg.sender].silver >=

@@ -2300,6 +2300,10 @@ class GameManager extends EventEmitter {
         throw new Error("you can't burn destroyed/frozen planets");
       }
 
+      if (planet.planetLevel <= 0) {
+        throw new Error("you can't burn level zero planet");
+      }
+
       if (planet.operator !== undefined && planet.operator !== EMPTY_ADDRESS) {
         throw new Error('someone already burn this planet');
       }

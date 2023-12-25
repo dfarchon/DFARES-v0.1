@@ -105,6 +105,8 @@ export function DropBombPane({
     [account, planet, uiManager]
   );
 
+  const levelPassed = planet ? planet.planetLevel >= 1 : false;
+
   useEffect(() => {
     if (!uiManager) return;
     setAccount(uiManager.getAccount());
@@ -125,6 +127,8 @@ export function DropBombPane({
   } else if (!hasOwnedShipPink) {
     burnBtn = <Btn disabled={true}>Drop Bomb</Btn>;
   } else if (!silverPassed) {
+    burnBtn = <Btn disabled={true}>Drop Bomb</Btn>;
+  } else if (!levelPassed) {
     burnBtn = <Btn disabled={true}>Drop Bomb</Btn>;
   } else {
     burnBtn = (
@@ -173,6 +177,11 @@ export function DropBombPane({
       {!silverPassed && (
         <p>
           <Blue>INFO:</Blue> You need at least {formatSilverAmount} silver.
+        </p>
+      )}
+      {!levelPassed && (
+        <p>
+          <Blue>INFO: </Blue> Planet level can't be 0.
         </p>
       )}
     </div>

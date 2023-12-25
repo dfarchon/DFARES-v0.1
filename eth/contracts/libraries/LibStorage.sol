@@ -153,7 +153,7 @@ struct SpaceshipConstants {
     bool TITAN;
     bool CRESCENT;
     bool WHALE;
-    // bool PINKSHIP;
+    bool PINKSHIP;
 }
 
 // SNARK keys and perlin params

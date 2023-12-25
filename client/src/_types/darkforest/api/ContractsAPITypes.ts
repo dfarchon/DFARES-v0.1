@@ -303,6 +303,7 @@ export interface ContractConstants {
     TITAN: boolean;
     CRESCENT: boolean;
     WHALE: boolean;
+    PINKSHIP: boolean;
   };
 
   ROUND_END_REWARDS_BY_RANK: [

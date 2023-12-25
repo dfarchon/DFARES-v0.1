@@ -92,6 +92,7 @@ export const decodeInitializers = decoders.guard(
       TITAN: decoders.boolean,
       CRESCENT: decoders.boolean,
       WHALE: decoders.boolean,
+      PINKSHIP: decoders.boolean,
     }),
     ROUND_END_REWARDS_BY_RANK: exactArray64(decoders.number),
   }),
