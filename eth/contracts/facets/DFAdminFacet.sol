@@ -74,7 +74,7 @@ contract DFAdminFacet is WithStorage {
         uint256[2] memory _a,
         uint256[2][2] memory _b,
         uint256[2] memory _c,
-        uint256[8] memory _input,
+        uint256[9] memory _input,
         uint32 distFromOrigin
     ) public onlyAdmin {
         uint256 planetId = _input[0];

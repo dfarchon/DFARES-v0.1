@@ -207,6 +207,7 @@ class SnarkArgsHelper {
         SCALE: this.hashConfig.perlinLengthScale.toString(),
         xMirror: this.hashConfig.perlinMirrorX ? '1' : '0',
         yMirror: this.hashConfig.perlinMirrorY ? '1' : '0',
+        targetDistFromOriginSquare: (x ** 2 + y ** 2).toString(),
       };
 
       const { proof, publicSignals }: SnarkJSProofAndSignals = this.useMockHash
@@ -255,6 +256,7 @@ class SnarkArgsHelper {
         SCALE: this.hashConfig.perlinLengthScale.toString(),
         xMirror: this.hashConfig.perlinMirrorX ? '1' : '0',
         yMirror: this.hashConfig.perlinMirrorY ? '1' : '0',
+        targetDistFromOriginSquare: (x2 ** 2 + y2 ** 2).toString(),
       };
 
       const { proof, publicSignals }: SnarkJSProofAndSignals = this.useMockHash

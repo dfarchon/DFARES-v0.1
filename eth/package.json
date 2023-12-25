@@ -79,7 +79,7 @@
     "hardhat:redstoneTestnet": "hardhat --network redstoneTestnet",
     "compile": "hardhat compile",
     "circom:prod": "hardhat circom --verbose",
-    "circom:dev": "hardhat circom --deterministic --verbose",
+    "circom:dev": "hardhat circom --deterministic --verbose --debug",
     "subgraph:template:dev": "yarn hardhat:dev subgraph:codegen",
     "subgraph:template:prod": "yarn hardhat:prod subgraph:codegen",
     "subgraph:deploy:dev": "yarn hardhat:dev subgraph:deploy --name df",

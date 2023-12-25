@@ -5,6 +5,10 @@
     - (x1-x2)^2 + (y1-y2)^2 <= distMax^2
     - MiMCSponge(x1,y1) = pub1
     - MiMCSponge(x2,y2) = pub2
+
+    - NEW Map
+    - x2^2 + y2^2 = targetDistFromOriginSquare
+
 */
 pragma circom 2.0.3;
 
@@ -22,6 +26,8 @@ template Move() {
     signal input SCALE; // must be power of 2 at most 16384 so that DENOMINATOR works
     signal input xMirror; // 1 is true, 0 is false
     signal input yMirror; // 1 is true, 0 is false
+
+    signal input targetDistFromOriginSquare;
 
     // Private signals
     signal input x1;
@@ -55,6 +61,9 @@ template Move() {
     comp2.in[0] <== x2Sq + y2Sq;
     comp2.in[1] <== rSq;
     comp2.out === 1;
+
+    /* check x2^2 + y2^2 == distFromOrigin^2 */
+    targetDistFromOriginSquare === x2Sq + y2Sq;
 
     /* check (x1-x2)^2 + (y1-y2)^2 <= distMax^2 */
 
@@ -101,4 +110,4 @@ template Move() {
     perl2 <== perlin.out;
 }
 
-component main { public [ r, distMax, PLANETHASH_KEY, SPACETYPE_KEY, SCALE, xMirror, yMirror ] } = Move();
+component main { public [ r, distMax, PLANETHASH_KEY, SPACETYPE_KEY, SCALE, xMirror, yMirror, targetDistFromOriginSquare ] } = Move();

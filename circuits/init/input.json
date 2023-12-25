@@ -6,5 +6,6 @@
   "SPACETYPE_KEY": 7,
   "SCALE": 4096,
   "xMirror": 0,
-  "yMirror": 0
+  "yMirror": 0,
+  "targetDistFromOriginSquare": "12921120"
 }

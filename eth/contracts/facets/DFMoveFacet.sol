@@ -35,7 +35,7 @@ contract DFMoveFacet is WithStorage {
         uint256[2] memory _a,
         uint256[2][2] memory _b,
         uint256[2] memory _c,
-        uint256[10] memory _input,
+        uint256[11] memory _input,
         uint256 popMoved,
         uint256 silverMoved,
         uint256 movedArtifactId,
@@ -85,7 +85,7 @@ contract DFMoveFacet is WithStorage {
         // Only perform if the toPlanet have never initialized previously
         if (!gs().planets[args.newLoc].isInitialized) {
             // LibPlanet.initializePlanetWithDefaults(args.newLoc, newPerlin, false);
-            LibPlanet.initializePlanetWithDefaults(args.newLoc, newPerlin, distFromOriginSquare, false);
+            LibPlanet.initializePlanetWithDefaults(args.newLoc, newPerlin, _input[10], false);
         } else {
             // need to do this so people can't deny service to planets with gas limit
             LibPlanet.refreshPlanet(args.newLoc);
