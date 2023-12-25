@@ -820,8 +820,11 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       do {
         try {
           _run = true;
+          terminal.current?.println('Select area where is cursor pointer "👆🏻" on Minimap.');
+
           terminal.current?.println(
-            'Select area where is cursor pointer "👆🏻" on Minimap. You can choose "Inner Nebula" only. *Dark Blue...'
+            'You can choose "Inner Nebula" only. *Dark Blue...',
+            TerminalTextStyle.Blue
           );
           terminal.current?.println(' ');
           // terminal.current?.println(`In WorldRadius = ${worldRadius.toFixed(2).toString()}`);

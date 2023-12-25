@@ -4,18 +4,32 @@ class MinimapSpawnPlugin {
     this.maxDensity = 10000;
     this.selectedCoords = { x: 0, y: 0 }; // Initial coordinates
     this.canvas = document.createElement('canvas');
+    this.coordsDiv = document.createElement('div');
+    this.coordsDiv.style.textAlign = 'center';
     this.sizeFactor = 500;
     this.clickOccurred = false;
     this.step = 1500;
     this.dot = 5.5;
-    this.canvasSize = 800;
+    this.canvasSize = 600;
+    this.InnerNebulaColor = '#00ADE1';// '#21215d';
+    this.OuterNebulaColor = '#505050';//'#24247d';
+    this.DeepSpaceColor = '#505050';//'#000000';
+    this.CorruptedSpaceColor = '#505050'; //'#460046';
+    this.xWorld = undefined;
+    this.yWorld = undefined;
+    this.formatCoords = '(???,???)';
+    this.coordsDiv.style.fontSize = '20px';
+
   }
 
   async render(div) {
     // Default values
 
-    div.style.width = '780px';
-    div.style.height = '780px';
+    div.style.width = '600px';
+    div.style.height = '600px';
+
+
+
 
     const radius = ui.getWorldRadius();
     const rim = Math.sqrt(df.getContractConstants().SPAWN_RIM_AREA);
@@ -70,13 +84,13 @@ class MinimapSpawnPlugin {
 
       for (let i = 0; i < data.length; i++) {
         if (data[i].type === 0) {
-          ctx.fillStyle = '#21215d'; // Inner nebula
+          ctx.fillStyle = this.InnerNebulaColor;  // Inner nebula
         } else if (data[i].type === 1) {
-          ctx.fillStyle = '#24247d'; // Outer nebula
+          ctx.fillStyle = this.OuterNebulaColor; // Outer nebula
         } else if (data[i].type === 2) {
-          ctx.fillStyle = '#000000'; // Deep space
+          ctx.fillStyle = this.DeepSpaceColor;// Deep space
         } else if (data[i].type === 3) {
-          ctx.fillStyle = '#460046'; // Corrupted slightly brighter for better visibility
+          ctx.fillStyle = this.CorruptedSpaceColor; // Corrupted slightly brighter for better visibility
         }
         ctx.fillRect(normalize(data[i].x) - 1, normalize(data[i].y * -1) - 1, this.dot, this.dot);
       }
@@ -91,7 +105,7 @@ class MinimapSpawnPlugin {
 
       ctx.beginPath();
       ctx.arc(radiusNormalized, radiusNormalized, radiusNormalized, 0, 2 * Math.PI);
-      ctx.strokeStyle = '#DDDDDD';
+      ctx.strokeStyle = 'pink';
       ctx.lineWidth = 4;
       ctx.stroke();
 
@@ -107,7 +121,7 @@ class MinimapSpawnPlugin {
         0,
         2 * Math.PI
       );
-      ctx.fillStyle = '#ffb4c1'; // Fill color
+      ctx.fillStyle = 'rgb(255,180,193,0.9 )';//#ffb4c1'; // Fill color
       ctx.fill();
 
       // draw img to centre
@@ -115,8 +129,8 @@ class MinimapSpawnPlugin {
         // Calculate the position and size for the image
         const centerX = ctx.canvas.width / 2;
         const centerY = ctx.canvas.height / 2;
-        const trueWidth = worldRadius * 1.19; // Adjust as needed
-        const trueHeight = worldRadius * 1.19; // Adjust as needed
+        const trueWidth = worldRadius * 0.8; // Adjust as needed
+        const trueHeight = worldRadius * 0.8; // Adjust as needed
 
         // Draw the image at the center
         ctx.drawImage(
@@ -141,13 +155,29 @@ class MinimapSpawnPlugin {
       const y = event.offsetY;
       const xWorld = toWorldCoord(x);
       const yWorld = toWorldCoord(y) * -1;
+      // console.log(`onMouseMove [${xWorld}, ${yWorld}]`);
+      if (this.clickOccurred === false) {
+        this.xWorld = xWorld;
+        this.yWorld = yWorld;
+        let formatX = this.xWorld === undefined ? '???' : this.xWorld.toString();
+        let formatY = this.yWorld === undefined ? '???' : this.yWorld.toString();
+        let formatCoords = '(' + formatX + ',' + formatY + ')';
+        this.formatCoords = formatCoords;
+      }
+
+
+
       const radius = ui.getWorldRadius();
       const rim = Math.sqrt(df.getContractConstants().SPAWN_RIM_AREA);
 
       if (checkBounds(0, 0, xWorld, yWorld, rim)) {
         // Inside the rim, change cursor to 'move'
-        this.canvas.style.cursor = 'none';
+        this.canvas.style.cursor = 'no-drop';
         this.moveInsideRim = false; // Set a flag
+        this.coordsDiv.innerText = 'Can\'t Spawn Here 😅';
+        this.coordsDiv.style.color = 'pink';
+
+
       } else if (checkBounds(0, 0, xWorld, yWorld, radius)) {
         // Inside the world radius but outside the rim, change cursor to 'pointer'
         const spaceType = df.spaceTypeFromPerlin(df.spaceTypePerlin({ x: xWorld, y: yWorld }));
@@ -156,21 +186,39 @@ class MinimapSpawnPlugin {
         if (spaceType === 0) {
           this.canvas.style.cursor = 'pointer';
           this.moveInsideRim = false;
+          this.coordsDiv.innerText = this.formatCoords;
+          this.coordsDiv.style.color = this.InnerNebulaColor;
+
         } else {
-          this.canvas.style.cursor = 'move';
+          this.canvas.style.cursor = 'no-drop';
           this.moveInsideRim = true; // Reset the flag
+          this.coordsDiv.innerText = 'Can\'t Spawn Here 😅';
+          this.coordsDiv.style.color = 'pink';
+
+
+
         }
       } else {
         // Outside both world radius and rim, change cursor to 'default'
-        this.canvas.style.cursor = 'move';
+        this.canvas.style.cursor = 'default';
         this.moveInsideRim = false; // Reset the flag
+        this.coordsDiv.innerText = '';
+        this.coordsDiv.style.color = '';
+
       }
+
+
     };
 
     this.canvas.addEventListener('mousemove', onMouseMove);
 
     generate();
     div.appendChild(this.canvas);
+
+
+
+    div.appendChild(this.coordsDiv);
+
   }
 
   destroy() {
