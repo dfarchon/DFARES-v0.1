@@ -5,7 +5,8 @@
     "embedded_plugins/**/*.ts",
     "embedded_plugins/**/*.tsx",
     "plugins/**/*.ts",
-    "plugins/**/*.tsx"
+    "plugins/**/*.tsx",
+    "src/Backend/Plugins/minimapSpawn.js"
   ],
   "compilerOptions": {
     "module": "esnext",

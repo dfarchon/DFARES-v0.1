@@ -320,8 +320,11 @@ class GameUIManager extends EventEmitter {
     }
   }
 
-  public joinGame(beforeRetry: (e: Error) => Promise<boolean>): Promise<void> {
-    return this.gameManager.joinGame(beforeRetry);
+  public joinGame(
+    beforeRetry: (e: Error) => Promise<boolean>,
+    _selectedCoords: { x: number; y: number }
+  ): Promise<void> {
+    return this.gameManager.joinGame(beforeRetry, _selectedCoords);
   }
 
   public addAccount(coords: WorldCoords): Promise<boolean> {

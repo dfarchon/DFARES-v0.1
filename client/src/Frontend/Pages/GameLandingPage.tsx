@@ -23,6 +23,7 @@ import {
   submitInterestedEmail,
   submitPlayerEmail,
 } from '../../Backend/Network/UtilityServerAPI';
+import MinimapSpawnPlugin from '../../Backend/Plugins/minimapSpawn';
 import { getWhitelistArgs } from '../../Backend/Utils/WhitelistSnarkArgsHelper';
 import { ZKArgIdx } from '../../_types/darkforest/api/ContractsAPITypes';
 import {
@@ -63,6 +64,8 @@ const enum TerminalPromptStep {
   ERROR,
 }
 
+const minimapPlugin = new MinimapSpawnPlugin();
+
 export function GameLandingPage({ match, location }: RouteComponentProps<{ contract: string }>) {
   const history = useHistory();
   const terminalHandle = useRef<TerminalHandle>();
@@ -75,6 +78,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
   const [ethConnection, setEthConnection] = useState<EthConnection | undefined>();
   const [step, setStep] = useState(TerminalPromptStep.NONE);
 
+  const [isMiniMapOn, setMiniMapOn] = useState(false);
   const params = new URLSearchParams(location.search);
   const useZkWhitelist = params.has('zkWhitelist');
   const selectedAddress = params.get('account');
@@ -802,9 +806,76 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
 
       terminal.current?.newline();
 
-      terminal.current?.println('Press ENTER to find a home planet. This may take up to 120s.');
-      terminal.current?.println('This will consume a lot of CPU.');
+      // terminal.current?.println('Press ENTER to find a home planet. This may take up to 120s.');
+      // terminal.current?.println('This will consume a lot of CPU.');
+      // ##############
+      // NEW
+      // ##############
+      // Run the Minimap and get the selected coordinates
+      setMiniMapOn(true);
 
+      let selectedCoords = { x: 0, y: 0 };
+      let distFromOriginSquare = 0;
+      const worldRadius = df.getContractConstants().WORLD_RADIUS_MIN;
+      const rimRadius = df.getContractConstants().SPAWN_RIM_AREA;
+
+      let _run = false;
+      do {
+        try {
+          _run = true;
+          terminal.current?.println('Select area where is cursor pointer "👆🏻" on Minimap.');
+
+          terminal.current?.println(
+            'You can choose "Inner Nebula" only. *Dark Blue...',
+            TerminalTextStyle.Blue
+          );
+          terminal.current?.println(' ');
+          // terminal.current?.println(`In WorldRadius = ${worldRadius.toFixed(2).toString()}`);
+          // terminal.current?.println(
+          //   `Out of SpawnRimRadius limit = ${Math.sqrt(rimRadius).toFixed(2).toString()}`
+          // );
+          // todo timer 0.1s
+
+          // Introduce a 100ms (0.1s) delay using a timer
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          //  debugger;
+          selectedCoords = await minimapPlugin.runAndGetUserCoords();
+
+          distFromOriginSquare = selectedCoords.x ** 2 + selectedCoords.y ** 2;
+
+          if (selectedCoords.x !== 0 && selectedCoords.y !== 0) {
+            terminal.current?.println(`SELECTION IN SPAWN AREA. WELL DONE !!!`);
+            terminal.current?.println(
+              `Minimap selected coordinates: (${selectedCoords.x}, ${selectedCoords.y})`
+            );
+            terminal.current?.println(
+              `Your selection is ${Math.sqrt(distFromOriginSquare).toFixed(0)} away from center.`
+            );
+          } else {
+            terminal.current?.println(
+              `Minimap selected coordinates: (${selectedCoords.x}, ${selectedCoords.y})`
+            );
+            terminal.current?.println(`WRONG SELECTION REFRESH AND START AGAIN!!!`);
+          }
+
+          _run = false;
+        } catch (error) {
+          console.error('Error in the loop:', error);
+          // Handle the error or break out of the loop as needed
+          _run = false;
+        }
+      } while (
+        distFromOriginSquare < rimRadius &&
+        //distFromOriginSquare > worldRadius &&
+        selectedCoords.x !== 0 &&
+        selectedCoords.y !== 0
+      );
+
+      setMiniMapOn(false);
+      terminal.current?.println(
+        'To select different spawn area please refresh page otherwise press ENTER to find a home planet.  '
+      );
+      terminal.current?.println('This may take up to 120s a will consume a lot of CPU.');
       await terminal.current?.getInput();
 
       gameUIManager.getGameManager().on(GameManagerEvent.InitializedPlayer, () => {
@@ -837,7 +908,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
 
           await terminal.current?.getInput();
           return true;
-        })
+        }, selectedCoords)
         .catch((error: Error) => {
           terminal.current?.println(
             `[ERROR] An error occurred: ${error.toString().slice(0, 10000)}`,
@@ -980,6 +1051,35 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
     }
   }, [terminalHandle, topLevelContainer, advanceState]);
 
+  interface MinimapPluginWrapperProps {
+    plugin: MinimapSpawnPlugin; // Replace with the actual type of your MinimapSpawnPlugin
+  }
+  const MinimapPluginWrapper: React.FC<MinimapPluginWrapperProps> = ({ plugin }) => {
+    const containerRef = useRef(null);
+
+    useEffect(() => {
+      if (containerRef.current && plugin) {
+        plugin.render(containerRef.current);
+      }
+
+      return () => {
+        // Cleanup the plugin when the component unmounts
+        if (plugin) {
+          plugin.destroy();
+        }
+      };
+    }, [containerRef, plugin]);
+
+    return (
+      <>
+        <div>
+          <p></p>
+        </div>
+        <div ref={containerRef}></div>
+      </>
+    );
+  };
+
   return (
     <Wrapper initRender={initRenderState} terminalEnabled={terminalVisible}>
       <GameWindowWrapper initRender={initRenderState} terminalEnabled={terminalVisible}>
@@ -1002,6 +1102,16 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         <Terminal ref={terminalHandle} promptCharacter={'$'} />
       </TerminalWrapper>
       <div ref={topLevelContainer}></div>
+      <div>
+        {isMiniMapOn && (
+          <>
+            <div style={{ position: 'absolute', right: '50px' }}>
+              <div style={{ color: 'red', width: '100px', height: '50px' }}> </div>
+              <MinimapPluginWrapper plugin={minimapPlugin} />
+            </div>
+          </>
+        )}
+      </div>
     </Wrapper>
   );
 }
