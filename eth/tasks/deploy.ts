@@ -415,6 +415,7 @@ export async function deployLibraries({}, hre: HardhatRuntimeEnvironment) {
   const LibGameUtilsFactory = await hre.ethers.getContractFactory('LibGameUtils');
   const LibGameUtils = await LibGameUtilsFactory.deploy();
   await LibGameUtils.deployTransaction.wait();
+  console.log(`LibGameUtils deployed to: ${LibGameUtils.address}`);
 
   const LibLazyUpdateFactory = await hre.ethers.getContractFactory('LibLazyUpdate', {
     libraries: {
@@ -423,6 +424,7 @@ export async function deployLibraries({}, hre: HardhatRuntimeEnvironment) {
   });
   const LibLazyUpdate = await LibLazyUpdateFactory.deploy();
   await LibLazyUpdate.deployTransaction.wait();
+  console.log(`LibLazyUpdate deployed to: ${LibLazyUpdate.address}`);
 
   const LibArtifactUtilsFactory = await hre.ethers.getContractFactory('LibArtifactUtils', {
     libraries: {
@@ -432,6 +434,7 @@ export async function deployLibraries({}, hre: HardhatRuntimeEnvironment) {
 
   const LibArtifactUtils = await LibArtifactUtilsFactory.deploy();
   await LibArtifactUtils.deployTransaction.wait();
+  console.log(`LibArtifactUtils deployed to: ${LibArtifactUtils.address}`);
 
   const LibPlanetFactory = await hre.ethers.getContractFactory('LibPlanet', {
     libraries: {
@@ -441,6 +444,7 @@ export async function deployLibraries({}, hre: HardhatRuntimeEnvironment) {
   });
   const LibPlanet = await LibPlanetFactory.deploy();
   await LibPlanet.deployTransaction.wait();
+  console.log(`LibPlanet deployed to: ${LibPlanet.address}`);
 
   return {
     LibGameUtils: LibGameUtils.address,
