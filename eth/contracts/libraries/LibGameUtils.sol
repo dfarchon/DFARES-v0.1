@@ -62,7 +62,10 @@ library LibGameUtils {
         return true;
     }
 
-    function spaceTypeFromPerlin(uint256 perlin) public view returns (SpaceType) {
+    function spaceTypeFromPerlin(uint256 perlin, uint256 distFromOriginSquare) public view returns (SpaceType) {
+        uint32[5] memory MAX_LEVEL_DIST = [40000 ** 2, 30000 ** 2,20000 ** 2, 10000 ** 2, 5000 ** 2];
+        if(distFromOriginSquare > MAX_LEVEL_DIST[0]) return SpaceType.NEBULA;
+
         if (perlin >= gameConstants().PERLIN_THRESHOLD_3) {
             return SpaceType.DEAD_SPACE;
         } else if (perlin >= gameConstants().PERLIN_THRESHOLD_2) {
@@ -73,73 +76,6 @@ library LibGameUtils {
         return SpaceType.NEBULA;
     }
 
-    function _getPlanetLevelTypeAndSpaceType(uint256 _location, uint256 _perlin)
-        public
-        view
-        returns (
-            uint256,
-            PlanetType,
-            SpaceType
-        )
-    {
-        SpaceType spaceType = spaceTypeFromPerlin(_perlin);
-
-        bytes memory _b = abi.encodePacked(_location);
-
-        // get the uint value of byte 4 - 6
-        uint256 _planetLevelUInt = _calculateByteUInt(_b, 4, 6);
-        uint256 level;
-
-        // reverse-iterate thresholds and return planet type accordingly
-        for (uint256 i = (gameConstants().PLANET_LEVEL_THRESHOLDS.length - 1); i >= 0; i--) {
-            if (_planetLevelUInt < gameConstants().PLANET_LEVEL_THRESHOLDS[i]) {
-                level = i;
-                break;
-            }
-        }
-
-        if (spaceType == SpaceType.NEBULA && level > 4) {
-            // clip level to <= 3 if in nebula
-            level = 4;
-        }
-        if (spaceType == SpaceType.SPACE && level > 5) {
-            // clip level to <= 4 if in space
-            level = 5;
-        }
-
-        // clip level to <= MAX_NATURAL_PLANET_LEVEL
-        if (level > gameConstants().MAX_NATURAL_PLANET_LEVEL) {
-            level = gameConstants().MAX_NATURAL_PLANET_LEVEL;
-        }
-
-        // get planet type
-        PlanetType planetType = PlanetType.PLANET;
-        uint8[5] memory weights = gameConstants().PLANET_TYPE_WEIGHTS[uint8(spaceType)][level];
-        uint256[5] memory thresholds;
-        {
-            uint256 weightSum;
-            for (uint8 i = 0; i < weights.length; i++) {
-                weightSum += weights[i];
-            }
-            thresholds[0] = weightSum - weights[0];
-            for (uint8 i = 1; i < weights.length; i++) {
-                thresholds[i] = thresholds[i - 1] - weights[i];
-            }
-            for (uint8 i = 0; i < weights.length; i++) {
-                thresholds[i] = (thresholds[i] * 256) / weightSum;
-            }
-        }
-
-        uint8 typeByte = uint8(_b[8]);
-        for (uint8 i = 0; i < thresholds.length; i++) {
-            if (typeByte >= thresholds[i]) {
-                planetType = PlanetType(i);
-                break;
-            }
-        }
-
-        return (level, planetType, spaceType);
-    }
     //###############
     //  NEW MAP ALGO
     //###############
@@ -152,7 +88,13 @@ library LibGameUtils {
             SpaceType
         )
     {
-        SpaceType spaceType = spaceTypeFromPerlin(_perlin);
+        SpaceType spaceType = spaceTypeFromPerlin(_perlin, _distFromOriginSquare);
+
+
+        uint32[5] memory MAX_LEVEL_DIST = [40000 ** 2, 30000 ** 2,20000 ** 2, 10000 ** 2, 5000 ** 2];
+        uint8[6] memory MAX_LEVEL_LIMIT = [1, 6, 7, 8, 9, 9];
+        uint8[6] memory MIN_LEVEL_BIAS = [0, 0, 1, 1, 2, 2];
+        if(_distFromOriginSquare > MAX_LEVEL_DIST[0]) spaceType = SpaceType.NEBULA;
 
         bytes memory _b = abi.encodePacked(_location);
 
@@ -190,10 +132,6 @@ library LibGameUtils {
         //         break;
         //     }
         // }
-
-        uint32[5] memory MAX_LEVEL_DIST = [40000 ** 2, 30000 ** 2,20000 ** 2, 10000 ** 2, 5000 ** 2];
-        uint8[6] memory MAX_LEVEL_LIMIT = [1, 6, 7, 8, 9, 9];
-        uint8[6] memory MIN_LEVEL_BIAS = [0, 0, 1, 1, 2, 2];
 
         level = _distFromOriginSquare > MAX_LEVEL_DIST[0] ? (level > MAX_LEVEL_LIMIT[0] ? MAX_LEVEL_LIMIT[0] : level) : level;
         for (uint i = 0; i < MAX_LEVEL_DIST.length - 1; i++) {

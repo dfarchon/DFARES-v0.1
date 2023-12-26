@@ -41,7 +41,8 @@ class CoordsText extends React.Component<
 
     if (this.props.uiManager) {
       const per = this.props.uiManager.getSpaceTypePerlin(coords, false);
-      const spaceType = this.props.uiManager.spaceTypeFromPerlin(per);
+      const distFromOrigin = Math.floor(Math.sqrt(coords.x ** 2 + coords.y ** 2));
+      const spaceType = this.props.uiManager.spaceTypeFromPerlin(per, distFromOrigin);
 
       let suff = '';
       if (spaceType === SpaceType.NEBULA) suff = '\u00b0 (NEBULA)';

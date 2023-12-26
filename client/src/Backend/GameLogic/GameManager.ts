@@ -1749,8 +1749,8 @@ class GameManager extends EventEmitter {
    * Each coordinate lives in a particular type of space, determined by a smooth random
    * function called 'perlin noise.
    */
-  spaceTypeFromPerlin(perlin: number): SpaceType {
-    return this.entityStore.spaceTypeFromPerlin(perlin);
+  spaceTypeFromPerlin(perlin: number, distFromOrigin: number): SpaceType {
+    return this.entityStore.spaceTypeFromPerlin(perlin,distFromOrigin);
   }
 
   /**

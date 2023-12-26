@@ -57,31 +57,6 @@ library LibPlanet {
         gs().players[msg.sender].lastRevealTimestamp = block.timestamp;
     }
 
-    function getDefaultInitPlanetArgs(
-        uint256 _location,
-        uint256 _perlin,
-        bool _isHomePlanet
-    ) public view returns (DFPInitPlanetArgs memory) {
-        (uint256 level, PlanetType planetType, SpaceType spaceType) = LibGameUtils
-            ._getPlanetLevelTypeAndSpaceType(_location, _perlin);
-
-        if (_isHomePlanet) {
-            require(level == 0, "Can only initialize on planet level 0");
-            require(planetType == PlanetType.PLANET, "Can only initialize on regular planets");
-        }
-
-        return
-            DFPInitPlanetArgs(
-                _location,
-                _perlin,
-                level,
-                gameConstants().TIME_FACTOR_HUNDREDTHS,
-                spaceType,
-                planetType,
-                _isHomePlanet
-            );
-    }
-
     //###############
     //  NEW MAP ALGO
     //###############
@@ -139,24 +114,6 @@ library LibPlanet {
 
         // Initialize planet information
         initializePlanetWithDefaults(_location, _perlin, _input[8], isHomePlanet);
-    }
-
-    function initializePlanetWithDefaults(
-        uint256 _location,
-        uint256 _perlin,
-        bool _isHomePlanet
-    ) public {
-        require(LibGameUtils._locationIdValid(_location), "Not a valid planet location");
-
-        DFPInitPlanetArgs memory initArgs = getDefaultInitPlanetArgs(
-            _location,
-            _perlin,
-            _isHomePlanet
-        );
-
-        _initializePlanet(initArgs);
-        gs().planetIds.push(_location);
-        gs().initializedPlanetCountByLevel[initArgs.level] += 1;
     }
 
 
@@ -296,7 +253,8 @@ library LibPlanet {
     function checkPlayerInit(
         uint256 _location,
         uint256 _perlin,
-        uint256 _radius
+        uint256 _radius,
+        uint256 _distFromOriginSquare
     ) public view returns (bool) {
         require(!gs().players[msg.sender].isInitialized, "Player is already initialized");
         require(_radius <= gs().worldRadius, "Init radius is bigger than the current world radius");
@@ -309,14 +267,19 @@ library LibPlanet {
             );
         }
 
+        SpaceType spaceType = LibGameUtils.spaceTypeFromPerlin(_perlin,_distFromOriginSquare);
+
+        require(spaceType == SpaceType.NEBULA, "GUCK U");
+
+        //NEEDED?
         require(
             _perlin >= gameConstants().INIT_PERLIN_MIN,
             "Init not allowed in perlin value less than INIT_PERLIN_MIN"
         );
-        require(
-            _perlin < gameConstants().INIT_PERLIN_MAX,
-            "Init not allowed in perlin value greater than or equal to the INIT_PERLIN_MAX"
-        );
+        // require(
+        //     _perlin < gameConstants().INIT_PERLIN_MAX,
+        //     "Init not allowed in perlin value greater than or equal to the INIT_PERLIN_MAX"
+        // );
         return true;
     }
 

@@ -145,7 +145,7 @@ contract DFCoreFacet is WithStorage {
         uint256 _perlin = _input[1];
         uint256 _radius = _input[2];
 
-        require(LibPlanet.checkPlayerInit(_location, _perlin, _radius));
+        require(LibPlanet.checkPlayerInit(_location, _perlin, _radius, _input[8]));
 
         // Initialize player data
         gs().playerIds.push(msg.sender);

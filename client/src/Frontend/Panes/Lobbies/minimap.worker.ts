@@ -44,11 +44,15 @@ function generate(config: MinimapConfig): DrawMessage {
     for (let j = radius * -1; j < radius; j += step) {
       // filter points within map circle
       if (checkBounds(0, 0, i, j, radius)) {
+        let tmpSpaceType = spaceTypeFromPerlin(spaceTypePerlin({ x: i, y: j }, config), config);
+        const MAX_LEVEL_DIST = [40000, 30000, 20000, 10000, 5000];
+        const distFromOrigin = Math.floor(Math.sqrt(i ** 2 + j ** 2));
+        if(distFromOrigin > MAX_LEVEL_DIST[0]) tmpSpaceType = SpaceType.NEBULA;
         // store coordinate and space type
         data.push({
           x: i,
           y: j,
-          type: spaceTypeFromPerlin(spaceTypePerlin({ x: i, y: j }, config), config),
+          type:tmpSpaceType,
         });
       }
     }

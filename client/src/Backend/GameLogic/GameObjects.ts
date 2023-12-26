@@ -1299,7 +1299,7 @@ export class GameObjects {
     perlin: number,
     distFromOrigin = -1
   ): PlanetLevel {
-    const spaceType = this.spaceTypeFromPerlin(perlin);
+    const  spaceType = this.spaceTypeFromPerlin(perlin,distFromOrigin);
 
     const levelBigInt = getBytesFromHex(hex, 4, 7);
 
@@ -1372,7 +1372,10 @@ export class GameObjects {
     return ret;
   }
 
-  public spaceTypeFromPerlin(perlin: number): SpaceType {
+  public spaceTypeFromPerlin(perlin: number, distFromOrigin: number): SpaceType {
+    const MAX_LEVEL_DIST = [40000, 30000, 20000, 10000, 5000];
+    if(distFromOrigin > MAX_LEVEL_DIST[0]) return SpaceType.NEBULA;
+
     if (perlin < this.contractConstants.PERLIN_THRESHOLD_1) {
       return SpaceType.NEBULA;
     } else if (perlin < this.contractConstants.PERLIN_THRESHOLD_2) {
@@ -1409,8 +1412,8 @@ export class GameObjects {
     //  NEW MAP ALGO
     //###############
     const planetLevel = this.planetLevelFromHexPerlin(hex, perlin, distFromOrigin);
+    const spaceType = this.spaceTypeFromPerlin(perlin, distFromOrigin);
 
-    const spaceType = this.spaceTypeFromPerlin(perlin);
     const weights = this.contractConstants.PLANET_TYPE_WEIGHTS[spaceType][planetLevel];
     const weightSum = weights.reduce((x, y) => x + y);
     let thresholds = [weightSum - weights[0]];
@@ -1429,8 +1432,9 @@ export class GameObjects {
   }
 
   private getBiome(loc: WorldLocation): Biome {
-    const { perlin, biomebase } = loc;
-    const spaceType = this.spaceTypeFromPerlin(perlin);
+    const { perlin, biomebase, coords } = loc;
+    const distFromOrigin = Math.floor(Math.sqrt(coords.x ** 2 + coords.y ** 2));
+    const spaceType = this.spaceTypeFromPerlin(perlin, distFromOrigin);
 
     if (spaceType === SpaceType.DEAD_SPACE) return Biome.CORRUPTED;
 
@@ -1460,7 +1464,7 @@ export class GameObjects {
 
     const planetLevel = this.planetLevelFromHexPerlin(hex, perlin, distFromOrigin);
     const planetType = this.planetTypeFromHexPerlin(hex, perlin, distFromOrigin);
-    const spaceType = this.spaceTypeFromPerlin(perlin);
+    const spaceType = this.spaceTypeFromPerlin(perlin, distFromOrigin);
 
     const [energyCapBonus, energyGroBonus, rangeBonus, speedBonus, defBonus, spaceJunkBonus] =
       bonusFromHex(hex);

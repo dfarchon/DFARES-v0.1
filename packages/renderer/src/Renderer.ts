@@ -132,7 +132,7 @@ export interface RendererGameContext extends DiagnosticUpdater {
   getAllVoyages(): QueuedArrival[];
   getPlayer(address?: EthAddress): Player | undefined;
   getUnconfirmedMoves(): Transaction<UnconfirmedMove>[];
-  spaceTypeFromPerlin(perlin: number): SpaceType;
+  spaceTypeFromPerlin(perlin: number, distFromOrigin: number): SpaceType;
   getPerlinConfig(isBiome: boolean): PerlinConfig;
   getArtifactWithId(artifactId: ArtifactId | undefined): Artifact | undefined;
   getSpaceTypePerlin(coords: WorldCoords, floor: boolean): number;
