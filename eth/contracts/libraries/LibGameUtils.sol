@@ -73,73 +73,74 @@ library LibGameUtils {
         return SpaceType.NEBULA;
     }
 
-    function _getPlanetLevelTypeAndSpaceType(uint256 _location, uint256 _perlin)
-        public
-        view
-        returns (
-            uint256,
-            PlanetType,
-            SpaceType
-        )
-    {
-        SpaceType spaceType = spaceTypeFromPerlin(_perlin);
+    // function _getPlanetLevelTypeAndSpaceType(uint256 _location, uint256 _perlin)
+    //     public
+    //     view
+    //     returns (
+    //         uint256,
+    //         PlanetType,
+    //         SpaceType
+    //     )
+    // {
+    //     SpaceType spaceType = spaceTypeFromPerlin(_perlin);
 
-        bytes memory _b = abi.encodePacked(_location);
+    //     bytes memory _b = abi.encodePacked(_location);
 
-        // get the uint value of byte 4 - 6
-        uint256 _planetLevelUInt = _calculateByteUInt(_b, 4, 6);
-        uint256 level;
+    //     // get the uint value of byte 4 - 6
+    //     uint256 _planetLevelUInt = _calculateByteUInt(_b, 4, 6);
+    //     uint256 level;
 
-        // reverse-iterate thresholds and return planet type accordingly
-        for (uint256 i = (gameConstants().PLANET_LEVEL_THRESHOLDS.length - 1); i >= 0; i--) {
-            if (_planetLevelUInt < gameConstants().PLANET_LEVEL_THRESHOLDS[i]) {
-                level = i;
-                break;
-            }
-        }
+    //     // reverse-iterate thresholds and return planet type accordingly
+    //     for (uint256 i = (gameConstants().PLANET_LEVEL_THRESHOLDS.length - 1); i >= 0; i--) {
+    //         if (_planetLevelUInt < gameConstants().PLANET_LEVEL_THRESHOLDS[i]) {
+    //             level = i;
+    //             break;
+    //         }
+    //     }
 
-        if (spaceType == SpaceType.NEBULA && level > 4) {
-            // clip level to <= 3 if in nebula
-            level = 4;
-        }
-        if (spaceType == SpaceType.SPACE && level > 5) {
-            // clip level to <= 4 if in space
-            level = 5;
-        }
+    //     if (spaceType == SpaceType.NEBULA && level > 4) {
+    //         // clip level to <= 3 if in nebula
+    //         level = 4;
+    //     }
+    //     if (spaceType == SpaceType.SPACE && level > 5) {
+    //         // clip level to <= 4 if in space
+    //         level = 5;
+    //     }
 
-        // clip level to <= MAX_NATURAL_PLANET_LEVEL
-        if (level > gameConstants().MAX_NATURAL_PLANET_LEVEL) {
-            level = gameConstants().MAX_NATURAL_PLANET_LEVEL;
-        }
+    //     // clip level to <= MAX_NATURAL_PLANET_LEVEL
+    //     if (level > gameConstants().MAX_NATURAL_PLANET_LEVEL) {
+    //         level = gameConstants().MAX_NATURAL_PLANET_LEVEL;
+    //     }
 
-        // get planet type
-        PlanetType planetType = PlanetType.PLANET;
-        uint8[5] memory weights = gameConstants().PLANET_TYPE_WEIGHTS[uint8(spaceType)][level];
-        uint256[5] memory thresholds;
-        {
-            uint256 weightSum;
-            for (uint8 i = 0; i < weights.length; i++) {
-                weightSum += weights[i];
-            }
-            thresholds[0] = weightSum - weights[0];
-            for (uint8 i = 1; i < weights.length; i++) {
-                thresholds[i] = thresholds[i - 1] - weights[i];
-            }
-            for (uint8 i = 0; i < weights.length; i++) {
-                thresholds[i] = (thresholds[i] * 256) / weightSum;
-            }
-        }
+    //     // get planet type
+    //     PlanetType planetType = PlanetType.PLANET;
+    //     uint8[5] memory weights = gameConstants().PLANET_TYPE_WEIGHTS[uint8(spaceType)][level];
+    //     uint256[5] memory thresholds;
+    //     {
+    //         uint256 weightSum;
+    //         for (uint8 i = 0; i < weights.length; i++) {
+    //             weightSum += weights[i];
+    //         }
+    //         thresholds[0] = weightSum - weights[0];
+    //         for (uint8 i = 1; i < weights.length; i++) {
+    //             thresholds[i] = thresholds[i - 1] - weights[i];
+    //         }
+    //         for (uint8 i = 0; i < weights.length; i++) {
+    //             thresholds[i] = (thresholds[i] * 256) / weightSum;
+    //         }
+    //     }
 
-        uint8 typeByte = uint8(_b[8]);
-        for (uint8 i = 0; i < thresholds.length; i++) {
-            if (typeByte >= thresholds[i]) {
-                planetType = PlanetType(i);
-                break;
-            }
-        }
+    //     uint8 typeByte = uint8(_b[8]);
+    //     for (uint8 i = 0; i < thresholds.length; i++) {
+    //         if (typeByte >= thresholds[i]) {
+    //             planetType = PlanetType(i);
+    //             break;
+    //         }
+    //     }
 
-        return (level, planetType, spaceType);
-    }
+    //     return (level, planetType, spaceType);
+    // }
+
     //###############
     //  NEW MAP ALGO
     //###############

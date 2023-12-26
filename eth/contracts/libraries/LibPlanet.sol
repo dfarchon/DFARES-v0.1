@@ -57,30 +57,30 @@ library LibPlanet {
         gs().players[msg.sender].lastRevealTimestamp = block.timestamp;
     }
 
-    function getDefaultInitPlanetArgs(
-        uint256 _location,
-        uint256 _perlin,
-        bool _isHomePlanet
-    ) public view returns (DFPInitPlanetArgs memory) {
-        (uint256 level, PlanetType planetType, SpaceType spaceType) = LibGameUtils
-            ._getPlanetLevelTypeAndSpaceType(_location, _perlin);
+    // function getDefaultInitPlanetArgs(
+    //     uint256 _location,
+    //     uint256 _perlin,
+    //     bool _isHomePlanet
+    // ) public view returns (DFPInitPlanetArgs memory) {
+    //     (uint256 level, PlanetType planetType, SpaceType spaceType) = LibGameUtils
+    //         ._getPlanetLevelTypeAndSpaceType(_location, _perlin);
 
-        if (_isHomePlanet) {
-            require(level == 0, "Can only initialize on planet level 0");
-            require(planetType == PlanetType.PLANET, "Can only initialize on regular planets");
-        }
+    //     if (_isHomePlanet) {
+    //         require(level == 0, "Can only initialize on planet level 0");
+    //         require(planetType == PlanetType.PLANET, "Can only initialize on regular planets");
+    //     }
 
-        return
-            DFPInitPlanetArgs(
-                _location,
-                _perlin,
-                level,
-                gameConstants().TIME_FACTOR_HUNDREDTHS,
-                spaceType,
-                planetType,
-                _isHomePlanet
-            );
-    }
+    //     return
+    //         DFPInitPlanetArgs(
+    //             _location,
+    //             _perlin,
+    //             level,
+    //             gameConstants().TIME_FACTOR_HUNDREDTHS,
+    //             spaceType,
+    //             planetType,
+    //             _isHomePlanet
+    //         );
+    // }
 
     //###############
     //  NEW MAP ALGO
@@ -141,23 +141,23 @@ library LibPlanet {
         initializePlanetWithDefaults(_location, _perlin, _input[8], isHomePlanet);
     }
 
-    function initializePlanetWithDefaults(
-        uint256 _location,
-        uint256 _perlin,
-        bool _isHomePlanet
-    ) public {
-        require(LibGameUtils._locationIdValid(_location), "Not a valid planet location");
+    // function initializePlanetWithDefaults(
+    //     uint256 _location,
+    //     uint256 _perlin,
+    //     bool _isHomePlanet
+    // ) public {
+    //     require(LibGameUtils._locationIdValid(_location), "Not a valid planet location");
 
-        DFPInitPlanetArgs memory initArgs = getDefaultInitPlanetArgs(
-            _location,
-            _perlin,
-            _isHomePlanet
-        );
+    //     DFPInitPlanetArgs memory initArgs = getDefaultInitPlanetArgs(
+    //         _location,
+    //         _perlin,
+    //         _isHomePlanet
+    //     );
 
-        _initializePlanet(initArgs);
-        gs().planetIds.push(_location);
-        gs().initializedPlanetCountByLevel[initArgs.level] += 1;
-    }
+    //     _initializePlanet(initArgs);
+    //     gs().planetIds.push(_location);
+    //     gs().initializedPlanetCountByLevel[initArgs.level] += 1;
+    // }
 
 
     //###############

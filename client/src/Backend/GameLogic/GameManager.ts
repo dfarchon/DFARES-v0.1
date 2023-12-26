@@ -2543,13 +2543,12 @@ class GameManager extends EventEmitter {
         // return [...args, distFromOriginSquare];
       };
 
-
       const txIntent: UnconfirmedInit = {
         methodName: 'initializePlayer',
         contract: this.contractsAPI.contract,
         locationId: planet.location.hash,
         location: planet.location,
-        args: getArgs()
+        args: getArgs(),
       };
 
       this.terminal.current?.println('INIT: proving that planet exists', TerminalTextStyle.Sub);
@@ -3513,7 +3512,6 @@ class GameManager extends EventEmitter {
       //###############
       // const distFromOriginSquare = newX ** 2 + newY ** 2;
 
-
       const distMax = Math.ceil(Math.sqrt(xDiff ** 2 + yDiff ** 2));
 
       // Contract will automatically send full forces/silver on abandon
@@ -3572,7 +3570,7 @@ class GameManager extends EventEmitter {
         methodName: 'move',
         contract: this.contractsAPI.contract,
         args: getArgs(),
-        from: oldLocation.hash,   //以下的东西没屁用
+        from: oldLocation.hash, //以下的东西没屁用
         to: newLocation.hash,
         forces: shipsMoved,
         silver: silverMoved,

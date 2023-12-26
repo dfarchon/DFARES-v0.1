@@ -268,16 +268,20 @@ async function createArtifact(
 
 async function initPlanet(planet: LocatablePlanet) {
   if (planet.isInContract) return;
-  const x = planet.coords.x;
-  const y = planet.coords.y;
+  console.log(planet);
+
+  const x = planet.location.coords.x;
+  const y = planet.location.coords.y;
 
   const distFromOriginSquare = x * x + y * y;
 
   const args = Promise.resolve([
     locationIdToDecStr(planet.locationId),
     planet.perlin,
-    distFromOriginSquare,
+    distFromOriginSquare.toString(),
   ]);
+
+  console.log(args);
 
   const tx = await df.submitTransaction({
     args,
@@ -340,10 +344,7 @@ async function takeOwnership(
     Math.floor(Math.sqrt(planet.location.coords.x ** 2 + planet.location.coords.y ** 2)) + 1 // floor(sqrt(x^2 + y^2)) + 1
   );
 
-  const args = Promise.resolve([
-    newOwner,
-    ...snarkArgs,
-  ]);
+  const args = Promise.resolve([newOwner, ...snarkArgs]);
 
   const tx = await df.submitTransaction({
     locationId: planet.locationId,

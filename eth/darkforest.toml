@@ -118,7 +118,7 @@ PLANET_LEVEL_THRESHOLDS = [
 ]
 
 
-PLANET_RARITY = 32768 #16384
+PLANET_RARITY = 16384
 # How much score silver gives when withdrawing.
 # Expressed as a percentage integer.
 # (100 is 100%)

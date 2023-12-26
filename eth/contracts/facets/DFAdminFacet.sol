@@ -176,11 +176,11 @@ contract DFAdminFacet is WithStorage {
         emit AdminGiveSpaceship(locationId, owner, artifactType);
     }
 
-    function adminInitializePlanet(uint256 locationId, uint256 perlin) public onlyAdmin {
-        require(!gs().planets[locationId].isInitialized, "planet is already initialized");
+    // function adminInitializePlanet(uint256 locationId, uint256 perlin) public onlyAdmin {
+    //     require(!gs().planets[locationId].isInitialized, "planet is already initialized");
 
-        LibPlanet.initializePlanetWithDefaults(locationId, perlin, false);
-    }
+    //     LibPlanet.initializePlanetWithDefaults(locationId, perlin, false);
+    // }
 
     //###############
     //  NEW MAP ALGO
