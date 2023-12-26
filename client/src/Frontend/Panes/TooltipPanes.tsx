@@ -93,6 +93,15 @@ export function ScoreTooltipPane() {
   );
 }
 
+export function PlayerSilverTooltipPane() {
+  return (
+    <>
+      You earn <SilverLabel /> by withdrawing silver. Check out the <White>Help Pane</White> for
+      more info on player's silver.
+    </>
+  );
+}
+
 export function MiningPauseTooltipPane() {
   return (
     <>
@@ -505,6 +514,7 @@ export function TooltipContent({ name }: { name: TooltipName | undefined }) {
   if (name === TooltipName.SelectedSilver) return <SelectedSilverTooltipPane />;
   if (name === TooltipName.Rank) return <RankTooltipPane />;
   if (name === TooltipName.Score) return <ScoreTooltipPane />;
+  if (name === TooltipName.PlayerSilver) return <PlayerSilverTooltipPane />;
   if (name === TooltipName.MiningPause) return <MiningPauseTooltipPane />;
   if (name === TooltipName.MiningTarget) return <MiningTargetTooltipPane />;
   if (name === TooltipName.CurrentMining) return <CurrentMiningTooltipPane />;

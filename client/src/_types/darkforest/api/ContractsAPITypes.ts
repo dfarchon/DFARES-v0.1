@@ -104,7 +104,6 @@ export const enum ContractsAPIEvent {
   TxCancelled = 'TxCancelled',
   PlanetTransferred = 'PlanetTransferred',
   LocationClaimed = 'LocationClaimed',
-  LocationBurned = 'LocationBurned',
   LobbyCreated = 'LobbyCreated',
 }
 
@@ -134,7 +133,6 @@ export type MoveArgs = [
   string, // ships sent
   string, // silver sent
   string, // artifactId sent
-  string, // dist from origin
   string // is planet being released (1 true, 0 false)
 ];
 
@@ -305,6 +303,7 @@ export interface ContractConstants {
     TITAN: boolean;
     CRESCENT: boolean;
     WHALE: boolean;
+    PINKSHIP: boolean;
   };
 
   ROUND_END_REWARDS_BY_RANK: [
@@ -395,7 +394,31 @@ export interface ContractConstants {
 
   BURN_END_TIMESTAMP: number;
   BURN_PLANET_COOLDOWN: number;
-  BURN_PLANET_EFFECT_RADIUS: number;
+  BURN_PLANET_LEVEL_EFFECT_RADIUS: [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number
+  ];
+
+  BURN_PLANET_REQUIRE_SILVER_AMOUNTS: [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number
+  ];
 }
 
 export type ClientMockchainData =

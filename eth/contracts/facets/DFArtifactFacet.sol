@@ -49,7 +49,10 @@ contract DFArtifactFacet is WithStorage, ERC721 {
     }
 
     modifier notTokenEnded() {
-        require(block.timestamp < gameConstants().TOKEN_MINT_END_TIMESTAMP, "Token mint period has ended");
+        require(
+            block.timestamp < gameConstants().TOKEN_MINT_END_TIMESTAMP,
+            "Token mint period has ended"
+        );
         _;
     }
 
@@ -326,6 +329,16 @@ contract DFArtifactFacet is WithStorage, ERC721 {
             emit ArtifactFound(msg.sender, id5, locationId);
         }
 
+        if (gameConstants().SPACESHIPS.PINKSHIP) {
+            uint256 id5 = LibArtifactUtils.createAndPlaceSpaceship(
+                locationId,
+                owner,
+                ArtifactType.ShipPink
+            );
+
+            emit ArtifactFound(msg.sender, id5, locationId);
+        }
+
         gs().players[msg.sender].claimedShips = true;
     }
 
@@ -368,7 +381,6 @@ contract DFArtifactFacet is WithStorage, ERC721 {
         //1 hour 1 artifact
         // require(totalGameBlocks * 2 >= amount * 60 * 60, "block number limit");
 
-
         //MyTodo: buy artifact cd
         // 60 min 1 artifact
         uint256 deltaTime = 60;
@@ -387,7 +399,6 @@ contract DFArtifactFacet is WithStorage, ERC721 {
             else if (args.rarity == ArtifactRarity.Rare) cost = 2 ether;
             else if (args.rarity == ArtifactRarity.Epic) cost = 4 ether;
             else if (args.rarity == ArtifactRarity.Legendary) cost = 8 ether;
-
         } else if (args.artifactType == ArtifactType.Avatar) {
             cost = 1 ether;
         } else if (args.artifactType == ArtifactType.StellarShield) {

@@ -63,6 +63,7 @@ const enum TerminalPromptStep {
   TERMINATED,
   ERROR,
 }
+
 const minimapPlugin = new MinimapSpawnPlugin();
 
 export function GameLandingPage({ match, location }: RouteComponentProps<{ contract: string }>) {
@@ -805,6 +806,8 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
 
       terminal.current?.newline();
 
+      // terminal.current?.println('Press ENTER to find a home planet. This may take up to 120s.');
+      // terminal.current?.println('This will consume a lot of CPU.');
       // ##############
       // NEW
       // ##############
@@ -873,7 +876,6 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         'To select different spawn area please refresh page otherwise press ENTER to find a home planet.  '
       );
       terminal.current?.println('This may take up to 120s a will consume a lot of CPU.');
-
       await terminal.current?.getInput();
 
       gameUIManager.getGameManager().on(GameManagerEvent.InitializedPlayer, () => {
@@ -1099,13 +1101,12 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       <TerminalWrapper initRender={initRenderState} terminalEnabled={terminalVisible}>
         <Terminal ref={terminalHandle} promptCharacter={'$'} />
       </TerminalWrapper>
-
       <div ref={topLevelContainer}></div>
       <div>
         {isMiniMapOn && (
           <>
-            <div style={{ position: 'absolute', right: '150px' }}>
-              <div style={{ color: 'red', width: '100px', height: '40px' }}> </div>
+            <div style={{ position: 'absolute', right: '50px' }}>
+              <div style={{ color: 'red', width: '100px', height: '50px' }}> </div>
               <MinimapPluginWrapper plugin={minimapPlugin} />
             </div>
           </>

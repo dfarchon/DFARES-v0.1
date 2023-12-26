@@ -494,7 +494,11 @@ class GameManager extends EventEmitter {
 
         const revealedLocation = { ...location, revealer: coords.operator };
         revealedLocations.set(locationId, revealedLocation);
-        const burnedLocation = { ...location, operator: coords.operator };
+        const burnedLocation = {
+          ...location,
+          operator: coords.operator,
+          radius: this.getContractConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[planet.planetLevel],
+        };
         burnedLocations.set(locationId, burnedLocation);
       }
     }
@@ -861,13 +865,7 @@ class GameManager extends EventEmitter {
           gameManager.emit(GameManagerEvent.PlanetUpdate);
         }
       )
-      .on(ContractsAPIEvent.LocationBurned, async (planetId: LocationId, _revealer: EthAddress) => {
-        // TODO: hook notifs or emit event to UI if you want
 
-        // console.log('[testInfo]: ContractsAPIEvent.LocationBurned');
-        await gameManager.hardRefreshPlanet(planetId);
-        gameManager.emit(GameManagerEvent.PlanetUpdate);
-      })
       .on(ContractsAPIEvent.TxQueued, (tx: Transaction) => {
         gameManager.entityStore.onTxIntent(tx);
       })
@@ -880,6 +878,10 @@ class GameManager extends EventEmitter {
         gameManager.persistentChunkStore.onEthTxComplete(tx.hash);
 
         if (isUnconfirmedRevealTx(tx)) {
+          await gameManager.hardRefreshPlanet(tx.intent.locationId);
+        } else if (isUnconfirmedBurnTx(tx)) {
+          await gameManager.hardRefreshPlanet(tx.intent.locationId);
+        } else if (isUnconfirmedPinkTx(tx)) {
           await gameManager.hardRefreshPlanet(tx.intent.locationId);
         } else if (isUnconfirmedInitTx(tx)) {
           terminal.current?.println('Loading Home Planet from Blockchain...');
@@ -1095,6 +1097,12 @@ class GameManager extends EventEmitter {
         claimer: claimedCoords.claimer,
       };
       this.getGameObjects().setClaimedLocation(claimedLocation);
+
+      //to show planet in map
+      revealedLocation = {
+        ...this.locationFromCoords(claimedCoords),
+        revealer: claimedCoords.claimer,
+      };
     } else if (revealedCoords) {
       revealedLocation = {
         ...this.locationFromCoords(revealedCoords),
@@ -1104,6 +1112,13 @@ class GameManager extends EventEmitter {
       burnedLocation = {
         ...this.locationFromCoords(burnedCoords),
         operator: burnedCoords.operator,
+        radius: this.getContractConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[planet.planetLevel],
+      };
+
+      //to show planet in map
+      revealedLocation = {
+        ...this.locationFromCoords(burnedCoords),
+        revealer: burnedCoords.operator,
       };
       this.getGameObjects().setBurnedLocation(burnedLocation);
     }
@@ -1179,9 +1194,14 @@ class GameManager extends EventEmitter {
     const loadedBurnedCoords = await this.contractsAPI.getBurnedPlanetsCoords(0);
 
     for (const item of loadedBurnedCoords) {
+      const locationId = item.hash;
+      const planet = this.getPlanetWithId(locationId);
+      if (planet === undefined) continue;
+
       const burnedLocation = {
         ...this.locationFromCoords(item),
         operator: item.operator,
+        radius: this.getContractConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[planet.planetLevel],
       };
 
       this.getGameObjects().setBurnedLocation(burnedLocation);
@@ -1461,6 +1481,10 @@ class GameManager extends EventEmitter {
     return player?.buyArtifactAmount;
   }
 
+  public getPlayerSilver(addr: EthAddress): number | undefined {
+    const player = this.players.get(addr);
+    return player?.silver;
+  }
   public getDefaultSpaceJunkForPlanetLevel(level: number) {
     return this.contractConstants.PLANET_LEVEL_JUNK[level];
   }
@@ -2046,9 +2070,35 @@ class GameManager extends EventEmitter {
     const allBurnedCoords = Array.from(burnedLocations.values());
 
     for (const item of allBurnedCoords) {
+      const planet = this.getPlanetWithId(item.hash);
+      if (planet === undefined) continue;
+
       pinkZones.add({
         coords: item.coords,
-        radius: this.getContractConstants().BURN_PLANET_EFFECT_RADIUS,
+
+        //mytodo: add different radius
+        radius: this.getContractConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[planet.planetLevel],
+      });
+    }
+
+    return pinkZones || new Set();
+  }
+
+  public getMyPinkZones(): Set<PinkZone> {
+    const pinkZones = new Set<PinkZone>();
+    const burnedLocations = this.getBurnedLocations();
+    const allBurnedCoords = Array.from(burnedLocations.values());
+
+    for (const item of allBurnedCoords) {
+      const planet = this.getPlanetWithId(item.hash);
+      if (planet === undefined) continue;
+      if (planet.owner !== this.account) continue;
+
+      pinkZones.add({
+        coords: item.coords,
+
+        //mytodo: add different radius
+        radius: this.getContractConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[planet.planetLevel],
       });
     }
 
@@ -2250,7 +2300,11 @@ class GameManager extends EventEmitter {
         throw new Error("you can't burn destroyed/frozen planets");
       }
 
-      if (planet.operator !== undefined) {
+      if (planet.planetLevel <= 0) {
+        throw new Error("you can't burn level zero planet");
+      }
+
+      if (planet.operator !== undefined && planet.operator !== EMPTY_ADDRESS) {
         throw new Error('someone already burn this planet');
       }
 
@@ -2266,6 +2320,14 @@ class GameManager extends EventEmitter {
 
       if (myLastBurnTimestamp && Date.now() < this.getNextBurnAvailableTimestamp()) {
         throw new Error('still on cooldown for burning');
+      }
+
+      const playerSilver = this.players.get(this.account)?.silver;
+      if (
+        playerSilver &&
+        playerSilver < this.contractConstants.BURN_PLANET_REQUIRE_SILVER_AMOUNTS[planet.planetLevel]
+      ) {
+        throw new Error('player silver is not enough');
       }
 
       // this is shitty. used for the popup window
@@ -2307,8 +2369,24 @@ class GameManager extends EventEmitter {
     }
   }
 
+  public checkPlanetCanPink(planetId: LocationId): boolean {
+    if (!this.account) return false;
+    const planet = this.getPlanetWithId(planetId);
+    if (!planet) return false;
+    if (!isLocatable(planet)) return false;
+    const myPinkZones = this.getMyPinkZones();
+    for (const pinkZone of myPinkZones) {
+      const coords = pinkZone.coords;
+      const radius = pinkZone.radius;
+
+      const dis = this.getDistCoords(coords, planet.location.coords);
+
+      if (dis <= radius) return true;
+    }
+    return false;
+  }
   /**
-   * burnLocation reveals a planet's location on-chain.
+   * pinkLocation reveals a planet's location on-chain.
    */
 
   public async pinkLocation(planetId: LocationId): Promise<Transaction<UnconfirmedPink>> {
@@ -2335,7 +2413,7 @@ class GameManager extends EventEmitter {
         throw new Error("you can't pink destroyed/frozen planets");
       }
 
-      if (planet.operator !== undefined) {
+      if (planet.operator !== undefined && planet.operator !== EMPTY_ADDRESS) {
         throw new Error('someone already burn this planet');
       }
 
@@ -2352,6 +2430,9 @@ class GameManager extends EventEmitter {
       // if (myLastBurnTimestamp && Date.now() < this.getNextBurnAvailableTimestamp()) {
       //   throw new Error('still on cooldown for burning');
       // }
+      if (!this.checkPlanetCanPink(planet.locationId)) {
+        throw new Error("this planet don't in your pink zones");
+      }
 
       // this is shitty. used for the popup window
       localStorage.setItem(`${this.getAccount()?.toLowerCase()}-pinkLocationId`, planetId);
@@ -2529,7 +2610,6 @@ class GameManager extends EventEmitter {
       this.terminal.current?.println('');
 
       await this.persistentChunkStore.addHomeLocation(planet.location);
-      const distFromOriginSquare = planet.location.coords.x ** 2 + planet.location.coords.y ** 2;
 
       const getArgs = async () => {
         const args = await this.snarkHelper.getInitArgs(
@@ -2543,7 +2623,7 @@ class GameManager extends EventEmitter {
           TerminalTextStyle.Sub
         );
         this.terminal.current?.newline();
-        return [...args, distFromOriginSquare];
+        return args;
       };
 
       const txIntent: UnconfirmedInit = {
@@ -2643,6 +2723,7 @@ class GameManager extends EventEmitter {
       const initPerlinMin = this.contractConstants.INIT_PERLIN_MIN;
       const initPerlinMax = this.contractConstants.INIT_PERLIN_MAX;
       let minedChunksCount = 0;
+
       const x: number = _selectedCoords.x;
       const y: number = _selectedCoords.y;
       const d: number = Math.sqrt(x ** 2 + y ** 2);
@@ -2661,7 +2742,8 @@ class GameManager extends EventEmitter {
 
       // do {
       //   // sample from square
-
+      //   x = Math.random() * this.worldRadius * 2 - this.worldRadius;
+      //   y = Math.random() * this.worldRadius * 2 - this.worldRadius;
       //   d = Math.sqrt(x ** 2 + y ** 2);
       //   p = this.spaceTypePerlin({ x, y }, false);
       // } while (
@@ -2671,22 +2753,23 @@ class GameManager extends EventEmitter {
       //   d <= spawnInnerRadius // can't be inside spawn area ring
       // );
 
-      // if (
-      //     p >= initPerlinMax || // keep searching if above or equal to the max
-      //     p < initPerlinMin || // keep searching if below the minimum
-      //   d >= this.worldRadius || // can't be out of bound
-      //   d <= spawnInnerRadius
-      // ) {
-      //   // can't be inside spawn area ring
-      //   return;
-      // }
-
       // when setting up a new account in development mode, you can tell
       // the game where to start searching for planets using this query
       // string parameter. for example:
       //
       // ?searchCenter=2866,5627
       //
+
+      // const params = new URLSearchParams(window.location.search);
+
+      // if (params.has('searchCenter')) {
+      //   const parts = params.get('searchCenter')?.split(',');
+
+      //   if (parts) {
+      //     x = parseInt(parts[0], 10);
+      //     y = parseInt(parts[1], 10);
+      //   }
+      // }
 
       const pattern: MiningPattern = new SpiralPattern({ x, y }, MIN_CHUNK_SIZE);
       const chunkStore = new HomePlanetMinerChunkStore(
@@ -2733,23 +2816,16 @@ class GameManager extends EventEmitter {
           const planetPerlin = homePlanetLocation.perlin;
           const planetX = homePlanetLocation.coords.x;
           const planetY = homePlanetLocation.coords.y;
-          const distFromOrigin = Math.sqrt(planetX ** 2 + planetY ** 2);
-
-          //###############
-          //  NEW MAP ALGO
-          //###############
           const planetLevel = this.entityStore.planetLevelFromHexPerlin(
             homePlanetLocation.hash,
-            homePlanetLocation.perlin,
-            distFromOrigin
+            homePlanetLocation.perlin
           );
           const planetType = this.entityStore.planetTypeFromHexPerlin(
             homePlanetLocation.hash,
-            homePlanetLocation.perlin,
-            distFromOrigin
+            homePlanetLocation.perlin
           );
           const planet = this.getPlanetWithId(homePlanetLocation.hash);
-
+          const distFromOrigin = Math.sqrt(planetX ** 2 + planetY ** 2);
           if (
             planetPerlin < initPerlinMax &&
             planetPerlin >= initPerlinMin &&
@@ -3510,11 +3586,6 @@ class GameManager extends EventEmitter {
       const xDiff = newX - oldX;
       const yDiff = newY - oldY;
 
-      //###############
-      //  NEW MAP ALGO
-      //###############
-      const distFromOriginSquare = newX ** 2 + newY ** 2;
-
       const distMax = Math.ceil(Math.sqrt(xDiff ** 2 + yDiff ** 2));
 
       // Contract will automatically send full forces/silver on abandon
@@ -3552,7 +3623,6 @@ class GameManager extends EventEmitter {
           (shipsMoved * CONTRACT_PRECISION).toString(),
           (silverMoved * CONTRACT_PRECISION).toString(),
           '0',
-          distFromOriginSquare.toString(),
           abandoning ? '1' : '0',
         ] as MoveArgs;
 
@@ -3574,7 +3644,7 @@ class GameManager extends EventEmitter {
         methodName: 'move',
         contract: this.contractsAPI.contract,
         args: getArgs(),
-        from: oldLocation.hash, //以下的东西没屁用
+        from: oldLocation.hash,
         to: newLocation.hash,
         forces: shipsMoved,
         silver: silverMoved,

@@ -39,7 +39,6 @@ contract DFMoveFacet is WithStorage {
         uint256 popMoved,
         uint256 silverMoved,
         uint256 movedArtifactId,
-        uint256  distFromOriginSquare,
         uint256 isAbandoning
     ) public notPaused returns (uint256) {
         LibGameUtils.revertIfBadSnarkPerlinFlags(
@@ -84,8 +83,7 @@ contract DFMoveFacet is WithStorage {
 
         // Only perform if the toPlanet have never initialized previously
         if (!gs().planets[args.newLoc].isInitialized) {
-            // LibPlanet.initializePlanetWithDefaults(args.newLoc, newPerlin, false);
-            LibPlanet.initializePlanetWithDefaults(args.newLoc, newPerlin, distFromOriginSquare, false);
+            LibPlanet.initializePlanetWithDefaults(args.newLoc, newPerlin, false);
         } else {
             // need to do this so people can't deny service to planets with gas limit
             LibPlanet.refreshPlanet(args.newLoc);

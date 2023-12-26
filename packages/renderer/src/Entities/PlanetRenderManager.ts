@@ -183,6 +183,7 @@ export class PlanetRenderManager implements PlanetRenderManagerType {
 
     if (hasOwner(planet)) {
       color[3] = cA * 120;
+
       cR.queueCircleWorld(planet.location.coords, renderInfo.radii.radiusWorld * 1.1, color, 0.5);
       const pct = planet.energy / planet.energyCap;
       color[3] = cA * 255;
@@ -466,9 +467,7 @@ export class PlanetRenderManager implements PlanetRenderManagerType {
 
     bR.queueBlackDomain(planet, center, radius);
 
-    //mytodo: pink effect to planet
-
-    cR.queueCircleWorld(center, radius * 1.2, [255, 192, 203, 160]);
+    // cR.queueCircleWorld(center, radius * 1.2, [255, 192, 203, 160]);
   }
 
   private queueAsteroids(planet: Planet, center: WorldCoords, radius: number) {

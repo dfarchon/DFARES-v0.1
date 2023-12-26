@@ -5,8 +5,9 @@
     "embedded_plugins/**/*.ts",
     "embedded_plugins/**/*.tsx",
     "plugins/**/*.ts",
-    "plugins/**/*.tsx"
-, "src/Backend/Plugins/minimapSpawn.js"  ],
+    "plugins/**/*.tsx",
+    "src/Backend/Plugins/minimapSpawn.js"
+  ],
   "compilerOptions": {
     "module": "esnext",
     "target": "es2020",

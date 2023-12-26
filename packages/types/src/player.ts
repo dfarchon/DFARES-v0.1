@@ -28,4 +28,5 @@ export type Player = {
   claimedReward: boolean;
   activateArtifactAmount: number;
   buyArtifactAmount: number;
+  silver: number;
 };

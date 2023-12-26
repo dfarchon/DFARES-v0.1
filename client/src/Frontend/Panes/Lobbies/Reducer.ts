@@ -129,8 +129,12 @@ export type LobbyConfigAction =
     }
   | { type: 'CAPTURE_ZONE_RADIUS'; value: Initializers['CAPTURE_ZONE_RADIUS'] | undefined }
   | {
-      type: 'BURN_PLANET_EFFECT_RADIUS';
-      value: Initializers['BURN_PLANET_EFFECT_RADIUS'] | undefined;
+      type: 'BURN_PLANET_LEVEL_EFFECT_RADIUS';
+      value: Initializers['BURN_PLANET_LEVEL_EFFECT_RADIUS'] | undefined;
+    }
+  | {
+      type: 'BURN_PLANET_REQUIRE_SILVER_AMOUNTS';
+      value: Initializers['BURN_PLANET_REQUIRE_SILVER_AMOUNTS'] | undefined;
     }
   | {
       type: 'CAPTURE_ZONE_PLANET_LEVEL_SCORE';
@@ -354,8 +358,13 @@ export function lobbyConfigReducer(state: LobbyConfigState, action: LobbyAction)
       update = ofCaptureZoneRadius(action, state);
       break;
     }
-    case 'BURN_PLANET_EFFECT_RADIUS': {
+    case 'BURN_PLANET_LEVEL_EFFECT_RADIUS': {
       update = ofBurnPlanetEffectRadius(action, state);
+      break;
+    }
+
+    case 'BURN_PLANET_REQUIRE_SILVER_AMOUNTS': {
+      update = ofBurnPlanetRequireSilverAmounts(action, state);
       break;
     }
     case 'CAPTURE_ZONE_PLANET_LEVEL_SCORE': {
@@ -877,7 +886,7 @@ export function lobbyConfigInit(startingConfig: LobbyInitializers) {
         break;
       }
 
-      case 'BURN_PLANET_EFFECT_RADIUS': {
+      case 'BURN_PLANET_LEVEL_EFFECT_RADIUS': {
         const defaultValue = startingConfig[key];
         state[key] = {
           currentValue: defaultValue,
@@ -887,6 +896,18 @@ export function lobbyConfigInit(startingConfig: LobbyInitializers) {
         };
         break;
       }
+
+      case 'BURN_PLANET_REQUIRE_SILVER_AMOUNTS': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+
       case 'CAPTURE_ZONE_PLANET_LEVEL_SCORE': {
         const defaultValue = startingConfig[key];
         state[key] = {
@@ -1826,7 +1847,59 @@ export function ofCaptureZoneRadius(
 }
 
 export function ofBurnPlanetEffectRadius(
-  { type, value }: Extract<LobbyConfigAction, { type: 'BURN_PLANET_EFFECT_RADIUS' }>,
+  { type, value }: Extract<LobbyConfigAction, { type: 'BURN_PLANET_LEVEL_EFFECT_RADIUS' }>,
+  state: LobbyConfigState
+) {
+  if (value === undefined) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: undefined,
+    };
+  }
+
+  if (typeof value !== 'number') {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be a number`,
+    };
+  }
+
+  if (value < 1) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be a greater than 0`,
+    };
+  }
+
+  if (value > SAFE_UPPER_BOUNDS) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value is too large`,
+    };
+  }
+
+  if (Math.floor(value) !== value) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be an integer`,
+    };
+  }
+
+  return {
+    ...state[type],
+    currentValue: value,
+    displayValue: value,
+    warning: undefined,
+  };
+}
+
+export function ofBurnPlanetRequireSilverAmounts(
+  { type, value }: Extract<LobbyConfigAction, { type: 'BURN_PLANET_REQUIRE_SILVER_AMOUNTS' }>,
   state: LobbyConfigState
 ) {
   if (value === undefined) {

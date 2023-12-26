@@ -58,6 +58,32 @@ function BoardPlacement({ account }: { account: EthAddress | undefined }) {
   return <Numbers>{content}</Numbers>;
 }
 
+function PlayerSilver({ account }: { account: EthAddress | undefined }) {
+  const uiManager = useUIManager();
+  const player = usePlayer(uiManager, account);
+
+  let content;
+
+  if (!player.value) {
+    content = <Sub>n/a</Sub>;
+  } else {
+    let formattedSilver = '0';
+
+    if (player.value.silver !== undefined && player.value.silver !== null) {
+      formattedSilver = player.value.silver.toLocaleString();
+    }
+    content = (
+      <Sub>
+        <TooltipTrigger name={TooltipName.PlayerSilver}>
+          silver: <Text>{formattedSilver}</Text>
+        </TooltipTrigger>
+      </Sub>
+    );
+  }
+
+  return <Numbers>{content}</Numbers>;
+}
+
 function SpaceJunk({ account }: { account: EthAddress | undefined }) {
   const uiManager = useUIManager();
 
@@ -229,6 +255,7 @@ export function TopBar({ twitterVerifyHook }: { twitterVerifyHook: Hook<boolean>
           </>
         )}
         <BoardPlacement account={account} />
+        <PlayerSilver account={account} />
       </AlignCenterHorizontally>
       <AlignCenterHorizontally style={{ justifyContent: 'space-around', width: '100%' }}>
         {captureZones}

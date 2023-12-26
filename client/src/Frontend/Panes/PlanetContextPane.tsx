@@ -65,6 +65,11 @@ function PlanetContextPaneContent({
     hatRow = <OpenHatPaneButton modal={modal} planetId={p?.locationId} />;
   }
 
+  let dropBombRow = null;
+  if (!p?.destroyed && !p?.frozen && owned) {
+    dropBombRow = <OpenDropBombButton modal={modal} planetId={p?.locationId} />;
+  }
+
   let buyArtifactRow = null;
   if (!p?.destroyed && !p?.frozen && owned) {
     buyArtifactRow = <OpenBuyArtifactPaneButton modal={modal} planetId={p?.locationId} />;
@@ -96,13 +101,13 @@ function PlanetContextPaneContent({
           {upgradeRow}
           <OpenBroadcastPaneButton modal={modal} planetId={p?.locationId} />
           <OpenPlanetInfoButton modal={modal} planetId={p?.locationId} />
+          {buyArtifactRow}
         </>
         <>
           <OpenManagePlanetArtifactsButton modal={modal} planetId={p?.locationId} />
-          <OpenDropBombButton modal={modal} planetId={p?.locationId} />
+          {dropBombRow}
           <OpenPinkButton modal={modal} planetId={p?.locationId} />
           {hatRow}
-          {buyArtifactRow}
         </>
       </VerticalSplit>
 

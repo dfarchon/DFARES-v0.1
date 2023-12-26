@@ -143,7 +143,8 @@ export function CreateLobby({ match }: RouteComponentProps<{ contract: string }>
             CLAIM_PLANET_COOLDOWN: config.CLAIM_PLANET_COOLDOWN,
             BURN_END_TIMESTAMP: config.BURN_END_TIMESTAMP,
             BURN_PLANET_COOLDOWN: config.BURN_PLANET_COOLDOWN,
-            BURN_PLANET_EFFECT_RADIUS: config.BURN_PLANET_EFFECT_RADIUS,
+            BURN_PLANET_LEVEL_EFFECT_RADIUS: config.BURN_PLANET_LEVEL_EFFECT_RADIUS,
+            BURN_PLANET_REQUIRE_SILVER_AMOUNTS: config.BURN_PLANET_LEVEL_EFFECT_RADIUS,
           });
         })
         .catch((e) => {
