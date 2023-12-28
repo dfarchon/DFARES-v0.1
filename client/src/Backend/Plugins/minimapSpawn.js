@@ -25,8 +25,8 @@ class MinimapSpawnPlugin {
     async render(div) {
         // Default values
 
-        div.style.width = '550px';
-        div.style.height = '550px';
+        div.style.width = '600px';
+        div.style.height = '600px';
 
 
 
@@ -78,6 +78,8 @@ class MinimapSpawnPlugin {
                 }
             }
 
+
+
             // Draw mini-map
 
             const ctx = this.canvas.getContext('2d');
@@ -99,6 +101,8 @@ class MinimapSpawnPlugin {
 
             this.canvas.style = 'cursor: pointer;';
 
+
+
             // draw outside of map
 
             let radiusNormalized = normalize(radius) / 2;
@@ -106,8 +110,32 @@ class MinimapSpawnPlugin {
             ctx.beginPath();
             ctx.arc(radiusNormalized + 2, radiusNormalized + 3, radiusNormalized, 0, 2 * Math.PI);
             ctx.strokeStyle = 'pink';
+            ctx.fillStyle = 'rgb(255,180,193,0.5)';
             ctx.lineWidth = 4;
             ctx.stroke();
+
+            //draw pink circle
+
+            const pinkZones = Array.from(df.getPinkZones());
+
+            for (let i = 0; i < pinkZones.length; i++) {
+                console.log(pinkZones[i]);
+                let coords = pinkZones[i].coords;
+                let pinkZoneRadius = pinkZones[i].radius;
+                let normalizeX = normalize(coords.x);
+                let normalizeY = normalize(coords.y * -1);
+                // let normalizePinkCircleRadius = radius / radiusNormalized
+                let normalizePinkCircleRadius = pinkZoneRadius * radiusNormalized / radius;
+
+                ctx.beginPath();
+                ctx.arc(normalizeX, normalizeY, normalizePinkCircleRadius, 0, 2 * Math.PI);
+                ctx.strokeStyle = 'pink';
+                ctx.lineWidth = 1;
+                ctx.fill();
+                ctx.stroke();
+
+
+            }
 
             // draw inner cicrle of map
 
@@ -170,6 +198,21 @@ class MinimapSpawnPlugin {
             const radius = ui.getWorldRadius();
             const rim = Math.sqrt(df.getContractConstants().SPAWN_RIM_AREA);
 
+
+            const checkIfCoordsInPinkZones = (x, y) => {
+                const pinkZones = Array.from(df.getPinkZones());
+                for (const pinkZone of pinkZones) {
+                    const coords = pinkZone.coords;
+                    const radius = pinkZone.radius;
+
+                    const dis = df.getDistCoords({ x: x, y: y }, coords);
+
+                    if (dis <= radius) return true;
+                }
+                return false;
+
+            }
+
             if (checkBounds(0, 0, xWorld, yWorld, rim)) {
                 // Inside the rim, change cursor to 'move'
                 this.canvas.style.cursor = 'no-drop';
@@ -184,10 +227,20 @@ class MinimapSpawnPlugin {
 
                 // Check if the space type is inner nebula (type 0)
                 if (spaceType === 0) {
-                    this.canvas.style.cursor = 'pointer';
-                    this.moveInsideRim = false;
-                    this.coordsDiv.innerText = this.formatCoords;
-                    this.coordsDiv.style.color = this.InnerNebulaColor;
+                    if (checkIfCoordsInPinkZones(xWorld, yWorld)) {
+                        this.canvas.style.cursor = 'pointer';
+                        this.moveInsideRim = false;
+                        this.coordsDiv.innerText = this.formatCoords + ' is dangerous to spawn 😣';
+                        this.coordsDiv.style.color = 'pink';
+
+                    } else {
+
+                        this.canvas.style.cursor = 'pointer';
+                        this.moveInsideRim = false;
+                        this.coordsDiv.innerText = this.formatCoords;
+                        this.coordsDiv.style.color = this.InnerNebulaColor;
+                    }
+
 
                 } else {
                     this.canvas.style.cursor = 'no-drop';
@@ -213,10 +266,9 @@ class MinimapSpawnPlugin {
         this.canvas.addEventListener('mousemove', onMouseMove);
 
         generate();
+
+
         div.appendChild(this.canvas);
-
-
-
         div.appendChild(this.coordsDiv);
 
     }
