@@ -1462,6 +1462,8 @@ class GameManager extends EventEmitter {
 
   public getPlayerScore(addr: EthAddress): number | undefined {
     const player = this.players.get(addr);
+    if (!player) return undefined;
+    if (player.lastClaimTimestamp === 0) return undefined;
     return player?.score;
   }
 
