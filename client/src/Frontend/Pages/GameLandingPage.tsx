@@ -62,6 +62,7 @@ const enum TerminalPromptStep {
   COMPLETE,
   TERMINATED,
   ERROR,
+  SPECTATING,
 }
 
 const minimapPlugin = new MinimapSpawnPlugin();
@@ -79,6 +80,8 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
   const [step, setStep] = useState(TerminalPromptStep.NONE);
 
   const [isMiniMapOn, setMiniMapOn] = useState(false);
+  const [spectate, setSpectate] = useState(false);
+
   const params = new URLSearchParams(location.search);
   const useZkWhitelist = params.has('zkWhitelist');
   const selectedAddress = params.get('account');
@@ -285,6 +288,9 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       terminal.current?.println(`Generate new burner wallet account.`);
       terminal.current?.print('(i) ', TerminalTextStyle.Sub);
       terminal.current?.println(`Import private key.`);
+
+      terminal.current?.print('(s) ', TerminalTextStyle.Sub);
+      terminal.current?.println(`Spectate.`);
       terminal.current?.println(``);
       terminal.current?.println(`Select an option:`, TerminalTextStyle.Text);
 
@@ -317,6 +323,8 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           setStep(TerminalPromptStep.DISPLAY_ACCOUNTS);
         } else if (userInput === 'n') {
           setStep(TerminalPromptStep.GENERATE_ACCOUNT);
+        } else if (userInput === 's') {
+          setStep(TerminalPromptStep.SPECTATING);
         } else if (userInput === 'i') {
           setStep(TerminalPromptStep.IMPORT_ACCOUNT);
         } else {
@@ -364,6 +372,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       const newWallet = Wallet.createRandom();
       const newSKey = newWallet.privateKey;
       const newAddr = address(newWallet.address);
+
       try {
         addAccount(newSKey);
         ethConnection?.setAccount(newSKey);
@@ -667,6 +676,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           connection: ethConnection,
           terminal,
           contractAddress,
+          spectate,
         });
       } catch (e) {
         console.error(e);
@@ -703,11 +713,19 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       terminal.current?.println('Connected to Dark Forest Contract');
       gameUIManagerRef.current = newGameUIManager;
 
-      if (!newGameManager.hasJoinedGame()) {
+      if (!newGameManager.hasJoinedGame() && spectate === false) {
         setStep(TerminalPromptStep.NO_HOME_PLANET);
       } else {
         const browserHasData = !!newGameManager.getHomeCoords();
-        if (!browserHasData) {
+
+        if (spectate) {
+          terminal.current?.println(
+            'Spectate mode need to input the center coords.',
+            TerminalTextStyle.Text
+          );
+          setStep(TerminalPromptStep.ASK_ADD_ACCOUNT);
+          return;
+        } else if (!browserHasData) {
           terminal.current?.println(
             'ERROR: Home coords not found on this browser.',
             TerminalTextStyle.Red
@@ -719,7 +737,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         setStep(TerminalPromptStep.ALL_CHECKS_PASS);
       }
     },
-    [ethConnection, contractAddress]
+    [ethConnection, contractAddress, spectate]
   );
 
   const advanceStateFromAskAddAccount = useCallback(
@@ -812,6 +830,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       // NEW
       // ##############
       // Run the Minimap and get the selected coordinates
+
       setMiniMapOn(true);
 
       let selectedCoords = { x: 0, y: 0 };
@@ -889,26 +908,30 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       const playerAddress = ethConnection?.getAddress();
 
       gameUIManager
-        .joinGame(async (e) => {
-          console.error(e);
+        .joinGame(
+          async (e) => {
+            console.error(e);
 
-          terminal.current?.println('Error Joining Game:');
-          terminal.current?.println('');
-          terminal.current?.println(e.message, TerminalTextStyle.Red);
-          terminal.current?.println('');
-          if (e.message === 'ETH balance too low!') {
-            terminal.current?.printElement(
-              <div onClick={() => requestFaucet(playerAddress as string)}>
-                click me request faucet!
-              </div>
-            );
+            terminal.current?.println('Error Joining Game:');
             terminal.current?.println('');
-          }
-          terminal.current?.println('Press Enter to Try Again:');
+            terminal.current?.println(e.message, TerminalTextStyle.Red);
+            terminal.current?.println('');
+            if (e.message === 'ETH balance too low!') {
+              terminal.current?.printElement(
+                <div onClick={() => requestFaucet(playerAddress as string)}>
+                  click me request faucet!
+                </div>
+              );
+              terminal.current?.println('');
+            }
+            terminal.current?.println('Press Enter to Try Again:');
 
-          await terminal.current?.getInput();
-          return true;
-        }, selectedCoords)
+            await terminal.current?.getInput();
+            return true;
+          },
+          selectedCoords,
+          spectate
+        )
         .catch((error: Error) => {
           terminal.current?.println(
             `[ERROR] An error occurred: ${error.toString().slice(0, 10000)}`,
@@ -916,7 +939,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           );
         });
     },
-    [ethConnection]
+    [ethConnection, spectate]
   );
 
   const advanceStateFromAllChecksPass = useCallback(
@@ -971,6 +994,38 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
     await neverResolves();
   }, []);
 
+  const advanceStateFromSpectating = useCallback(
+    async (terminal: React.MutableRefObject<TerminalHandle | undefined>) => {
+      try {
+        if (!ethConnection) throw new Error('not logged in');
+
+        setSpectate(true);
+        setMiniMapOn(false);
+        console.log('specatate:', spectate);
+        console.log('isMiniMapOn:', isMiniMapOn);
+
+        setStep(TerminalPromptStep.FETCHING_ETH_DATA);
+      } catch (e) {
+        console.error(e);
+        setStep(TerminalPromptStep.ERROR);
+        terminal.current?.print(
+          'Network under heavy load. Please refresh the page, and check ',
+          TerminalTextStyle.Red
+        );
+        terminal.current?.printLink(
+          'https://blockscout.com/poa/xdai/optimism',
+          () => {
+            window.open('https://blockscout.com/xdai/optimism');
+          },
+          TerminalTextStyle.Red
+        );
+        terminal.current?.println('');
+        return;
+      }
+    },
+    [ethConnection, isProd, contractAddress, spectate]
+  );
+
   const advanceState = useCallback(
     async (terminal: React.MutableRefObject<TerminalHandle | undefined>) => {
       if (step === TerminalPromptStep.NONE && ethConnection) {
@@ -1007,6 +1062,8 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         await advanceStateFromComplete(terminal);
       } else if (step === TerminalPromptStep.ERROR) {
         await advanceStateFromError();
+      } else if (step === TerminalPromptStep.SPECTATING) {
+        await advanceStateFromSpectating(terminal);
       }
     },
     [
@@ -1028,6 +1085,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       advanceStateFromImportAccount,
       advanceStateFromNoHomePlanet,
       advanceStateFromNone,
+      advanceStateFromSpectating,
       ethConnection,
     ]
   );

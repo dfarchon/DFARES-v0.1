@@ -322,9 +322,10 @@ class GameUIManager extends EventEmitter {
 
   public joinGame(
     beforeRetry: (e: Error) => Promise<boolean>,
-    _selectedCoords: { x: number; y: number }
+    _selectedCoords: { x: number; y: number },
+    spectate: boolean
   ): Promise<void> {
-    return this.gameManager.joinGame(beforeRetry, _selectedCoords);
+    return this.gameManager.joinGame(beforeRetry, _selectedCoords, spectate);
   }
 
   public addAccount(coords: WorldCoords): Promise<boolean> {
