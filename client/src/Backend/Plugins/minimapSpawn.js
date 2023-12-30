@@ -60,6 +60,8 @@ class MinimapSpawnPlugin {
             this.canvas.width = this.canvasSize;
             this.canvas.height = this.canvasSize;
             this.sizeFactor = this.canvasSize - 18;
+            let radiusNormalized = normalize(radius) / 2;
+
             let data = [];
 
             // Generate x coordinates
@@ -84,6 +86,13 @@ class MinimapSpawnPlugin {
 
             const ctx = this.canvas.getContext('2d');
 
+
+            ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+            // Create a circular clipping path
+            ctx.arc(radiusNormalized + 2, radiusNormalized + 3, radiusNormalized, 0, Math.PI * 2, true);
+            ctx.clip();
+
             for (let i = 0; i < data.length; i++) {
                 if (data[i].type === 0) {
                     ctx.fillStyle = this.InnerNebulaColor;  // Inner nebula
@@ -105,7 +114,6 @@ class MinimapSpawnPlugin {
 
             // draw outside of map
 
-            let radiusNormalized = normalize(radius) / 2;
 
             ctx.beginPath();
             ctx.arc(radiusNormalized + 2, radiusNormalized + 3, radiusNormalized, 0, 2 * Math.PI);
@@ -113,11 +121,12 @@ class MinimapSpawnPlugin {
             ctx.fillStyle = 'rgb(255,180,193,0.5)';
             ctx.lineWidth = 4;
             ctx.stroke();
+            ctx.closePath();
+
 
             //draw pink circle
 
             const pinkZones = Array.from(df.getPinkZones());
-
             for (let i = 0; i < pinkZones.length; i++) {
                 console.log(pinkZones[i]);
                 let coords = pinkZones[i].coords;
@@ -133,13 +142,11 @@ class MinimapSpawnPlugin {
                 ctx.lineWidth = 1;
                 ctx.fill();
                 ctx.stroke();
-
-
             }
 
-            // draw inner cicrle of map
-
+            // draw inner circle of map
             let rimNormalized = (normalize(rim) / 2) * 0.91; // idk why here need to be corection??
+
 
             ctx.beginPath();
             ctx.arc(
@@ -151,6 +158,8 @@ class MinimapSpawnPlugin {
             );
             ctx.fillStyle = 'rgb(255,180,193,1)';//#ffb4c1'; // Fill color
             ctx.fill();
+
+
 
             // draw img to centre
             const drawImageAtCenter = (ctx, image, worldRadius) => {
@@ -172,6 +181,8 @@ class MinimapSpawnPlugin {
 
             // Draw the image at the center with the specified rim radius
             drawImageAtCenter(ctx, image, radiusNormalized);
+
+
         };
 
         const toWorldCoord = (val) => {
