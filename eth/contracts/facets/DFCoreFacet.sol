@@ -365,12 +365,11 @@ contract DFCoreFacet is WithStorage {
     function getAbsoluteModP(uint256 n) private pure returns (uint256) {
         uint256 LOCATION_ID_UB = 21888242871839275222246405745257275088548364400416034343698204186575808495617;
         require(n < LOCATION_ID_UB, "Number outside of AbsoluteModP Range");
-        // if (n > SafeMathUpgradeable.div(LOCATION_ID_UB, 2)) {
-        //     return SafeMathUpgradeable.sub(LOCATION_ID_UB, n);
-        // }
-        uint256 tmp = LOCATION_ID_UB / 2;
-        if (n > tmp) return LOCATION_ID_UB - n;
-        else return n;
+        if (n > LOCATION_ID_UB / 2) {
+            return LOCATION_ID_UB - n;
+        }
+
+        return n;
     }
 
     //  In dark forest v0.6 r3, players can claim planets that own. This will reveal a planets a

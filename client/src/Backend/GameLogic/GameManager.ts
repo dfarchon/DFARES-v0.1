@@ -3820,6 +3820,7 @@ class GameManager extends EventEmitter {
     }
   }
 
+  // mytodo: get claimRoundEndReward back
   // /**
   //  * Receive XDAI for the claiming player based on their score rank at the end of the round.
   //  */
