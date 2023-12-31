@@ -150,9 +150,11 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       } else {
         terminal.current?.newline();
         terminal.current?.newline();
-        terminal.current?.printElement(
-          <MythicLabelText text={`Welcome To Dark Forest ARES v0.1.2`} />
-        );
+        // terminal.current?.printElement(
+        //   <MythicLabelText text={`Welcome To Dark Forest ARES v0.1.2`} />
+        // );
+
+        terminal.current?.print('Welcome To Dark Forest ARES v0.1.2', TerminalTextStyle.Pink);
         terminal.current?.newline();
         terminal.current?.newline();
 

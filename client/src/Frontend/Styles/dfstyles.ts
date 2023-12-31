@@ -36,6 +36,7 @@ const dfgreen = '#00DC82';
 const dfgreendark = color(dfgreen).darken(0.7).hex();
 const dfgreenlight = color(dfgreen).lighten(0.1).hex();
 const dfred = '#FF6492';
+const dfpink = '#ffb4c1';
 const dfyellow = '#e8e228';
 const dfpurple = '#9189d9';
 const dfwhite = '#ffffff';
@@ -65,6 +66,7 @@ const dfstyles = {
     dfgreendark,
     dfgreenlight,
     dfred,
+    dfpink,
     dfyellow,
     dfpurple,
     dfwhite,

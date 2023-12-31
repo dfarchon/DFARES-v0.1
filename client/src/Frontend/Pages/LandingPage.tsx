@@ -7,14 +7,13 @@ import { EmSpacer, Link, Spacer, Title } from '../Components/CoreUI';
 import { Modal } from '../Components/Modal';
 import dfstyles from '../Styles/dfstyles';
 import { LandingPageRoundArt } from '../Views/LandingPageRoundArt';
-
 export const enum LandingPageZIndex {
   Background = 0,
   Canvas = 1,
   BasePage = 2,
 }
 
-const links = {
+const DFOfficeLinks = {
   twitter: 'http://twitter.com/darkforest_eth',
   email: 'mailto:ivan@0xparc.org',
   blog: 'https://blog.zkga.me/',
@@ -22,6 +21,16 @@ const links = {
   github: 'https://github.com/darkforest-eth',
   wiki: 'https://dfwiki.net/wiki/Main_Page',
   plugins: 'https://plugins.zkga.me/',
+};
+
+const DFArchonLinks = {
+  twitter: 'https://twitter.com/DFArchon',
+  email: 'mailto:dfarchon@gmail.com',
+  blog: 'https://mirror.xyz/dfarchon.eth',
+  discord: 'https://discord.com/invite/XpBPEnsvgX',
+  github: 'https://github.com/dfarchon',
+  // wiki: 'https://dfwiki.net/wiki/Main_Page',
+  plugins: 'https://dfares-plugins.netlify.app/',
 };
 
 const defaultAddress = address(CONTRACT_ADDRESS);
@@ -92,7 +101,12 @@ export default function LandingPage() {
               <Spacer height={16} />
             </HideOnMobile> */}
 
-            <Spacer height={120} />
+            <Spacer height={30} />
+            <div style={{ fontSize: '30px' }}>NOW I AM BECAOME DEATH </div>
+
+            <div style={{ fontSize: '50px' }}> THE DESTROYER OF WORLDS</div>
+            <Spacer height={20} />
+
             <LandingPageRoundArt />
 
             {/*
@@ -114,17 +128,17 @@ export default function LandingPage() {
 
             {/* <Spacer height={16} /> */}
 
-            <ButtonWrapper>
-              {/* <Btn size='large' onClick={() => history.push(`/lobby/${defaultAddress}`)}>
+            {/* <ButtonWrapper>
+              <Btn size='large' onClick={() => history.push(`/lobby/${defaultAddress}`)}>
                 Create Lobby
-              </Btn> */}
-              {/* <Btn size='large' onClick={() => history.push(`/play/${defaultAddress}`)}>
+              </Btn>
+              <Btn size='large' onClick={() => history.push(`/play/${defaultAddress}`)}>
                 Enter Round 1
-              </Btn> */}
-              {/* <Btn size='large' onClick={() => history.push(`/events`)}>
+              </Btn>
+              <Btn size='large' onClick={() => history.push(`/events`)}>
                 Events
-              </Btn> */}
-            </ButtonWrapper>
+              </Btn>
+            </ButtonWrapper> */}
           </Header>
           {/* <EmSpacer height={3} />
           Ways to get Involved

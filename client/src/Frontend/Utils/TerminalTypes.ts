@@ -6,6 +6,7 @@ export const enum TerminalTextStyle {
   White,
   Red,
   Blue,
+  Pink,
   Invisible,
   Underline,
   Mythic,
