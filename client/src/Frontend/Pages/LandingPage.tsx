@@ -3,7 +3,7 @@ import { address } from '@dfares/serde';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import { EmSpacer, Link, Spacer, Title } from '../Components/CoreUI';
+import { Link, Spacer, Title } from '../Components/CoreUI';
 import { Modal } from '../Components/Modal';
 import dfstyles from '../Styles/dfstyles';
 import { LandingPageRoundArt } from '../Views/LandingPageRoundArt';
@@ -29,7 +29,7 @@ const DFArchonLinks = {
   blog: 'https://mirror.xyz/dfarchon.eth',
   discord: 'https://discord.com/invite/XpBPEnsvgX',
   github: 'https://github.com/dfarchon',
-  // wiki: 'https://dfwiki.net/wiki/Main_Page',
+  wiki: 'https://dfwiki.net/wiki/Main_Page',
   plugins: 'https://dfares-plugins.netlify.app/',
 };
 
@@ -71,43 +71,57 @@ export default function LandingPage() {
         <MainContentContainer>
           <Header>
             {/* <LinkContainer>
-              <Link to={links.email}>email</Link>
+              <Link to={DFArchonLinks.email}>email</Link>
               <Spacer width={4} />
-              <Link to={links.blog}>blog</Link>
+              <Link to={DFArchonLinks.blog}>blog</Link>
               <Spacer width={4} />
 
-              <a className={'link-twitter'} href={links.twitter}>
+              <a className={'link-twitter'} href={DFArchonLinks.twitter}>
                 <span className={'icon-twitter'}></span>
               </a>
               <Spacer width={4} />
-              <a className={'link-discord'} href={links.discord}>
+              <a className={'link-discord'} href={DFArchonLinks.discord}>
                 <span className={'icon-discord'}></span>
               </a>
               <Spacer width={4} />
-              <a className={'link-github'} href={links.github}>
+              <a className={'link-github'} href={DFArchonLinks.github}>
                 <span className={'icon-github'}></span>
               </a>
 
               <Spacer width={4} />
-              <Link to={links.plugins}>plugins</Link>
+              <Link to={DFArchonLinks.plugins}>plugins</Link>
               <Spacer width={4} />
-              <Link to={links.wiki}>wiki</Link>
-            </LinkContainer>
+              <Link to={DFArchonLinks.wiki}>wiki</Link>
+            </LinkContainer> */}
 
             <OnlyMobile>
               <Spacer height={4} />
             </OnlyMobile>
             <HideOnMobile>
               <Spacer height={16} />
-            </HideOnMobile> */}
+            </HideOnMobile>
 
             <Spacer height={30} />
-            <div style={{ fontSize: '30px' }}>NOW I AM BECOME DEATH </div>
+            <div style={{ fontSize: '30px' }}>NOW I AM BECOME DEATH</div>
 
             <div style={{ fontSize: '50px' }}> THE DESTROYER OF WORLDS</div>
             <Spacer height={20} />
 
             <LandingPageRoundArt />
+
+            <LinkContainer>
+              <a className={'link'} href={DFArchonLinks.twitter} target='_blank' rel='noreferrer'>
+                Twitter
+              </a>
+              <Spacer width={6} />
+              <a className={'link'} href={DFArchonLinks.discord} target='_blank' rel='noreferrer'>
+                Discord
+              </a>
+              <Spacer width={6} />
+              <a className={'link'} href={DFArchonLinks.github} target='_blank' rel='noreferrer'>
+                Github
+              </a>
+            </LinkContainer>
 
             {/*
             <p>
@@ -117,14 +131,14 @@ export default function LandingPage() {
               <White>The Junk Wars</White>
             </p> */}
 
-            <Spacer height={20} />
+            {/* <Spacer height={20} /> */}
 
-            <p>
-              {/* <White>DF ARES v0.1 </White> <Text> </Text> */}
-              {/* <br />
+            {/* <p>
+             <White>DF ARES v0.1 </White> <Text> </Text>
+             <br />
               <Text>Round 1: </Text>
-              <White>Artifact Combat</White> */}
-            </p>
+              <White>Artifact Combat</White>
+            </p> */}
 
             {/* <Spacer height={16} /> */}
 
@@ -175,7 +189,7 @@ export default function LandingPage() {
               }}
             ></InvolvedItem>
           </Involved> */}
-          <EmSpacer height={3} />
+          {/* <EmSpacer height={3} /> */}
           {/* <HallOfFame style={{ color: dfstyles.colors.text }}>
             <HallOfFameTitle>Space Masters</HallOfFameTitle>
             <Spacer height={8} />
@@ -391,6 +405,7 @@ export const LinkContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 130pt;
 
   a {
     margin: 0 6pt;
@@ -398,6 +413,7 @@ export const LinkContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    color:  ${'#ffc3cd'};
 
     &:hover {
       cursor: pointer;
@@ -415,6 +431,13 @@ export const LinkContainer = styled.div`
       }
       &.link-email {
         color: ${dfstyles.colors.icons.email};
+      }
+      &.link{
+        /* color: ${dfstyles.colors.dfpink}; */
+        color:${'white'}
+        /* font-weight: bolder; */
+
+      }
       }
     }
   }
