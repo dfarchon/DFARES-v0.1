@@ -118,7 +118,7 @@ class MinimapSpawnPlugin {
 
       const pinkZones = Array.from(df.getPinkZones());
       for (let i = 0; i < pinkZones.length; i++) {
-        console.log(pinkZones[i]);
+        // console.log(pinkZones[i]);
         let coords = pinkZones[i].coords;
         let pinkZoneRadius = pinkZones[i].radius;
         let normalizeX = normalize(coords.x);

@@ -916,7 +916,8 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
             terminal.current?.println('');
             terminal.current?.println(e.message, TerminalTextStyle.Red);
             terminal.current?.println('');
-            if (e.message === 'ETH balance too low!') {
+            console.log(process.env.FAUCET_SERVICE_URL);
+            if (e.message === 'ETH balance too low!' && process.env.FAUCET_SERVICE_URL) {
               terminal.current?.printElement(
                 <div onClick={() => requestFaucet(playerAddress as string)}>
                   click me request faucet!
