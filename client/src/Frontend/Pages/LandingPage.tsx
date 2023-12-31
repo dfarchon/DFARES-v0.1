@@ -102,7 +102,7 @@ export default function LandingPage() {
             </HideOnMobile> */}
 
             <Spacer height={30} />
-            <div style={{ fontSize: '30px' }}>NOW I AM BECAOME DEATH </div>
+            <div style={{ fontSize: '30px' }}>NOW I AM BECOME DEATH </div>
 
             <div style={{ fontSize: '50px' }}> THE DESTROYER OF WORLDS</div>
             <Spacer height={20} />
