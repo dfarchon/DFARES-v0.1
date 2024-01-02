@@ -2655,7 +2655,13 @@ class GameManager extends EventEmitter {
       // `beforeRetry` is undefined, then don't retry and throw an exception.
       while (true) {
         try {
-          const tx = await this.contractsAPI.submitTransaction(txIntent);
+          const entryFee = await this.contractsAPI.getEntryFee();
+          console.log('entry fee: ', entryFee.toString());
+          localStorage.setItem(`${this.getAccount()?.toLowerCase()}-entryFee`, entryFee.toString());
+
+          const tx = await this.contractsAPI.submitTransaction(txIntent, {
+            value: entryFee.toString(),
+          });
           await tx.confirmedPromise;
           break;
         } catch (e) {

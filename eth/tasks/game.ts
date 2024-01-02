@@ -298,3 +298,12 @@ async function makeRevealProof(
     return buildContractCallArgs(proof, publicSignals) as RevealSnarkContractCallArgs;
   }
 }
+
+task('game:getEntryFee', 'get entry fee').setAction(getEntryFee);
+
+async function getEntryFee(args: {}, hre: HardhatRuntimeEnvironment) {
+  await hre.run('utils:assertChainId');
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+  const amount = await contract.getEntryFee();
+  console.log('entry fee: ', amount.toString());
+}

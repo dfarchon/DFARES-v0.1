@@ -2,6 +2,7 @@ import { FIXED_DIGIT_NUMBER, GAS_ADJUST_DELTA, TOKEN_NAME } from '@dfares/consta
 import { gweiToWei, weiToEth } from '@dfares/network';
 import { address } from '@dfares/serde';
 import { ArtifactType, Setting } from '@dfares/types';
+import { BigNumber } from 'ethers';
 import React, { useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import styled, { css, keyframes } from 'styled-components';
@@ -233,9 +234,9 @@ export function TxConfirmPopup({
   }
 
   function price() {
-    console.warn('this is price');
-    console.log(butArtifactType);
-    console.log(buyArtifactRarity);
+    // console.warn('this is price');
+    // console.log(butArtifactType);
+    // console.log(buyArtifactRarity);
 
     if (butArtifactType === undefined) return 0;
     if (buyArtifactRarity === undefined) return 0;
@@ -263,11 +264,19 @@ export function TxConfirmPopup({
   const buyArtifactCost: number =
     method === 'buyArtifact' && buyArtifactRarity && butArtifactType ? price() : 0;
 
+  const entryFee = localStorage.getItem(`${account}-entryFee`);
+
+  const joinGameCost: number =
+    method === 'initializePlayer' && entryFee ? weiToEth(BigNumber.from(entryFee)) : 0;
+
   //MyTodo: chance to useUIManager
   const getTxCost = () => {
-    if (!isNaN(Number(gasFeeGwei)) && !isNaN(buyArtifactCost) && !isNaN(hatCost)) {
+    if (!isNaN(Number(gasFeeGwei))) {
       const res: number =
-        hatCost + buyArtifactCost + weiToEth(gweiToWei(Number(gasLimit) * Number(gasFeeGwei)));
+        hatCost +
+        buyArtifactCost +
+        joinGameCost +
+        weiToEth(gweiToWei(Number(gasLimit) * Number(gasFeeGwei)));
 
       return res.toFixed(18).toString();
     } else {
@@ -278,7 +287,10 @@ export function TxConfirmPopup({
       else if (gasFeeGwei === 'Fast') val = '10';
       else val = gasFeeGwei;
       const res: number =
-        hatCost + buyArtifactCost + weiToEth(gweiToWei(Number(gasLimit) * Number(val)));
+        hatCost +
+        buyArtifactCost +
+        joinGameCost +
+        weiToEth(gweiToWei(Number(gasLimit) * Number(val)));
       return pre + res.toFixed(18).toString();
     }
   };
@@ -318,6 +330,7 @@ export function TxConfirmPopup({
             </Row>
           </>
         )}
+
         {method === 'move' && (
           <>
             <Row>
@@ -442,6 +455,17 @@ export function TxConfirmPopup({
           <span>{gasLimit}</span>
         </Row>
 
+        {method === 'initializePlayer' && (
+          <>
+            <Row>
+              <b>Entry Fee </b>
+              <span>
+                {joinGameCost} ${TOKEN_NAME}
+              </span>
+            </Row>
+          </>
+        )}
+
         <Row>
           <b>Max Transaction Cost</b>
           <span>
@@ -460,6 +484,7 @@ export function TxConfirmPopup({
             </b>
           </Row>
         )}
+
         <Row className='mtop'>
           <b>Account Balance</b>
           <span>
