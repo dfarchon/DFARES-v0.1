@@ -1,8 +1,51 @@
+import { GAS_ADJUST_DELTA } from '@dfares/constants';
 import { generateKeys, keyHash, keysPerTx } from '@dfares/whitelist';
 import * as fs from 'fs';
 import { subtask, task, types } from 'hardhat/config';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import * as path from 'path';
+
+task('whitelist:getNAllowed', 'get the allowed accounts amount').setAction(getNAllowed);
+
+async function getNAllowed(args: {}, hre: HardhatRuntimeEnvironment) {
+  await hre.run('utils:assertChainId');
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+  const amount = await contract.getNAllowed();
+  console.log('there are', amount.toString(), 'allowed account(s)');
+}
+
+task('whitelist:enable', 'enable whitelist').setAction(enableWhitelist);
+
+async function enableWhitelist(args: {}, hre: HardhatRuntimeEnvironment) {
+  await hre.run('utils:assertChainId');
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+  const tx = await contract.enableWhitelist();
+  await tx.wait();
+
+  const enabled = await contract.getWhitelistEnabled();
+  console.log('whitelist enabled: ', enabled);
+}
+
+task('whitelist:disable', 'disable whitelist').setAction(disableWhitelist);
+
+async function disableWhitelist(args: {}, hre: HardhatRuntimeEnvironment) {
+  await hre.run('utils:assertChainId');
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+  const tx = await contract.disableWhitelist();
+  await tx.wait();
+
+  const enabled = await contract.getWhitelistEnabled();
+  console.log('whitelist enabled: ', enabled);
+}
+
+task('whitelist:getWhitelistEnabled', 'get whitelist enabled').setAction(getWhitelistEnabled);
+
+async function getWhitelistEnabled(args: {}, hre: HardhatRuntimeEnvironment) {
+  await hre.run('utils:assertChainId');
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+  const enabled = await contract.getWhitelistEnabled();
+  console.log('whitelist enabled: ', enabled);
+}
 
 task('whitelist:changeDrip', 'change the faucet amount for whitelisted players')
   .addPositionalParam('value', 'drip value (in ether or xDAI)', undefined, types.float)
@@ -39,7 +82,9 @@ async function whitelistDisable(args: { filePath: string }, hre: HardhatRuntimeE
     const subset = keys.splice(0, Math.min(keys.length, 400));
     console.log(`clearing ${subset.length} keys`);
     const hashes: string[] = subset.map((x) => hre.ethers.utils.id(x));
-    const akReceipt = await contract.disableKeys(hashes, { gasPrice: '5000000000' }); // 5gwei
+    const akReceipt = await contract.disableKeys(hashes, {
+      gasPrice: Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('5000000000')).toString(),
+    }); // 5gwei
     await akReceipt.wait();
   }
 }
@@ -73,7 +118,9 @@ async function whitelistGenerate(
     const keyHashes = keys.map(keyHash);
 
     try {
-      const akReceipt = await contract.addKeys(keyHashes, { gasPrice: '5000000000' }); // 5gwei
+      const akReceipt = await contract.addKeys(keyHashes, {
+        gasPrice: Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('5000000000')).toString(),
+      }); // 5gwei
       await akReceipt.wait();
 
       allKeys = allKeys.concat(keys);

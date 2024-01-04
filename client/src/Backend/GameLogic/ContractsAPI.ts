@@ -447,6 +447,10 @@ export class ContractsAPI extends EventEmitter {
     return this.contractAddress;
   }
 
+  public async getEntryFee(): Promise<EthersBN> {
+    const res = await this.makeCall<EthersBN>(this.contract.getEntryFee);
+    return res;
+  }
   /**
    * If this player has a claimed planet, their score is the distance between the claimed planet and
    * the center. If this player does not have a claimed planet, then the score is undefined.

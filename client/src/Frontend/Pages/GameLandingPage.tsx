@@ -456,7 +456,15 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         // TODO(#2329): isWhitelisted should just check the contractOwner
         const adminAddress = address(await whitelist.adminAddress());
 
+        if (isWhitelisted === false && playerAddress !== adminAddress) {
+          terminal.current?.println('');
+          terminal.current?.println(
+            'Registered players can enter in advance. The Game will be open to everyone soon.',
+            TerminalTextStyle.Pink
+          );
+        }
         terminal.current?.println('');
+
         terminal.current?.print('Checking if whitelisted... ');
 
         // TODO(#2329): isWhitelisted should just check the contractOwner
@@ -589,7 +597,8 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
             TerminalTextStyle.Blue
           );
           terminal.current?.newline();
-          setStep(TerminalPromptStep.ASKING_PLAYER_EMAIL);
+          // setStep(TerminalPromptStep.ASKING_PLAYER_EMAIL);
+          setStep(TerminalPromptStep.FETCHING_ETH_DATA);
         } catch (e) {
           const error = e.error;
           if (error instanceof Error) {

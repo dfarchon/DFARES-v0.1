@@ -7,6 +7,7 @@
   "main": "index.js",
   "devDependencies": {
     "@dfares/contracts": "6.8.5",
+    "@dfares/constants": "6.8.5",
     "@dfares/hashing": "6.8.5",
     "@dfares/settings": "6.8.5",
     "@dfares/snarks": "6.8.5",
