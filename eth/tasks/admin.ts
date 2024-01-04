@@ -1,3 +1,4 @@
+import { CONTRACT_PRECISION } from '@dfares/constants';
 import { fakeHash, mimcHash, modPBigInt, perlin } from '@dfares/hashing';
 import {
   buildContractCallArgs,
@@ -24,7 +25,6 @@ async function gamePause({}, hre: HardhatRuntimeEnvironment) {
   await pauseReceipt.wait();
 }
 
-// wip: change code below
 task('admin:resume', 'resume the game').setAction(gameResume);
 
 async function gameResume({}, hre: HardhatRuntimeEnvironment) {
@@ -35,6 +35,71 @@ async function gameResume({}, hre: HardhatRuntimeEnvironment) {
   const unpauseReceipt = await contract.unpause();
   await unpauseReceipt.wait();
 }
+
+task('admin:setPlanetOwner', 'sets the owner of the given planet to be the given address')
+  .addPositionalParam('planetId', 'non-0x-prefixed planet locationId', undefined, types.string)
+  .addPositionalParam('address', '0x-prefixed address of a player', undefined, types.string)
+  .setAction(setPlanetOwner);
+
+async function setPlanetOwner(
+  { planetId, address }: { planetId: string; address: string },
+  hre: HardhatRuntimeEnvironment
+) {
+  await hre.run('utils:assertChainId');
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  const setPlanetOwnerReciept = await contract.setOwner(BigNumber.from('0x' + planetId), address);
+  await setPlanetOwnerReciept.wait();
+}
+
+task('admin:deductScore', 'deduct player score')
+  .addPositionalParam('address', '0x-prefixed address of a player', undefined, types.string)
+  .addPositionalParam('amount', "the deduct score's amount")
+  .setAction(deductScore);
+
+async function deductScore(
+  { address, amount }: { address: string; amount: number },
+  hre: HardhatRuntimeEnvironment
+) {
+  await hre.run('utils:assertChainId');
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+  const receipt = await contract.deductScore(address, amount);
+  await receipt.wait();
+}
+
+task('admin:addSilver', 'add player silver')
+  .addPositionalParam('address', '0x-prefixed address of a player', undefined, types.string)
+  .addPositionalParam('amount', "the deduct score's amount")
+  .setAction(addSilver);
+
+async function addSilver(
+  { address, amount }: { address: string; amount: number },
+  hre: HardhatRuntimeEnvironment
+) {
+  await hre.run('utils:assertChainId');
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+  const formatAmount = amount * CONTRACT_PRECISION;
+  const receipt = await contract.addSilver(address, formatAmount);
+  await receipt.wait();
+}
+
+task('admin:deductSilver', 'deduct player silver')
+  .addPositionalParam('address', '0x-prefixed address of a player', undefined, types.string)
+  .addPositionalParam('amount', "the deduct score's amount")
+  .setAction(deductSilver);
+
+async function deductSilver(
+  { address, amount }: { address: string; amount: number },
+  hre: HardhatRuntimeEnvironment
+) {
+  await hre.run('utils:assertChainId');
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+  const formatAmount = amount * CONTRACT_PRECISION;
+  const receipt = await contract.deductSilver(address, formatAmount);
+  await receipt.wait();
+}
+
+// mytodo: wip ==========================================================
 
 task('admin:setPlanetTransferEnabled', 'resume the game')
   .addPositionalParam(
@@ -102,22 +167,6 @@ async function setTokenMintEnd(args: { tokenend: number }, hre: HardhatRuntimeEn
 }
 
 // 0d0847138e379ddf66742eb0d25b21f87b6295444dd74309e22973fab695140c
-
-task('admin:setPlanetOwner', 'sets the owner of the given planet to be the given address')
-  .addPositionalParam('planetId', 'non-0x-prefixed planet locationId', undefined, types.string)
-  .addPositionalParam('address', '0x-prefixed address of a player', undefined, types.string)
-  .setAction(setPlanetOwner);
-
-async function setPlanetOwner(
-  { planetId, address }: { planetId: string; address: string },
-  hre: HardhatRuntimeEnvironment
-) {
-  await hre.run('utils:assertChainId');
-  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
-
-  const setPlanetOwnerReciept = await contract.setOwner(BigNumber.from('0x' + planetId), address);
-  await setPlanetOwnerReciept.wait();
-}
 
 task(
   'game:createPlanets',
