@@ -1001,7 +1001,7 @@ class GameUIManager extends EventEmitter {
     }
 
     if (account !== undefined) {
-      const distFromOrigin = chunk.planetLocations[0] ? chunk.planetLocations[0].coords.x ** 2 + chunk.planetLocations[0].coords.y ** 2 : SpaceType.SPACE;
+      const distFromOrigin = chunk.planetLocations[0] ? Math.floor(Math.sqrt(chunk.planetLocations[0].coords.x ** 2 + chunk.planetLocations[0].coords.y ** 2)) : 1;
       if (this.spaceTypeFromPerlin(chunk.perlin, distFromOrigin) === SpaceType.DEEP_SPACE) {
         if (
           !this.getBooleanSetting(Setting.FoundDeepSpace) &&
