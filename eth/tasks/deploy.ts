@@ -98,6 +98,12 @@ async function deploy(
   const whitelistBalance = await hre.ethers.provider.getBalance(diamond.address);
   console.log(`Whitelist balance ${whitelistBalance}`);
 
+  const value = 0; // drip value in ether
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+  const txReceipt = await contract.changeDrip(hre.ethers.utils.parseEther(value.toString()));
+  await txReceipt.wait();
+  console.log(`changed drip to ${value}`);
+
   // TODO: Upstream change to update task name from `hardhat-4byte-uploader`
   if (!isDev) {
     try {

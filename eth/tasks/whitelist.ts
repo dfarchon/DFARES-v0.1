@@ -62,6 +62,17 @@ async function changeDrip(args: { value: number }, hre: HardhatRuntimeEnvironmen
   console.log(`changed drip to ${args.value}`);
 }
 
+task('whitelist:drip', 'get drip').setAction(getDrip);
+
+async function getDrip(args: {}, hre: HardhatRuntimeEnvironment) {
+  await hre.run('utils:assertChainId');
+
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  const drip = await contract.drip();
+  console.log('drip: ', drip.toString());
+}
+
 task('whitelist:disableKeys', 'disables keys stored in the given file path')
   .addPositionalParam(
     'filePath',

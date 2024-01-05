@@ -65,6 +65,23 @@ contract DFAdminFacet is WithStorage {
         player.score += amount;
     }
 
+    function deductSilver(address playerAddress, uint256 amount) public onlyAdmin {
+        Player storage player = gs().players[playerAddress];
+
+        require(player.isInitialized, "player does not exist");
+        require(amount <= player.silver, "tried to deduct much score");
+
+        player.silver -= amount;
+    }
+
+    function addSilver(address playerAddress, uint256 amount) public onlyAdmin {
+        Player storage player = gs().players[playerAddress];
+
+        require(player.isInitialized, "player does not exist");
+
+        player.silver += amount;
+    }
+
     /**
      * Sets the owner of the given planet, even if it's not initialized (which is why
      * it requires the same snark arguments as DFCoreFacet#initializePlanet).
