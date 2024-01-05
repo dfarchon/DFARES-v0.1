@@ -22,15 +22,15 @@ contract DFWhitelistFacet is WithStorage {
         return ws().allowedAccountsArray.length;
     }
 
-    function enableWhitelist() public onlyAdmin{
+    function enableWhitelist() public onlyAdmin {
         ws().enabled = true;
     }
 
-    function disableWhitelist() public onlyAdmin{
+    function disableWhitelist() public onlyAdmin {
         ws().enabled = false;
     }
 
-    function getWhitelistEnabled() public view returns(bool){
+    function getWhitelistEnabled() public view returns (bool) {
         return ws().enabled;
     }
 
@@ -58,6 +58,8 @@ contract DFWhitelistFacet is WithStorage {
         }
     }
 
+    error transferFailed();
+
     function useKey(
         uint256[2] memory _a,
         uint256[2][2] memory _b,
@@ -79,7 +81,12 @@ contract DFWhitelistFacet is WithStorage {
         if (ws().relayerRewardsEnabled && recipient != msg.sender) {
             // Payment to encourage relaying whitelist
             // transactions for new users with no funds
-            payable(msg.sender).transfer(ws().relayerReward);
+
+            // payable(msg.sender).transfer(ws().relayerReward);
+            (bool success, ) = payable(msg.sender).call{value: ws().relayerReward}("");
+            if (!success) {
+                revert transferFailed();
+            }
         }
     }
 
@@ -93,7 +100,12 @@ contract DFWhitelistFacet is WithStorage {
         ws().allowedAccountsArray.push(recipient);
         ws().newAllowedKeyHashes[keyHash] = false;
         // xDAI ONLY
-        payable(recipient).transfer(ws().drip);
+        // payable(recipient).transfer(ws().drip);
+
+        (bool success, ) = payable(recipient).call{value: ws().drip}("");
+        if (!success) {
+            revert transferFailed();
+        }
     }
 
     function addToWhitelist(address toAdd) public onlyAdmin {
@@ -103,11 +115,11 @@ contract DFWhitelistFacet is WithStorage {
         ws().allowedAccountsArray.push(toAdd);
     }
 
-    function batchAddToWhitelist(address[] memory addrs) public onlyAdmin{
-        for(uint i = 0;i<addrs.length;i++){
+    function batchAddToWhitelist(address[] memory addrs) public onlyAdmin {
+        for (uint256 i = 0; i < addrs.length; i++) {
             address toAdd = addrs[i];
-            if(!ws().allowedAccounts[toAdd]){
-                ws().allowedAccounts[toAdd]=true;
+            if (!ws().allowedAccounts[toAdd]) {
+                ws().allowedAccounts[toAdd] = true;
                 ws().allowedAccountsArray.push(toAdd);
             }
         }

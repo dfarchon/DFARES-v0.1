@@ -138,9 +138,15 @@ contract DFAdminFacet is WithStorage {
         gameConstants().BURN_PLANET_COOLDOWN = newCooldown;
     }
 
+    error transferFailed();
+
     function withdraw() public onlyAdmin {
         // TODO: Don't send to msg.sender, instead send to contract admin
-        payable(msg.sender).transfer(address(this).balance);
+        // payable(msg.sender).transfer(address(this).balance);
+        (bool success, ) = payable(msg.sender).call{value: address(this).balance}("");
+        if (!success) {
+            revert transferFailed();
+        }
     }
 
     function setTokenMintEndTime(uint256 newTokenMintEndTime) public onlyAdmin {

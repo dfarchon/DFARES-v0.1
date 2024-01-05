@@ -577,6 +577,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
 
         const keyBigInt = bigIntFromKey(key);
         const snarkArgs = await getWhitelistArgs(keyBigInt, address, terminal);
+
         try {
           const ukReceipt = await contractsAPI.contract.useKey(
             snarkArgs[ZKArgIdx.PROOF_A],
@@ -601,6 +602,9 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           setStep(TerminalPromptStep.FETCHING_ETH_DATA);
         } catch (e) {
           const error = e.error;
+
+          console.log(e);
+
           if (error instanceof Error) {
             const invalidKey = error.message.includes('invalid key');
             if (invalidKey) {

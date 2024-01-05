@@ -19,6 +19,8 @@ contract DFRewardFacet is WithStorage {
         _;
     }
 
+    error transferFailed();
+
     function claimReward(address[] calldata sortedPlayerAddresses, uint256[] calldata sortedScores)
         public
         onlyWhitelisted
@@ -56,8 +58,15 @@ contract DFRewardFacet is WithStorage {
             lastScore = score;
         }
 
-        payable(msg.sender).transfer(
-            gameConstants().ROUND_END_REWARDS_BY_RANK[claimingPlayer.finalRank] * 1 ether
-        );
+        // payable(msg.sender).transfer(
+        //     gameConstants().ROUND_END_REWARDS_BY_RANK[claimingPlayer.finalRank] * 1 ether
+        // );
+
+        (bool success, ) = payable(msg.sender).call{
+            value: gameConstants().ROUND_END_REWARDS_BY_RANK[claimingPlayer.finalRank] * 1 ether
+        }("");
+        if (!success) {
+            revert transferFailed();
+        }
     }
 }

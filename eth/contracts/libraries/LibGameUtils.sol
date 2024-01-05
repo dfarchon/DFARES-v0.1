@@ -576,7 +576,11 @@ library LibGameUtils {
     // the owner can send a maximum of 5 arrivals to this planet
     // separately, everyone other than the owner can also send a maximum
     // of 5 arrivals in aggregate
-    function checkPlanetDOS(uint256 locationId, address sender,uint movedArtifactId) public view {
+    function checkPlanetDOS(
+        uint256 locationId,
+        address sender,
+        uint256 movedArtifactId
+    ) public view {
         uint8 arrivalsFromOwner = 0;
         uint8 arrivalsFromOthers = 0;
 
@@ -618,7 +622,7 @@ library LibGameUtils {
             "Planet is rate-limited"
         );
 
-        if(movedArtifactId!=0)  ++arrivalArtifacts;
+        if (movedArtifactId != 0) ++arrivalArtifacts;
         require(
             arrivalArtifacts + gs().planetArtifacts[locationId].length <=
                 gameConstants().MAX_ARTIFACT_PER_PLANET,
