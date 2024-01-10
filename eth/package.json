@@ -7,6 +7,7 @@
   "main": "index.js",
   "devDependencies": {
     "@dfares/contracts": "6.8.5",
+    "@dfares/constants": "6.8.5",
     "@dfares/hashing": "6.8.5",
     "@dfares/settings": "6.8.5",
     "@dfares/snarks": "6.8.5",
@@ -85,6 +86,7 @@
     "subgraph:deploy:dev": "yarn hardhat:dev subgraph:deploy --name df",
     "subgraph:deploy:prod": "cd subgraph && graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/",
     "clean": "del-cli artifacts cache subgraph/build node_modules tsconfig.ref.tsbuildinfo",
+    "delete:blockchain": "del-cli blockchain",
     "wait:node": "wait-on tcp:8545",
     "deploy:contracts": "hardhat --network localhost deploy",
     "hardhat:deploy": "run-s wait:node \"deploy:contracts {@}\" --",

@@ -76,8 +76,12 @@ export function PinkPane({
   const [account, setAccount] = useState<EthAddress | undefined>(undefined); // consider moving this one to parent
   const isDestoryedOrFrozen = planet?.destroyed || planet?.frozen;
 
+  const checkPlansetCanPink = () => {
+    if (!planetId) return false;
+    return uiManager.checkPlanetCanPink(planetId);
+  };
   //mytodo: add mcheck
-  const pinkZonePassed = true;
+  const pinkZonePassed = checkPlansetCanPink();
 
   useEffect(() => {
     if (!uiManager) return;

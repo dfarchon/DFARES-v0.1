@@ -13,7 +13,7 @@ export function SpaceshipsPane({ config, onUpdate }: LobbiesPaneProps) {
         <Spacer height={12} />
       </div>
       {(
-        ['GEAR', 'MOTHERSHIP', 'TITAN', 'CRESCENT', 'WHALE'] as Array<
+        ['GEAR', 'MOTHERSHIP', 'TITAN', 'CRESCENT', 'WHALE', 'PINKSHIP'] as Array<
           keyof Initializers['SPACESHIPS']
         >
       ).map((ship) => (

@@ -409,6 +409,7 @@ library LibPlanet {
         );
 
         planet.silver -= silverToWithdraw;
+        gs().players[msg.sender].silver += silverToWithdraw;
 
         // Energy and Silver are not stored as floats in the smart contracts,
         // so any of those values coming from the contracts need to be divided by

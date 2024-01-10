@@ -65,6 +65,23 @@ contract DFAdminFacet is WithStorage {
         player.score += amount;
     }
 
+    function deductSilver(address playerAddress, uint256 amount) public onlyAdmin {
+        Player storage player = gs().players[playerAddress];
+
+        require(player.isInitialized, "player does not exist");
+        require(amount <= player.silver, "tried to deduct much score");
+
+        player.silver -= amount;
+    }
+
+    function addSilver(address playerAddress, uint256 amount) public onlyAdmin {
+        Player storage player = gs().players[playerAddress];
+
+        require(player.isInitialized, "player does not exist");
+
+        player.silver += amount;
+    }
+
     /**
      * Sets the owner of the given planet, even if it's not initialized (which is why
      * it requires the same snark arguments as DFCoreFacet#initializePlanet).
@@ -101,8 +118,12 @@ contract DFAdminFacet is WithStorage {
         gameConstants().CAPTURE_ZONE_RADIUS = _newRadius;
     }
 
-    function changeBurnPlanetEffectRadius(uint256 _newRadius) public onlyAdmin {
-        gameConstants().BURN_PLANET_EFFECT_RADIUS = _newRadius;
+    function changeBurnPlanetEffectRadius(uint256 level, uint256 _newRadius) public onlyAdmin {
+        gameConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[level] = _newRadius;
+    }
+
+    function changeBurnPlanetRequireSilver(uint256 level, uint256 _newSilver) public onlyAdmin {
+        gameConstants().BURN_PLANET_REQUIRE_SILVER_AMOUNTS[level] = _newSilver;
     }
 
     function changeLocationRevealCooldown(uint256 newCooldown) public onlyAdmin {

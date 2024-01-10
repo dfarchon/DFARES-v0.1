@@ -22,6 +22,18 @@ contract DFWhitelistFacet is WithStorage {
         return ws().allowedAccountsArray.length;
     }
 
+    function enableWhitelist() public onlyAdmin {
+        ws().enabled = true;
+    }
+
+    function disableWhitelist() public onlyAdmin {
+        ws().enabled = false;
+    }
+
+    function getWhitelistEnabled() public view returns (bool) {
+        return ws().enabled;
+    }
+
     function isWhitelisted(address _addr) public view returns (bool) {
         if (!ws().enabled) {
             return true;
@@ -91,11 +103,11 @@ contract DFWhitelistFacet is WithStorage {
         ws().allowedAccountsArray.push(toAdd);
     }
 
-    function batchAddToWhitelist(address[] memory addrs) public onlyAdmin{
-        for(uint i = 0;i<addrs.length;i++){
+    function batchAddToWhitelist(address[] memory addrs) public onlyAdmin {
+        for (uint256 i = 0; i < addrs.length; i++) {
             address toAdd = addrs[i];
-            if(!ws().allowedAccounts[toAdd]){
-                ws().allowedAccounts[toAdd]=true;
+            if (!ws().allowedAccounts[toAdd]) {
+                ws().allowedAccounts[toAdd] = true;
                 ws().allowedAccountsArray.push(toAdd);
             }
         }

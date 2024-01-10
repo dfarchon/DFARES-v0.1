@@ -47,6 +47,11 @@ export const White = styled.span`
 export const Red = styled.span`
   color: ${dfstyles.colors.dfred};
 `;
+
+export const Pink = styled.span`
+  color: ${dfstyles.colors.dfpink};
+`;
+
 export const Gold = styled.span`
   color: ${dfstyles.colors.dfyellow};
 `;

@@ -133,12 +133,23 @@ contract DFCoreFacet is WithStorage {
         emit LocationRevealed(msg.sender, _input[0], _input[2], _input[3]);
     }
 
+
+    //mytodo: when deploy, change to another value
+    function getEntryFee() public view returns (uint){
+        uint amount =  gs().playerIds.length;
+        return 1 ether * amount;
+        // return amount * amount * amount /1 ether/1 ether;
+        // return amount * amount * amount/ 1 ether/1 ether/3_375_000;
+    }
+
+
     function initializePlayer(
         uint256[2] memory _a,
         uint256[2][2] memory _b,
         uint256[2] memory _c,
         uint256[9] memory _input
-    ) public onlyWhitelisted returns (uint256) {
+    ) public onlyWhitelisted payable returns (uint256)  {
+
         LibPlanet.initializePlanet(_a, _b, _c, _input, true);
 
         uint256 _location = _input[0];
@@ -146,6 +157,10 @@ contract DFCoreFacet is WithStorage {
         uint256 _radius = _input[2];
 
         require(LibPlanet.checkPlayerInit(_location, _perlin, _radius, _input[8]));
+
+        // Pay the entry fee
+        uint entryFee = getEntryFee();
+        require(msg.value == entryFee,"Wrong value sent");
 
         // Initialize player data
         gs().playerIds.push(msg.sender);
@@ -161,6 +176,7 @@ contract DFCoreFacet is WithStorage {
             false,
             0,
             false,
+            0,
             0,
             0
         );
@@ -374,12 +390,11 @@ contract DFCoreFacet is WithStorage {
     function getAbsoluteModP(uint256 n) private pure returns (uint256) {
         uint256 LOCATION_ID_UB = 21888242871839275222246405745257275088548364400416034343698204186575808495617;
         require(n < LOCATION_ID_UB, "Number outside of AbsoluteModP Range");
-        // if (n > SafeMathUpgradeable.div(LOCATION_ID_UB, 2)) {
-        //     return SafeMathUpgradeable.sub(LOCATION_ID_UB, n);
-        // }
-        uint256 tmp = LOCATION_ID_UB / 2;
-        if (n > tmp) return LOCATION_ID_UB - n;
-        else return n;
+        if (n > LOCATION_ID_UB / 2) {
+            return LOCATION_ID_UB - n;
+        }
+
+        return n;
     }
 
     //  In dark forest v0.6 r3, players can claim planets that own. This will reveal a planets a

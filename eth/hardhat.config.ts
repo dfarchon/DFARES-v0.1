@@ -33,6 +33,7 @@ import './tasks/wallet';
 import './tasks/whitelist';
 import './tasks/batch';
 import './tasks/airdrop';
+import './tasks/admin';
 
 require('dotenv').config();
 
@@ -95,15 +96,13 @@ const altlayer = {
   chainId: Number(process.env.ALTLAYER_CHAINID),
 };
 
-
 const redstoneTestnet = {
   url: process.env.REDSTONE_TESTNET_RPC_URL,
   accounts: {
     mnemonic: process.env.DEPLOYER_MNEMONIC,
   },
   chainId: Number(process.env.REDSTONE_TESTNET_CHAINID),
-
-}
+};
 const config: HardhatUserConfig = {
   defaultNetwork: 'hardhat',
   networks: {
@@ -113,7 +112,7 @@ const config: HardhatUserConfig = {
     ...(DEPLOYER_MNEMONIC ? { xdai } : undefined),
     ...(DEPLOYER_MNEMONIC ? { mainnet } : undefined),
     ...(DEPLOYER_MNEMONIC ? { altlayer } : undefined),
-    ...(DEPLOYER_MNEMONIC ? { redstoneTestnet} : undefined),
+    ...(DEPLOYER_MNEMONIC ? { redstoneTestnet } : undefined),
     localhost: {
       url: 'http://localhost:8545/',
       accounts: {

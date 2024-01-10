@@ -1,3 +1,4 @@
+import { CONTRACT_PRECISION } from '@dfares/constants';
 import type { DarkForest } from '@dfares/contracts/typechain';
 import type { Player } from '@dfares/types';
 import { address } from './address';
@@ -29,5 +30,6 @@ export function decodePlayer(rawPlayer: RawPlayer): Player {
     claimedReward: rawPlayer.claimedReward,
     activateArtifactAmount: rawPlayer.activateArtifactAmount.toNumber(),
     buyArtifactAmount: rawPlayer.buyArtifactAmount.toNumber(),
+    silver: rawPlayer.silver.toNumber() / CONTRACT_PRECISION,
   };
 }

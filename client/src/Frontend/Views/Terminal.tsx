@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import { Link } from '../Components/CoreUI';
 import { MythicLabelText } from '../Components/Labels/MythicLabel';
 import { LoadingSpinner } from '../Components/LoadingSpinner';
-import { Blue, Green, Invisible, Red, Sub, Subber, Text, White } from '../Components/Text';
+import { Blue, Green, Invisible, Pink, Red, Sub, Subber, Text, White } from '../Components/Text';
 import { LoadingBarHandle, TextLoadingBar } from '../Components/TextLoadingBar';
 import dfstyles from '../Styles/dfstyles';
 import { isFirefox } from '../Utils/BrowserChecks';
@@ -106,6 +106,10 @@ function TerminalImpl({ promptCharacter }: TerminalProps, ref: React.Ref<Termina
           break;
         case TerminalTextStyle.Red:
           fragment = <Red>{innerFragment}</Red>;
+          break;
+
+        case TerminalTextStyle.Pink:
+          fragment = <Pink>{innerFragment}</Pink>;
           break;
         case TerminalTextStyle.Invisible:
           fragment = <Invisible>{innerFragment}</Invisible>;

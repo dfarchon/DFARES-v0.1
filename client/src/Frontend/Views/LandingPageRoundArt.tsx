@@ -43,4 +43,6 @@ const ImgContainer = styled.div`
   }
 `;
 
-const LandingPageRoundArtImg = styled.img``;
+const LandingPageRoundArtImg = styled.img`
+  cursor: pointer;
+`;

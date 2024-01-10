@@ -106,7 +106,6 @@ export const enum ContractsAPIEvent {
   TxCancelled = 'TxCancelled',
   PlanetTransferred = 'PlanetTransferred',
   LocationClaimed = 'LocationClaimed',
-  LocationBurned = 'LocationBurned',
   LobbyCreated = 'LobbyCreated',
 }
 
@@ -308,6 +307,7 @@ export interface ContractConstants {
     TITAN: boolean;
     CRESCENT: boolean;
     WHALE: boolean;
+    PINKSHIP: boolean;
   };
 
   ROUND_END_REWARDS_BY_RANK: [
@@ -398,11 +398,37 @@ export interface ContractConstants {
 
   BURN_END_TIMESTAMP: number;
   BURN_PLANET_COOLDOWN: number;
-  BURN_PLANET_EFFECT_RADIUS: number;
+
+ BURN_PLANET_LEVEL_EFFECT_RADIUS: [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number
+  ];
+
+  BURN_PLANET_REQUIRE_SILVER_AMOUNTS: [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number
+  ];
 
   MAX_LEVEL_DIST: number[];
   MAX_LEVEL_LIMIT: number[];
   MIN_LEVEL_BIAS: number[];
+
 }
 
 export type ClientMockchainData =
