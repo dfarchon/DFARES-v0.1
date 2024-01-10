@@ -46,8 +46,8 @@ export const START_BLOCK = 0;
 /**
  * The address for the DarkForest contract.
  */
-export const CONTRACT_ADDRESS = '0xc7c11634D5af67716BE87e618a32bf7ae1028Fd6';
+export const CONTRACT_ADDRESS = '0x7CBA1e98A4b481F71023c7bB98bBD1CDEbFaFB21';
 /**
  * The address for the initalizer contract. Useful for lobbies.
  */
-export const INIT_ADDRESS = '0xc8C4B2a2e069d2C6f1F3ac04f794349d441138c4';
+export const INIT_ADDRESS = '0x66f0AA93c9c813441C173b20223312dB19203f36';
