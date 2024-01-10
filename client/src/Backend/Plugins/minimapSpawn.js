@@ -8,7 +8,7 @@ class MinimapSpawnPlugin {
     this.coordsDiv.style.textAlign = 'center';
     this.sizeFactor = 500;
     this.clickOccurred = false;
-    this.step = 1500;
+    this.step = 3000;//1500;
     this.dot = 5.5;
     this.canvasSize = 600;
     this.InnerNebulaColor = '#00ADE1'; // '#21215d';
@@ -28,7 +28,7 @@ class MinimapSpawnPlugin {
     div.style.height = '600px';
 
     const radius = ui.getWorldRadius();
-    const rim = Math.sqrt(df.getContractConstants().SPAWN_RIM_AREA);
+    // const rim = Math.sqrt(df.getContractConstants().SPAWN_RIM_AREA);
 
     const image = new Image();
     image.src = '../../../../public/DFARESLogo-v3.svg';
@@ -51,6 +51,8 @@ class MinimapSpawnPlugin {
     // Sample points in a grid and determine space type
 
     const generate = () => {
+
+
       div.style.width = '99%';
       div.style.height = '99%';
       this.canvas.width = this.canvasSize;
@@ -65,12 +67,14 @@ class MinimapSpawnPlugin {
         // Generate y coordinates
         for (let j = radius * -1; j < radius; j += this.step) {
           // Filter points within map circle
+
           if (checkBounds(0, 0, i, j, radius)) {
+            const distFromOrigin = Math.floor(Math.sqrt(i ** 2 + j ** 2));
             // Store coordinate and space type
             data.push({
               x: i,
               y: j,
-              type: df.spaceTypeFromPerlin(df.spaceTypePerlin({ x: i, y: j })),
+              type: df.spaceTypeFromPerlin(df.spaceTypePerlin({ x: i, y: j }), distFromOrigin),
             });
           }
         }
@@ -133,15 +137,18 @@ class MinimapSpawnPlugin {
         ctx.fill();
         ctx.stroke();
       }
-
+      //mytodo:
       // draw inner circle of map
-      let rimNormalized = (normalize(rim) / 2) * 0.91; // idk why here need to be corection??
+      // let rimNormalized = (normalize(rim) / 2) * 0.91; // idk why here need
+      // to be corection??
+      const MAX_LEVEL_DIST = df.getContractConstants().MAX_LEVEL_DIST;
+      const normalizeRadius = MAX_LEVEL_DIST[1] * radiusNormalized / radius;
 
       ctx.beginPath();
       ctx.arc(
         radiusNormalized, // centerX
         radiusNormalized, // centerY
-        rimNormalized, // radius
+        normalizeRadius, // rimNormalized, // radius
         0,
         2 * Math.PI
       );
@@ -153,8 +160,8 @@ class MinimapSpawnPlugin {
         // Calculate the position and size for the image
         const centerX = ctx.canvas.width / 2;
         const centerY = ctx.canvas.height / 2;
-        const trueWidth = worldRadius * 0.8; // Adjust as needed
-        const trueHeight = worldRadius * 0.8; // Adjust as needed
+        const trueWidth = worldRadius * 0.5; // Adjust as needed
+        const trueHeight = worldRadius * 0.5; // Adjust as needed
 
         // Draw the image at the center
         ctx.drawImage(
@@ -167,6 +174,7 @@ class MinimapSpawnPlugin {
       };
 
       // Draw the image at the center with the specified rim radius
+      // mytodo:
       drawImageAtCenter(ctx, image, radiusNormalized);
     };
 
@@ -190,7 +198,9 @@ class MinimapSpawnPlugin {
       }
 
       const radius = ui.getWorldRadius();
-      const rim = Math.sqrt(df.getContractConstants().SPAWN_RIM_AREA);
+      // const rim = Math.sqrt(df.getContractConstants().SPAWN_RIM_AREA);
+      const MAX_LEVEL_DIST = df.getContractConstants().MAX_LEVEL_DIST;
+      const rim = MAX_LEVEL_DIST[1];
 
       const checkIfCoordsInPinkZones = (x, y) => {
         const pinkZones = Array.from(df.getPinkZones());
@@ -212,8 +222,13 @@ class MinimapSpawnPlugin {
         this.coordsDiv.innerText = "Can't Spawn Here 😅";
         this.coordsDiv.style.color = 'pink';
       } else if (checkBounds(0, 0, xWorld, yWorld, radius)) {
-        // Inside the world radius but outside the rim, change cursor to 'pointer'
-        const spaceType = df.spaceTypeFromPerlin(df.spaceTypePerlin({ x: xWorld, y: yWorld }));
+        // Inside the world radius but outside the rim, change cursor to
+        // 'pointer'
+        const distFromOrigin = Math.floor(Math.sqrt(xWorld ** 2 + yWorld ** 2));
+        const spaceType = df.spaceTypeFromPerlin(
+          df.spaceTypePerlin({ x: xWorld, y: yWorld }),
+          distFromOrigin
+        );
 
         // Check if the space type is inner nebula (type 0)
         if (spaceType === 0) {
@@ -287,8 +302,11 @@ class MinimapSpawnPlugin {
         }
         // Check if the cursor is in the 'pointer' area
         else if (checkBounds(0, 0, xWorld, yWorld, radius)) {
-          // Inside the world radius but outside the rim, change cursor to 'pointer'
-          const spaceType = df.spaceTypeFromPerlin(df.spaceTypePerlin({ x: xWorld, y: yWorld }));
+          // Inside the world radius but outside the rim, change cursor to
+          // 'pointer'
+
+          const distFromOrigin = Math.floor(Math.sqrt(xWorld ** 2 + yWorld ** 2));
+          const spaceType = df.spaceTypeFromPerlin(df.spaceTypePerlin({ x: xWorld, y: yWorld }), distFromOrigin);
 
           // Check if the space type is inner nebula (type 0)
           if (spaceType === 0) {

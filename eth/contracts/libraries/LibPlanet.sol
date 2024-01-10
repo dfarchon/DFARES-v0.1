@@ -86,7 +86,6 @@ library LibPlanet {
             );
     }
 
-
     /**
      * Same SNARK args as `initializePlayer`. Adds a planet to the smart contract without setting an owner.
      */
@@ -115,7 +114,6 @@ library LibPlanet {
         // Initialize planet information
         initializePlanetWithDefaults(_location, _perlin, _input[8], isHomePlanet);
     }
-
 
     //###############
     //  NEW MAP ALGO
@@ -267,7 +265,10 @@ library LibPlanet {
             );
         }
 
-        SpaceType spaceType = LibGameUtils.spaceTypeFromPerlin(_perlin,_distFromOriginSquare);
+        uint256[5] memory MAX_LEVEL_DIST = gameConstants().MAX_LEVEL_DIST;
+        require(_radius > MAX_LEVEL_DIST[1], "Player can only spawn at the edge of universe");
+
+        SpaceType spaceType = LibGameUtils.spaceTypeFromPerlin(_perlin, _distFromOriginSquare);
 
         require(spaceType == SpaceType.NEBULA, "GUCK U");
 
@@ -418,5 +419,4 @@ library LibPlanet {
         scoreGained = (scoreGained * gameConstants().SILVER_SCORE_VALUE) / 100;
         gs().players[msg.sender].score += scoreGained;
     }
-
 }

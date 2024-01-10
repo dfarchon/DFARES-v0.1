@@ -70,7 +70,10 @@ library LibGameUtils {
         // uint32[5] memory MAX_LEVEL_DIST = [40000 ** 2, 30000 ** 2,20000 ** 2, 10000 ** 2, 5000 ** 2];
         uint256[5] memory MAX_LEVEL_DIST = gameConstants().MAX_LEVEL_DIST;
 
-        if (distFromOriginSquare > MAX_LEVEL_DIST[0] * MAX_LEVEL_DIST[0]) return SpaceType.NEBULA;
+        if (
+            distFromOriginSquare > MAX_LEVEL_DIST[1] * MAX_LEVEL_DIST[1] &&
+            distFromOriginSquare < MAX_LEVEL_DIST[0] * MAX_LEVEL_DIST[0]
+        ) return SpaceType.NEBULA;
 
         if (perlin >= gameConstants().PERLIN_THRESHOLD_3) {
             return SpaceType.DEAD_SPACE;

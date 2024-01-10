@@ -118,9 +118,14 @@ contract DFCoreFacet is WithStorage {
         //     LibPlanet.initializePlanetWithDefaults(_input[0], _input[1], false);
         // }
 
-        uint256 distFromOriginSquare = _input[2] ** 2 + _input[3] ** 2;
+        uint256 distFromOriginSquare = _input[2]**2 + _input[3]**2;
         if (!gs().planets[_input[0]].isInitialized) {
-            LibPlanet.initializePlanetWithDefaults(_input[0], _input[1],distFromOriginSquare, false);
+            LibPlanet.initializePlanetWithDefaults(
+                _input[0],
+                _input[1],
+                distFromOriginSquare,
+                false
+            );
         }
 
         LibPlanet.revealLocation(
@@ -133,23 +138,21 @@ contract DFCoreFacet is WithStorage {
         emit LocationRevealed(msg.sender, _input[0], _input[2], _input[3]);
     }
 
-
     //mytodo: when deploy, change to another value
-    function getEntryFee() public view returns (uint){
-        uint amount =  gs().playerIds.length;
-        return 1 ether * amount;
+    function getEntryFee() public view returns (uint256) {
+        uint256 amount = gs().playerIds.length;
+          return 0 ether * amount ;
+        // return 1 ether * amount;
         // return amount * amount * amount /1 ether/1 ether;
         // return amount * amount * amount/ 1 ether/1 ether/3_375_000;
     }
-
 
     function initializePlayer(
         uint256[2] memory _a,
         uint256[2][2] memory _b,
         uint256[2] memory _c,
         uint256[9] memory _input
-    ) public onlyWhitelisted payable returns (uint256)  {
-
+    ) public payable onlyWhitelisted returns (uint256) {
         LibPlanet.initializePlanet(_a, _b, _c, _input, true);
 
         uint256 _location = _input[0];
@@ -159,8 +162,8 @@ contract DFCoreFacet is WithStorage {
         require(LibPlanet.checkPlayerInit(_location, _perlin, _radius, _input[8]));
 
         // Pay the entry fee
-        uint entryFee = getEntryFee();
-        require(msg.value == entryFee,"Wrong value sent");
+        uint256 entryFee = getEntryFee();
+        require(msg.value == entryFee, "Wrong value sent");
 
         // Initialize player data
         gs().playerIds.push(msg.sender);
@@ -185,8 +188,6 @@ contract DFCoreFacet is WithStorage {
         emit PlayerInitialized(msg.sender, _location);
         return _location;
     }
-
-
 
     function upgradePlanet(uint256 _location, uint256 _branch)
         public

@@ -374,7 +374,7 @@ export function lobbyConfigReducer(state: LobbyConfigState, action: LobbyAction)
       update = ofBurnPlanetEffectRadius(action, state);
       break;
     }
-    
+
     case 'BURN_PLANET_REQUIRE_SILVER_AMOUNTS': {
       update = ofBurnPlanetRequireSilverAmounts(action, state);
       break;
@@ -921,7 +921,7 @@ export function lobbyConfigInit(startingConfig: LobbyInitializers) {
         };
         break;
       }
-        
+
       case 'BURN_PLANET_REQUIRE_SILVER_AMOUNTS': {
         const defaultValue = startingConfig[key];
         state[key] = {

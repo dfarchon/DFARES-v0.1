@@ -210,7 +210,8 @@ export const PERLIN_PROGRAM_DEFINITION = {
       float x = ${v.worldCoords}.x;
       float y = ${v.worldCoords}.y;
       float distFromOriginSquare = x * x + y * y;
-      float nebulaThreshold = 40000.0 * 40000.0;
+      float nebulaThresholdTop = 90000.0 * 90000.0;
+      float nebulaThresholdBottom = 70000.0 * 70000.0;
       //fich dich
 
       float p0 = perlin(scale * 1., x, y, ${v.p0botLeftGrad}, ${v.p0botRightGrad}, ${v.p0topLeftGrad}, ${v.p0topRightGrad});
@@ -232,7 +233,7 @@ export const PERLIN_PROGRAM_DEFINITION = {
       float t2 = ${u.thresholds}.y;
       float t3 = ${u.thresholds}.z;
 
-      outColor = distFromOriginSquare > nebulaThreshold ? c0 : p < t1 ? c0 : p < t2 ? c1 : p < t3 ? c2 : c3;
+      outColor = distFromOriginSquare < nebulaThresholdTop && distFromOriginSquare > nebulaThresholdBottom ? c0 : p < t1 ? c0 : p < t2 ? c1 : p < t3 ? c2 : c3;
     }
   `,
 };

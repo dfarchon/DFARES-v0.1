@@ -88,7 +88,7 @@ contract DFMoveFacet is WithStorage {
         } else {
             // need to do this so people can't deny service to planets with gas limit
             LibPlanet.refreshPlanet(args.newLoc);
-            LibGameUtils.checkPlanetDOS(args.newLoc, args.sender,movedArtifactId);
+            LibGameUtils.checkPlanetDOS(args.newLoc, args.sender, movedArtifactId);
         }
 
         if (gs().artifacts[args.movedArtifactId].artifactType == ArtifactType.ShipMothership) {
@@ -171,9 +171,9 @@ contract DFMoveFacet is WithStorage {
 
         //MyTodo: change the photoid travel time in sec
         //all photoid travel same time
-        if (photoidPresent) {
-            travelTime = 600;
-        }
+        // if (photoidPresent) {
+        //     travelTime = 600;
+        // }
 
         Planet memory toPlanet = gs().planets[args.newLoc];
         if (toPlanet.planetType == PlanetType.SILVER_BANK) {

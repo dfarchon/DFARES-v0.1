@@ -399,7 +399,7 @@ export interface ContractConstants {
   BURN_END_TIMESTAMP: number;
   BURN_PLANET_COOLDOWN: number;
 
- BURN_PLANET_LEVEL_EFFECT_RADIUS: [
+  BURN_PLANET_LEVEL_EFFECT_RADIUS: [
     number,
     number,
     number,
@@ -428,7 +428,6 @@ export interface ContractConstants {
   MAX_LEVEL_DIST: number[];
   MAX_LEVEL_LIMIT: number[];
   MIN_LEVEL_BIAS: number[];
-
 }
 
 export type ClientMockchainData =

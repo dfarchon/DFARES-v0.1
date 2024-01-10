@@ -371,7 +371,6 @@ library LibArtifactUtils {
                 shouldDeactivateAndBurn = true;
 
                 toPlanet.destroyed = false;
-
             } else {
                 // require(!toPlanet.destroyed, "planet destroyed");
 
@@ -644,7 +643,6 @@ library LibArtifactUtils {
     }
 
     function isSpaceship(ArtifactType artifactType) public pure returns (bool) {
-        return
-            artifactType >= ArtifactType.ShipMothership && artifactType <= ArtifactType.ShipPink;
+        return artifactType >= ArtifactType.ShipMothership && artifactType <= ArtifactType.ShipPink;
     }
 }

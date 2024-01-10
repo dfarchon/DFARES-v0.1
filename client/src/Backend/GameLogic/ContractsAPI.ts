@@ -730,7 +730,7 @@ export class ContractsAPI extends EventEmitter {
 
       BURN_END_TIMESTAMP: BURN_END_TIMESTAMP.toNumber(),
       BURN_PLANET_COOLDOWN: BURN_PLANET_COOLDOWN.toNumber(),
-      
+
       BURN_PLANET_LEVEL_EFFECT_RADIUS: [
         BURN_PLANET_LEVEL_EFFECT_RADIUS[0].toNumber(),
         BURN_PLANET_LEVEL_EFFECT_RADIUS[1].toNumber(),
@@ -754,7 +754,6 @@ export class ContractsAPI extends EventEmitter {
         BURN_PLANET_REQUIRE_SILVER_AMOUNTS[7].toNumber(),
         BURN_PLANET_REQUIRE_SILVER_AMOUNTS[8].toNumber(),
         BURN_PLANET_REQUIRE_SILVER_AMOUNTS[9].toNumber(),
-
       ],
 
       MAX_LEVEL_DIST: [
@@ -779,8 +778,7 @@ export class ContractsAPI extends EventEmitter {
         MIN_LEVEL_BIAS[3].toNumber(),
         MIN_LEVEL_BIAS[4].toNumber(),
         MIN_LEVEL_BIAS[5].toNumber(),
-      ]
-     
+      ],
     };
     // console.log(constants);
     return constants;

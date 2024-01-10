@@ -432,7 +432,9 @@ export const SPACE_PROGRAM_DEFINITION = {
       float x = ${v.worldCoords}.x;
       float y = ${v.worldCoords}.y;
       float distFromOriginSquare = x * x + y * y;
-      float nebulaThreshold = 40000.0 * 40000.0;
+      float nebulaThresholdTop = 90000.0 * 90000.0;
+      float nebulaThresholdBottom = 70000.0 * 70000.0;
+
       //fich dich
 
       // evaluate world space noise function
@@ -459,13 +461,13 @@ export const SPACE_PROGRAM_DEFINITION = {
       vec4 c;
 
       if (enableSmoothTransitions) {
-        c = distFromOriginSquare > nebulaThreshold ? easeTransition(c0, c1, 0., t1, p)
+        c = (distFromOriginSquare < nebulaThresholdTop && distFromOriginSquare > nebulaThresholdBottom ) ? easeTransition(c0, c1, 0., t1, p)
             : p < t1 ? easeTransition(c0, c1, 0., t1, p)
                    : p < t2 ? easeTransition(c1, c2, t1, t2, p)
                             : p < t3 ? easeTransition(c2, c3, t2, t3, p)
                                      : easeTransition(c3, c4, t2, t3, p);
       } else {
-        c = distFromOriginSquare > nebulaThreshold ? easeTransition2(c0, c1, 0., t1, p)
+        c = (distFromOriginSquare < nebulaThresholdTop && distFromOriginSquare > nebulaThresholdBottom) ? easeTransition2(c0, c1, 0., t1, p)
             : p < t1 ? easeTransition2(c0, c1, 0., t1, p)
                    : p < t2 ? easeTransition2(c1, c2, t1, t2, p)
                             : p < t3 ? easeTransition2(c2, c3, t2, t3, p)
@@ -473,7 +475,7 @@ export const SPACE_PROGRAM_DEFINITION = {
       }
 
       // use existing perlin noise to set spaceType
-      int spaceType = distFromOriginSquare > nebulaThreshold ? NEBULA
+      int spaceType = (distFromOriginSquare < nebulaThresholdTop && distFromOriginSquare > nebulaThresholdBottom) ? NEBULA
                   : p < t1 ? NEBULA
                              : p < t2 ? SPACE
                                       : p < t3 ? DEEP_SPACE

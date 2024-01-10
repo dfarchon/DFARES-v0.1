@@ -913,7 +913,7 @@ class GameUIManager extends EventEmitter {
   }
 
   public spaceTypeFromPerlin(perlin: number, distFromOrigin: number): SpaceType {
-    return this.gameManager.spaceTypeFromPerlin(perlin,distFromOrigin);
+    return this.gameManager.spaceTypeFromPerlin(perlin, distFromOrigin);
   }
 
   public getSpaceTypePerlin(coords: WorldCoords, floor: boolean): number {
@@ -1009,7 +1009,13 @@ class GameUIManager extends EventEmitter {
     }
 
     if (account !== undefined) {
-      const distFromOrigin = chunk.planetLocations[0] ? Math.floor(Math.sqrt(chunk.planetLocations[0].coords.x ** 2 + chunk.planetLocations[0].coords.y ** 2)) : 1;
+      const distFromOrigin = chunk.planetLocations[0]
+        ? Math.floor(
+            Math.sqrt(
+              chunk.planetLocations[0].coords.x ** 2 + chunk.planetLocations[0].coords.y ** 2
+            )
+          )
+        : 1;
       if (this.spaceTypeFromPerlin(chunk.perlin, distFromOrigin) === SpaceType.DEEP_SPACE) {
         if (
           !this.getBooleanSetting(Setting.FoundDeepSpace) &&
