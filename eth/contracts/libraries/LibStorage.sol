@@ -143,8 +143,13 @@ struct GameConstants {
     uint256 CLAIM_END_TIMESTAMP;
     uint256 BURN_END_TIMESTAMP;
     uint256 BURN_PLANET_COOLDOWN;
+
     uint256[10] BURN_PLANET_LEVEL_EFFECT_RADIUS;
     uint256[10] BURN_PLANET_REQUIRE_SILVER_AMOUNTS;
+    // planet adjust
+    uint256[5] MAX_LEVEL_DIST;
+    uint256[6] MAX_LEVEL_LIMIT;
+    uint256[6] MIN_LEVEL_BIAS;
 }
 
 struct SpaceshipConstants {

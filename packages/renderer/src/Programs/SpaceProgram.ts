@@ -211,7 +211,7 @@ export const SPACE_PROGRAM_DEFINITION = {
       float py = (y - gridY) / scale;
 
       // 0 to 1 within each chunk
-      vec2 pos = vec2(px, py); 
+      vec2 pos = vec2(px, py);
 
       vec2 botLeftDiff = pos - vec2(0., 0.);
       vec2 botRightDiff = pos - vec2(1., 0.);
@@ -228,9 +228,9 @@ export const SPACE_PROGRAM_DEFINITION = {
       float topLeftW = pos.x * (1. - pos.y);
       float topRightW = (1. - pos.x) * (1. - pos.y);
 
-      float res = botLeft * topRightW + 
-                  botRight * topLeftW + 
-                  topLeft * botRightW + 
+      float res = botLeft * topRightW +
+                  botRight * topLeftW +
+                  topLeft * botRightW +
                   topRight * botLeftW;
 
       return res;
@@ -307,7 +307,7 @@ export const SPACE_PROGRAM_DEFINITION = {
         float pa, a=pa=0.;
 
         // alter how many layers of stars depending on space type
-        for (int i=0; i < iterations - int(spaceTypeF / 2.); i++) { 
+        for (int i=0; i < iterations - int(spaceTypeF / 2.); i++) {
           p = abs(p) / dot(p, p) - q; // the magic formula
           a += abs(length(p) - pa); // absolute sum of average change
           pa = length(p);
@@ -343,7 +343,7 @@ export const SPACE_PROGRAM_DEFINITION = {
       }
 
       v = mix(vec3(length(v)), v, saturation); //color adjust
-      return vec4(v * boost, 1.);	 
+      return vec4(v * boost, 1.);
     }
 
     // blends a colour (c1) with a smooth gradient between it and a second color (c2)
@@ -373,6 +373,22 @@ export const SPACE_PROGRAM_DEFINITION = {
 
       return c;
     }
+    vec4 easeTransitionDist(vec4 c1, vec4 c2, float t1, float t2, float p, float dist) {
+      // adjust the power it's raised to for a narrower smoothing band
+      // creates a gradient based on noise slope
+      vec4 c = mix(c2, mix(c1, c2, pow((1.-(t2-p)/(t2-t1)), 4.)), 0.5);
+
+      float z = maxViewportZoom / 10.;
+      float k = clamp(${u.viewportZoom}, 0., z)/z;
+
+      if (dist < 40000. * 40000. * 1.05) {
+        // render a hard outline when zoomed in
+        return mix(c, c + vec4(0.3, 0.5, 0.5, 0.), 1. - k);
+
+      }
+
+      return c;
+    }
 
     // faster version of easeTransition, skips gradients within a given
     // space type but still draws outlines
@@ -398,11 +414,26 @@ export const SPACE_PROGRAM_DEFINITION = {
       return c2;
     }
 
+    vec4 easeTransitionDist2(vec4 c1, vec4 c2, float t1, float t2, float p, float dist) {
+      float z = maxViewportZoom / 10.;
+      float k = clamp(${u.viewportZoom}, 0., z)/z;
+
+      if (dist < 40000. * 40000. * 1.05) {
+        return mix(c2, c2 + vec4(0.3, 0.5, 0.5, 0.), 1. - k);
+      }
+
+      return c2;
+    }
+
+
 
     void main() {
       float scale = ${u.lengthScale};
       float x = ${v.worldCoords}.x;
       float y = ${v.worldCoords}.y;
+      float distFromOriginSquare = x * x + y * y;
+      float nebulaThreshold = 40000.0 * 40000.0;
+      //fich dich
 
       // evaluate world space noise function
       float p0 = perlin(scale * 1., x, y, ${v.p0botLeftGrad}, ${v.p0botRightGrad}, ${v.p0topLeftGrad}, ${v.p0topRightGrad});
@@ -428,19 +459,22 @@ export const SPACE_PROGRAM_DEFINITION = {
       vec4 c;
 
       if (enableSmoothTransitions) {
-        c = p < t1 ? easeTransition(c0, c1, 0., t1, p)
+        c = distFromOriginSquare > nebulaThreshold ? easeTransition(c0, c1, 0., t1, p)
+            : p < t1 ? easeTransition(c0, c1, 0., t1, p)
                    : p < t2 ? easeTransition(c1, c2, t1, t2, p)
-                            : p < t3 ? easeTransition(c2, c3, t2, t3, p) 
+                            : p < t3 ? easeTransition(c2, c3, t2, t3, p)
                                      : easeTransition(c3, c4, t2, t3, p);
       } else {
-        c = p < t1 ? easeTransition2(c0, c1, 0., t1, p)
+        c = distFromOriginSquare > nebulaThreshold ? easeTransition2(c0, c1, 0., t1, p)
+            : p < t1 ? easeTransition2(c0, c1, 0., t1, p)
                    : p < t2 ? easeTransition2(c1, c2, t1, t2, p)
-                            : p < t3 ? easeTransition2(c2, c3, t2, t3, p) 
+                            : p < t3 ? easeTransition2(c2, c3, t2, t3, p)
                                      : easeTransition2(c3, c4, t2, t3, p);
       }
 
       // use existing perlin noise to set spaceType
-      int spaceType = p < t1 ? NEBULA
+      int spaceType = distFromOriginSquare > nebulaThreshold ? NEBULA
+                  : p < t1 ? NEBULA
                              : p < t2 ? SPACE
                                       : p < t3 ? DEEP_SPACE
                                                : DEAD_SPACE;
@@ -454,7 +488,7 @@ export const SPACE_PROGRAM_DEFINITION = {
         float cloudsAmount = pow(cnoise(vec3(cloudPos / cloudRegionScale, 0.)), 3.);
         float clouds = mix(0., 0.75, cloudsAmount) * abs(cnoise(vec3(cloudPos / cloudScale, cloudSpeed * ${u.time})));
 
-        stars += clouds * c0; 
+        stars += clouds * c0;
       } else {
         // if clouds are disabled we need to "use" the time uniform
         // otherwise it will be optimized out and we can't write to it
@@ -463,17 +497,17 @@ export const SPACE_PROGRAM_DEFINITION = {
         stars += vec4(.0 * ${u.time});
       }
 
- 
+
       // normalize zoom into 0 -> 1 interval
       float viewportZoom = clamp((${u.viewportZoom} + zoomOffset) / zoomAttenuation, 0., 1.);
 
       // control star visibility from zoom level, uses a sin wave to create peak visibility at midpoint
       // and zero visibility at 0 and PI
-      float zoomInfluence = mix(minStarVisibility, 1., sin(viewportZoom * PI)); 
+      float zoomInfluence = mix(minStarVisibility, 1., sin(viewportZoom * PI));
 
       // blend stars with black based on zoom level
       // then blend in "c" to ensure the background colour is not lost
-      outColor = mix(mix(stars, vec4(vec3(0.),1.), 1.-zoomInfluence), c, 0.28); 
+      outColor = mix(mix(stars, vec4(vec3(0.),1.), 1.-zoomInfluence), c, 0.28);
       outColor += c / 4.5; // controls the balance between color vs stars
     }
 

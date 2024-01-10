@@ -67,6 +67,7 @@ export interface InitSnarkInput {
   SCALE: string;
   xMirror: string;
   yMirror: string;
+  targetDistFromOriginSquare: string;
 }
 
 /**
@@ -80,7 +81,7 @@ export type InitSnarkContractCallArgs = [
     [string, string]
   ],
   [string, string], // proofC
-  [string, string, string, string, string, string, string, string] // locationId (BigInt), perlin, radius, planetHashKey, spaceTypeKey, perlin lengthscale, perlin xmirror, perlin ymirror
+  [string, string, string, string, string, string, string, string, string] // locationId (BigInt), perlin, radius, planetHashKey, spaceTypeKey, perlin lengthscale, perlin xmirror, perlin ymirror
 ];
 
 /**
@@ -99,6 +100,7 @@ export interface MoveSnarkInput {
   SCALE: string;
   xMirror: string;
   yMirror: string;
+  targetDistFromOriginSquare: string;
 }
 
 /**
@@ -125,7 +127,8 @@ export type MoveSnarkContractCallArgs = [
     string, // spaceTypeKey
     string, // perlin lengthscale
     string, // perlin xmirror (1 true, 0 false)
-    string // perlin ymirror (1 true, 0 false)
+    string, // perlin ymirror (1 true, 0 false)
+    string //targetDistFromOriginSquare: string;
   ]
 ];
 

@@ -163,7 +163,10 @@ class ReaderDataStore {
   }
 
   // copied from GameEntityMemoryStore. needed to determine biome if we know planet location
-  private spaceTypeFromPerlin(perlin: number): SpaceType {
+  private spaceTypeFromPerlin(perlin: number, distFromOrigin: number): SpaceType {
+    const MAX_LEVEL_DIST = [40000, 30000, 20000, 10000, 5000];
+    if(distFromOrigin > MAX_LEVEL_DIST[0]) return SpaceType.NEBULA;
+
     if (perlin < this.contractConstants.PERLIN_THRESHOLD_1) {
       return SpaceType.NEBULA;
     } else if (perlin < this.contractConstants.PERLIN_THRESHOLD_2) {
@@ -177,8 +180,10 @@ class ReaderDataStore {
 
   // copied from GameEntityMemoryStore. needed to determine biome if we know planet location
   private getBiome(loc: WorldLocation): Biome {
-    const { perlin, biomebase } = loc;
-    const spaceType = this.spaceTypeFromPerlin(perlin);
+    const { perlin, biomebase, coords } = loc;
+    const distFromOrigin = Math.floor(Math.sqrt(coords.x ** 2 + coords.y ** 2));
+
+    const spaceType = this.spaceTypeFromPerlin(perlin, distFromOrigin);
 
     if (spaceType === SpaceType.DEAD_SPACE) return Biome.CORRUPTED;
 

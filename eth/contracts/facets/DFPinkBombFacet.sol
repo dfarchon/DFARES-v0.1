@@ -64,15 +64,19 @@ contract DFPinkBombFacet is WithStorage {
             "Failed reveal pf check"
         );
 
-        if (!gs().planets[_input[0]].isInitialized) {
-            LibPlanet.initializePlanetWithDefaults(_input[0], _input[1], false);
-        }
-
-        uint256 planetId = _input[0];
-        require(gs().burnedCoords[planetId].locationId == 0, "Location already burned");
-
         uint256 x = _input[2];
         uint256 y = _input[3];
+
+        uint256 planetId = _input[0];
+
+
+        if (!gs().planets[_input[0]].isInitialized) {
+            LibPlanet.initializePlanetWithDefaults(_input[0], _input[1], x**2 + y**2, false);
+        }
+
+        require(gs().burnedCoords[planetId].locationId == 0, "Location already burned");
+
+
 
         LibPlanet.refreshPlanet(planetId);
         Planet storage planet = gs().planets[planetId];
@@ -143,14 +147,15 @@ contract DFPinkBombFacet is WithStorage {
             DFCoreFacet(address(this)).checkRevealProof(_a, _b, _c, _input),
             "Failed reveal pf check"
         );
-
-        if (!gs().planets[_input[0]].isInitialized) {
-            LibPlanet.initializePlanetWithDefaults(_input[0], _input[1], false);
-        }
-
         uint256 planetId = _input[0];
         uint256 x = _input[2];
         uint256 y = _input[3];
+
+        if (!gs().planets[_input[0]].isInitialized) {
+            LibPlanet.initializePlanetWithDefaults(_input[0], _input[1], x**2+y**2, false);
+        }
+
+
 
         LibPlanet.refreshPlanet(planetId);
         Planet storage planet = gs().planets[planetId];

@@ -62,7 +62,16 @@ library LibGameUtils {
         return true;
     }
 
-    function spaceTypeFromPerlin(uint256 perlin) public view returns (SpaceType) {
+    function spaceTypeFromPerlin(uint256 perlin, uint256 distFromOriginSquare)
+        public
+        view
+        returns (SpaceType)
+    {
+        // uint32[5] memory MAX_LEVEL_DIST = [40000 ** 2, 30000 ** 2,20000 ** 2, 10000 ** 2, 5000 ** 2];
+        uint256[5] memory MAX_LEVEL_DIST = gameConstants().MAX_LEVEL_DIST;
+
+        if (distFromOriginSquare > MAX_LEVEL_DIST[0] * MAX_LEVEL_DIST[0]) return SpaceType.NEBULA;
+
         if (perlin >= gameConstants().PERLIN_THRESHOLD_3) {
             return SpaceType.DEAD_SPACE;
         } else if (perlin >= gameConstants().PERLIN_THRESHOLD_2) {
@@ -73,7 +82,14 @@ library LibGameUtils {
         return SpaceType.NEBULA;
     }
 
-    function _getPlanetLevelTypeAndSpaceType(uint256 _location, uint256 _perlin)
+    //###############
+    //  NEW MAP ALGO
+    //###############
+    function _getPlanetLevelTypeAndSpaceType(
+        uint256 _location,
+        uint256 _perlin,
+        uint256 _distFromOriginSquare
+    )
         public
         view
         returns (
@@ -82,7 +98,14 @@ library LibGameUtils {
             SpaceType
         )
     {
-        SpaceType spaceType = spaceTypeFromPerlin(_perlin);
+        SpaceType spaceType = spaceTypeFromPerlin(_perlin, _distFromOriginSquare);
+
+        uint256[5] memory MAX_LEVEL_DIST = gameConstants().MAX_LEVEL_DIST;
+        uint256[6] memory MAX_LEVEL_LIMIT = gameConstants().MAX_LEVEL_LIMIT;
+        uint256[6] memory MIN_LEVEL_BIAS = gameConstants().MIN_LEVEL_BIAS;
+
+        if (_distFromOriginSquare > MAX_LEVEL_DIST[0] * MAX_LEVEL_DIST[0])
+            spaceType = SpaceType.NEBULA;
 
         bytes memory _b = abi.encodePacked(_location);
 
@@ -111,6 +134,36 @@ library LibGameUtils {
         if (level > gameConstants().MAX_NATURAL_PLANET_LEVEL) {
             level = gameConstants().MAX_NATURAL_PLANET_LEVEL;
         }
+
+        // uint32[10] memory MAX_LEVEL_DIST = [50000 ** 2, 45000** 2,40000** 2,35000** 2,30000** 2,25000** 2,20000** 2,15000** 2,10000** 2,5000** 2 ];
+        // level = _distFromOriginSquare > MAX_LEVEL_DIST[0] ? 0 : level;
+        // for (uint i = 0; i < MAX_LEVEL_DIST.length - 1; i++) {
+        //     if(_distFromOriginSquare < MAX_LEVEL_DIST[i] && _distFromOriginSquare > MAX_LEVEL_DIST[i+1]){
+        //         level = (i + 1)> level ? level : (i + 1) ;
+        //         break;
+        //     }
+        // }
+
+        level = _distFromOriginSquare > MAX_LEVEL_DIST[0] * MAX_LEVEL_DIST[0]
+            ? (level > MAX_LEVEL_LIMIT[0] ? MAX_LEVEL_LIMIT[0] : level)
+            : level;
+        for (uint256 i = 0; i < MAX_LEVEL_DIST.length - 1; i++) {
+            if (
+                _distFromOriginSquare < MAX_LEVEL_DIST[i] * MAX_LEVEL_DIST[i] &&
+                _distFromOriginSquare > MAX_LEVEL_DIST[i + 1] * MAX_LEVEL_DIST[i + 1]
+            ) {
+                level += MIN_LEVEL_BIAS[i + 1];
+                level = MAX_LEVEL_LIMIT[i + 1] > level ? level : MAX_LEVEL_LIMIT[i + 1];
+                break;
+            }
+        }
+        level = _distFromOriginSquare < MAX_LEVEL_DIST[4] * MAX_LEVEL_DIST[4]
+            ? (
+                level + MIN_LEVEL_BIAS[5] > MAX_LEVEL_LIMIT[5]
+                    ? MAX_LEVEL_LIMIT[5]
+                    : level + MIN_LEVEL_BIAS[5]
+            )
+            : level;
 
         // get planet type
         PlanetType planetType = PlanetType.PLANET;
@@ -576,7 +629,11 @@ library LibGameUtils {
     // the owner can send a maximum of 5 arrivals to this planet
     // separately, everyone other than the owner can also send a maximum
     // of 5 arrivals in aggregate
-    function checkPlanetDOS(uint256 locationId, address sender,uint movedArtifactId) public view {
+    function checkPlanetDOS(
+        uint256 locationId,
+        address sender,
+        uint256 movedArtifactId
+    ) public view {
         uint8 arrivalsFromOwner = 0;
         uint8 arrivalsFromOthers = 0;
 
@@ -618,7 +675,7 @@ library LibGameUtils {
             "Planet is rate-limited"
         );
 
-        if(movedArtifactId!=0)  ++arrivalArtifacts;
+        if (movedArtifactId != 0) ++arrivalArtifacts;
         require(
             arrivalArtifacts + gs().planetArtifacts[locationId].length <=
                 gameConstants().MAX_ARTIFACT_PER_PLANET,

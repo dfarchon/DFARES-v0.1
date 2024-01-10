@@ -137,6 +137,18 @@ export type LobbyConfigAction =
       value: Initializers['BURN_PLANET_REQUIRE_SILVER_AMOUNTS'] | undefined;
     }
   | {
+      type: 'MAX_LEVEL_DIST';
+      value: Initializers['MAX_LEVEL_DIST'] | undefined;
+    }
+  | {
+      type: 'MAX_LEVEL_LIMIT';
+      value: Initializers['MAX_LEVEL_LIMIT'] | undefined;
+    }
+  | {
+      type: 'MIN_LEVEL_BIAS';
+      value: Initializers['MIN_LEVEL_BIAS'] | undefined;
+    }
+  | {
       type: 'CAPTURE_ZONE_PLANET_LEVEL_SCORE';
       value: number | undefined;
       index: number;
@@ -362,9 +374,22 @@ export function lobbyConfigReducer(state: LobbyConfigState, action: LobbyAction)
       update = ofBurnPlanetEffectRadius(action, state);
       break;
     }
-
+    
     case 'BURN_PLANET_REQUIRE_SILVER_AMOUNTS': {
       update = ofBurnPlanetRequireSilverAmounts(action, state);
+      break;
+    }
+
+    case 'MAX_LEVEL_DIST': {
+      update = ofMaxLevelDist(action, state);
+      break;
+    }
+    case 'MAX_LEVEL_LIMIT': {
+      update = ofMaxLevelLimit(action, state);
+      break;
+    }
+    case 'MIN_LEVEL_BIAS': {
+      update = ofMinLevelBias(action, state);
       break;
     }
     case 'CAPTURE_ZONE_PLANET_LEVEL_SCORE': {
@@ -896,8 +921,39 @@ export function lobbyConfigInit(startingConfig: LobbyInitializers) {
         };
         break;
       }
-
+        
       case 'BURN_PLANET_REQUIRE_SILVER_AMOUNTS': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+
+      case 'MAX_LEVEL_DIST': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+      case 'MAX_LEVEL_LIMIT': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+      case 'MIN_LEVEL_BIAS': {
         const defaultValue = startingConfig[key];
         state[key] = {
           currentValue: defaultValue,
@@ -1900,6 +1956,162 @@ export function ofBurnPlanetEffectRadius(
 
 export function ofBurnPlanetRequireSilverAmounts(
   { type, value }: Extract<LobbyConfigAction, { type: 'BURN_PLANET_REQUIRE_SILVER_AMOUNTS' }>,
+  state: LobbyConfigState
+) {
+  if (value === undefined) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: undefined,
+    };
+  }
+
+  if (typeof value !== 'number') {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be a number`,
+    };
+  }
+
+  if (value < 1) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be a greater than 0`,
+    };
+  }
+
+  if (value > SAFE_UPPER_BOUNDS) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value is too large`,
+    };
+  }
+
+  if (Math.floor(value) !== value) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be an integer`,
+    };
+  }
+
+  return {
+    ...state[type],
+    currentValue: value,
+    displayValue: value,
+    warning: undefined,
+  };
+}
+
+export function ofMaxLevelDist(
+  { type, value }: Extract<LobbyConfigAction, { type: 'MAX_LEVEL_DIST' }>,
+  state: LobbyConfigState
+) {
+  if (value === undefined) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: undefined,
+    };
+  }
+
+  if (typeof value !== 'number') {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be a number`,
+    };
+  }
+
+  if (value < 1) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be a greater than 0`,
+    };
+  }
+
+  if (value > SAFE_UPPER_BOUNDS) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value is too large`,
+    };
+  }
+
+  if (Math.floor(value) !== value) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be an integer`,
+    };
+  }
+
+  return {
+    ...state[type],
+    currentValue: value,
+    displayValue: value,
+    warning: undefined,
+  };
+}
+
+export function ofMaxLevelLimit(
+  { type, value }: Extract<LobbyConfigAction, { type: 'MAX_LEVEL_LIMIT' }>,
+  state: LobbyConfigState
+) {
+  if (value === undefined) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: undefined,
+    };
+  }
+
+  if (typeof value !== 'number') {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be a number`,
+    };
+  }
+
+  if (value < 1) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be a greater than 0`,
+    };
+  }
+
+  if (value > SAFE_UPPER_BOUNDS) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value is too large`,
+    };
+  }
+
+  if (Math.floor(value) !== value) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be an integer`,
+    };
+  }
+
+  return {
+    ...state[type],
+    currentValue: value,
+    displayValue: value,
+    warning: undefined,
+  };
+}
+
+export function ofMinLevelBias(
+  { type, value }: Extract<LobbyConfigAction, { type: 'MIN_LEVEL_BIAS' }>,
   state: LobbyConfigState
 ) {
   if (value === undefined) {

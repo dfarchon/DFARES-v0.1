@@ -1779,8 +1779,8 @@ class GameManager extends EventEmitter {
    * Each coordinate lives in a particular type of space, determined by a smooth random
    * function called 'perlin noise.
    */
-  spaceTypeFromPerlin(perlin: number): SpaceType {
-    return this.entityStore.spaceTypeFromPerlin(perlin);
+  spaceTypeFromPerlin(perlin: number, distFromOrigin: number): SpaceType {
+    return this.entityStore.spaceTypeFromPerlin(perlin,distFromOrigin);
   }
 
   /**
@@ -2626,7 +2626,7 @@ class GameManager extends EventEmitter {
         const args = await this.snarkHelper.getInitArgs(
           planet.location.coords.x,
           planet.location.coords.y,
-          Math.floor(Math.sqrt(planet.location.coords.x ** 2 + planet.location.coords.y ** 2)) + 1 // floor(sqrt(x^2 + y^2)) + 1
+          Math.floor(Math.sqrt(planet.location.coords.x ** 2 + planet.location.coords.y ** 2)) + 1
         );
         this.terminal.current?.println('INIT: calculated SNARK with args:', TerminalTextStyle.Sub);
         this.terminal.current?.println(
@@ -2635,14 +2635,16 @@ class GameManager extends EventEmitter {
         );
         this.terminal.current?.newline();
         return args;
+        // return [...args, distFromOriginSquare];
       };
+
 
       const txIntent: UnconfirmedInit = {
         methodName: 'initializePlayer',
         contract: this.contractsAPI.contract,
         locationId: planet.location.hash,
         location: planet.location,
-        args: getArgs(),
+        args: getArgs()
       };
 
       this.terminal.current?.println('INIT: proving that planet exists', TerminalTextStyle.Sub);
@@ -2833,16 +2835,23 @@ class GameManager extends EventEmitter {
           const planetPerlin = homePlanetLocation.perlin;
           const planetX = homePlanetLocation.coords.x;
           const planetY = homePlanetLocation.coords.y;
+          const distFromOrigin = Math.sqrt(planetX ** 2 + planetY ** 2);
+
+          //###############
+          //  NEW MAP ALGO
+          //###############
           const planetLevel = this.entityStore.planetLevelFromHexPerlin(
             homePlanetLocation.hash,
-            homePlanetLocation.perlin
+            homePlanetLocation.perlin,
+            distFromOrigin
           );
           const planetType = this.entityStore.planetTypeFromHexPerlin(
             homePlanetLocation.hash,
-            homePlanetLocation.perlin
+            homePlanetLocation.perlin,
+            distFromOrigin
           );
           const planet = this.getPlanetWithId(homePlanetLocation.hash);
-          const distFromOrigin = Math.sqrt(planetX ** 2 + planetY ** 2);
+
           if (
             planetPerlin < initPerlinMax &&
             planetPerlin >= initPerlinMin &&
@@ -3603,6 +3612,12 @@ class GameManager extends EventEmitter {
       const xDiff = newX - oldX;
       const yDiff = newY - oldY;
 
+      //###############
+      //  NEW MAP ALGO
+      //###############
+      // const distFromOriginSquare = newX ** 2 + newY ** 2;
+
+
       const distMax = Math.ceil(Math.sqrt(xDiff ** 2 + yDiff ** 2));
 
       // Contract will automatically send full forces/silver on abandon
@@ -3661,7 +3676,7 @@ class GameManager extends EventEmitter {
         methodName: 'move',
         contract: this.contractsAPI.contract,
         args: getArgs(),
-        from: oldLocation.hash,
+        from: oldLocation.hash,   //以下的东西没屁用
         to: newLocation.hash,
         forces: shipsMoved,
         silver: silverMoved,

@@ -91,7 +91,7 @@ contract DFAdminFacet is WithStorage {
         uint256[2] memory _a,
         uint256[2][2] memory _b,
         uint256[2] memory _c,
-        uint256[8] memory _input
+        uint256[9] memory _input
     ) public onlyAdmin {
         uint256 planetId = _input[0];
 
@@ -160,7 +160,7 @@ contract DFAdminFacet is WithStorage {
         if (args.requireValidLocationId) {
             require(LibGameUtils._locationIdValid(args.location), "Not a valid planet location");
         }
-        SpaceType spaceType = LibGameUtils.spaceTypeFromPerlin(args.perlin);
+        SpaceType spaceType = LibGameUtils.spaceTypeFromPerlin(args.perlin, 111);    // need pass dist here, get wrong space type if some condition at new map algo, need to be fixed
         LibPlanet._initializePlanet(
             DFPInitPlanetArgs(
                 args.location,
@@ -197,10 +197,13 @@ contract DFAdminFacet is WithStorage {
         emit AdminGiveSpaceship(locationId, owner, artifactType);
     }
 
-    function adminInitializePlanet(uint256 locationId, uint256 perlin) public onlyAdmin {
+    //###############
+    //  NEW MAP ALGO
+    //###############
+    function adminInitializePlanet(uint256 locationId, uint256 perlin, uint256 distFromOriginSquare) public onlyAdmin {
         require(!gs().planets[locationId].isInitialized, "planet is already initialized");
 
-        LibPlanet.initializePlanetWithDefaults(locationId, perlin, false);
+        LibPlanet.initializePlanetWithDefaults(locationId, perlin,distFromOriginSquare, false);
     }
 
     function setPlanetTransferEnabled(bool enabled) public onlyAdmin {

@@ -57,13 +57,17 @@ library LibPlanet {
         gs().players[msg.sender].lastRevealTimestamp = block.timestamp;
     }
 
+    //###############
+    //  NEW MAP ALGO
+    //###############
     function getDefaultInitPlanetArgs(
         uint256 _location,
         uint256 _perlin,
+        uint256 _distFromOriginSquare,
         bool _isHomePlanet
     ) public view returns (DFPInitPlanetArgs memory) {
         (uint256 level, PlanetType planetType, SpaceType spaceType) = LibGameUtils
-            ._getPlanetLevelTypeAndSpaceType(_location, _perlin);
+            ._getPlanetLevelTypeAndSpaceType(_location, _perlin, _distFromOriginSquare);
 
         if (_isHomePlanet) {
             require(level == 0, "Can only initialize on planet level 0");
@@ -82,6 +86,7 @@ library LibPlanet {
             );
     }
 
+
     /**
      * Same SNARK args as `initializePlayer`. Adds a planet to the smart contract without setting an owner.
      */
@@ -89,7 +94,7 @@ library LibPlanet {
         uint256[2] memory _a,
         uint256[2][2] memory _b,
         uint256[2] memory _c,
-        uint256[8] memory _input,
+        uint256[9] memory _input,
         bool isHomePlanet
     ) public {
         if (!snarkConstants().DISABLE_ZK_CHECKS) {
@@ -108,12 +113,17 @@ library LibPlanet {
         );
 
         // Initialize planet information
-        initializePlanetWithDefaults(_location, _perlin, isHomePlanet);
+        initializePlanetWithDefaults(_location, _perlin, _input[8], isHomePlanet);
     }
 
+
+    //###############
+    //  NEW MAP ALGO
+    //###############
     function initializePlanetWithDefaults(
         uint256 _location,
         uint256 _perlin,
+        uint256 _distFromOriginSquare,
         bool _isHomePlanet
     ) public {
         require(LibGameUtils._locationIdValid(_location), "Not a valid planet location");
@@ -121,6 +131,7 @@ library LibPlanet {
         DFPInitPlanetArgs memory initArgs = getDefaultInitPlanetArgs(
             _location,
             _perlin,
+            _distFromOriginSquare,
             _isHomePlanet
         );
 
@@ -242,7 +253,8 @@ library LibPlanet {
     function checkPlayerInit(
         uint256 _location,
         uint256 _perlin,
-        uint256 _radius
+        uint256 _radius,
+        uint256 _distFromOriginSquare
     ) public view returns (bool) {
         require(!gs().players[msg.sender].isInitialized, "Player is already initialized");
         require(_radius <= gs().worldRadius, "Init radius is bigger than the current world radius");
@@ -255,14 +267,19 @@ library LibPlanet {
             );
         }
 
+        SpaceType spaceType = LibGameUtils.spaceTypeFromPerlin(_perlin,_distFromOriginSquare);
+
+        require(spaceType == SpaceType.NEBULA, "GUCK U");
+
+        //NEEDED?
         require(
             _perlin >= gameConstants().INIT_PERLIN_MIN,
             "Init not allowed in perlin value less than INIT_PERLIN_MIN"
         );
-        require(
-            _perlin < gameConstants().INIT_PERLIN_MAX,
-            "Init not allowed in perlin value greater than or equal to the INIT_PERLIN_MAX"
-        );
+        // require(
+        //     _perlin < gameConstants().INIT_PERLIN_MAX,
+        //     "Init not allowed in perlin value greater than or equal to the INIT_PERLIN_MAX"
+        // );
         return true;
     }
 
@@ -401,4 +418,5 @@ library LibPlanet {
         scoreGained = (scoreGained * gameConstants().SILVER_SCORE_VALUE) / 100;
         gs().players[msg.sender].score += scoreGained;
     }
+
 }

@@ -17,6 +17,7 @@ export const enum InitArgIdxs {
   PERLIN_LENGTH_SCALE,
   PERLIN_MIRROR_X,
   PERLIN_MIRROR_Y,
+  TARGET_DIST_FROM_ORIGIN_SQUARE,
 }
 
 export const enum MoveArgIdxs {
@@ -30,6 +31,7 @@ export const enum MoveArgIdxs {
   PERLIN_LENGTH_SCALE,
   PERLIN_MIRROR_X,
   PERLIN_MIRROR_Y,
+  TARGET_DIST_FROM_ORIGIN_SQUARE,
 }
 
 export const enum UpgradeArgIdxs {
@@ -128,11 +130,13 @@ export type MoveArgs = [
     string, // spaceTypeKey
     string, // perlin lengthscale
     string, // perlin xmirror (1 true, 0 false)
-    string // perlin ymirror (1 true, 0 false)
+    string, // perlin ymirror (1 true, 0 false)
+    string //targetDistFromOriginSquare
   ],
   string, // ships sent
   string, // silver sent
   string, // artifactId sent
+  // string, // dist from origin
   string // is planet being released (1 true, 0 false)
 ];
 
@@ -394,7 +398,8 @@ export interface ContractConstants {
 
   BURN_END_TIMESTAMP: number;
   BURN_PLANET_COOLDOWN: number;
-  BURN_PLANET_LEVEL_EFFECT_RADIUS: [
+
+ BURN_PLANET_LEVEL_EFFECT_RADIUS: [
     number,
     number,
     number,
@@ -419,6 +424,11 @@ export interface ContractConstants {
     number,
     number
   ];
+
+  MAX_LEVEL_DIST: number[];
+  MAX_LEVEL_LIMIT: number[];
+  MIN_LEVEL_BIAS: number[];
+
 }
 
 export type ClientMockchainData =

@@ -145,6 +145,33 @@ export function CreateLobby({ match }: RouteComponentProps<{ contract: string }>
             BURN_PLANET_COOLDOWN: config.BURN_PLANET_COOLDOWN,
             BURN_PLANET_LEVEL_EFFECT_RADIUS: config.BURN_PLANET_LEVEL_EFFECT_RADIUS,
             BURN_PLANET_REQUIRE_SILVER_AMOUNTS: config.BURN_PLANET_LEVEL_EFFECT_RADIUS,
+
+            MAX_LEVEL_DIST: [
+              config.MAX_LEVEL_DIST[0],
+              config.MAX_LEVEL_DIST[1],
+              config.MAX_LEVEL_DIST[2],
+              config.MAX_LEVEL_DIST[3],
+              config.MAX_LEVEL_DIST[4],
+            ],
+            MAX_LEVEL_LIMIT: [
+              config.MAX_LEVEL_LIMIT[0],
+              config.MAX_LEVEL_LIMIT[1],
+              config.MAX_LEVEL_LIMIT[2],
+              config.MAX_LEVEL_LIMIT[3],
+              config.MAX_LEVEL_LIMIT[4],
+              config.MAX_LEVEL_LIMIT[5],
+            ],
+            MIN_LEVEL_BIAS: [
+              config.MIN_LEVEL_BIAS[0],
+              config.MIN_LEVEL_BIAS[1],
+              config.MIN_LEVEL_BIAS[2],
+              config.MIN_LEVEL_BIAS[3],
+              config.MIN_LEVEL_BIAS[4],
+              config.MIN_LEVEL_BIAS[5],
+            ],
+
+      
+
           });
         })
         .catch((e) => {

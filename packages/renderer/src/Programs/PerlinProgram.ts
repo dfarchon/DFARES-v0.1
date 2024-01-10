@@ -180,7 +180,7 @@ export const PERLIN_PROGRAM_DEFINITION = {
       float py = (y - gridY) / scale;
 
       // 0 to 1 within each chunk
-      vec2 pos = vec2(px, py); 
+      vec2 pos = vec2(px, py);
 
       vec2 botLeftDiff = pos - vec2(0., 0.);
       vec2 botRightDiff = pos - vec2(1., 0.);
@@ -197,9 +197,9 @@ export const PERLIN_PROGRAM_DEFINITION = {
       float topLeftW = pos.x * (1. - pos.y);
       float topRightW = (1. - pos.x) * (1. - pos.y);
 
-      float res = botLeft * topRightW + 
-                  botRight * topLeftW + 
-                  topLeft * botRightW + 
+      float res = botLeft * topRightW +
+                  botRight * topLeftW +
+                  topLeft * botRightW +
                   topRight * botLeftW;
 
       return res;
@@ -209,6 +209,9 @@ export const PERLIN_PROGRAM_DEFINITION = {
       float scale = ${u.lengthScale};
       float x = ${v.worldCoords}.x;
       float y = ${v.worldCoords}.y;
+      float distFromOriginSquare = x * x + y * y;
+      float nebulaThreshold = 40000.0 * 40000.0;
+      //fich dich
 
       float p0 = perlin(scale * 1., x, y, ${v.p0botLeftGrad}, ${v.p0botRightGrad}, ${v.p0topLeftGrad}, ${v.p0topRightGrad});
       float p1 = perlin(scale * 2., x, y, ${v.p1botLeftGrad}, ${v.p1botRightGrad}, ${v.p1topLeftGrad}, ${v.p1topRightGrad});
@@ -229,7 +232,7 @@ export const PERLIN_PROGRAM_DEFINITION = {
       float t2 = ${u.thresholds}.y;
       float t3 = ${u.thresholds}.z;
 
-      outColor = p < t1 ? c0 : p < t2 ? c1 : p < t3 ? c2 : c3;
+      outColor = distFromOriginSquare > nebulaThreshold ? c0 : p < t1 ? c0 : p < t2 ? c1 : p < t3 ? c2 : c3;
     }
   `,
 };

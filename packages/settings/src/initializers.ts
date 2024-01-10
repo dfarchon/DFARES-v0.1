@@ -83,8 +83,15 @@ export const decodeInitializers = decoders.guard(
      */
     BURN_END_TIMESTAMP: dateInSeconds,
     BURN_PLANET_COOLDOWN: decoders.number,
+
     BURN_PLANET_LEVEL_EFFECT_RADIUS: exactArray10(decoders.number),
     BURN_PLANET_REQUIRE_SILVER_AMOUNTS: exactArray10(decoders.number),
+  
+    MAX_LEVEL_DIST: exactArray5(decoders.number),
+    MAX_LEVEL_LIMIT: array6(decoders.number),
+    MIN_LEVEL_BIAS: array6(decoders.number),
+
+
 
     SPACESHIPS: decoders.object({
       GEAR: decoders.boolean,

@@ -607,10 +607,17 @@ export class GameObjects {
    * IMPORTANT: Idempotent
    */
   public addPlanetLocation(planetLocation: WorldLocation): void {
+    //###############
+    //  NEW MAP ALGO
+    //###############
+    const planetX = planetLocation.coords.x;
+    const planetY = planetLocation.coords.y;
+    const distFromOrigin = Math.sqrt(planetX ** 2 + planetY ** 2);
+
     this.layeredMap.insertPlanet(
       planetLocation,
       this.getPlanetWithId(planetLocation.hash, false)?.planetLevel ??
-        this.planetLevelFromHexPerlin(planetLocation.hash, planetLocation.perlin)
+        this.planetLevelFromHexPerlin(planetLocation.hash, planetLocation.perlin, distFromOrigin)
     );
 
     this.planetLocationMap.set(planetLocation.hash, planetLocation);
@@ -1287,8 +1294,12 @@ export class GameObjects {
     this.planetArrivalIds.set(planetId, []);
   }
 
-  public planetLevelFromHexPerlin(hex: LocationId, perlin: number): PlanetLevel {
-    const spaceType = this.spaceTypeFromPerlin(perlin);
+  public planetLevelFromHexPerlin(
+    hex: LocationId,
+    perlin: number,
+    distFromOrigin = -1
+  ): PlanetLevel {
+    const spaceType = this.spaceTypeFromPerlin(perlin, distFromOrigin);
 
     const levelBigInt = getBytesFromHex(hex, 4, 7);
 
@@ -1311,10 +1322,66 @@ export class GameObjects {
       ret = this.contractConstants.MAX_NATURAL_PLANET_LEVEL as PlanetLevel;
     }
 
+    //###############
+    //  NEW MAP ALGO
+    //###############
+    // if(distFromOrigin > 0){
+    //   const MAX_LEVEL_DIST = [50000, 45000,40000,35000,30000,25000,20000,15000,10000,5000 ];
+    //   ret = distFromOrigin > MAX_LEVEL_DIST[0] ? PlanetLevel.ZERO : ret;
+    //   for (let i = 0; i < MAX_LEVEL_DIST.length - 1; i++) {
+    //     if(distFromOrigin < MAX_LEVEL_DIST[i] && distFromOrigin > MAX_LEVEL_DIST[i+1]){
+    //       ret = (i + 1) as PlanetLevel > ret ? ret : (i + 1) as PlanetLevel;
+    //       break;
+    //     }
+    //   }
+    // }
+
+    if (distFromOrigin > 0) {
+      const MAX_LEVEL_DIST = this.contractConstants.MAX_LEVEL_DIST; //    [40000, 30000, 20000, 10000, 5000];
+      const MAX_LEVEL_LIMIT = this.contractConstants.MAX_LEVEL_LIMIT.map((x) => {
+        if (x === 1) return PlanetLevel.ONE;
+        else if (x === 2) return PlanetLevel.TWO;
+        else if (x === 3) return PlanetLevel.THREE;
+        else if (x === 4) return PlanetLevel.FOUR;
+        else if (x === 5) return PlanetLevel.FIVE;
+        else if (x === 6) return PlanetLevel.SIX;
+        else if (x === 7) return PlanetLevel.SEVEN;
+        else if (x === 8) return PlanetLevel.EIGHT;
+        else if (x === 9) return PlanetLevel.NINE;
+        else return PlanetLevel.ZERO;
+      });
+
+      const MIN_LEVEL_BIAS = this.contractConstants.MIN_LEVEL_BIAS;
+      // [0, 0, 1, 1, 2, 2];
+
+      ret =
+        distFromOrigin >= MAX_LEVEL_DIST[0]
+          ? ret > MAX_LEVEL_LIMIT[0]
+            ? MAX_LEVEL_LIMIT[0]
+            : ret
+          : ret;
+      for (let i = 0; i < MAX_LEVEL_DIST.length - 1; i++) {
+        if (distFromOrigin < MAX_LEVEL_DIST[i] && distFromOrigin >= MAX_LEVEL_DIST[i + 1]) {
+          ret = (ret + MIN_LEVEL_BIAS[i + 1]) as PlanetLevel;
+          ret = MAX_LEVEL_LIMIT[i + 1] > ret ? ret : MAX_LEVEL_LIMIT[i + 1];
+          break;
+        }
+      }
+      ret =
+        distFromOrigin < MAX_LEVEL_DIST[4]
+          ? ret + MIN_LEVEL_BIAS[5] > MAX_LEVEL_LIMIT[5]
+            ? MAX_LEVEL_LIMIT[5]
+            : ((ret + MIN_LEVEL_BIAS[5]) as PlanetLevel)
+          : ret;
+    }
+
     return ret;
   }
 
-  public spaceTypeFromPerlin(perlin: number): SpaceType {
+  public spaceTypeFromPerlin(perlin: number, distFromOrigin: number): SpaceType {
+    const MAX_LEVEL_DIST = [40000, 30000, 20000, 10000, 5000];
+    if (distFromOrigin > MAX_LEVEL_DIST[0]) return SpaceType.NEBULA;
+
     if (perlin < this.contractConstants.PERLIN_THRESHOLD_1) {
       return SpaceType.NEBULA;
     } else if (perlin < this.contractConstants.PERLIN_THRESHOLD_2) {
@@ -1344,11 +1411,15 @@ export class GameObjects {
     );
   }
 
-  public planetTypeFromHexPerlin(hex: LocationId, perlin: number): PlanetType {
+  public planetTypeFromHexPerlin(hex: LocationId, perlin: number, distFromOrigin = -1): PlanetType {
     // level must be sufficient - too low level planets have 0 silver growth
-    const planetLevel = this.planetLevelFromHexPerlin(hex, perlin);
 
-    const spaceType = this.spaceTypeFromPerlin(perlin);
+    //###############
+    //  NEW MAP ALGO
+    //###############
+    const planetLevel = this.planetLevelFromHexPerlin(hex, perlin, distFromOrigin);
+    const spaceType = this.spaceTypeFromPerlin(perlin, distFromOrigin);
+
     const weights = this.contractConstants.PLANET_TYPE_WEIGHTS[spaceType][planetLevel];
     const weightSum = weights.reduce((x, y) => x + y);
     let thresholds = [weightSum - weights[0]];
@@ -1367,8 +1438,9 @@ export class GameObjects {
   }
 
   private getBiome(loc: WorldLocation): Biome {
-    const { perlin, biomebase } = loc;
-    const spaceType = this.spaceTypeFromPerlin(perlin);
+    const { perlin, biomebase, coords } = loc;
+    const distFromOrigin = Math.floor(Math.sqrt(coords.x ** 2 + coords.y ** 2));
+    const spaceType = this.spaceTypeFromPerlin(perlin, distFromOrigin);
 
     if (spaceType === SpaceType.DEAD_SPACE) return Biome.CORRUPTED;
 
@@ -1388,9 +1460,17 @@ export class GameObjects {
   private defaultPlanetFromLocation(location: WorldLocation): LocatablePlanet {
     const { perlin } = location;
     const hex = location.hash;
-    const planetLevel = this.planetLevelFromHexPerlin(hex, perlin);
-    const planetType = this.planetTypeFromHexPerlin(hex, perlin);
-    const spaceType = this.spaceTypeFromPerlin(perlin);
+
+    //###############
+    //  NEW MAP ALGO
+    //###############
+    const planetX = location.coords.x;
+    const planetY = location.coords.y;
+    const distFromOrigin = Math.sqrt(planetX ** 2 + planetY ** 2);
+
+    const planetLevel = this.planetLevelFromHexPerlin(hex, perlin, distFromOrigin);
+    const planetType = this.planetTypeFromHexPerlin(hex, perlin, distFromOrigin);
+    const spaceType = this.spaceTypeFromPerlin(perlin, distFromOrigin);
 
     const [energyCapBonus, energyGroBonus, rangeBonus, speedBonus, defBonus, spaceJunkBonus] =
       bonusFromHex(hex);

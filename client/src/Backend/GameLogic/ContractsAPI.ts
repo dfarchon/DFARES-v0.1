@@ -528,6 +528,9 @@ export class ContractsAPI extends EventEmitter {
       BURN_PLANET_COOLDOWN,
       BURN_PLANET_LEVEL_EFFECT_RADIUS,
       BURN_PLANET_REQUIRE_SILVER_AMOUNTS,
+      MAX_LEVEL_DIST,
+      MAX_LEVEL_LIMIT,
+      MIN_LEVEL_BIAS,
     } = await this.makeCall(this.contract.getGameConstants);
 
     // const TOKEN_MINT_END_TIMESTAMP = (
@@ -727,6 +730,7 @@ export class ContractsAPI extends EventEmitter {
 
       BURN_END_TIMESTAMP: BURN_END_TIMESTAMP.toNumber(),
       BURN_PLANET_COOLDOWN: BURN_PLANET_COOLDOWN.toNumber(),
+      
       BURN_PLANET_LEVEL_EFFECT_RADIUS: [
         BURN_PLANET_LEVEL_EFFECT_RADIUS[0].toNumber(),
         BURN_PLANET_LEVEL_EFFECT_RADIUS[1].toNumber(),
@@ -750,7 +754,33 @@ export class ContractsAPI extends EventEmitter {
         BURN_PLANET_REQUIRE_SILVER_AMOUNTS[7].toNumber(),
         BURN_PLANET_REQUIRE_SILVER_AMOUNTS[8].toNumber(),
         BURN_PLANET_REQUIRE_SILVER_AMOUNTS[9].toNumber(),
+
       ],
+
+      MAX_LEVEL_DIST: [
+        MAX_LEVEL_DIST[0].toNumber(),
+        MAX_LEVEL_DIST[1].toNumber(),
+        MAX_LEVEL_DIST[2].toNumber(),
+        MAX_LEVEL_DIST[3].toNumber(),
+        MAX_LEVEL_DIST[4].toNumber(),
+      ],
+      MAX_LEVEL_LIMIT: [
+        MAX_LEVEL_LIMIT[0].toNumber(),
+        MAX_LEVEL_LIMIT[1].toNumber(),
+        MAX_LEVEL_LIMIT[2].toNumber(),
+        MAX_LEVEL_LIMIT[3].toNumber(),
+        MAX_LEVEL_LIMIT[4].toNumber(),
+        MAX_LEVEL_LIMIT[5].toNumber(),
+      ],
+      MIN_LEVEL_BIAS: [
+        MIN_LEVEL_BIAS[0].toNumber(),
+        MIN_LEVEL_BIAS[1].toNumber(),
+        MIN_LEVEL_BIAS[2].toNumber(),
+        MIN_LEVEL_BIAS[3].toNumber(),
+        MIN_LEVEL_BIAS[4].toNumber(),
+        MIN_LEVEL_BIAS[5].toNumber(),
+      ]
+     
     };
     // console.log(constants);
     return constants;

@@ -3,6 +3,9 @@
     - x^2 + y^2 <= r^2
     - perlin(x, y) = p
     - MiMCSponge(x,y) = pub
+
+    - NEW Map
+    - x^2 + y^2 = targetDistFromOriginSquare
 */
 pragma circom 2.0.3;
 
@@ -20,6 +23,7 @@ template Init() {
     signal input SCALE; // must be power of 2 at most 16384 so that DENOMINATOR works
     signal input xMirror; // 1 is true, 0 is false
     signal input yMirror; // 1 is true, 0 is false
+    signal input targetDistFromOriginSquare;
 
     // Private signals
     signal input x;
@@ -45,6 +49,8 @@ template Init() {
     compUpper.in[0] <== xSq + ySq;
     compUpper.in[1] <== rSq;
     compUpper.out === 1;
+    /* check x^2 + y^2 == distFromOrigin^2 */
+    targetDistFromOriginSquare === xSq + ySq;
 
     /* check x^2 + y^2 > 0.98 * r^2 */
     /* equivalently 100 * (x^2 + y^2) > 98 * r^2 */
@@ -77,4 +83,4 @@ template Init() {
     perl <== perlin.out;
 }
 
-component main { public [ r, PLANETHASH_KEY, SPACETYPE_KEY, SCALE, xMirror, yMirror ] } = Init();
+component main { public [ r, PLANETHASH_KEY, SPACETYPE_KEY, SCALE, xMirror, yMirror, targetDistFromOriginSquare ] } = Init();

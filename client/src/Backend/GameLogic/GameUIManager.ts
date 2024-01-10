@@ -912,8 +912,8 @@ class GameUIManager extends EventEmitter {
     return this.gameManager.getChunk(chunkFootprint);
   }
 
-  public spaceTypeFromPerlin(perlin: number): SpaceType {
-    return this.gameManager.spaceTypeFromPerlin(perlin);
+  public spaceTypeFromPerlin(perlin: number, distFromOrigin: number): SpaceType {
+    return this.gameManager.spaceTypeFromPerlin(perlin,distFromOrigin);
   }
 
   public getSpaceTypePerlin(coords: WorldCoords, floor: boolean): number {
@@ -1009,7 +1009,8 @@ class GameUIManager extends EventEmitter {
     }
 
     if (account !== undefined) {
-      if (this.spaceTypeFromPerlin(chunk.perlin) === SpaceType.DEEP_SPACE) {
+      const distFromOrigin = chunk.planetLocations[0] ? Math.floor(Math.sqrt(chunk.planetLocations[0].coords.x ** 2 + chunk.planetLocations[0].coords.y ** 2)) : 1;
+      if (this.spaceTypeFromPerlin(chunk.perlin, distFromOrigin) === SpaceType.DEEP_SPACE) {
         if (
           !this.getBooleanSetting(Setting.FoundDeepSpace) &&
           this.getBooleanSetting(Setting.TutorialCompleted)
@@ -1017,7 +1018,7 @@ class GameUIManager extends EventEmitter {
           notifManager.foundDeepSpace(chunk);
           setBooleanSetting(config, Setting.FoundDeepSpace, true);
         }
-      } else if (this.spaceTypeFromPerlin(chunk.perlin) === SpaceType.SPACE) {
+      } else if (this.spaceTypeFromPerlin(chunk.perlin, distFromOrigin) === SpaceType.SPACE) {
         if (
           !this.getBooleanSetting(Setting.FoundSpace) &&
           this.getBooleanSetting(Setting.TutorialCompleted)
@@ -1025,7 +1026,7 @@ class GameUIManager extends EventEmitter {
           notifManager.foundSpace(chunk);
           setBooleanSetting(config, Setting.FoundSpace, true);
         }
-      } else if (this.spaceTypeFromPerlin(chunk.perlin) === SpaceType.DEAD_SPACE) {
+      } else if (this.spaceTypeFromPerlin(chunk.perlin, distFromOrigin) === SpaceType.DEAD_SPACE) {
         if (
           !this.getBooleanSetting(Setting.FoundDeepSpace) &&
           this.getBooleanSetting(Setting.TutorialCompleted)
