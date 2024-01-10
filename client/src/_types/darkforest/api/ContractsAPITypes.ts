@@ -17,7 +17,7 @@ export const enum InitArgIdxs {
   PERLIN_LENGTH_SCALE,
   PERLIN_MIRROR_X,
   PERLIN_MIRROR_Y,
-  TARGET_DIST_FROM_ORIGIN_SQUARE
+  TARGET_DIST_FROM_ORIGIN_SQUARE,
 }
 
 export const enum MoveArgIdxs {
@@ -31,7 +31,7 @@ export const enum MoveArgIdxs {
   PERLIN_LENGTH_SCALE,
   PERLIN_MIRROR_X,
   PERLIN_MIRROR_Y,
-  TARGET_DIST_FROM_ORIGIN_SQUARE
+  TARGET_DIST_FROM_ORIGIN_SQUARE,
 }
 
 export const enum UpgradeArgIdxs {
@@ -399,6 +399,10 @@ export interface ContractConstants {
   BURN_END_TIMESTAMP: number;
   BURN_PLANET_COOLDOWN: number;
   BURN_PLANET_EFFECT_RADIUS: number;
+
+  MAX_LEVEL_DIST: number[];
+  MAX_LEVEL_LIMIT: number[];
+  MIN_LEVEL_BIAS: number[];
 }
 
 export type ClientMockchainData =

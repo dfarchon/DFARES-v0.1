@@ -1299,7 +1299,7 @@ export class GameObjects {
     perlin: number,
     distFromOrigin = -1
   ): PlanetLevel {
-    const  spaceType = this.spaceTypeFromPerlin(perlin,distFromOrigin);
+    const spaceType = this.spaceTypeFromPerlin(perlin, distFromOrigin);
 
     const levelBigInt = getBytesFromHex(hex, 4, 7);
 
@@ -1337,16 +1337,22 @@ export class GameObjects {
     // }
 
     if (distFromOrigin > 0) {
-      const MAX_LEVEL_DIST = [40000, 30000, 20000, 10000, 5000];
-      const MAX_LEVEL_LIMIT = [
-        PlanetLevel.ONE,
-        PlanetLevel.SIX,
-        PlanetLevel.SEVEN,
-        PlanetLevel.EIGHT,
-        PlanetLevel.NINE,
-        PlanetLevel.NINE,
-      ];
-      const MIN_LEVEL_BIAS = [0, 0, 1, 1, 2, 2];
+      const MAX_LEVEL_DIST = this.contractConstants.MAX_LEVEL_DIST; //    [40000, 30000, 20000, 10000, 5000];
+      const MAX_LEVEL_LIMIT = this.contractConstants.MAX_LEVEL_LIMIT.map((x) => {
+        if (x === 1) return PlanetLevel.ONE;
+        else if (x === 2) return PlanetLevel.TWO;
+        else if (x === 3) return PlanetLevel.THREE;
+        else if (x === 4) return PlanetLevel.FOUR;
+        else if (x === 5) return PlanetLevel.FIVE;
+        else if (x === 6) return PlanetLevel.SIX;
+        else if (x === 7) return PlanetLevel.SEVEN;
+        else if (x === 8) return PlanetLevel.EIGHT;
+        else if (x === 9) return PlanetLevel.NINE;
+        else return PlanetLevel.ZERO;
+      });
+
+      const MIN_LEVEL_BIAS = this.contractConstants.MIN_LEVEL_BIAS;
+      // [0, 0, 1, 1, 2, 2];
 
       ret =
         distFromOrigin >= MAX_LEVEL_DIST[0]
@@ -1374,7 +1380,7 @@ export class GameObjects {
 
   public spaceTypeFromPerlin(perlin: number, distFromOrigin: number): SpaceType {
     const MAX_LEVEL_DIST = [40000, 30000, 20000, 10000, 5000];
-    if(distFromOrigin > MAX_LEVEL_DIST[0]) return SpaceType.NEBULA;
+    if (distFromOrigin > MAX_LEVEL_DIST[0]) return SpaceType.NEBULA;
 
     if (perlin < this.contractConstants.PERLIN_THRESHOLD_1) {
       return SpaceType.NEBULA;

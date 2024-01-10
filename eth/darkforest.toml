@@ -118,7 +118,7 @@ PLANET_LEVEL_THRESHOLDS = [
 ]
 
 
-PLANET_RARITY = 32768 #16384
+PLANET_RARITY = 16384
 # How much score silver gives when withdrawing.
 # Expressed as a percentage integer.
 # (100 is 100%)
@@ -132,6 +132,13 @@ CLAIM_END_TIMESTAMP = 2023-12-31T04:00:00.000Z # Mon Oct 04 2022 21:00:00 GMT-07
 BURN_END_TIMESTAMP = 2023-12-31T04:00:00.000Z
 BURN_PLANET_COOLDOWN = 60
 BURN_PLANET_EFFECT_RADIUS = 3000
+
+#################
+# Planet Adjust #
+#################
+MAX_LEVEL_DIST=[40000, 30000, 20000, 10000, 5000]
+MAX_LEVEL_LIMIT=[1, 6, 7, 8, 9, 9]
+MIN_LEVEL_BIAS = [0, 0, 1, 1, 2, 2]
 
 PLANET_TYPE_WEIGHTS = [
   [
@@ -251,6 +258,8 @@ ROUND_END_REWARDS_BY_RANK=[
   0,
   0
 ]
+
+
 
 
 # not include PinkShip yet
