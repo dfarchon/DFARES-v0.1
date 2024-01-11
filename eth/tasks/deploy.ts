@@ -260,7 +260,9 @@ export async function deployAndCut(
   const verifierFacet = await deployVerifierFacet({}, libraries, hre);
   const adminFacet = await deployAdminFacet({}, libraries, hre);
   const lobbyFacet = await deployLobbyFacet({}, {}, hre);
-  const rewardFacet = await deployRewardFacet({}, {}, hre);
+
+  //myNotice: rewardFacet don't fit v0.6.3
+  // const rewardFacet = await deployRewardFacet({}, {}, hre);
 
   // The `cuts` to perform for Dark Forest facets
   const darkForestFacetCuts = [
@@ -275,7 +277,8 @@ export async function deployAndCut(
     ...changes.getFacetCuts('DFVerifierFacet', verifierFacet),
     ...changes.getFacetCuts('DFAdminFacet', adminFacet),
     ...changes.getFacetCuts('DFLobbyFacet', lobbyFacet),
-    ...changes.getFacetCuts('DFRewardFacet', rewardFacet),
+    //myNotice: rewardFacet don't fit v0.6.3
+    // ...changes.getFacetCuts('DFRewardFacet', rewardFacet),
   ];
 
   if (isDev) {
