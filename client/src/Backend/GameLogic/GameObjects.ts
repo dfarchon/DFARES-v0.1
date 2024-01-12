@@ -1482,6 +1482,7 @@ export class GameObjects {
     let energyGro = this.contractConstants.defaultPopulationGrowth[planetLevel];
     let range = this.contractConstants.defaultRange[planetLevel];
     let speed = this.contractConstants.defaultSpeed[planetLevel];
+
     let defense = this.contractConstants.defaultDefense[planetLevel];
     let silCap = this.contractConstants.defaultSilverCap[planetLevel];
     let spaceJunk = this.contractConstants.PLANET_LEVEL_JUNK[planetLevel];
@@ -1527,6 +1528,14 @@ export class GameObjects {
       defense *= 0.5;
     }
 
+    range = Math.floor(range);
+    speed = Math.floor(speed);
+    energyCap = Math.floor(energyCap);
+    energyGro = Math.floor(energyGro);
+    silCap = Math.floor(silCap);
+    silGro = Math.floor(silGro);
+    defense = Math.floor(defense);
+
     // apply stat modifiers for special planet types
     if (planetType === PlanetType.SILVER_MINE) {
       silCap *= 2;
@@ -1543,6 +1552,14 @@ export class GameObjects {
       silCap *= 2;
     }
 
+    range = Math.floor(range);
+    speed = Math.floor(speed);
+    energyCap = Math.floor(energyCap);
+    energyGro = Math.floor(energyGro);
+    silCap = Math.floor(silCap);
+    silGro = Math.floor(silGro);
+    defense = Math.floor(defense);
+
     let pirates =
       (energyCap * this.contractConstants.defaultBarbarianPercentage[planetLevel]) / 100;
     // increase pirates
@@ -1552,11 +1569,21 @@ export class GameObjects {
 
     if (planetType === PlanetType.SILVER_BANK) pirates /= 2;
 
-    const silver = planetType === PlanetType.SILVER_MINE ? silCap / 2 : 0;
+    pirates = Math.floor(pirates);
+
+    const silver = planetType === PlanetType.SILVER_MINE ? Math.floor(silCap / 2) : 0;
 
     speed *= this.contractConstants.TIME_FACTOR_HUNDREDTHS / 100;
     energyGro *= this.contractConstants.TIME_FACTOR_HUNDREDTHS / 100;
     silGro *= this.contractConstants.TIME_FACTOR_HUNDREDTHS / 100;
+
+    range = Math.floor(range);
+    speed = Math.floor(speed);
+    energyCap = Math.floor(energyCap);
+    energyGro = Math.floor(energyGro);
+    silCap = Math.floor(silCap);
+    silGro = Math.floor(silGro);
+    defense = Math.floor(defense);
 
     const biome = this.getBiome(location);
 
