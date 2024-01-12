@@ -107,7 +107,9 @@ library LibGameUtils {
         uint256[6] memory MAX_LEVEL_LIMIT = gameConstants().MAX_LEVEL_LIMIT;
         uint256[6] memory MIN_LEVEL_BIAS = gameConstants().MIN_LEVEL_BIAS;
 
-        if (_distFromOriginSquare > MAX_LEVEL_DIST[0] * MAX_LEVEL_DIST[0])
+        if (_distFromOriginSquare > MAX_LEVEL_DIST[1] * MAX_LEVEL_DIST[1] &&
+            _distFromOriginSquare < MAX_LEVEL_DIST[0] * MAX_LEVEL_DIST[0]
+        )
             spaceType = SpaceType.NEBULA;
 
         bytes memory _b = abi.encodePacked(_location);
