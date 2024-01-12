@@ -905,7 +905,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       terminal.current?.println(
         'To select different spawn area please refresh page otherwise press ENTER to find a home planet.  '
       );
-      terminal.current?.println('This may take up to 120s a will consume a lot of CPU.');
+      terminal.current?.println('This may take up to 120s, and will consume a lot of CPU.');
       await terminal.current?.getInput();
 
       gameUIManager.getGameManager().on(GameManagerEvent.InitializedPlayer, () => {
