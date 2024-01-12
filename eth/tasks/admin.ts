@@ -1,4 +1,4 @@
-import { CONTRACT_PRECISION } from '@dfares/constants';
+import { CONTRACT_PRECISION, GAS_ADJUST_DELTA } from '@dfares/constants';
 import { fakeHash, mimcHash, modPBigInt, perlin } from '@dfares/hashing';
 import {
   buildContractCallArgs,
@@ -9,6 +9,7 @@ import {
   SnarkJSProofAndSignals,
 } from '@dfares/snarks';
 import { BigNumber } from 'ethers';
+import * as fs from 'fs';
 import { task, types } from 'hardhat/config';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 // @ts-ignore
@@ -407,4 +408,54 @@ async function setDynamicTimeFactor(args: { factor: number }, hre: HardhatRuntim
 
   const receipt = await contract.setDynamicTimeFactor(args.factor);
   await receipt.wait();
+}
+
+task('admin:adminSetFinalScoreAndRank', 'admin set final scores & ranks')
+  .addPositionalParam(
+    'filePath',
+    'the path to the file containing keys to disable',
+    undefined,
+    types.string
+  )
+
+  .setAction(adminSetFinalScoreAndRank);
+
+async function adminSetFinalScoreAndRank(
+  args: { filePath: string },
+  hre: HardhatRuntimeEnvironment
+) {
+  await hre.run('utils:assertChainId');
+
+  const keyFileContents = fs.readFileSync(args.filePath).toString();
+  const players = keyFileContents.split('\n').filter((k) => k.length > 0);
+
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  const playerAddress: string[] = [];
+  const playerScore: string[] = [];
+  const playerRank: string[] = [];
+
+  for (let i = 0; i < players.length; i++) {
+    const playerInfo = players[i].split(',');
+    const addr = playerInfo[0];
+    const score = playerInfo[1];
+    const rank = playerInfo[2];
+    playerAddress.push(addr);
+    playerScore.push(score);
+    playerRank.push(rank);
+  }
+
+  try {
+    const receipt = await contract.adminSetFinalScoreAndRank(
+      playerAddress,
+      playerScore,
+      playerRank,
+      {
+        gasPrice: Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('5000000000')).toString(),
+      }
+    ); // 5gwei
+    await receipt.wait();
+  } catch (e) {
+    console.log(e);
+  }
 }

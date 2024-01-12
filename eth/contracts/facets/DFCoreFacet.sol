@@ -138,13 +138,10 @@ contract DFCoreFacet is WithStorage {
         emit LocationRevealed(msg.sender, _input[0], _input[2], _input[3]);
     }
 
-    //mytodo: when deploy, change to another value
+
     function getEntryFee() public view returns (uint256) {
         uint256 amount = gs().playerIds.length;
-          return 0 ether * amount ;
-        // return 1 ether * amount;
-        // return amount * amount * amount /1 ether/1 ether;
-        // return amount * amount * amount/ 1 ether/1 ether/3_375_000;
+        return 1 ether * amount * amount * amount / 100000;
     }
 
     function initializePlayer(
