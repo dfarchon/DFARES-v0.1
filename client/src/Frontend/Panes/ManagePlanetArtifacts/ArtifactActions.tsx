@@ -53,8 +53,8 @@ export function ArtifactActions({
   const currentBlockNumber = useEmitterValue(uiManager.getEthConnection().blockNumber$, undefined);
 
   //active artifact
-  //myTodo: 10 min 1 artifact
-  const deltaTime = 10;
+  //myTodo: 2 min 1 artifact
+  const deltaTime = 2;
 
   const maxAmount = currentBlockNumber
     ? Math.floor(

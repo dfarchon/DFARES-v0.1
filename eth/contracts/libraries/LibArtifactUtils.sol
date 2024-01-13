@@ -215,14 +215,12 @@ library LibArtifactUtils {
             uint256 totalAmount = gs().players[msg.sender].activateArtifactAmount + 1;
             uint256 totalGameBlocks = block.number - gameConstants().GAME_START_BLOCK;
 
-            //MyTodo: altlayer 2 sec for 1 block
+            //myNotice: redstone 2 sec for 1 block
             //1 hour 1 artifact
-            //require(totalGameBlocks * 2 >= amount * 60 * 60, "block number
-            //limit");
+            //require(totalGameBlocks * 2 >= amount * 60 * 60, "block number limit");
 
-            // 10 min 1 artifact
-            uint256 deltaTime = 10;
-
+            //myTodo: 2 min 1 artifact
+            uint256 deltaTime = 2;
             require(totalGameBlocks * 2 >= totalAmount * 60 * deltaTime, "block number limit");
             gs().players[msg.sender].activateArtifactAmount++;
         }
@@ -285,42 +283,45 @@ library LibArtifactUtils {
             // planet.silver = planet.silverCap;
             shouldDeactivateAndBurn = true;
         } else if (artifact.artifactType == ArtifactType.BlackDomain) {
-            // require(
-            //     2 * uint256(artifact.rarity) >= planet.planetLevel,
-            //     "artifact is not powerful enough to apply effect to this planet level"
-            // );
-            // planet.destroyed = true;
-            // shouldDeactivateAndBurn = true;
-            require(linkTo != 0, "you must provide a linkTo to activate a BlockDomain");
-            Planet storage toPlanet = gs().planets[linkTo];
-
-            require(
-                toPlanet.owner != address(0),
-                "you can only create a BlockDomain link to a planet has owner"
-            );
-
-            require(!toPlanet.adminProtect, "planet adminProtect");
-            require(!toPlanet.destroyed, "planet destroyed");
-            require(!toPlanet.frozen, "planet frozen");
-            require(
-                planet.planetLevel >= toPlanet.planetLevel,
-                "fromPlanetLevel must be >= toPlanetLevel"
-            );
-
             require(
                 2 * uint256(artifact.rarity) >= planet.planetLevel,
                 "artifact is not powerful enough to apply effect to this planet level"
             );
-
-            Artifact memory artifactOnToPlanet = LibGameUtils.getActiveArtifact(linkTo);
-            if (artifactOnToPlanet.artifactType == ArtifactType.PlanetaryShield) {
-                require(
-                    artifact.rarity > artifactOnToPlanet.rarity,
-                    "BlockDomain rarity must be higher"
-                );
-            }
-            toPlanet.destroyed = true;
+            planet.destroyed = true;
             shouldDeactivateAndBurn = true;
+
+            // myNotice: we change the effect of BlockDomain in round 1
+            // require(linkTo != 0, "you must provide a linkTo to activate a BlockDomain");
+            // Planet storage toPlanet = gs().planets[linkTo];
+
+            // require(
+            //     toPlanet.owner != address(0),
+            //     "you can only create a BlockDomain link to a planet has owner"
+            // );
+
+            // require(!toPlanet.adminProtect, "planet adminProtect");
+            // require(!toPlanet.destroyed, "planet destroyed");
+            // require(!toPlanet.frozen, "planet frozen");
+            // require(
+            //     planet.planetLevel >= toPlanet.planetLevel,
+            //     "fromPlanetLevel must be >= toPlanetLevel"
+            // );
+
+            // require(
+            //     2 * uint256(artifact.rarity) >= planet.planetLevel,
+            //     "artifact is not powerful enough to apply effect to this planet level"
+            // );
+
+            // Artifact memory artifactOnToPlanet = LibGameUtils.getActiveArtifact(linkTo);
+            // if (artifactOnToPlanet.artifactType == ArtifactType.PlanetaryShield) {
+            //     require(
+            //         artifact.rarity > artifactOnToPlanet.rarity,
+            //         "BlockDomain rarity must be higher"
+            //     );
+            // }
+            // toPlanet.destroyed = true;
+            // shouldDeactivateAndBurn = true;
+
         } else if (artifact.artifactType == ArtifactType.IceLink) {
             require(linkTo != 0, "you must provide a linkTo to activate a IceLink");
             Planet storage toPlanet = gs().planets[linkTo];

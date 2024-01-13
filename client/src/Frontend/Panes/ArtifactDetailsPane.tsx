@@ -231,8 +231,8 @@ export function ArtifactDetailsBody({
 
   // about activate artifact block limit pane
 
-  //myTodo: 10 min 1 artifact
-  const deltaTime = 10;
+  //myTodo: 2 min 1 artifact
+  const deltaTime = 2;
 
   const maxAmount = currentBlockNumber
     ? Math.floor(
