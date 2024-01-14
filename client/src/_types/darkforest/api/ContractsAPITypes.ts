@@ -398,6 +398,7 @@ export interface ContractConstants {
 
   BURN_END_TIMESTAMP: number;
   BURN_PLANET_COOLDOWN: number;
+  PINK_PLANET_COOLDOWN: number;
 
   BURN_PLANET_LEVEL_EFFECT_RADIUS: [
     number,

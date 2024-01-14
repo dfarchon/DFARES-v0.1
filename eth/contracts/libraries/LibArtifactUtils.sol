@@ -321,7 +321,6 @@ library LibArtifactUtils {
             // }
             // toPlanet.destroyed = true;
             // shouldDeactivateAndBurn = true;
-
         } else if (artifact.artifactType == ArtifactType.IceLink) {
             require(linkTo != 0, "you must provide a linkTo to activate a IceLink");
             Planet storage toPlanet = gs().planets[linkTo];

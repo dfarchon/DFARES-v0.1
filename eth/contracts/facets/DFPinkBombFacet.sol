@@ -80,8 +80,7 @@ contract DFPinkBombFacet is WithStorage {
 
         require(!planet.destroyed, "planet is destroyed");
         require(!planet.frozen, "planet is frozen");
-        require(planet.owner == msg.sender, "you can only burn planets you own");
-
+        require(planet.burnStartTimestamp == 0, "planet is already burned");
         require(containsPinkShip(planetId), "pink ship must be present on planet");
         require(planet.planetLevel >= 1, "planet level >=1");
 
@@ -95,10 +94,10 @@ contract DFPinkBombFacet is WithStorage {
             1000 *
             gameConstants().BURN_PLANET_REQUIRE_SILVER_AMOUNTS[planet.planetLevel];
 
-        planet.destroyed = true;
         planet.operator = msg.sender;
 
         gs().lastBurnTimestamp[msg.sender] = block.timestamp;
+        planet.burnStartTimestamp = block.timestamp;
 
         require(gs().burnedCoords[planetId].locationId == 0, "Location already burned");
 
@@ -165,7 +164,7 @@ contract DFPinkBombFacet is WithStorage {
         require(planetInPinkZone(x, y), "planet is not in your pink zone");
 
         planet.destroyed = true;
-        planet.operator = msg.sender;
+        if (planet.operator != address(0)) planet.operator = msg.sender;
 
         if (gs().revealedCoords[planetId].locationId == 0) {
             gs().revealedPlanetIds.push(planetId);
@@ -175,7 +174,9 @@ contract DFPinkBombFacet is WithStorage {
                 y: y,
                 revealer: msg.sender
             });
-            gs().players[msg.sender].lastRevealTimestamp = block.timestamp;
+
+            //myNotice: pinkLocation don't update player's lastRevealTimestamp
+            // gs().players[msg.sender].lastRevealTimestamp = block.timestamp;
             emit LocationRevealed(msg.sender, _input[0], _input[2], _input[3]);
         }
     }
@@ -201,7 +202,8 @@ contract DFPinkBombFacet is WithStorage {
 
             if (
                 distanceToZone <=
-                gameConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[planet.planetLevel]
+                gameConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[planet.planetLevel] &&
+                block.timestamp - planet.burnStartTimestamp > gameConstants().PINK_PLANET_COOLDOWN
             ) {
                 return true;
             }

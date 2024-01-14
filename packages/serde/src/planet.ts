@@ -89,6 +89,7 @@ export function decodePlanet(rawLocationId: string, rawPlanet: RawPlanet): Plane
       ? undefined
       : rawPlanet.invadeStartBlock.toNumber(),
     operator: address(rawPlanet.operator),
+    burnStartTimestamp: rawPlanet.burnStartTimestamp.toNumber(),
   };
 
   return planet;

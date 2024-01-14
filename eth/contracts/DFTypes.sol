@@ -79,6 +79,7 @@ struct Planet {
     address capturer;
     uint256 locationId;
     address operator; // operate bomb to burn/pink planet
+    uint256 burnStartTimestamp;
 }
 
 struct RevealedCoords {

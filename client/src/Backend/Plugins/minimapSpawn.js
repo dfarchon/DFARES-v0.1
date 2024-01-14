@@ -8,7 +8,7 @@ class MinimapSpawnPlugin {
     this.coordsDiv.style.textAlign = 'center';
     this.sizeFactor = 500;
     this.clickOccurred = false;
-    this.step = 3000;//1500;
+    this.step = 3000; //1500;
     this.dot = 5.5;
     this.canvasSize = 600;
     this.InnerNebulaColor = '#00ADE1'; // '#21215d';
@@ -51,8 +51,6 @@ class MinimapSpawnPlugin {
     // Sample points in a grid and determine space type
 
     const generate = () => {
-
-
       div.style.width = '99%';
       div.style.height = '99%';
       this.canvas.width = this.canvasSize;
@@ -142,7 +140,7 @@ class MinimapSpawnPlugin {
       // let rimNormalized = (normalize(rim) / 2) * 0.91; // idk why here need
       // to be corection??
       const MAX_LEVEL_DIST = df.getContractConstants().MAX_LEVEL_DIST;
-      const normalizeRadius = MAX_LEVEL_DIST[1] * radiusNormalized / radius;
+      const normalizeRadius = (MAX_LEVEL_DIST[1] * radiusNormalized) / radius;
 
       ctx.beginPath();
       ctx.arc(
@@ -306,7 +304,10 @@ class MinimapSpawnPlugin {
           // 'pointer'
 
           const distFromOrigin = Math.floor(Math.sqrt(xWorld ** 2 + yWorld ** 2));
-          const spaceType = df.spaceTypeFromPerlin(df.spaceTypePerlin({ x: xWorld, y: yWorld }), distFromOrigin);
+          const spaceType = df.spaceTypeFromPerlin(
+            df.spaceTypePerlin({ x: xWorld, y: yWorld }),
+            distFromOrigin
+          );
 
           // Check if the space type is inner nebula (type 0)
           if (spaceType === 0) {

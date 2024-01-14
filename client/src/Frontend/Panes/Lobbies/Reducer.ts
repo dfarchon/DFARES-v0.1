@@ -104,6 +104,10 @@ export type LobbyConfigAction =
       type: 'BURN_PLANET_COOLDOWN';
       value: Initializers['BURN_PLANET_COOLDOWN'] | undefined;
     }
+  | {
+      type: 'PINK_PLANET_COOLDOWN';
+      value: Initializers['PINK_PLANET_COOLDOWN'] | undefined;
+    }
   | { type: 'PLANET_TYPE_WEIGHTS'; value: Initializers['PLANET_TYPE_WEIGHTS'] | undefined }
   | { type: 'SILVER_SCORE_VALUE'; value: Initializers['SILVER_SCORE_VALUE'] | undefined }
   | {
@@ -322,6 +326,10 @@ export function lobbyConfigReducer(state: LobbyConfigState, action: LobbyAction)
     }
 
     case 'BURN_PLANET_COOLDOWN': {
+      update = ofPositiveInteger(action, state);
+      break;
+    }
+    case 'PINK_PLANET_COOLDOWN': {
       update = ofPositiveInteger(action, state);
       break;
     }
@@ -790,6 +798,17 @@ export function lobbyConfigInit(startingConfig: LobbyInitializers) {
       }
 
       case 'BURN_PLANET_COOLDOWN': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+
+      case 'PINK_PLANET_COOLDOWN': {
         const defaultValue = startingConfig[key];
         state[key] = {
           currentValue: defaultValue,

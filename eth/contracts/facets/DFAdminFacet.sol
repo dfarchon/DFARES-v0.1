@@ -138,6 +138,10 @@ contract DFAdminFacet is WithStorage {
         gameConstants().BURN_PLANET_COOLDOWN = newCooldown;
     }
 
+    function changePinkPlanetCooldown(uint256 newCooldown) public onlyAdmin {
+        gameConstants().PINK_PLANET_COOLDOWN = newCooldown;
+    }
+
     function withdraw() public onlyAdmin {
         // TODO: Don't send to msg.sender, instead send to contract admin
         payable(msg.sender).transfer(address(this).balance);
@@ -221,25 +225,26 @@ contract DFAdminFacet is WithStorage {
     }
 
     function adminSetFinalScoreAndRank(
-        address [] calldata playerAddresses,
+        address[] calldata playerAddresses,
         uint256[] calldata scores,
         uint256[] calldata ranks
-    ) public onlyAdmin{
-        require(playerAddresses.length == scores.length,"player and score array lengths do not match");
-        require(scores.length == ranks.length,"score and rank array do not match");
+    ) public onlyAdmin {
+        require(
+            playerAddresses.length == scores.length,
+            "player and score array lengths do not match"
+        );
+        require(scores.length == ranks.length, "score and rank array do not match");
         require(block.timestamp > gameConstants().TOKEN_MINT_END_TIMESTAMP, "game is not over");
         require(block.timestamp > gameConstants().CLAIM_END_TIMESTAMP, "game is not over");
         require(block.timestamp > gameConstants().BURN_END_TIMESTAMP, "game is not over");
 
-         for (uint256 i = 0; i < playerAddresses.length; i++) {
-            address  playerAddress = playerAddresses[i];
-            uint256  score = scores[i];
-            uint256  rank = ranks[i];
+        for (uint256 i = 0; i < playerAddresses.length; i++) {
+            address playerAddress = playerAddresses[i];
+            uint256 score = scores[i];
+            uint256 rank = ranks[i];
             Player storage player = gs().players[playerAddress];
             player.score = score;
-            player.finalRank =rank;
+            player.finalRank = rank;
         }
     }
-
-
 }
