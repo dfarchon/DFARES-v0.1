@@ -5,7 +5,8 @@ import styled from 'styled-components';
 import { Btn } from '../Components/Btn';
 import { CenterBackgroundSubtext, Spacer } from '../Components/CoreUI';
 import { LoadingSpinner } from '../Components/LoadingSpinner';
-import { Blue } from '../Components/Text';
+import { Blue, White } from '../Components/Text';
+import { formatDuration, TimeUntil } from '../Components/TimeUntil';
 import dfstyles from '../Styles/dfstyles';
 import { usePlanet, useUIManager } from '../Utils/AppHooks';
 import { useEmitterValue } from '../Utils/EmitterHooks';
@@ -76,12 +77,20 @@ export function PinkPane({
   const [account, setAccount] = useState<EthAddress | undefined>(undefined); // consider moving this one to parent
   const isDestoryedOrFrozen = planet?.destroyed || planet?.frozen;
 
-  const checkPlansetCanPink = () => {
+  const checkPlanetCanPink = () => {
     if (!planetId) return false;
     return uiManager.checkPlanetCanPink(planetId);
   };
-  //mytodo: add mcheck
-  const pinkZonePassed = checkPlansetCanPink();
+  //mytodo: add more check
+  const pinkZonePassed = checkPlanetCanPink();
+
+  const getRes = () => {
+    if (!planetId) return 0;
+    return ui.getNextPinkAvailableTimestamp(planetId);
+  };
+
+  const res = getRes();
+  const pinkLocationIdCooldownPassed = res !== 0 ? res <= Date.now() : false;
 
   useEffect(() => {
     if (!uiManager) return;
@@ -98,6 +107,8 @@ export function PinkPane({
         <LoadingSpinner initialText={'Pinking It...'} />
       </Btn>
     );
+  } else if (!pinkLocationIdCooldownPassed) {
+    pinkBtn = <Btn disabled={true}>Pink It </Btn>;
   } else if (!pinkZonePassed) {
     pinkBtn = <Btn disabled={true}>Pink It </Btn>;
   } else {
@@ -120,12 +131,28 @@ export function PinkPane({
           <Blue>INFO:</Blue> You only can pink planets in your pink circle.
         </p>
       )}
+
+      {pinkZonePassed && !pinkLocationIdCooldownPassed && planetId && (
+        <p>
+          <Blue>INFO:</Blue> You must wait{' '}
+          <TimeUntil
+            timestamp={uiManager.getNextPinkAvailableTimestamp(planetId)}
+            ifPassed={'now!'}
+          />{' '}
+          to burn this planet.
+        </p>
+      )}
     </div>
   );
 
   if (planet) {
     return (
       <PinkWrapper>
+        <div>
+          Need to wait{' '}
+          <White>{formatDuration(uiManager.contractConstants.PINK_PLANET_COOLDOWN * 1000)}</White>.{' '}
+          after dropping bomb.
+        </div>
         <div className='message'>{warningsSection}</div>
         <div className='row'>
           <span>Coordinates</span>

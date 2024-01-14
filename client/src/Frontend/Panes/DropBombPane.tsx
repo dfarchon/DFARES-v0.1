@@ -150,11 +150,11 @@ export function DropBombPane({
           <Blue>INFO:</Blue> You own this planet! Dropping Bomb to this planet is not a good choice.
         </p>
       )} */}
-      {planet?.owner !== account && (
+      {/* {planet?.owner !== account && (
         <p>
           <Blue>INFO:</Blue> You can only drop bomb to your own planet.
         </p>
-      )}
+      )} */}
 
       {isDestoryedOrFrozen && (
         <p>

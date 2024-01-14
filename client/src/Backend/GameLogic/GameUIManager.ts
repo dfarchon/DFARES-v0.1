@@ -506,6 +506,10 @@ class GameUIManager extends EventEmitter {
     return this.gameManager.getNextBurnAvailableTimestamp();
   }
 
+  public getNextPinkAvailableTimestamp(planetId: LocationId) {
+    return this.gameManager.getNextPinkAvailableTimestamp(planetId);
+  }
+
   public timeUntilNextBurnAvailable() {
     return this.gameManager.timeUntilNextBurnAvailable();
   }

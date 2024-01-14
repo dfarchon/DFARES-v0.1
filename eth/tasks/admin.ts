@@ -226,6 +226,22 @@ async function changeBurnPlanetCooldown(
   await receipt.wait();
 }
 
+task('admin:changePinkPlanetCooldown', 'change Pink planet cooldown')
+  .addPositionalParam('cooldown', 'the cooldown', undefined, types.int)
+  .setAction(changePinkPlanetCooldown);
+
+async function changePinkPlanetCooldown(
+  args: { cooldown: number },
+  hre: HardhatRuntimeEnvironment
+) {
+  await hre.run('utils:assertChainId');
+
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  const receipt = await contract.changePinkPlanetCooldown(args.cooldown);
+  await receipt.wait();
+}
+
 task('admin:withdraw', 'withdraw all the ether in game contract').setAction(withdraw);
 
 async function withdraw(args: {}, hre: HardhatRuntimeEnvironment) {

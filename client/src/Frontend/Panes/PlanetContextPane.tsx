@@ -66,7 +66,7 @@ function PlanetContextPaneContent({
   }
 
   let dropBombRow = null;
-  if (!p?.destroyed && !p?.frozen && owned) {
+  if (!p?.destroyed && !p?.frozen) {
     dropBombRow = <OpenDropBombButton modal={modal} planetId={p?.locationId} />;
   }
 

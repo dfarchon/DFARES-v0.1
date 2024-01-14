@@ -2050,6 +2050,36 @@ class GameManager extends EventEmitter {
   }
 
   /**
+   * Gets the timestamp (ms) of the next time that we can pink a planet.
+   */
+  public getNextPinkAvailableTimestamp(planetId: LocationId) {
+    if (!this.account) {
+      throw new Error('no account set');
+    }
+    const planet = this.getPlanetWithId(planetId);
+    if (!isLocatable(planet)) return 0;
+    const myPinkZones = this.getMyPinkZones();
+    let result = -1;
+    for (const pinkZone of myPinkZones) {
+      const burnPlanetId = pinkZone.locationId;
+      const coords = pinkZone.coords;
+      const radius = pinkZone.radius;
+      const burnPlanet = this.getPlanetWithId(burnPlanetId);
+      if (!burnPlanet) continue;
+      if (!burnPlanet.burnStartTimestamp) continue;
+
+      const dis = this.getDistCoords(coords, planet.location.coords);
+
+      if (dis <= radius) {
+        if (result === -1) result = burnPlanet.burnStartTimestamp;
+        else result = result = Math.min(result, burnPlanet.burnStartTimestamp);
+      }
+    }
+
+    if (result === 1) return 0;
+    else return (result + this.contractConstants.PINK_PLANET_COOLDOWN) * 1000;
+  }
+  /**
    * Gets the amount of time (ms) until the next time the current player can burn a planet.
    */
   public timeUntilNextBurnAvailable() {
@@ -2080,6 +2110,7 @@ class GameManager extends EventEmitter {
       if (planet === undefined) continue;
 
       pinkZones.add({
+        locationId: planet.locationId,
         coords: item.coords,
 
         //mytodo: add different radius
@@ -2098,11 +2129,11 @@ class GameManager extends EventEmitter {
     for (const item of allBurnedCoords) {
       const planet = this.getPlanetWithId(item.hash);
       if (planet === undefined) continue;
-      if (planet.owner !== this.account) continue;
+      if (planet.operator !== this.account) continue;
 
       pinkZones.add({
+        locationId: planet.locationId,
         coords: item.coords,
-
         //mytodo: add different radius
         radius: this.getContractConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[planet.planetLevel],
       });
@@ -2419,9 +2450,9 @@ class GameManager extends EventEmitter {
         throw new Error("you can't pink destroyed/frozen planets");
       }
 
-      if (planet.operator !== undefined && planet.operator !== EMPTY_ADDRESS) {
-        throw new Error('someone already burn this planet');
-      }
+      // if (planet.operator !== undefined && planet.operator !== EMPTY_ADDRESS) {
+      //   throw new Error('someone already burn this planet');
+      // }
 
       if (planet.transactions?.hasTransaction(isUnconfirmedPinkTx)) {
         throw new Error("you're already pinking this planet's location");
