@@ -515,12 +515,13 @@ export async function deployCaptureFacet(
 
 export async function deployPinkBombFacet(
   {},
-  { LibPlanet }: Libraries,
+  { LibPlanet, LibGameUtils }: Libraries,
   hre: HardhatRuntimeEnvironment
 ) {
   const factory = await hre.ethers.getContractFactory('DFPinkBombFacet', {
     libraries: {
       LibPlanet,
+      LibGameUtils,
     },
   });
   const contract = await factory.deploy();

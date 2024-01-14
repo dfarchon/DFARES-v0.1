@@ -10,6 +10,7 @@ import {DFArtifactFacet} from "./DFArtifactFacet.sol";
 // Library imports
 import {LibPlanet} from "../libraries/LibPlanet.sol";
 import {LibDiamond} from "../vendor/libraries/LibDiamond.sol";
+import {LibGameUtils} from "../libraries/LibGameUtils.sol";
 
 // Storage imports
 import {WithStorage} from "../libraries/LibStorage.sol";
@@ -76,6 +77,7 @@ contract DFPinkBombFacet is WithStorage {
         require(gs().burnedCoords[planetId].locationId == 0, "Location already burned");
 
         LibPlanet.refreshPlanet(planetId);
+
         Planet storage planet = gs().planets[planetId];
 
         require(!planet.destroyed, "planet is destroyed");
@@ -147,15 +149,23 @@ contract DFPinkBombFacet is WithStorage {
         uint256 x = _input[2];
         uint256 y = _input[3];
 
+        if (!gs().planets[_input[0]].isInitialized) {
+            LibPlanet.initializePlanetWithDefaults(_input[0], _input[1], x**2 + y**2, false);
+        }
+
+        LibPlanet.refreshPlanet(planetId);
+
+        Artifact memory activeArtifact = LibGameUtils.getActiveArtifact(planetId);
+
+        require(
+            activeArtifact.artifactType != ArtifactType.StellarShield,
+            "need no active StellarShield"
+        );
+
         int256 planetX = DFCaptureFacet(address(this)).getIntFromUInt(x);
         int256 planetY = DFCaptureFacet(address(this)).getIntFromUInt(y);
         uint256 distSquare = uint256(planetX**2 + planetY**2);
 
-        if (!gs().planets[_input[0]].isInitialized) {
-            LibPlanet.initializePlanetWithDefaults(_input[0], _input[1], distSquare, false);
-        }
-
-        LibPlanet.refreshPlanet(planetId);
         Planet storage planet = gs().planets[planetId];
 
         require(!planet.destroyed, "planet is destroyed");

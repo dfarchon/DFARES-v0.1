@@ -1,5 +1,5 @@
 import { isUnconfirmedPinkTx } from '@dfares/serde';
-import { EthAddress, LocationId } from '@dfares/types';
+import { ArtifactType, EthAddress, LocationId } from '@dfares/types';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Btn } from '../Components/Btn';
@@ -92,6 +92,17 @@ export function PinkPane({
   const res = getRes();
   const pinkLocationIdCooldownPassed = res !== 0 ? res <= Date.now() : false;
 
+  const getStellarShieldPassed = () => {
+    if (!planetId) return false;
+    const planet = uiManager.getPlanetWithId(planetId);
+    if (!planet) return false;
+    const artifact = uiManager.getActiveArtifact(planet);
+    if (artifact === undefined) return true;
+
+    return artifact.artifactType !== ArtifactType.StellarShield;
+  };
+  const stellarShieldPassed = getStellarShieldPassed();
+
   useEffect(() => {
     if (!uiManager) return;
     setAccount(uiManager.getAccount());
@@ -110,6 +121,8 @@ export function PinkPane({
   } else if (!pinkLocationIdCooldownPassed) {
     pinkBtn = <Btn disabled={true}>Pink It </Btn>;
   } else if (!pinkZonePassed) {
+    pinkBtn = <Btn disabled={true}>Pink It </Btn>;
+  } else if (!stellarShieldPassed) {
     pinkBtn = <Btn disabled={true}>Pink It </Btn>;
   } else {
     pinkBtn = (
@@ -132,6 +145,11 @@ export function PinkPane({
         </p>
       )}
 
+      {!stellarShieldPassed && (
+        <p>
+          <Blue>INFO:</Blue> You can't pink a planet with active StellarShield.
+        </p>
+      )}
       {pinkZonePassed && !pinkLocationIdCooldownPassed && planetId && (
         <p>
           <Blue>INFO:</Blue> You must wait{' '}
@@ -139,7 +157,7 @@ export function PinkPane({
             timestamp={uiManager.getNextPinkAvailableTimestamp(planetId)}
             ifPassed={'now!'}
           />{' '}
-          to burn this planet.
+          to pink this planet.
         </p>
       )}
     </div>
@@ -149,8 +167,8 @@ export function PinkPane({
     return (
       <PinkWrapper>
         <div>
-          Need to wait{' '}
-          <White>{formatDuration(uiManager.contractConstants.PINK_PLANET_COOLDOWN * 1000)}</White>.{' '}
+          You need to wait{' '}
+          <White>{formatDuration(uiManager.contractConstants.PINK_PLANET_COOLDOWN * 1000)}</White>{' '}
           after dropping bomb.
         </div>
         <div className='message'>{warningsSection}</div>
