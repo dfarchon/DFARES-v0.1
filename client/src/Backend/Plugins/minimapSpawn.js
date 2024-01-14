@@ -29,6 +29,7 @@ class MinimapSpawnPlugin {
 
     const radius = ui.getWorldRadius();
     // const rim = Math.sqrt(df.getContractConstants().SPAWN_RIM_AREA);
+    this.step = Math.floor((df.getWorldRadius() * 1.0) / 30);
 
     const image = new Image();
     image.src = '../../../../public/DFARESLogo-v3.svg';
