@@ -44,9 +44,9 @@ const defaultInitializerValues = {
     0, 1_000, 2_000, 3_000, 4_000, 5_000, 6_000, 7_000, 8_000, 9_000,
   ],
 
-  MAX_LEVEL_DIST: [50000, 45000, 40000, 20000, 10000],
-  MAX_LEVEL_LIMIT: [1, 6, 7, 8, 9, 9],
-  MIN_LEVEL_BIAS: [0, 0, 1, 1, 2, 2],
+  MAX_LEVEL_DIST: [70000, 60000, 50000, 40000, 30000],
+  MAX_LEVEL_LIMIT: [9, 5, 6, 7, 8, 9],
+  MIN_LEVEL_BIAS: [0, 0, 0, 0, 0, 1],
 
   PLANET_TYPE_WEIGHTS: [
     [
