@@ -38,7 +38,7 @@ export const TOKEN_NAME = 'ETH';
 export const BLOCKCHAIN_NAME = 'Redstone Testnet';
 export const HOST_TEAM_NAME = 'DF Archon';
 
-export const GAS_ADJUST_DELTA = '1'; //'0.00000005'; //
+export const GAS_ADJUST_DELTA = '0.00000005'; // '1'; //'0.00000005'; //
 
 export const FIXED_DIGIT_NUMBER = 9;
 
@@ -209,9 +209,9 @@ export const HAT_SIZES = [
 export const MIN_HAT_TYPE = 1;
 export const MAX_HAT_TYPE = 10;
 
-export const PICTURE_URL = 'http://localhost:8081';
+// export const PICTURE_URL = 'http://localhost:8081';
 // export const PICTURE_URL = 'https://dfares.xyz/public';
-
+export const PICTURE_URL = 'https://dfares-test.netlify.app/public';
 export const MIN_MEME_TYPE = 1;
 export const MAX_MEME_TYPE = 20;
 
