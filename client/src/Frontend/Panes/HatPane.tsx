@@ -1,27 +1,16 @@
 import {
-  MAX_AVATAR_TYPE,
   MAX_HAT_TYPE,
   MAX_LOGO_TYPE,
   MAX_MEME_TYPE,
-  MIN_AVATAR_TYPE,
   MIN_HAT_TYPE,
   MIN_LOGO_TYPE,
   MIN_MEME_TYPE,
   TOKEN_NAME,
 } from '@dfares/constants';
 import { weiToEth } from '@dfares/network';
-import {
-  avatarTypeToNum,
-  getHatSizeName,
-  getPlanetCosmetic,
-  hatTypeToNum,
-  logoTypeToNum,
-  memeTypeToNum,
-} from '@dfares/procedural';
+import { getHatSizeName, hatTypeToNum, logoTypeToNum, memeTypeToNum } from '@dfares/procedural';
 import { isUnconfirmedBuyHatTx } from '@dfares/serde';
 import {
-  AvatarType,
-  AvatarTypeNames,
   HatType,
   HatTypeNames,
   LocationId,
@@ -60,7 +49,8 @@ const StyledHatPane = styled.div`
 `;
 
 const getHatCostEth = (planet: Planet) => {
-  return 2 ** planet.hatLevel;
+  return 1 + 0 * planet.hatLevel;
+  // return 2 ** planet.hatLevel;
 };
 
 export function HatPane({
@@ -106,26 +96,28 @@ export function HatPane({
     labels.push(LogoTypeNames[i]);
   }
 
-  for (let i = MIN_AVATAR_TYPE; i <= MAX_AVATAR_TYPE; i++) {
-    values.push(avatarTypeToNum(Number(i) as AvatarType).toString());
-    labels.push(AvatarTypeNames[i]);
-  }
+  // for (let i = MIN_AVATAR_TYPE; i <= MAX_AVATAR_TYPE; i++) {
+  //   values.push(avatarTypeToNum(Number(i) as AvatarType).toString());
+  //   labels.push(AvatarTypeNames[i]);
+  // }
 
   if (planet && planet.owner === account) {
     return (
       <StyledHatPane>
         <div>
-          <Sub>HAT</Sub>
-          <span>{getPlanetCosmetic(planet).hatType}</span>
+          <Sub>HAT Type</Sub>
+          {/* <span>{getPlanetCosmetic(planet).hatType}</span> */}
+          <span> {planet.hatType}</span>
         </div>
         <div>
           <Sub>HAT Level</Sub>
           <span>{getHatSizeName(planet)}</span>
         </div>
         <div className='margin-top'>
-          <Sub>Next Level Cost</Sub>
+          {/* <Sub>Next Level HAT Cost</Sub> */}
+          <Sub>{planet && planet.hatLevel > 0 ? 'Take Off' : 'Buy'} HAT Cost</Sub>
           <span>
-            {getHatCostEth(planet)} USD <Sub>/</Sub> {getHatCostEth(planet)} ${TOKEN_NAME}
+            {getHatCostEth(planet)} ${TOKEN_NAME}
           </span>
         </div>
         <div>
@@ -137,6 +129,7 @@ export function HatPane({
 
         <EmSpacer height={1} />
         <Link to={'https://blog.zkga.me/df-04-faq'}>Get More ${TOKEN_NAME}</Link>
+
         <EmSpacer height={0.5} />
 
         <div>
@@ -156,7 +149,7 @@ export function HatPane({
           }}
           disabled={!enabled(planet)}
         >
-          {planet && planet.hatLevel > 0 ? 'Upgrade' : 'Buy'} HAT
+          {planet && planet.hatLevel > 0 ? 'Take Off' : 'Buy'} HAT
         </Btn>
       </StyledHatPane>
     );

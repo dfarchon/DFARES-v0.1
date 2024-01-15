@@ -154,7 +154,31 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         //   <MythicLabelText text={`Welcome To Dark Forest ARES v0.1.2`} />
         // );
 
-        terminal.current?.print('Welcome To Dark Forest ARES v0.1.2', TerminalTextStyle.Pink);
+        terminal.current?.print(
+          'Welcome To Dark Forest Ares v0.1 Round 2: Pinkship',
+          TerminalTextStyle.Pink
+        );
+        terminal.current?.newline();
+        terminal.current?.newline();
+        terminal.current?.printLink(
+          'Announcement',
+          () => {
+            window.open(
+              'https://mirror.xyz/dfarchon.eth/VkfBZcWWsdVqwPKctPX6GGzrpf_TY__hRUTQ13Ohd4c'
+            );
+          },
+          TerminalTextStyle.White
+        );
+        terminal.current?.newline();
+
+        terminal.current?.printLink(
+          'Pre-registration Form',
+          () => {
+            window.open('https://forms.gle/GB9kb1pHduiNuXi68');
+          },
+          TerminalTextStyle.White
+        );
+
         terminal.current?.newline();
         terminal.current?.newline();
 

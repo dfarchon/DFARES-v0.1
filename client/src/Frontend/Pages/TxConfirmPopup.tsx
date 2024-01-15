@@ -191,7 +191,9 @@ export function TxConfirmPopup({
 
   const hatPlanet = localStorage.getItem(`${account}-hatPlanet`);
   const hatLevel = localStorage.getItem(`${account}-hatLevel`);
-  const hatCost: number = method === 'buyHat' && hatLevel ? 2 ** parseInt(hatLevel) : 0;
+  // const hatCost: number = method === 'buyHat' && hatLevel ? 2 **
+  // parseInt(hatLevel) : 0;
+  const hatCost: number = method === 'buyHat' && hatLevel ? 1 : 0;
 
   const upPlanet = localStorage.getItem(`${account}-upPlanet`);
   const branch = localStorage.getItem(`${account}-branch`);
@@ -324,8 +326,13 @@ export function TxConfirmPopup({
             </Row>
             <Row>
               <b>HAT Level</b>
+              <span>{hatLevel}</span>
+            </Row>
+
+            <Row>
+              <b>Hat Fee </b>
               <span>
-                {hatLevel} ({hatCost} ${TOKEN_NAME})
+                {hatCost} ${TOKEN_NAME}
               </span>
             </Row>
           </>
@@ -442,6 +449,17 @@ export function TxConfirmPopup({
             <span className='mono'>{withdrawSilverPlanet}</span>
           </Row>
         )}
+
+        {method === 'initializePlayer' && (
+          <>
+            <Row>
+              <b>Entry Fee </b>
+              <span>
+                {joinGameCost} ${TOKEN_NAME}
+              </span>
+            </Row>
+          </>
+        )}
       </div>
 
       <div className='section'>
@@ -454,17 +472,6 @@ export function TxConfirmPopup({
           <b>Gas Limit</b>
           <span>{gasLimit}</span>
         </Row>
-
-        {method === 'initializePlayer' && (
-          <>
-            <Row>
-              <b>Entry Fee </b>
-              <span>
-                {joinGameCost} ${TOKEN_NAME}
-              </span>
-            </Row>
-          </>
-        )}
 
         <Row>
           <b>Max Transaction Cost</b>

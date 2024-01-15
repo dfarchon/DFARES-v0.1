@@ -78,7 +78,13 @@ function TerminalImpl({ promptCharacter }: TerminalProps, ref: React.Ref<Termina
       let fragment: JSX.Element;
       let innerFragment: JSX.Element = <span>{str}</span>;
 
-      if (onClick !== undefined) {
+      if (onClick !== undefined && style === 4) {
+        innerFragment = (
+          <Link onClick={onClick} color={'pink'}>
+            {innerFragment}
+          </Link>
+        );
+      } else if (onClick !== undefined) {
         innerFragment = <Link onClick={onClick}>{innerFragment}</Link>;
       }
 
