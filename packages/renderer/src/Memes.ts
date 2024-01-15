@@ -7,7 +7,8 @@ export type Meme = {
   // image?: () => Promise<HTMLImageElement>;
 };
 
-const PICTURE_URL = 'https://dfares.xyz/public';
+// const PICTURE_URL = 'https://dfares.xyz/public';
+const PICTURE_URL = 'https://dfares-test.netlify.app/public';
 const URL = PICTURE_URL;
 
 const doge = {
