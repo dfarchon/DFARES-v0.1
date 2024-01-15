@@ -35,6 +35,10 @@ const ImgContainer = styled.div`
   width: 200px; //750px;
   max-width: 80vw;
 
+  img:hover {
+    transform: scale(1.3);
+  }
+
   @media only screen and (max-device-width: 1000px) {
     width: 100%;
     max-width: 100%;
@@ -45,4 +49,5 @@ const ImgContainer = styled.div`
 
 const LandingPageRoundArtImg = styled.img`
   cursor: pointer;
+  transition: all 0.3s;
 `;
