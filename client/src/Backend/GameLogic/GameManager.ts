@@ -3826,7 +3826,7 @@ class GameManager extends EventEmitter {
         // MyNotice: when change gasLimit, need change the value in TxConfirmPopup.tsx
         gasLimit: 500000,
         value: bigInt(1000000000000000000)
-          .multiply(2 ** planet.hatLevel)
+          .multiply(1 + 0 * planet.hatLevel)
           .toString(),
       });
 
