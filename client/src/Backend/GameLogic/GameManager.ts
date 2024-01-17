@@ -885,6 +885,7 @@ class GameManager extends EventEmitter {
           await gameManager.hardRefreshPlanet(tx.intent.locationId);
         } else if (isUnconfirmedBurnTx(tx)) {
           await gameManager.hardRefreshPlanet(tx.intent.locationId);
+          await gameManager.hardRefreshPinkZones();
         } else if (isUnconfirmedPinkTx(tx)) {
           await gameManager.hardRefreshPlanet(tx.intent.locationId);
         } else if (isUnconfirmedInitTx(tx)) {
