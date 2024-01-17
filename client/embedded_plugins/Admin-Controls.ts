@@ -268,8 +268,8 @@ async function createArtifact(
 
 async function initPlanet(planet: LocatablePlanet) {
   if (planet.isInContract) return;
-  const x = planet.coords.x;
-  const y = planet.coords.y;
+  const x = planet.location.coords.x;
+  const y = planet.location.coords.y;
 
   const distFromOriginSquare = x * x + y * y;
 
