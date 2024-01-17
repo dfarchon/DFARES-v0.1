@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 // External contract imports
 import {DFVerifierFacet} from "./DFVerifierFacet.sol";
 import {DFWhitelistFacet} from "./DFWhitelistFacet.sol";
+import {DFCaptureFacet} from "./DFCaptureFacet.sol";
 
 // Library imports
 import {ABDKMath64x64} from "../vendor/libraries/ABDKMath64x64.sol";
@@ -118,7 +119,12 @@ contract DFCoreFacet is WithStorage {
         //     LibPlanet.initializePlanetWithDefaults(_input[0], _input[1], false);
         // }
 
-        uint256 distFromOriginSquare = _input[2]**2 + _input[3]**2;
+        uint256 x = _input[2];
+        uint256 y = _input[3];
+        int256 planetX = DFCaptureFacet(address(this)).getIntFromUInt(x);
+        int256 planetY = DFCaptureFacet(address(this)).getIntFromUInt(y);
+        uint256 distFromOriginSquare = uint256(planetX * planetX + planetY * planetY);
+
         if (!gs().planets[_input[0]].isInitialized) {
             LibPlanet.initializePlanetWithDefaults(
                 _input[0],
@@ -246,18 +252,13 @@ contract DFCoreFacet is WithStorage {
 
         // gs().planets[_location].hatLevel += 1;
 
-        if(gs().planets[_location].hatLevel ==0){
-            gs().planets[_location].hatLevel =1;
+        if (gs().planets[_location].hatLevel == 0) {
+            gs().planets[_location].hatLevel = 1;
             gs().planets[_location].hatType = hatType;
-
-        }else {
-            gs().planets[_location].hatLevel=0;
+        } else {
+            gs().planets[_location].hatLevel = 0;
             gs().planets[_location].hatType = 0;
-
         }
-
-
-
 
         emit PlanetHatBought(
             msg.sender,
