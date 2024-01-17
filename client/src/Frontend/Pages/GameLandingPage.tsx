@@ -1199,8 +1199,8 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       <div>
         {isMiniMapOn && (
           <>
-            <div style={{ position: 'absolute', right: '50px' }}>
-              <div style={{ color: 'red', width: '100px', height: '50px' }}> </div>
+            <div style={{ position: 'absolute', right: '100px' }}>
+              <div style={{ color: 'red', width: '100px', height: '100px' }}> </div>
               <MinimapPluginWrapper plugin={minimapPlugin} />
             </div>
           </>
