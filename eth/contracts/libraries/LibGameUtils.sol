@@ -247,20 +247,18 @@ library LibGameUtils {
         //     artifactType = ArtifactType.Avatar;
         // }
 
-        if (lastByteOfSeed < 682) {
+        if (lastByteOfSeed < 820) {
             artifactType = ArtifactType.Wormhole;
-        } else if (lastByteOfSeed < 1364) {
+        } else if (lastByteOfSeed < 1640) {
             artifactType = ArtifactType.PlanetaryShield;
-        } else if (lastByteOfSeed < 2046) {
+        } else if (lastByteOfSeed < 1804) {
             artifactType = ArtifactType.PhotoidCannon;
-        } else if (lastByteOfSeed < 2728) {
+        } else if (lastByteOfSeed < 2214) {
             artifactType = ArtifactType.BloomFilter;
-        } else if (lastByteOfSeed < 3410) {
+        } else if (lastByteOfSeed < 2624) {
             artifactType = ArtifactType.BlackDomain;
-        } else if (lastByteOfSeed < 4092) {
-            artifactType = ArtifactType.StellarShield;
         } else {
-            artifactType = ArtifactType.PlanetaryShield;
+             artifactType = ArtifactType.StellarShield;
         }
 
         uint256 bonus = 0;
