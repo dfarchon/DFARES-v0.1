@@ -995,7 +995,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       setInitRenderState(InitRenderState.COMPLETE);
       terminal.current?.clear();
 
-      terminal.current?.println('Welcome to the Dark Forest.', TerminalTextStyle.Green);
+      terminal.current?.println('Welcome to the Dark Forest Ares.', TerminalTextStyle.Green);
       terminal.current?.println('');
       terminal.current?.println(
         "This is the Dark Forest interactive JavaScript terminal. Only use this if you know exactly what you're doing."
