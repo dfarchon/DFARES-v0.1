@@ -3,6 +3,7 @@ import { CONTRACT_ADDRESS } from '@dfares/contracts';
 import { DarkForest } from '@dfares/contracts/typechain';
 import { EthConnection, neverResolves, weiToEth } from '@dfares/network';
 import { address } from '@dfares/serde';
+import { UnconfirmedUseKey } from '@dfares/types';
 import { bigIntFromKey } from '@dfares/whitelist';
 import { utils, Wallet } from 'ethers';
 import { reverse } from 'lodash';
@@ -83,7 +84,9 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
   const [spectate, setSpectate] = useState(false);
 
   const params = new URLSearchParams(location.search);
-  const useZkWhitelist = params.has('zkWhitelist');
+  // myNotice: round 2
+  const useZkWhitelist = true;
+  // const useZkWhitelist = params.has('zkWhitelist');
   const selectedAddress = params.get('account');
   const contractAddress = address(match.params.contract);
   const isLobby = contractAddress !== address(CONTRACT_ADDRESS);
@@ -167,7 +170,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
               'https://mirror.xyz/dfarchon.eth/VkfBZcWWsdVqwPKctPX6GGzrpf_TY__hRUTQ13Ohd4c'
             );
           },
-          TerminalTextStyle.White
+          TerminalTextStyle.Pink
         );
         terminal.current?.newline();
 
@@ -176,7 +179,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           () => {
             window.open('https://forms.gle/GB9kb1pHduiNuXi68');
           },
-          TerminalTextStyle.White
+          TerminalTextStyle.Pink
         );
 
         terminal.current?.newline();
@@ -602,23 +605,50 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         const keyBigInt = bigIntFromKey(key);
         const snarkArgs = await getWhitelistArgs(keyBigInt, address, terminal);
         try {
-          const ukReceipt = await contractsAPI.contract.useKey(
-            snarkArgs[ZKArgIdx.PROOF_A],
-            snarkArgs[ZKArgIdx.PROOF_B],
-            snarkArgs[ZKArgIdx.PROOF_C],
-            [...snarkArgs[ZKArgIdx.DATA]]
-          );
-          await ukReceipt.wait();
+          const getArgs = async () => {
+            return [
+              snarkArgs[ZKArgIdx.PROOF_A],
+              snarkArgs[ZKArgIdx.PROOF_B],
+              snarkArgs[ZKArgIdx.PROOF_C],
+              [...snarkArgs[ZKArgIdx.DATA]],
+            ];
+          };
+
+          const txIntent: UnconfirmedUseKey = {
+            contract: contractsAPI.contract,
+            methodName: 'useKey',
+            args: getArgs(),
+          };
+
+          console.log(txIntent);
+          const tx = await contractsAPI.submitTransaction(txIntent);
+          console.log(tx);
+
+          // const ukReceipt = await contractsAPI.contract.useKey(
+          //   snarkArgs[ZKArgIdx.PROOF_A],
+          //   snarkArgs[ZKArgIdx.PROOF_B],
+          //   snarkArgs[ZKArgIdx.PROOF_C],
+          //   [...snarkArgs[ZKArgIdx.DATA]]
+          // );
+          // await ukReceipt.wait();
           terminal.current?.print('Successfully joined game. ', TerminalTextStyle.Green);
           terminal.current?.print(`Welcome, player `);
           terminal.current?.println(address, TerminalTextStyle.Text);
-          terminal.current?.print('Sent player $0.15 :) ', TerminalTextStyle.Blue);
+          // terminal.current?.print('Sent player $0.15 :) ', TerminalTextStyle.Blue);
+          // terminal.current?.printLink(
+          //   '(View Transaction)',
+          //   () => {
+          //     window.open(`${BLOCK_EXPLORER_URL}/${ukReceipt.hash}`);
+          //   },
+          //   TerminalTextStyle.Blue
+          // );
+
           terminal.current?.printLink(
             '(View Transaction)',
             () => {
-              window.open(`${BLOCK_EXPLORER_URL}/${ukReceipt.hash}`);
+              window.open(`${BLOCK_EXPLORER_URL}/${tx.hash}`);
             },
-            TerminalTextStyle.Blue
+            TerminalTextStyle.Pink
           );
           terminal.current?.newline();
           // setStep(TerminalPromptStep.ASKING_PLAYER_EMAIL);

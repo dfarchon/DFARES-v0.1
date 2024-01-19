@@ -20,6 +20,7 @@ import {
   UnconfirmedProspectPlanet,
   UnconfirmedReveal,
   UnconfirmedUpgrade,
+  UnconfirmedUseKey,
   UnconfirmedWithdrawArtifact,
   UnconfirmedWithdrawSilver,
 } from '@dfares/types';
@@ -132,6 +133,10 @@ export function isUnconfirmedInvadePlanet(txIntent: TxIntent): txIntent is Uncon
   return txIntent.methodName === 'invadePlanet';
 }
 
+export function isUnconfirmedUseKey(txIntent: TxIntent): txIntent is UnconfirmedUseKey {
+  return txIntent.methodName === 'useKey';
+}
+
 export function isUnconfirmedRevealTx(tx: Transaction): tx is Transaction<UnconfirmedReveal> {
   return isUnconfirmedReveal(tx.intent);
 }
@@ -242,4 +247,8 @@ export function isUnconfirmedBurnTx(tx: Transaction): tx is Transaction<Unconfir
 
 export function isUnconfirmedPinkTx(tx: Transaction): tx is Transaction<UnconfirmedPink> {
   return isUnconfirmedPink(tx.intent);
+}
+
+export function isUnconfirmedUseKeyTx(tx: Transaction): tx is Transaction<UnconfirmedUseKey> {
+  return isUnconfirmedUseKey(tx.intent);
 }

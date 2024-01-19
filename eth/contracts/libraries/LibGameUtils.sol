@@ -258,7 +258,7 @@ library LibGameUtils {
         } else if (lastByteOfSeed < 2624) {
             artifactType = ArtifactType.BlackDomain;
         } else {
-             artifactType = ArtifactType.StellarShield;
+            artifactType = ArtifactType.StellarShield;
         }
 
         uint256 bonus = 0;
