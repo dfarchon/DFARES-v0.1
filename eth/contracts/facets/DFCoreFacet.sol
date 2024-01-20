@@ -167,6 +167,13 @@ contract DFCoreFacet is WithStorage {
         uint256 entryFee = getEntryFee();
         require(msg.value == entryFee, "Wrong value sent");
 
+        // whitelist
+        if (!ws().enabled) {
+            require(!ws().allowedAccounts[msg.sender], "player is already allowed");
+            ws().allowedAccounts[msg.sender] = true;
+            ws().allowedAccountsArray.push(msg.sender);
+        }
+
         // Initialize player data
         gs().playerIds.push(msg.sender);
         gs().players[msg.sender] = Player(
