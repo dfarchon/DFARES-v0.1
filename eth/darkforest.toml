@@ -293,9 +293,9 @@ ROUND_END_REWARDS_BY_RANK=[
 # not include PinkShip yet
 [initializers.SPACESHIPS]
 GEAR = true
-MOTHERSHIP = true
-TITAN = true
-CRESCENT = true
+MOTHERSHIP = false
+TITAN = false
+CRESCENT = false
 WHALE = false
 PINKSHIP = true
 
