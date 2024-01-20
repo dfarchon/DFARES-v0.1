@@ -1,4 +1,9 @@
-import { EMPTY_ADDRESS, MAX_PLANET_LEVEL, MIN_PLANET_LEVEL } from '@dfares/constants';
+import {
+  CONTRACT_PRECISION,
+  EMPTY_ADDRESS,
+  MAX_PLANET_LEVEL,
+  MIN_PLANET_LEVEL,
+} from '@dfares/constants';
 import { Monomitter, monomitter } from '@dfares/events';
 import { hasOwner, isActivated, isLocatable } from '@dfares/gamelogic';
 import { bonusFromHex, getBytesFromHex } from '@dfares/hexgen';
@@ -1528,10 +1533,11 @@ export class GameObjects {
       defense *= 0.5;
     }
 
+    //myNotice: CONTRACT_PRECISION
     range = Math.floor(range);
     speed = Math.floor(speed);
     energyCap = Math.floor(energyCap);
-    energyGro = Math.floor(energyGro);
+    energyGro = Math.floor(energyGro * CONTRACT_PRECISION) / CONTRACT_PRECISION;
     silCap = Math.floor(silCap);
     silGro = Math.floor(silGro);
     defense = Math.floor(defense);
@@ -1555,7 +1561,7 @@ export class GameObjects {
     range = Math.floor(range);
     speed = Math.floor(speed);
     energyCap = Math.floor(energyCap);
-    energyGro = Math.floor(energyGro);
+    energyGro = Math.floor(energyGro * CONTRACT_PRECISION) / CONTRACT_PRECISION;
     silCap = Math.floor(silCap);
     silGro = Math.floor(silGro);
     defense = Math.floor(defense);
@@ -1580,7 +1586,7 @@ export class GameObjects {
     range = Math.floor(range);
     speed = Math.floor(speed);
     energyCap = Math.floor(energyCap);
-    energyGro = Math.floor(energyGro);
+    energyGro = Math.floor(energyGro * CONTRACT_PRECISION) / CONTRACT_PRECISION;
     silCap = Math.floor(silCap);
     silGro = Math.floor(silGro);
     defense = Math.floor(defense);
