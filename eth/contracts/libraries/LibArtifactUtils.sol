@@ -101,14 +101,22 @@ library LibArtifactUtils {
             )
         );
 
-        (ArtifactType artifactType, uint256 levelBonus) = LibGameUtils
-            ._randomArtifactTypeAndLevelBonus(artifactSeed, biome, planet.spaceType);
+        (
+            ArtifactType artifactType,
+            uint256 levelBonus,
+            ArtifactRarity artifactRarity
+        ) = LibGameUtils._randomArtifactTypeAndLevelBonus(
+                artifactSeed,
+                biome,
+                planet.spaceType,
+                planet.planetLevel
+            );
 
         DFTCreateArtifactArgs memory createArtifactArgs = DFTCreateArtifactArgs(
             artifactSeed,
             msg.sender,
             args.planetId,
-            LibGameUtils.artifactRarityFromPlanetLevel(levelBonus + planet.planetLevel),
+            artifactRarity,
             biome,
             artifactType,
             args.coreAddress,

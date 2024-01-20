@@ -217,8 +217,9 @@ library LibGameUtils {
     function _randomArtifactTypeAndLevelBonus(
         uint256 artifactSeed,
         Biome biome,
-        SpaceType spaceType
-    ) internal pure returns (ArtifactType, uint256) {
+        SpaceType spaceType,
+        uint256 planetLevel
+    ) internal pure returns (ArtifactType, uint256,ArtifactRarity) {
         uint256 lastByteOfSeed = artifactSeed % 0xFFF;
         uint256 secondLastByteOfSeed = ((artifactSeed - lastByteOfSeed) / 0x1000) % 0xFFF;
 
@@ -268,7 +269,8 @@ library LibGameUtils {
             bonus = 1;
         }
 
-        return (artifactType, bonus);
+        ArtifactRarity artifactRarity = artifactRarityFromPlanetLevel(bonus + planetLevel);
+        return (artifactType, bonus, artifactRarity);
     }
 
     // TODO v0.6: handle corrupted biomes
