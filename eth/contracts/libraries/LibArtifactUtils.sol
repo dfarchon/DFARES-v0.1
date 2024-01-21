@@ -287,8 +287,25 @@ library LibArtifactUtils {
             );
             require(!gs().planets[linkTo].destroyed, "planet destroyed");
             require(!gs().planets[linkTo].frozen, "planet frozen");
-
+            require(
+                2 * uint256(artifact.rarity) >= planet.planetLevel,
+                "artifact is not powerful enough to apply effect to this planet level"
+            );
+            require(
+                2 * uint256(artifact.rarity) >= gs().planets[linkTo].planetLevel,
+                "artifact is not powerful enough to apply effect to this planet level"
+            );
             artifact.linkTo = linkTo;
+        } else if (artifact.artifactType == ArtifactType.PlanetaryShield) {
+            require(
+                2 * uint256(artifact.rarity) >= planet.planetLevel,
+                "artifact is not powerful enough to apply effect to this planet level"
+            );
+        } else if (artifact.artifactType == ArtifactType.PhotoidCannon) {
+            require(
+                2 * uint256(artifact.rarity) >= planet.planetLevel,
+                "artifact is not powerful enough to apply effect to this planet level"
+            );
         } else if (artifact.artifactType == ArtifactType.BloomFilter) {
             require(
                 2 * uint256(artifact.rarity) >= planet.planetLevel,
@@ -460,6 +477,10 @@ library LibArtifactUtils {
             //     // gs().planets[linkTo].owner = msg.sender;
         } else if (artifact.artifactType == ArtifactType.StellarShield) {
             // MyTodo: maybe add some limit?
+            require(
+                2 * uint256(artifact.rarity) >= planet.planetLevel,
+                "artifact is not powerful enough to apply effect to this planet level"
+            );
         } else if (artifact.artifactType == ArtifactType.BlindBox) {
             // planet.owner = gs().planets[linkTo].owner;
             // gs().planets[linkTo].owner = msg.sender;
