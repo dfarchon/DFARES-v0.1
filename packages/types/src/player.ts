@@ -18,6 +18,8 @@ export type Player = {
   lastRevealTimestamp: number;
   lastClaimTimestamp: number;
   lastBurnTimestamp: number;
+  lastActivateArtifactTimestamp: number;
+  lastBuyArtifactTimestamp: number;
 
   score?: number;
 

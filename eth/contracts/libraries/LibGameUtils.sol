@@ -219,7 +219,15 @@ library LibGameUtils {
         Biome biome,
         SpaceType spaceType,
         uint256 planetLevel
-    ) internal pure returns (ArtifactType, uint256,ArtifactRarity) {
+    )
+        internal
+        pure
+        returns (
+            ArtifactType,
+            uint256,
+            ArtifactRarity
+        )
+    {
         uint256 lastByteOfSeed = artifactSeed % 0xFFF;
         uint256 secondLastByteOfSeed = ((artifactSeed - lastByteOfSeed) / 0x1000) % 0xFFF;
 

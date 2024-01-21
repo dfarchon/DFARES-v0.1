@@ -194,16 +194,21 @@ export function ArtifactActions({
     });
   }
 
-  if (
-    canActivateArtifact(artifact, onPlanet, otherArtifactsOnPlanet) &&
-    ((artifact.artifactType !== ArtifactType.Avatar && maxAmount > activateArtifactAmount) ||
-      artifact.artifactType === ArtifactType.Avatar)
-  ) {
+  const activateArtifactCooldownPassed =
+    uiManager.getNextActivateArtifactAvailableTimestamp() <= Date.now();
+
+  // if (
+  //   canActivateArtifact(artifact, onPlanet, otherArtifactsOnPlanet) &&
+  //   ((artifact.artifactType !== ArtifactType.Avatar && maxAmount > activateArtifactAmount) ||
+  //     artifact.artifactType === ArtifactType.Avatar)
+  // )
+
+  if (canActivateArtifact(artifact, onPlanet, otherArtifactsOnPlanet)) {
     actions.unshift({
       name: TooltipName.ActivateArtifact,
       children: (
         <Btn
-          disabled={activating}
+          disabled={activating || !activateArtifactCooldownPassed}
           onClick={(e) => {
             e.stopPropagation();
             activate(artifact);

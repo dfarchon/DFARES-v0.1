@@ -314,3 +314,13 @@ struct LastBurnedStruct {
     address player;
     uint256 lastBurnTimestamp;
 }
+
+struct LastActivateArtifactStruct {
+    address player;
+    uint256 lastActivateArtifactTimestamp;
+}
+
+struct LastBuyArtifactStruct {
+    address player;
+    uint256 lastBuyArtifactTimestamp;
+}

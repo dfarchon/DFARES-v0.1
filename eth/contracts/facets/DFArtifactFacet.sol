@@ -360,6 +360,13 @@ contract DFArtifactFacet is WithStorage, ERC721 {
             "Only owner account can perform that operation on planet."
         );
 
+        require(
+            block.timestamp - gs().lastBuyArtifactTimestamp[msg.sender] >
+                gameConstants().BUY_ARTIFACT_COOLDOWN,
+            "wait for cooldown before buying artifact again"
+        );
+        gs().lastBuyArtifactTimestamp[msg.sender] = block.timestamp;
+
         require(args.rarity != ArtifactRarity.Unknown, "can't buy Unknown");
         require(args.rarity != ArtifactRarity.Mythic, "can't buy Mythics");
 

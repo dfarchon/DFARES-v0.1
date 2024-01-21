@@ -98,14 +98,14 @@ export default function LandingPage() {
               <Spacer height={4} />
             </OnlyMobile>
             <HideOnMobile>
-              <Spacer height={16} />
+              <Spacer height={12} />
             </HideOnMobile>
 
-            <Spacer height={25} />
+            <Spacer height={10} />
             <div style={{ fontSize: '30px' }}>NOW I AM BECOME DEATH</div>
 
             <div style={{ fontSize: '50px' }}> THE DESTROYER OF WORLDS</div>
-            <Spacer height={40} />
+            <Spacer height={28} />
 
             <LandingPageRoundArt />
 

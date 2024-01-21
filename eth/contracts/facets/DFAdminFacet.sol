@@ -142,6 +142,14 @@ contract DFAdminFacet is WithStorage {
         gameConstants().PINK_PLANET_COOLDOWN = newCooldown;
     }
 
+    function changeActivateArtifactCooldown(uint256 newCooldown) public onlyAdmin {
+        gameConstants().ACTIVATE_ARTIFACT_COOLDOWN = newCooldown;
+    }
+
+    function changeBuyArtifactCooldown(uint256 newCooldown) public onlyAdmin {
+        gameConstants().BUY_ARTIFACT_COOLDOWN = newCooldown;
+    }
+
     function withdraw() public onlyAdmin {
         // TODO: Don't send to msg.sender, instead send to contract admin
         payable(msg.sender).transfer(address(this).balance);

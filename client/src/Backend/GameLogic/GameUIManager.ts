@@ -506,12 +506,28 @@ class GameUIManager extends EventEmitter {
     return this.gameManager.getNextBurnAvailableTimestamp();
   }
 
+  public timeUntilNextBurnAvailable() {
+    return this.gameManager.timeUntilNextBurnAvailable();
+  }
+
   public getNextPinkAvailableTimestamp(planetId: LocationId) {
     return this.gameManager.getNextPinkAvailableTimestamp(planetId);
   }
 
-  public timeUntilNextBurnAvailable() {
-    return this.gameManager.timeUntilNextBurnAvailable();
+  public getNextActivateArtifactAvailableTimestamp() {
+    return this.gameManager.getNextActivateArtifactAvailableTimestamp();
+  }
+
+  public timeUntilNextActivateArtifactAvailable() {
+    return this.gameManager.timeUntilNextBuyArtifactAvailable();
+  }
+
+  public getNextBuyArtifactAvailableTimestamp() {
+    return this.gameManager.getNextBuyArtifactAvailableTimestamp();
+  }
+
+  public timeUntilNextBuyArtifactAvailable() {
+    return this.gameManager.timeUntilNextBuyArtifactAvailable();
   }
 
   public getEnergyArrivingForMove(

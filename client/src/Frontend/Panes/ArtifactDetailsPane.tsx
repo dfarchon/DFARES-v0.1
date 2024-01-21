@@ -24,16 +24,16 @@ import { ArtifactRarityLabelAnim, ArtifactTypeText } from '../Components/Labels/
 import { ArtifactBiomeLabelAnim } from '../Components/Labels/BiomeLabels';
 import { AccountLabel } from '../Components/Labels/Labels';
 import { ReadMore } from '../Components/ReadMore';
-import { Green, Red, Sub, Text, Text2, White } from '../Components/Text';
+import { Blue, Green, Red, Sub, Text, Text2, White } from '../Components/Text';
 import { TextPreview } from '../Components/TextPreview';
-import { TimeUntil } from '../Components/TimeUntil';
+import { formatDuration, TimeUntil } from '../Components/TimeUntil';
 import dfstyles from '../Styles/dfstyles';
 import { useAccount, useArtifact, useUIManager } from '../Utils/AppHooks';
-import { useEmitterValue } from '../Utils/EmitterHooks';
 import { ModalHandle } from '../Views/ModalPane';
 import { ArtifactActions } from './ManagePlanetArtifacts/ArtifactActions';
 import { ArtifactChangeImageType } from './ManagePlanetArtifacts/ArtifactChangeImageType';
 import { TooltipTrigger } from './Tooltip';
+
 const StatsContainer = styled.div`
   flex-grow: 1;
 `;
@@ -168,11 +168,14 @@ export function ArtifactDetailsBody({
   const artifactWrapper = useArtifact(uiManager, artifactId);
   const artifact = artifactWrapper.value;
 
-  const currentBlockNumber = useEmitterValue(uiManager.getEthConnection().blockNumber$, undefined);
+  // const currentBlockNumber = useEmitterValue(uiManager.getEthConnection().blockNumber$, undefined);
 
   if (!artifact) {
     return null;
   }
+
+  const activateArtifactCooldownPassed =
+    uiManager.getNextActivateArtifactAvailableTimestamp() <= Date.now();
 
   // console.log(ArtifactType);
 
@@ -229,24 +232,23 @@ export function ArtifactDetailsBody({
     );
   }
 
-  // about activate artifact block limit pane
+  // // about activate artifact block limit pane
+  // //myTodo: 2 min 1 artifact
+  // const deltaTime = 2;
 
-  //myTodo: 2 min 1 artifact
-  const deltaTime = 2;
+  // const maxAmount = currentBlockNumber
+  //   ? Math.floor(
+  //       ((currentBlockNumber - uiManager.contractConstants.GAME_START_BLOCK) * 2.0) /
+  //         (60 * deltaTime)
+  //     )
+  //   : 0;
 
-  const maxAmount = currentBlockNumber
-    ? Math.floor(
-        ((currentBlockNumber - uiManager.contractConstants.GAME_START_BLOCK) * 2.0) /
-          (60 * deltaTime)
-      )
-    : 0;
-
-  const activateArtifactAmountInContract = myAccount
-    ? uiManager.getPlayerActivateArtifactAmount(myAccount)
-    : 0;
-  const activateArtifactAmount = activateArtifactAmountInContract
-    ? activateArtifactAmountInContract
-    : 0;
+  // const activateArtifactAmountInContract = myAccount
+  //   ? uiManager.getPlayerActivateArtifactAmount(myAccount)
+  //   : 0;
+  // const activateArtifactAmount = activateArtifactAmountInContract
+  //   ? activateArtifactAmountInContract
+  //   : 0;
 
   return (
     <>
@@ -352,14 +354,37 @@ export function ArtifactDetailsBody({
 
         <ArtifactChangeImageType artifactId={artifactWrapper.value?.id} depositOn={depositOn} />
 
-        {artifact.artifactType !== ArtifactType.Avatar &&
+        {/* {artifact.artifactType !== ArtifactType.Avatar &&
           false === isSpaceShip(artifact.artifactType) && (
             <div>
               <div>block number: {currentBlockNumber}</div>
               <div> activate artifact amount: {activateArtifactAmount}</div>
               <div> max artifact amount: {maxAmount} </div>
             </div>
-          )}
+          )} */}
+
+        {!isSpaceShip(artifact.artifactType) && (
+          <div>
+            <br />
+            You can only activate artifact once every{' '}
+            <White>
+              {formatDuration(uiManager.contractConstants.ACTIVATE_ARTIFACT_COOLDOWN * 1000)}
+            </White>
+            .
+            <br />
+          </div>
+        )}
+
+        {!isSpaceShip(artifact.artifactType) && !activateArtifactCooldownPassed && (
+          <p>
+            <Blue>INFO:</Blue> You must wait{' '}
+            <TimeUntil
+              timestamp={uiManager.getNextActivateArtifactAvailableTimestamp()}
+              ifPassed={'now!'}
+            />{' '}
+            to activate artifact.
+          </p>
+        )}
 
         {!noActions && (
           <ArtifactActions artifactId={artifactWrapper.value?.id} depositOn={depositOn} />

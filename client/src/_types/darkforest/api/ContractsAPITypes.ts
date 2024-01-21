@@ -231,6 +231,8 @@ export interface ContractConstants {
   STELLAR_ACTIVATION_DELAY: number;
   LOCATION_REVEAL_COOLDOWN: number;
   CLAIM_PLANET_COOLDOWN: number;
+  ACTIVATE_ARTIFACT_COOLDOWN: number;
+  BUY_ARTIFACT_COOLDOWN: number;
   PLANET_TYPE_WEIGHTS: PlanetTypeWeightsBySpaceType;
 
   /**

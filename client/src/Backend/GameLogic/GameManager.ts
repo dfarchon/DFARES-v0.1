@@ -2003,17 +2003,8 @@ class GameManager extends EventEmitter {
    * Gets the timestamp (ms) of the next time that we can claim a planet.
    */
   public getNextClaimAvailableTimestamp() {
-    if (!this.account) {
-      throw new Error('no account set');
-    }
-    const myLastClaimTimestamp = this.players.get(this.account)?.lastClaimTimestamp;
-
-    if (!myLastClaimTimestamp) {
-      return Date.now();
-    }
-
     // both the variables in the next line are denominated in seconds
-    return (myLastClaimTimestamp + this.contractConstants.CLAIM_PLANET_COOLDOWN) * 1000;
+    return Date.now() + this.timeUntilNextClaimAvailable();
   }
 
   /**
@@ -2037,17 +2028,24 @@ class GameManager extends EventEmitter {
    * Gets the timestamp (ms) of the next time that we can burn a planet.
    */
   public getNextBurnAvailableTimestamp() {
+    return Date.now() + this.timeUntilNextBurnAvailable();
+  }
+
+  /**
+   * Gets the amount of time (ms) until the next time the current player can burn a planet.
+   */
+  public timeUntilNextBurnAvailable() {
     if (!this.account) {
       throw new Error('no account set');
     }
+
     const myLastBurnTimestamp = this.players.get(this.account)?.lastBurnTimestamp;
 
-    if (!myLastBurnTimestamp) {
-      return Date.now();
-    }
-
-    // both the variables in the next line are denominated in seconds
-    return (myLastBurnTimestamp + this.contractConstants.BURN_PLANET_COOLDOWN) * 1000;
+    // Calculation formula is the same
+    return timeUntilNextBroadcastAvailable(
+      myLastBurnTimestamp,
+      this.contractConstants.BURN_PLANET_COOLDOWN
+    );
   }
 
   /**
@@ -2081,19 +2079,53 @@ class GameManager extends EventEmitter {
     else return (result + this.contractConstants.PINK_PLANET_COOLDOWN) * 1000;
   }
   /**
-   * Gets the amount of time (ms) until the next time the current player can burn a planet.
+  /**
+   * Gets the timestamp (ms) of the next time that we can activate artifact.
    */
-  public timeUntilNextBurnAvailable() {
+  public getNextActivateArtifactAvailableTimestamp() {
+    return Date.now() + this.timeUntilNextActivateArtifactAvailable();
+  }
+
+  /**
+   * Gets the amount of time (ms) until the next time the current player can activate artifact.
+   */
+  public timeUntilNextActivateArtifactAvailable() {
     if (!this.account) {
       throw new Error('no account set');
     }
 
-    const myLastBurnTimestamp = this.players.get(this.account)?.lastBurnTimestamp;
+    const myLastActivateArtifactTimestamp = this.players.get(
+      this.account
+    )?.lastActivateArtifactTimestamp;
 
     // Calculation formula is the same
     return timeUntilNextBroadcastAvailable(
-      myLastBurnTimestamp,
-      this.contractConstants.BURN_PLANET_COOLDOWN
+      myLastActivateArtifactTimestamp,
+      this.contractConstants.ACTIVATE_ARTIFACT_COOLDOWN
+    );
+  }
+
+  /**
+   * Gets the timestamp (ms) of the next time that we can activate artifact.
+   */
+  public getNextBuyArtifactAvailableTimestamp() {
+    return Date.now() + this.timeUntilNextBuyArtifactAvailable();
+  }
+
+  /**
+   * Gets the amount of time (ms) until the next time the current player can activate artifact.
+   */
+  public timeUntilNextBuyArtifactAvailable() {
+    if (!this.account) {
+      throw new Error('no account set');
+    }
+
+    const myLastBuyArtifactTimestamp = this.players.get(this.account)?.lastBuyArtifactTimestamp;
+
+    // Calculation formula is the same
+    return timeUntilNextBroadcastAvailable(
+      myLastBuyArtifactTimestamp,
+      this.contractConstants.BUY_ARTIFACT_COOLDOWN
     );
   }
 
@@ -3157,6 +3189,11 @@ class GameManager extends EventEmitter {
       if (this.checkGameHasEnded()) {
         throw new Error('game has ended');
       }
+
+      if (!this.account) {
+        throw new Error('no account set');
+      }
+
       if (!bypassChecks) {
         const planet = this.entityStore.getPlanetWithId(locationId);
         if (this.checkGameHasEnded()) {
@@ -3168,6 +3205,16 @@ class GameManager extends EventEmitter {
         }
         if (!artifactId) {
           throw new Error('must supply an artifact id');
+        }
+        const myLastActivateArtifactTimestamp = this.players.get(
+          this.account
+        )?.lastActivateArtifactTimestamp;
+
+        if (
+          myLastActivateArtifactTimestamp &&
+          Date.now() < this.getNextActivateArtifactAvailableTimestamp()
+        ) {
+          throw new Error('still on cooldown for activating artifact');
         }
       }
 
