@@ -191,6 +191,7 @@ contract DFCoreFacet is WithStorage {
             false,
             0,
             0,
+            0,
             0
         );
 

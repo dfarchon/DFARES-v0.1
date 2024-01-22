@@ -909,10 +909,8 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           _run = true;
           terminal.current?.println('Select area where is cursor pointer "👆🏻" on Minimap.');
 
-          terminal.current?.println(
-            'You can choose "Inner Nebula" only. *Dark Blue...',
-            TerminalTextStyle.Blue
-          );
+          terminal.current?.println('You can choose "Inner Nebula" only. ', TerminalTextStyle.Blue);
+
           terminal.current?.println(' ');
           // terminal.current?.println(`In WorldRadius = ${worldRadius.toFixed(2).toString()}`);
           // terminal.current?.println(
@@ -959,7 +957,10 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       terminal.current?.println(
         'To select different spawn area please refresh page otherwise press ENTER to find a home planet.  '
       );
-      terminal.current?.println('This may take up to 120s, and will consume a lot of CPU.');
+      terminal.current?.println(
+        'This may take up to 120s, and will consume a lot of CPU.',
+        TerminalTextStyle.Pink
+      );
       await terminal.current?.getInput();
 
       gameUIManager.getGameManager().on(GameManagerEvent.InitializedPlayer, () => {

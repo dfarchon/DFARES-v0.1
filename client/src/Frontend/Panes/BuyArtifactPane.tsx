@@ -47,22 +47,22 @@ export function BuyArtifactPane({
     useEmitterValue(uiManager.getEthConnection().myBalance$, BigNumber.from('0'))
   );
 
-  const currentBlockNumber = useEmitterValue(uiManager.getEthConnection().blockNumber$, undefined);
+  // const currentBlockNumber = useEmitterValue(uiManager.getEthConnection().blockNumber$, undefined);
 
-  //buyartifact
-  //myTodo: 60 min 1 artifact
-  const deltaTime = 60;
+  // //buyartifact
+  // //myTodo: 60 min 1 artifact
+  // const deltaTime = 60;
 
-  const maxAmount = currentBlockNumber
-    ? Math.floor(
-        ((currentBlockNumber - uiManager.contractConstants.GAME_START_BLOCK) * 2.0) /
-          (60 * deltaTime)
-      )
-    : 0;
+  // const maxAmount = currentBlockNumber
+  //   ? Math.floor(
+  //       ((currentBlockNumber - uiManager.contractConstants.GAME_START_BLOCK) * 2.0) /
+  //         (60 * deltaTime)
+  //     )
+  //   : 0;
 
-  const buyArtifactAmountInContract = account ? uiManager.getPlayerBuyArtifactAmount(account) : 0;
+  // const buyArtifactAmountInContract = account ? uiManager.getPlayerBuyArtifactAmount(account) : 0;
 
-  const buyArtifactAmount = buyArtifactAmountInContract ? buyArtifactAmountInContract : 0;
+  // const buyArtifactAmount = buyArtifactAmountInContract ? buyArtifactAmountInContract : 0;
 
   const [biome, setBiome] = useState(Biome.GRASSLAND.toString());
   const [type, setType] = useState(ArtifactType.Wormhole.toString());
@@ -114,7 +114,7 @@ export function BuyArtifactPane({
     planet?.owner === account &&
     cost > 0 &&
     balanceEth >= cost &&
-    maxAmount > buyArtifactAmount &&
+    // maxAmount > buyArtifactAmount &&
     buyArtifactCooldownPassed;
 
   if (planet && planet.owner === account) {
@@ -132,7 +132,7 @@ export function BuyArtifactPane({
               timestamp={uiManager.getNextBuyArtifactAvailableTimestamp()}
               ifPassed={'now!'}
             />{' '}
-            to buy.
+            to buy more.
           </p>
         )}
 

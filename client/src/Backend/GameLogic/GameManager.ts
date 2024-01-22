@@ -2144,8 +2144,6 @@ class GameManager extends EventEmitter {
       pinkZones.add({
         locationId: planet.locationId,
         coords: item.coords,
-
-        //mytodo: add different radius
         radius: this.getContractConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[planet.planetLevel],
       });
     }
@@ -2166,7 +2164,6 @@ class GameManager extends EventEmitter {
       pinkZones.add({
         locationId: planet.locationId,
         coords: item.coords,
-        //mytodo: add different radius
         radius: this.getContractConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[planet.planetLevel],
       });
     }
@@ -3929,7 +3926,7 @@ class GameManager extends EventEmitter {
     }
   }
 
-  // mytodo: get claimRoundEndReward back
+  // myNotice: get claimRoundEndReward back
   // /**
   //  * Receive XDAI for the claiming player based on their score rank at the end of the round.
   //  */

@@ -31,4 +31,5 @@ export type Player = {
   activateArtifactAmount: number;
   buyArtifactAmount: number;
   silver: number;
+  dropBombAmount: number;
 };

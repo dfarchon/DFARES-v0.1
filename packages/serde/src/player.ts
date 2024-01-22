@@ -33,5 +33,6 @@ export function decodePlayer(rawPlayer: RawPlayer): Player {
     activateArtifactAmount: rawPlayer.activateArtifactAmount.toNumber(),
     buyArtifactAmount: rawPlayer.buyArtifactAmount.toNumber(),
     silver: rawPlayer.silver.toNumber() / CONTRACT_PRECISION,
+    dropBombAmount: rawPlayer.dropBombAmount.toNumber(),
   };
 }

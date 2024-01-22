@@ -38,6 +38,8 @@ struct Player {
     uint256 activateArtifactAmount;
     uint256 buyArtifactAmount;
     uint256 silver;
+    uint256 dropBombAmount;
+
 }
 
 struct Planet {

@@ -405,10 +405,6 @@ export class ContractsAPI extends EventEmitter {
         _y: EthersBN,
         _: Event
       ) => {
-        //mytodo:
-        console.log('[testInfo] ContractEvent.LocationBurned');
-        console.log(revealerAddr);
-        console.log(locationIdFromEthersBN(location));
         this.emit(ContractsAPIEvent.PlanetUpdate, locationIdFromEthersBN(location));
         this.emit(
           ContractsAPIEvent.LocationRevealed,

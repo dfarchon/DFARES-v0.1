@@ -75,8 +75,8 @@ function timestampSection(value) {
 
 class Plugin {
   constructor() {
-    this.begin_time = new Date('2023-07-19 19:00:00.000 GMT+0800');
-    this.end_time = new Date('2023-07-23 23:00:00.000 GMT+0800');
+    // this.begin_time = new Date('2023-07-19 19:00:00.000 GMT+0800');
+    this.end_time = new Date('2024-01-28T12:00:00.000Z');
     this.timer = document.createElement('div');
     this.timer.style.width = '100%';
     this.timer.style.textAlign = 'center';

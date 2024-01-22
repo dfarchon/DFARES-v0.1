@@ -136,7 +136,7 @@ class MinimapSpawnPlugin {
         ctx.fill();
         ctx.stroke();
       }
-      //mytodo:
+      //myNotice:
       // draw inner circle of map
       // let rimNormalized = (normalize(rim) / 2) * 0.91; // idk why here need
       // to be corection??
@@ -173,7 +173,6 @@ class MinimapSpawnPlugin {
       };
 
       // Draw the image at the center with the specified rim radius
-      // mytodo:
       drawImageAtCenter(ctx, image, radiusNormalized);
     };
 

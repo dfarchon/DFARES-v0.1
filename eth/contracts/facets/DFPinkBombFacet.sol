@@ -20,7 +20,7 @@ import {LibTrig} from "../vendor/libraries/LibTrig.sol";
 import {ABDKMath64x64} from "../vendor/libraries/ABDKMath64x64.sol";
 
 // Type imports
-import {Planet, BurnedCoords, Artifact, ArtifactType, RevealedCoords} from "../DFTypes.sol";
+import {Planet,Player, BurnedCoords, Artifact, ArtifactType, RevealedCoords} from "../DFTypes.sol";
 
 contract DFPinkBombFacet is WithStorage {
     modifier notPaused() {
@@ -42,7 +42,6 @@ contract DFPinkBombFacet is WithStorage {
 
     /**
      * Same snark args as DFCoreFacet#revealLocation
-     * mytodo: add more limit to burnLocation
      */
     function burnLocation(
         uint256[2] memory _a,
@@ -90,17 +89,22 @@ contract DFPinkBombFacet is WithStorage {
         require(!planet.frozen, "planet is frozen");
         require(planet.burnStartTimestamp == 0, "planet is already burned");
         require(containsPinkShip(planetId), "pink ship must be present on planet");
+
         require(planet.planetLevel >= 1, "planet level >=1");
+
+        Player storage player = gs().players[msg.sender];
+        player.dropBombAmount++;
+
+        uint silverAmount =  gameConstants().BURN_PLANET_REQUIRE_SILVER_AMOUNTS[planet.planetLevel] * (10**(player.dropBombAmount));
+
 
         require(
             gs().players[msg.sender].silver >=
-                gameConstants().BURN_PLANET_REQUIRE_SILVER_AMOUNTS[planet.planetLevel] * 1000,
+               silverAmount * 1000,
             "silver is not enough"
         );
 
-        gs().players[msg.sender].silver -=
-            1000 *
-            gameConstants().BURN_PLANET_REQUIRE_SILVER_AMOUNTS[planet.planetLevel];
+        gs().players[msg.sender].silver -= silverAmount * 1000;
 
         planet.operator = msg.sender;
 
@@ -185,7 +189,7 @@ contract DFPinkBombFacet is WithStorage {
 
         require(!planet.destroyed, "planet is destroyed");
         require(!planet.frozen, "planet is frozen");
-
+        require(planet.planetLevel >= 3, "planet level >=3");
         require(planetInPinkZone(x, y), "planet is not in your pink zone");
 
         planet.destroyed = true;

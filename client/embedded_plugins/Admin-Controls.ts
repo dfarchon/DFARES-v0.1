@@ -426,6 +426,45 @@ async function createPlanet(coords: WorldCoords, level: number, type: PlanetType
   await df.hardRefreshPlanet(locationIdFromDecStr(location));
 }
 
+async function revealPlanet(coords: WorldCoords, level: number, type: PlanetType) {
+  coords.x = Math.round(coords.x);
+  coords.y = Math.round(coords.y);
+
+  const location = df.locationBigIntFromCoords(coords).toString();
+  // const perlinValue = df.biomebasePerlin(coords, true);
+
+  // const args = Promise.resolve([
+  //   {
+  //     x: coords.x,
+  //     y: coords.y,
+  //     level,
+  //     planetType: type,
+  //     requireValidLocationId: false,
+  //     location: location,
+  //     perlin: perlinValue,
+  //   },
+  // ]);
+
+  // const tx = await df.submitTransaction({
+  //   args,
+  //   contract: df.getContract(),
+  //   methodName: 'createPlanet',
+  // });
+
+  // await tx.confirmedPromise;
+
+  const revealArgs = df.getSnarkHelper().getRevealArgs(coords.x, coords.y);
+  const revealTx = await df.submitTransaction({
+    args: revealArgs,
+    contract: df.getContract(),
+    methodName: 'revealLocation',
+  });
+
+  await revealTx.confirmedPromise;
+
+  await df.hardRefreshPlanet(locationIdFromDecStr(location));
+}
+
 async function setDynamicTimeFactor(timeFactor: number) {
   const args = Promise.resolve([Number(timeFactor) * 100]);
   const tx = await df.submitTransaction({
@@ -695,6 +734,23 @@ function PlanetCreator() {
         </p>`}
         ${choosingLocation &&
         html`<df-button onClick=${() => setChoosingLocation(false)}> Cancel Creation</df-button>`}
+      </div>
+      <div>
+        <df-button
+          onClick=${() => {
+            createPlanet({ x: 0, y: 0 }, parseInt('9'), PlanetType.PLANET);
+          }}
+          >Add Center Planet</df-button
+        >
+      </div>
+
+      <div>
+        <df-button
+          onClick=${() => {
+            revealPlanet({ x: 0, y: 0 }, parseInt('9'), PlanetType.PLANET);
+          }}
+          >Add Center Planet</df-button
+        >
       </div>
     </div>
   `;

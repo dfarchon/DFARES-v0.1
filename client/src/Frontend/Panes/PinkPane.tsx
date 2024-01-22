@@ -81,7 +81,7 @@ export function PinkPane({
     if (!planetId) return false;
     return uiManager.checkPlanetCanPink(planetId);
   };
-  //mytodo: add more check
+
   const pinkZonePassed = checkPlanetCanPink();
 
   const getRes = () => {
@@ -103,6 +103,8 @@ export function PinkPane({
   };
   const stellarShieldPassed = getStellarShieldPassed();
 
+  const levelPassed = planet ? planet.planetLevel >= 3 : false;
+
   useEffect(() => {
     if (!uiManager) return;
     setAccount(uiManager.getAccount());
@@ -123,6 +125,8 @@ export function PinkPane({
   } else if (!pinkZonePassed) {
     pinkBtn = <Btn disabled={true}>Pink It </Btn>;
   } else if (!stellarShieldPassed) {
+    pinkBtn = <Btn disabled={true}>Pink It </Btn>;
+  } else if (!levelPassed) {
     pinkBtn = <Btn disabled={true}>Pink It </Btn>;
   } else {
     pinkBtn = (
@@ -148,6 +152,12 @@ export function PinkPane({
       {!stellarShieldPassed && (
         <p>
           <Blue>INFO:</Blue> You can't pink a planet with active StellarShield.
+        </p>
+      )}
+
+      {!levelPassed && (
+        <p>
+          <Blue>INFO:</Blue> Planet level need {'>='} 3.
         </p>
       )}
       {pinkZonePassed && !pinkLocationIdCooldownPassed && planetId && (

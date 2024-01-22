@@ -371,7 +371,9 @@ contract DFArtifactFacet is WithStorage, ERC721 {
         uint256 cost = 100 ether;
         require(msg.value == cost, "Wrong value sent");
 
-        uint256 id = uint256(keccak256(abi.encodePacked(args.planetId, gs().miscNonce++)));
+        uint256 id = uint256(
+            keccak256(abi.encodePacked(args.planetId, blockhash(block.number), gs().miscNonce++))
+        );
 
         args.tokenId = id;
         args.discoverer = msg.sender;
