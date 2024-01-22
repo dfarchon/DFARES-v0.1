@@ -350,6 +350,8 @@ contract DFArtifactFacet is WithStorage, ERC721 {
         emit ArtifactFound(args.owner, artifact.id, args.planetId);
     }
 
+
+
     function buyArtifact(DFTCreateArtifactArgs memory args) public payable notPaused {
         // myNotice: only use args.planetId
         uint256 _location = args.planetId;

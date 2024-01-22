@@ -228,8 +228,8 @@ library LibGameUtils {
             ArtifactRarity
         )
     {
-        uint256 lastByteOfSeed = artifactSeed % 0xFFF;
-        uint256 secondLastByteOfSeed = ((artifactSeed - lastByteOfSeed) / 0x1000) % 0xFFF;
+        uint256 lastByteOfSeed = artifactSeed % 0x1000;
+        uint256 secondLastByteOfSeed = ((artifactSeed - lastByteOfSeed) / 0x1000) % 0x1000;
 
         // myNotice: round 1
         // if (lastByteOfSeed < 455) {
