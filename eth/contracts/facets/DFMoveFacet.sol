@@ -330,8 +330,8 @@ contract DFMoveFacet is WithStorage {
 
         if (relevantWormhole.isInitialized) {
             wormholePresent = true;
-            // uint256[6] memory speedBoosts = [uint256(1), 2, 4, 8, 16, 32];
-            uint256[6] memory speedBoosts = [uint256(1), 2, 2, 2, 2, 2];
+            uint256[6] memory speedBoosts = [uint256(1), 2, 4, 8, 16, 32];
+
             effectiveDistModifier = speedBoosts[uint256(relevantWormhole.rarity)];
         }
     }
