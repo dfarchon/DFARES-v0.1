@@ -27,7 +27,6 @@ import {
   usePlanetArtifacts,
   useUIManager,
 } from '../../Utils/AppHooks';
-import { useEmitterValue } from '../../Utils/EmitterHooks';
 import { DropBombPane } from '../DropBombPane';
 import { TooltipTrigger, TooltipTriggerProps } from '../Tooltip';
 
@@ -50,26 +49,22 @@ export function ArtifactActions({
 
   const otherArtifactsOnPlanet = usePlanetArtifacts(onPlanetWrapper, uiManager);
 
-  const currentBlockNumber = useEmitterValue(uiManager.getEthConnection().blockNumber$, undefined);
-
-  //active artifact
-  //myTodo: 2 min 1 artifact
-  const deltaTime = 2;
-
-  const maxAmount = currentBlockNumber
-    ? Math.floor(
-        ((currentBlockNumber - uiManager.contractConstants.GAME_START_BLOCK) * 2.0) /
-          (60 * deltaTime)
-      )
-    : 0;
-
-  const activateArtifactAmountInContract = account
-    ? uiManager.getPlayerActivateArtifactAmount(account)
-    : 0;
-
-  const activateArtifactAmount = activateArtifactAmountInContract
-    ? activateArtifactAmountInContract
-    : 0;
+  // const currentBlockNumber = useEmitterValue(uiManager.getEthConnection().blockNumber$, undefined);
+  // //active artifact
+  // //myTodo: 2 min 1 artifact
+  // const deltaTime = 2;
+  // const maxAmount = currentBlockNumber
+  //   ? Math.floor(
+  //       ((currentBlockNumber - uiManager.contractConstants.GAME_START_BLOCK) * 2.0) /
+  //         (60 * deltaTime)
+  //     )
+  //   : 0;
+  // const activateArtifactAmountInContract = account
+  //   ? uiManager.getPlayerActivateArtifactAmount(account)
+  //   : 0;
+  // const activateArtifactAmount = activateArtifactAmountInContract
+  //   ? activateArtifactAmountInContract
+  //   : 0;
 
   const withdraw = useCallback(
     (artifact: Artifact) => {

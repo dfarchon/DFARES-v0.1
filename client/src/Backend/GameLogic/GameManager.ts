@@ -3382,6 +3382,7 @@ class GameManager extends EventEmitter {
       }
 
       function price() {
+        return 100;
         const rarityVal = parseInt(rarity.toString());
         const typeVal = parseInt(type.toString());
 
