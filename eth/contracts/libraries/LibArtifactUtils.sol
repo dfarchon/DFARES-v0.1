@@ -218,6 +218,7 @@ library LibArtifactUtils {
         require(!planet.frozen, "planet is frozen");
 
         require(artifact.isInitialized, "this artifact is not on this planet");
+        gs().players[msg.sender].activateArtifactAmount++;
 
         // if (artifact.artifactType != ArtifactType.Avatar) {
         //     uint256 totalAmount = gs().players[msg.sender].activateArtifactAmount + 1;
