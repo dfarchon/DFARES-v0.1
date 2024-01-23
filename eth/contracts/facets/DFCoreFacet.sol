@@ -145,7 +145,8 @@ contract DFCoreFacet is WithStorage {
     }
 
     function getEntryFee() public view returns (uint256) {
-        return 30 ether;
+        return 1 ether;
+        // return 30 ether;
         // uint256 amount = gs().playerIds.length;
         // return (1 ether * amount * amount * amount) / 100000;
     }
