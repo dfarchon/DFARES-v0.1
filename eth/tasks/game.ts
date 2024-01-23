@@ -77,3 +77,25 @@ async function getEntryFee({}, hre: HardhatRuntimeEnvironment) {
   const amount = await contract.getEntryFee();
   console.log('entry fee: ', amount.toString());
 }
+
+task('game:getFirstMythicArtifactOwner', 'get first mythic artifact owner').setAction(
+  getFirstMythicArtifactOwner
+);
+
+async function getFirstMythicArtifactOwner({}, hre: HardhatRuntimeEnvironment) {
+  await hre.run('utils:assertChainId');
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+  const amount = await contract.getFirstMythicArtifactOwner();
+  console.log('first mythic artifact owner: ', amount.toString());
+}
+
+task('game:getFirstBurnLocationOperator', 'get first burnLocation operator').setAction(
+  getFirstBurnLocationOperator
+);
+
+async function getFirstBurnLocationOperator({}, hre: HardhatRuntimeEnvironment) {
+  await hre.run('utils:assertChainId');
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+  const amount = await contract.getFirstBurnLocationOperator();
+  console.log('first burnLocation operator: ', amount.toString());
+}

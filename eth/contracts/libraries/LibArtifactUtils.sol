@@ -128,6 +128,10 @@ library LibArtifactUtils {
             createArtifactArgs
         );
 
+        if (foundArtifact.rarity == ArtifactRarity.Mythic) {
+            if (gs().firstMythicArtifactOwner == address(0))
+                gs().firstMythicArtifactOwner = msg.sender;
+        }
         LibGameUtils._putArtifactOnPlanet(foundArtifact.id, args.planetId);
 
         planet.hasTriedFindingArtifact = true;

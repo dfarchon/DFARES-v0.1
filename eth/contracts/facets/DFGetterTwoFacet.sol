@@ -200,4 +200,12 @@ contract DFGetterTwoFacet is WithStorage {
     function getLastBuyArtifactTimestamp(address player) public view returns (uint256) {
         return gs().lastBuyArtifactTimestamp[player];
     }
+
+    function getFirstMythicArtifactOwner() public view returns (address) {
+        return gs().firstMythicArtifactOwner;
+    }
+
+    function getFirstBurnLocationOperator() public view returns (address) {
+        return gs().firstBurnLocationOperator;
+    }
 }

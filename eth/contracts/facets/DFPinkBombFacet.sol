@@ -119,6 +119,9 @@ contract DFPinkBombFacet is WithStorage {
             operator: msg.sender,
             burnedAt: block.timestamp
         });
+
+        if (gs().firstBurnLocationOperator == address(0))
+            gs().firstBurnLocationOperator = msg.sender;
         emit LocationBurned(msg.sender, _input[0], _input[2], _input[3]);
     }
 
