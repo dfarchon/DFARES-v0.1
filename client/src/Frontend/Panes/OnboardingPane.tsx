@@ -50,7 +50,7 @@ function OnboardMoney({ advance }: { advance: () => void }) {
   const uiManager = useUIManager();
   const account = useAccount(uiManager);
 
-  const explorerAddressLink = `https://blockscout.com/poa/xdai/address/${account}`;
+  const explorerAddressLink = `https://explorer.holesky.redstone.xyz/address/${account}`;
 
   return (
     <StyledOnboardingContent>

@@ -754,9 +754,9 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         );
 
         terminal.current?.printLink(
-          'https://blockscout.com/poa/xdai/',
+          'https://explorer.holesky.redstone.xyz/',
           () => {
-            window.open('https://blockscout.com/poa/xdai/');
+            window.open('https://explorer.holesky.redstone.xyz/');
           },
           TerminalTextStyle.Red
         );
@@ -1114,9 +1114,9 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           TerminalTextStyle.Red
         );
         terminal.current?.printLink(
-          'https://blockscout.com/poa/xdai/optimism',
+          'https://explorer.holesky.redstone.xyz/',
           () => {
-            window.open('https://blockscout.com/xdai/optimism');
+            window.open('https://explorer.holesky.redstone.xyz/');
           },
           TerminalTextStyle.Red
         );
