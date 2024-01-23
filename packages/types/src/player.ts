@@ -32,4 +32,6 @@ export type Player = {
   buyArtifactAmount: number;
   silver: number;
   dropBombAmount: number;
+  pinkAmount: number;
+  pinkedAmount: number;
 };

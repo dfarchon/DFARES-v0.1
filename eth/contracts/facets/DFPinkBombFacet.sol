@@ -20,7 +20,7 @@ import {LibTrig} from "../vendor/libraries/LibTrig.sol";
 import {ABDKMath64x64} from "../vendor/libraries/ABDKMath64x64.sol";
 
 // Type imports
-import {Planet,Player, BurnedCoords, Artifact, ArtifactType, RevealedCoords} from "../DFTypes.sol";
+import {Planet, Player, BurnedCoords, Artifact, ArtifactType, RevealedCoords} from "../DFTypes.sol";
 
 contract DFPinkBombFacet is WithStorage {
     modifier notPaused() {
@@ -95,14 +95,11 @@ contract DFPinkBombFacet is WithStorage {
         Player storage player = gs().players[msg.sender];
         player.dropBombAmount++;
 
-        uint silverAmount =  gameConstants().BURN_PLANET_REQUIRE_SILVER_AMOUNTS[planet.planetLevel] * (10**(player.dropBombAmount));
+        uint256 silverAmount = gameConstants().BURN_PLANET_REQUIRE_SILVER_AMOUNTS[
+            planet.planetLevel
+        ] * (10**(player.dropBombAmount));
 
-
-        require(
-            gs().players[msg.sender].silver >=
-               silverAmount * 1000,
-            "silver is not enough"
-        );
+        require(gs().players[msg.sender].silver >= silverAmount * 1000, "silver is not enough");
 
         gs().players[msg.sender].silver -= silverAmount * 1000;
 
@@ -186,6 +183,9 @@ contract DFPinkBombFacet is WithStorage {
         // uint256 distSquare = uint256(planetX**2 + planetY**2);
 
         Planet storage planet = gs().planets[planetId];
+
+        gs().players[msg.sender].pinkAmount++;
+        gs().players[planet.owner].pinkedAmount++;
 
         require(!planet.destroyed, "planet is destroyed");
         require(!planet.frozen, "planet is frozen");

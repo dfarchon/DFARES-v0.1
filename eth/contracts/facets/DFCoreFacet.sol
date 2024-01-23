@@ -178,6 +178,7 @@ contract DFCoreFacet is WithStorage {
 
         // Initialize player data
         gs().playerIds.push(msg.sender);
+
         gs().players[msg.sender] = Player(
             true,
             msg.sender,
@@ -190,6 +191,8 @@ contract DFCoreFacet is WithStorage {
             false,
             0,
             false,
+            0,
+            0,
             0,
             0,
             0,
