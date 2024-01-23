@@ -37,5 +37,6 @@ export function decodePlayer(rawPlayer: RawPlayer): Player {
     pinkAmount: rawPlayer.pinkAmount.toNumber(),
     pinkedAmount: rawPlayer.pinkedAmount.toNumber(),
     moveCount: rawPlayer.moveCount.toNumber(),
+    hatCount: rawPlayer.hatCount.toNumber(),
   };
 }

@@ -264,6 +264,7 @@ async function batchAddToWhitelist(args: { filePath: string }, hre: HardhatRunti
   for (let i = 0; i < players.length; i++) {
     const addr = players[i];
     addressList.push(addr);
+    console.log(i, addr);
   }
 
   try {

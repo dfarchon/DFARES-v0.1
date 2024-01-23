@@ -42,6 +42,7 @@ struct Player {
     uint256 pinkAmount;
     uint256 pinkedAmount;
     uint256 moveCount;
+    uint256 hatCount;
 }
 
 struct Planet {

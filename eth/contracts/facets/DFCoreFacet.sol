@@ -197,6 +197,7 @@ contract DFCoreFacet is WithStorage {
             0,
             0,
             0,
+            0,
             0
         );
 
@@ -264,6 +265,7 @@ contract DFCoreFacet is WithStorage {
 
         require(msg.value == cost, "Wrong value sent");
 
+        gs().players[msg.sender].hatCount++;
         // gs().planets[_location].hatLevel += 1;
 
         if (gs().planets[_location].hatLevel == 0) {

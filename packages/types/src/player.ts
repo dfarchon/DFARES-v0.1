@@ -35,4 +35,5 @@ export type Player = {
   pinkAmount: number;
   pinkedAmount: number;
   moveCount: number;
+  hatCount: number;
 };

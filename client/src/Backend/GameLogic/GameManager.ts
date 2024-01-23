@@ -2877,7 +2877,7 @@ class GameManager extends EventEmitter {
         `Each chunk contains ${MIN_CHUNK_SIZE}x${MIN_CHUNK_SIZE} coordinates.`
       );
       const percentSpawn = (1 / this.contractConstants.PLANET_RARITY) * 100;
-      const printProgress = 4; //8;
+      const printProgress = 8;
       this.terminal.current?.print(`Each coordinate has a`);
       this.terminal.current?.print(` ${percentSpawn}%`, TerminalTextStyle.Text);
       this.terminal.current?.print(` chance of spawning a planet.`);
@@ -3392,7 +3392,7 @@ class GameManager extends EventEmitter {
       }
 
       function price() {
-        return 100;
+        return 50;
         const rarityVal = parseInt(rarity.toString());
         const typeVal = parseInt(type.toString());
 

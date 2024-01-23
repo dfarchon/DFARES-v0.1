@@ -81,7 +81,7 @@ export function BuyArtifactPane({
   }
 
   function getCost() {
-    return 100;
+    return 50;
     const rarityVal = parseInt(rarity);
     const typeVal = parseInt(type);
 

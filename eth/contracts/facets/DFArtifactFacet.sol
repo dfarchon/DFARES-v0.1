@@ -368,7 +368,7 @@ contract DFArtifactFacet is WithStorage, ERC721 {
         );
         gs().lastBuyArtifactTimestamp[msg.sender] = block.timestamp;
 
-        uint256 cost = 100 ether;
+        uint256 cost = 50 ether;
         require(msg.value == cost, "Wrong value sent");
 
         uint256 id = uint256(

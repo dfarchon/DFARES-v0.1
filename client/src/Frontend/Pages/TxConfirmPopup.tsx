@@ -236,7 +236,7 @@ export function TxConfirmPopup({
   }
 
   function price() {
-    return 100;
+    return 50;
     // console.warn('this is price');
     // console.log(butArtifactType);
     // console.log(buyArtifactRarity);
