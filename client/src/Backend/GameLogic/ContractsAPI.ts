@@ -57,7 +57,6 @@ import {
   ContractsAPIEvent,
 } from '../../_types/darkforest/api/ContractsAPITypes';
 import { loadDiamondContract } from '../Network/Blockchain';
-import { eventLogger, EventType } from '../Network/EventLogger';
 
 interface ContractsApiConfig {
   connection: EthConnection;
@@ -195,7 +194,8 @@ export class ContractsAPI extends EventEmitter {
   }
 
   private async afterTransaction(_txRequest: Transaction, txDiagnosticInfo: unknown) {
-    eventLogger.logEvent(EventType.Transaction, txDiagnosticInfo);
+    // myNotice: remove /event
+    // eventLogger.logEvent(EventType.Transaction, txDiagnosticInfo);
   }
 
   public destroy(): void {

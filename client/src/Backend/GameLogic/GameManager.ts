@@ -526,10 +526,12 @@ class GameManager extends EventEmitter {
     this.paused = paused;
 
     this.ethConnection = ethConnection;
-
-    this.diagnosticsInterval = setInterval(this.uploadDiagnostics.bind(this), 10_000);
+    // myNotice: event
+    // this.diagnosticsInterval = setInterval(this.uploadDiagnostics.bind(this), 10_000);
     this.scoreboardInterval = setInterval(this.refreshScoreboard.bind(this), 10_000);
-    this.networkHealthInterval = setInterval(this.refreshNetworkHealth.bind(this), 10_000);
+
+    //myNotice: network health
+    // this.networkHealthInterval = setInterval(this.refreshNetworkHealth.bind(this), 10_000);
 
     this.playerInterval = setInterval(() => {
       if (this.account) {
@@ -553,7 +555,8 @@ class GameManager extends EventEmitter {
     });
 
     this.refreshScoreboard();
-    this.refreshNetworkHealth();
+    // myNotice: network health
+    // this.refreshNetworkHealth();
     this.getSpaceships();
 
     this.safeMode = false;
@@ -660,9 +663,11 @@ class GameManager extends EventEmitter {
     this.contractsAPI.destroy();
     this.persistentChunkStore.destroy();
     clearInterval(this.playerInterval);
-    clearInterval(this.diagnosticsInterval);
+    // myNotice: event
+    // clearInterval(this.diagnosticsInterval);
     clearInterval(this.scoreboardInterval);
-    clearInterval(this.networkHealthInterval);
+    // myNotice: network health
+    // clearInterval(this.networkHealthInterval);
     this.settingsSubscription?.unsubscribe();
   }
 
@@ -2872,7 +2877,7 @@ class GameManager extends EventEmitter {
         `Each chunk contains ${MIN_CHUNK_SIZE}x${MIN_CHUNK_SIZE} coordinates.`
       );
       const percentSpawn = (1 / this.contractConstants.PLANET_RARITY) * 100;
-      const printProgress = 8;
+      const printProgress = 4; //8;
       this.terminal.current?.print(`Each coordinate has a`);
       this.terminal.current?.print(` ${percentSpawn}%`, TerminalTextStyle.Text);
       this.terminal.current?.print(` chance of spawning a planet.`);
@@ -2889,6 +2894,11 @@ class GameManager extends EventEmitter {
       homePlanetFinder.on(MinerManagerEvent.DiscoveredNewChunk, (chunk: Chunk) => {
         chunkStore.addChunk(chunk);
         minedChunksCount++;
+
+        this.terminal.current?.println(
+          `Hashed ${minedChunksCount * MIN_CHUNK_SIZE ** 2} potential home planets...`
+        );
+
         if (minedChunksCount % printProgress === 0) {
           this.terminal.current?.println(
             `Hashed ${minedChunksCount * MIN_CHUNK_SIZE ** 2} potential home planets...`

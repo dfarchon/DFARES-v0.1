@@ -93,10 +93,6 @@ export function DropBombPane({
     const requireSilver = uiManager.getSilverOfBurnPlanet(account, planet.planetLevel);
     if (!requireSilver) return false;
 
-    console.log('tode');
-    console.log(Math.floor(playerSilver));
-    console.log(Math.ceil(requireSilver));
-
     return Math.floor(playerSilver) >= Math.ceil(requireSilver);
   };
 
