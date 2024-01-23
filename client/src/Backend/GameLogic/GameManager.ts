@@ -2877,6 +2877,10 @@ class GameManager extends EventEmitter {
       this.terminal.current?.print(` ${percentSpawn}%`, TerminalTextStyle.Text);
       this.terminal.current?.print(` chance of spawning a planet.`);
       this.terminal.current?.println('');
+      this.terminal.current?.println(
+        'It may take a long time to wait here. You can choose to wait for a while or refresh the web page.',
+        TerminalTextStyle.Pink
+      );
 
       this.terminal.current?.println(
         `Hashing first ${MIN_CHUNK_SIZE ** 2 * printProgress} potential home planets...`

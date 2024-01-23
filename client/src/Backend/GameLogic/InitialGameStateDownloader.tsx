@@ -244,11 +244,11 @@ export class InitialGameStateDownloader {
 const tips = [
   'Beware of pirates! To capture a planet with pirates, simply send an attack large enough to overcome its current energy.',
   <>
-    Navigate the Dark Forest ARES with allies (and enemies) - join the{' '}
+    Navigate the Dark Forest Ares with allies (and enemies) - join the{' '}
     <Link to='https://discord.com/invite/f3FrFA4T25'>DFArchon Discord</Link>!
     <br />
     <br />
-    Dark Forest ARES is a modified version of Dark Forest v0.6.5.
+    Dark Forest Ares is a modified version of Dark Forest v0.6.5.
     <br />
     DFArchon is a dev team focused on fully on-chain games.
   </>,

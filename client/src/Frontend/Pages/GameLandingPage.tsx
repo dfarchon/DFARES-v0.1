@@ -154,7 +154,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         terminal.current?.newline();
         terminal.current?.newline();
         // terminal.current?.printElement(
-        //   <MythicLabelText text={`Welcome To Dark Forest ARES v0.1.2`} />
+        //   <MythicLabelText text={`Welcome To Dark Forest Ares v0.1.2`} />
         // );
 
         terminal.current?.print(
@@ -957,10 +957,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       terminal.current?.println(
         'To select different spawn area please refresh page otherwise press ENTER to find a home planet.  '
       );
-      terminal.current?.println(
-        'This may take up to 120s, and will consume a lot of CPU.',
-        TerminalTextStyle.Pink
-      );
+      terminal.current?.println('This may take up to 120s, and will consume a lot of CPU.');
       await terminal.current?.getInput();
 
       gameUIManager.getGameManager().on(GameManagerEvent.InitializedPlayer, () => {
@@ -982,6 +979,43 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
             terminal.current?.println('');
             terminal.current?.println(e.message, TerminalTextStyle.Red);
             terminal.current?.println('');
+
+            terminal.current?.println(
+              "Don't worry :-) you can get more Redstone Holesky ETH this way 😘",
+              TerminalTextStyle.Pink
+            );
+
+            terminal.current?.newline();
+            terminal.current?.print('Step 1: ', TerminalTextStyle.Pink);
+            terminal.current?.printLink(
+              'Get more Holesky ETH here',
+              () => {
+                window.open('https://holesky-faucet.pk910.de/');
+              },
+              TerminalTextStyle.Pink
+            );
+            terminal.current?.println('');
+            terminal.current?.println('');
+            terminal.current?.print('Step 2: ', TerminalTextStyle.Pink);
+            terminal.current?.printLink(
+              'Deposit to Redstone',
+              () => {
+                window.open('https://redstone.xyz/deposit');
+              },
+              TerminalTextStyle.Pink
+            );
+            terminal.current?.newline();
+
+            //todo
+            //         <div>
+            //   <Link to={'https://holesky-faucet.pk910.de/'}>Get More HoleskyETH</Link>
+            // </div>
+
+            // <div>
+            //   {' '}
+            //   <Link to={'https://redstone.xyz/deposit'}>Deposit To Redstone</Link>
+            // </div>
+
             console.log(process.env.FAUCET_SERVICE_URL);
             if (e.message === 'ETH balance too low!' && process.env.FAUCET_SERVICE_URL) {
               terminal.current?.printElement(
