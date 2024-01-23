@@ -233,7 +233,7 @@ const OVERLORDS = {
   legacy: false,
   topLayer: [URL + '/img/logo/Overlords.png'],
   name: 'OVERLORDS',
-  desc: '',
+  desc: 'Our overall mission is to be a central hub for on-chain games players to coordinate games with each other and to collect game winning resources and strategies.',
   color: '#fff',
   bottomLayer: [],
 };
