@@ -36,5 +36,6 @@ export function decodePlayer(rawPlayer: RawPlayer): Player {
     dropBombAmount: rawPlayer.dropBombAmount.toNumber(),
     pinkAmount: rawPlayer.pinkAmount.toNumber(),
     pinkedAmount: rawPlayer.pinkedAmount.toNumber(),
+    moveCount: rawPlayer.moveCount.toNumber(),
   };
 }

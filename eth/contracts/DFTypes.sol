@@ -41,6 +41,7 @@ struct Player {
     uint256 dropBombAmount;
     uint256 pinkAmount;
     uint256 pinkedAmount;
+    uint256 moveCount;
 }
 
 struct Planet {

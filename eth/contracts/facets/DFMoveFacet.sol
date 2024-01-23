@@ -98,6 +98,7 @@ contract DFMoveFacet is WithStorage {
             );
         }
 
+        gs().players[msg.sender].moveCount++;
         _executeMove(args);
 
         LibGameUtils.updateWorldRadius();

@@ -34,4 +34,5 @@ export type Player = {
   dropBombAmount: number;
   pinkAmount: number;
   pinkedAmount: number;
+  moveCount: number;
 };
