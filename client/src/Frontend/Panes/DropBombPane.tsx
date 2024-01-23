@@ -100,7 +100,8 @@ export function DropBombPane({
     if (!planet) return 'n/a';
     if (!account) return 'n/a';
     const res = uiManager.getSilverOfBurnPlanet(account, planet.planetLevel);
-    if (!res) return 'n/a';
+    // console.log(res);
+    if (res === undefined) return 'n/a';
     else return res.toLocaleString();
   };
   const formatSilverAmount = getFormatSilverAmount();
