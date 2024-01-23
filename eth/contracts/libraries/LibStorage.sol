@@ -79,6 +79,7 @@ struct GameStorage {
     mapping(address => uint256) lastBuyArtifactTimestamp;
     address firstMythicArtifactOwner;
     address firstBurnLocationOperator;
+    address firstHat;
 }
 
 // Game config

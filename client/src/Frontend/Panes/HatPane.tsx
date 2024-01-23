@@ -32,7 +32,7 @@ const StyledHatPane = styled.div`
 `;
 
 const getHatCostEth = (planet: Planet) => {
-  return 1 + 0 * planet.hatLevel;
+  return 0.1 + 0 * planet.hatLevel;
   // return 2 ** planet.hatLevel;
 };
 

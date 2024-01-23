@@ -208,4 +208,8 @@ contract DFGetterTwoFacet is WithStorage {
     function getFirstBurnLocationOperator() public view returns (address) {
         return gs().firstBurnLocationOperator;
     }
+
+    function getFirstHat() public view returns (address) {
+        return gs().firstHat;
+    }
 }

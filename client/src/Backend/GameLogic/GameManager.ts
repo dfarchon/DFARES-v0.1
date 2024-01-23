@@ -3884,7 +3884,7 @@ class GameManager extends EventEmitter {
       const tx = await this.contractsAPI.submitTransaction(txIntent, {
         // MyNotice: when change gasLimit, need change the value in TxConfirmPopup.tsx
         gasLimit: 500000,
-        value: bigInt(1000000000000000000)
+        value: bigInt(100000000000000000) //0.1eth
           .multiply(1 + 0 * planet.hatLevel)
           .toString(),
       });

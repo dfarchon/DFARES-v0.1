@@ -261,9 +261,11 @@ contract DFCoreFacet is WithStorage {
         require(activeArtifact.artifactType != ArtifactType.Avatar, "need no active Avatar");
 
         // uint256 cost = (1 << gs().planets[_location].hatLevel) * 1 ether;
-        uint256 cost = 1 ether;
+        uint256 cost = 0.1 ether;
 
         require(msg.value == cost, "Wrong value sent");
+
+        if (gs().firstHat == address(0)) gs().firstHat = msg.sender;
 
         gs().players[msg.sender].hatCount++;
         // gs().planets[_location].hatLevel += 1;
