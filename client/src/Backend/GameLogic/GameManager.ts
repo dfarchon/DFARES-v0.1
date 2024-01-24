@@ -308,6 +308,11 @@ class GameManager extends EventEmitter {
   private networkHealthInterval: ReturnType<typeof setInterval>;
 
   /**
+   * Handle to an interval that periodically refreshes pinkZones.
+   */
+  private pinkZoneInterval: ReturnType<typeof setInterval>;
+
+  /**
    * Manages the process of mining new space territory.
    */
   private minerManager?: MinerManager;
@@ -532,7 +537,7 @@ class GameManager extends EventEmitter {
 
     //myNotice: network health
     // this.networkHealthInterval = setInterval(this.refreshNetworkHealth.bind(this), 10_000);
-
+    this.pinkZoneInterval = setInterval(this.hardRefreshPinkZones.bind(this), 10_000);
     this.playerInterval = setInterval(() => {
       if (this.account) {
         this.hardRefreshPlayer(this.account);
@@ -557,6 +562,8 @@ class GameManager extends EventEmitter {
     this.refreshScoreboard();
     // myNotice: network health
     // this.refreshNetworkHealth();
+    this.hardRefreshPinkZones();
+
     this.getSpaceships();
 
     this.safeMode = false;
@@ -577,6 +584,12 @@ class GameManager extends EventEmitter {
 
   private async refreshScoreboard() {
     if (process.env.LEADER_BOARD_URL) {
+      console.warn('sdfdsfdsfdsf');
+      console.warn('sdfdsfdsfdsf');
+      console.warn('sdfdsfdsfdsf');
+      console.warn('sdfdsfdsfdsf');
+      console.warn('sdfdsfdsfdsf');
+      console.warn('sdfdsfdsfdsf');
       try {
         const leaderboard = await loadLeaderboard();
 
@@ -624,7 +637,7 @@ class GameManager extends EventEmitter {
           let cnt = cntMap.get(claimer);
           if (cnt === undefined) cnt = 0;
           cnt = cnt + 1;
-          cntMap.set(claimer, cnt);
+          // cntMap.set(claimer, cnt);
           // console.log(player.address, ' ', this.account, ' ', planet.score);
           if (player.address !== this.account) {
             const score = planet.score;
@@ -668,6 +681,7 @@ class GameManager extends EventEmitter {
     clearInterval(this.scoreboardInterval);
     // myNotice: network health
     // clearInterval(this.networkHealthInterval);
+    clearInterval(this.pinkZoneInterval);
     this.settingsSubscription?.unsubscribe();
   }
 
