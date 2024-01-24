@@ -1,9 +1,9 @@
-echo 'xxxxxxxxx    publish types 1    xxxxxxxxx'
+# echo 'xxxxxxxxx    publish types 1    xxxxxxxxx'
 cd types
 npm run prepublishOnly
 npm publish
 cd ..
-echo 'xxxxxxxxx    publish types 1 successfully xxxxxxxxx'
+# echo 'xxxxxxxxx    publish types 1 successfully xxxxxxxxx'
 echo ''
 
 
