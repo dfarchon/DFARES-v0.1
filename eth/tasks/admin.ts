@@ -281,6 +281,10 @@ task(
 ).setAction(createPlanets);
 
 async function createPlanets({}, hre: HardhatRuntimeEnvironment) {
+  // mytodo:
+  // here have bugs
+  console.log('possible bug need to fixed');
+  return;
   await hre.run('utils:assertChainId');
 
   const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
@@ -293,6 +297,7 @@ async function createPlanets({}, hre: HardhatRuntimeEnvironment) {
             adminPlanetInfo.x,
             adminPlanetInfo.y
           ).toString();
+
       const adminPlanetCoords = {
         x: adminPlanetInfo.x,
         y: adminPlanetInfo.y,

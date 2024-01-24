@@ -142,6 +142,14 @@ contract DFAdminFacet is WithStorage {
         gameConstants().PINK_PLANET_COOLDOWN = newCooldown;
     }
 
+    function changeActivateArtifactCooldown(uint256 newCooldown) public onlyAdmin {
+        gameConstants().ACTIVATE_ARTIFACT_COOLDOWN = newCooldown;
+    }
+
+    function changeBuyArtifactCooldown(uint256 newCooldown) public onlyAdmin {
+        gameConstants().BUY_ARTIFACT_COOLDOWN = newCooldown;
+    }
+
     function withdraw() public onlyAdmin {
         // TODO: Don't send to msg.sender, instead send to contract admin
         payable(msg.sender).transfer(address(this).balance);
@@ -165,8 +173,11 @@ contract DFAdminFacet is WithStorage {
             require(LibGameUtils._locationIdValid(args.location), "Not a valid planet location");
         }
 
-        //mytodo: need pass dist here, get wrong space type if some condition at new map algo, need to be fixed
-        SpaceType spaceType = LibGameUtils.spaceTypeFromPerlin(args.perlin, 111);
+        //mytodo: need pass dist here, get wrong space type if some condition at
+        //new map algo, need to be fixed
+        //
+        //myNotice: admin only add Level 9
+        SpaceType spaceType = LibGameUtils.spaceTypeFromPerlin(args.perlin, 0);
         LibPlanet._initializePlanet(
             DFPInitPlanetArgs(
                 args.location,

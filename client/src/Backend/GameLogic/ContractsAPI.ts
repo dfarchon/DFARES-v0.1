@@ -57,7 +57,6 @@ import {
   ContractsAPIEvent,
 } from '../../_types/darkforest/api/ContractsAPITypes';
 import { loadDiamondContract } from '../Network/Blockchain';
-import { eventLogger, EventType } from '../Network/EventLogger';
 
 interface ContractsApiConfig {
   connection: EthConnection;
@@ -195,7 +194,8 @@ export class ContractsAPI extends EventEmitter {
   }
 
   private async afterTransaction(_txRequest: Transaction, txDiagnosticInfo: unknown) {
-    eventLogger.logEvent(EventType.Transaction, txDiagnosticInfo);
+    // myNotice: remove /event
+    // eventLogger.logEvent(EventType.Transaction, txDiagnosticInfo);
   }
 
   public destroy(): void {
@@ -405,10 +405,6 @@ export class ContractsAPI extends EventEmitter {
         _y: EthersBN,
         _: Event
       ) => {
-        //mytodo:
-        console.log('[testInfo] ContractEvent.LocationBurned');
-        console.log(revealerAddr);
-        console.log(locationIdFromEthersBN(location));
         this.emit(ContractsAPIEvent.PlanetUpdate, locationIdFromEthersBN(location));
         this.emit(
           ContractsAPIEvent.LocationRevealed,
@@ -527,6 +523,8 @@ export class ContractsAPI extends EventEmitter {
       BURN_END_TIMESTAMP,
       BURN_PLANET_COOLDOWN,
       PINK_PLANET_COOLDOWN,
+      ACTIVATE_ARTIFACT_COOLDOWN,
+      BUY_ARTIFACT_COOLDOWN,
       BURN_PLANET_LEVEL_EFFECT_RADIUS,
       BURN_PLANET_REQUIRE_SILVER_AMOUNTS,
       MAX_LEVEL_DIST,
@@ -732,6 +730,8 @@ export class ContractsAPI extends EventEmitter {
       BURN_END_TIMESTAMP: BURN_END_TIMESTAMP.toNumber(),
       BURN_PLANET_COOLDOWN: BURN_PLANET_COOLDOWN.toNumber(),
       PINK_PLANET_COOLDOWN: PINK_PLANET_COOLDOWN.toNumber(),
+      ACTIVATE_ARTIFACT_COOLDOWN: ACTIVATE_ARTIFACT_COOLDOWN.toNumber(),
+      BUY_ARTIFACT_COOLDOWN: BUY_ARTIFACT_COOLDOWN.toNumber(),
       BURN_PLANET_LEVEL_EFFECT_RADIUS: [
         BURN_PLANET_LEVEL_EFFECT_RADIUS[0].toNumber(),
         BURN_PLANET_LEVEL_EFFECT_RADIUS[1].toNumber(),
@@ -818,9 +818,41 @@ export class ContractsAPI extends EventEmitter {
       async (start: number, end: number) =>
         this.contractCaller.makeCall(this.contract.bulkGetLastBurnTimestamp, [start, end])
     );
+
     const playerLastBurnTimestampMap = lastBurnTimestamps.reduce(
       (acc, pair): Map<string, EthersBN> => {
         acc.set(pair.player.toLowerCase(), pair.lastBurnTimestamp);
+        return acc;
+      },
+      new Map<string, EthersBN>()
+    );
+
+    const lastActivateArtifactTimestamps = await aggregateBulkGetter(
+      nPlayers,
+      5,
+      async (start: number, end: number) =>
+        this.contractCaller.makeCall(this.contract.bulkGetLastActivateArtifactTimestamp, [
+          start,
+          end,
+        ])
+    );
+    const playerLastActivateArtifactTimestampsMap = lastActivateArtifactTimestamps.reduce(
+      (acc, pair): Map<string, EthersBN> => {
+        acc.set(pair.player.toLowerCase(), pair.lastActivateArtifactTimestamp);
+        return acc;
+      },
+      new Map<string, EthersBN>()
+    );
+
+    const lastBuyArtifactTimestamps = await aggregateBulkGetter(
+      nPlayers,
+      5,
+      async (start: number, end: number) =>
+        this.contractCaller.makeCall(this.contract.bulkGetLastBuyArtifactTimestamp, [start, end])
+    );
+    const playerLastBuyArtifactTimestampsMap = lastBuyArtifactTimestamps.reduce(
+      (acc, pair): Map<string, EthersBN> => {
+        acc.set(pair.player.toLowerCase(), pair.lastBuyArtifactTimestamp);
         return acc;
       },
       new Map<string, EthersBN>()
@@ -831,6 +863,11 @@ export class ContractsAPI extends EventEmitter {
     for (const player of players) {
       player.lastClaimTimestamp = playerLastClaimTimestampMap.get(player.address)?.toNumber() || 0;
       player.lastBurnTimestamp = playerLastBurnTimestampMap.get(player.address)?.toNumber() || 0;
+      player.lastActivateArtifactTimestamp =
+        playerLastActivateArtifactTimestampsMap.get(player.address)?.toNumber() || 0;
+      player.lastBuyArtifactTimestamp =
+        playerLastBuyArtifactTimestampsMap.get(player.address)?.toNumber() || 0;
+
       playerMap.set(player.address, player);
     }
 
@@ -844,12 +881,24 @@ export class ContractsAPI extends EventEmitter {
     ]);
 
     const lastBurnedTimestamp = await this.makeCall(this.contract.getLastBurnTimestamp, [playerId]);
+    const lastActivateArtifactTimestamp = await this.makeCall(
+      this.contract.getLastActivateArtifactTimestamp,
+      [playerId]
+    );
+
+    const lastBuyArtifactTimestamp = await this.makeCall(
+      this.contract.getLastBuyArtifactTimestamp,
+      [playerId]
+    );
+
     const scoreFromBlockchain = await this.getScoreV3(playerId);
     if (!rawPlayer.isInitialized) return undefined;
 
     const player = decodePlayer(rawPlayer);
     player.lastClaimTimestamp = lastClaimedTimestamp.toNumber();
     player.lastBurnTimestamp = lastBurnedTimestamp.toNumber();
+    player.lastActivateArtifactTimestamp = lastActivateArtifactTimestamp.toNumber();
+    player.lastBuyArtifactTimestamp = lastBuyArtifactTimestamp.toNumber();
 
     player.score = scoreFromBlockchain;
     return player;

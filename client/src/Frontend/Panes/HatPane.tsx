@@ -1,25 +1,8 @@
-import {
-  MAX_HAT_TYPE,
-  MAX_LOGO_TYPE,
-  MAX_MEME_TYPE,
-  MIN_HAT_TYPE,
-  MIN_LOGO_TYPE,
-  MIN_MEME_TYPE,
-  TOKEN_NAME,
-} from '@dfares/constants';
+import { MAX_LOGO_TYPE, MIN_LOGO_TYPE, TOKEN_NAME } from '@dfares/constants';
 import { weiToEth } from '@dfares/network';
-import { getHatSizeName, hatTypeToNum, logoTypeToNum, memeTypeToNum } from '@dfares/procedural';
+import { getHatSizeName, logoTypeToNum } from '@dfares/procedural';
 import { isUnconfirmedBuyHatTx } from '@dfares/serde';
-import {
-  HatType,
-  HatTypeNames,
-  LocationId,
-  LogoType,
-  LogoTypeNames,
-  MemeType,
-  MemeTypeNames,
-  Planet,
-} from '@dfares/types';
+import { LocationId, LogoType, LogoTypeNames, Planet } from '@dfares/types';
 import { BigNumber } from 'ethers';
 import React, { useState } from 'react';
 import styled from 'styled-components';
@@ -49,7 +32,7 @@ const StyledHatPane = styled.div`
 `;
 
 const getHatCostEth = (planet: Planet) => {
-  return 1 + 0 * planet.hatLevel;
+  return 0.1 + 0 * planet.hatLevel;
   // return 2 ** planet.hatLevel;
 };
 
@@ -81,15 +64,15 @@ export function HatPane({
   const values = [];
   const labels = [];
 
-  for (let i = MIN_HAT_TYPE; i <= MAX_HAT_TYPE; i++) {
-    values.push(hatTypeToNum(Number(i) as HatType).toString());
-    labels.push(HatTypeNames[i]);
-  }
+  // for (let i = MIN_HAT_TYPE; i <= MAX_HAT_TYPE; i++) {
+  //   values.push(hatTypeToNum(Number(i) as HatType).toString());
+  //   labels.push(HatTypeNames[i]);
+  // }
 
-  for (let i = MIN_MEME_TYPE; i <= MAX_MEME_TYPE; i++) {
-    values.push(memeTypeToNum(Number(i) as MemeType).toString());
-    labels.push(MemeTypeNames[i]);
-  }
+  // for (let i = MIN_MEME_TYPE; i <= MAX_MEME_TYPE; i++) {
+  //   values.push(memeTypeToNum(Number(i) as MemeType).toString());
+  //   labels.push(MemeTypeNames[i]);
+  // }
 
   for (let i = MIN_LOGO_TYPE; i <= MAX_LOGO_TYPE; i++) {
     values.push(logoTypeToNum(Number(i) as LogoType).toString());
@@ -128,7 +111,16 @@ export function HatPane({
         </div>
 
         <EmSpacer height={1} />
-        <Link to={'https://blog.zkga.me/df-04-faq'}>Get More ${TOKEN_NAME}</Link>
+        <div>
+          <Link to={'https://holesky-faucet.pk910.de/'}>Get More HoleskyETH</Link>
+        </div>
+
+        <div>
+          {' '}
+          <Link to={'https://redstone.xyz/deposit'}>Deposit To Redstone</Link>
+        </div>
+
+        {/* <Link to={'https://blog.zkga.me/df-04-faq'}>Get More ${TOKEN_NAME}</Link> */}
 
         <EmSpacer height={0.5} />
 

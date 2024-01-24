@@ -3,6 +3,7 @@ import { CONTRACT_ADDRESS } from '@dfares/contracts';
 import { DarkForest } from '@dfares/contracts/typechain';
 import { EthConnection, neverResolves, weiToEth } from '@dfares/network';
 import { address } from '@dfares/serde';
+import { UnconfirmedUseKey } from '@dfares/types';
 import { bigIntFromKey } from '@dfares/whitelist';
 import { utils, Wallet } from 'ethers';
 import { reverse } from 'lodash';
@@ -83,7 +84,9 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
   const [spectate, setSpectate] = useState(false);
 
   const params = new URLSearchParams(location.search);
-  const useZkWhitelist = params.has('zkWhitelist');
+  // myNotice: round 2
+  const useZkWhitelist = true;
+  // const useZkWhitelist = params.has('zkWhitelist');
   const selectedAddress = params.get('account');
   const contractAddress = address(match.params.contract);
   const isLobby = contractAddress !== address(CONTRACT_ADDRESS);
@@ -151,7 +154,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         terminal.current?.newline();
         terminal.current?.newline();
         // terminal.current?.printElement(
-        //   <MythicLabelText text={`Welcome To Dark Forest ARES v0.1.2`} />
+        //   <MythicLabelText text={`Welcome To Dark Forest Ares v0.1.2`} />
         // );
 
         terminal.current?.print(
@@ -167,7 +170,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
               'https://mirror.xyz/dfarchon.eth/VkfBZcWWsdVqwPKctPX6GGzrpf_TY__hRUTQ13Ohd4c'
             );
           },
-          TerminalTextStyle.White
+          TerminalTextStyle.Pink
         );
         terminal.current?.newline();
 
@@ -176,7 +179,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           () => {
             window.open('https://forms.gle/GB9kb1pHduiNuXi68');
           },
-          TerminalTextStyle.White
+          TerminalTextStyle.Pink
         );
 
         terminal.current?.newline();
@@ -602,23 +605,50 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         const keyBigInt = bigIntFromKey(key);
         const snarkArgs = await getWhitelistArgs(keyBigInt, address, terminal);
         try {
-          const ukReceipt = await contractsAPI.contract.useKey(
-            snarkArgs[ZKArgIdx.PROOF_A],
-            snarkArgs[ZKArgIdx.PROOF_B],
-            snarkArgs[ZKArgIdx.PROOF_C],
-            [...snarkArgs[ZKArgIdx.DATA]]
-          );
-          await ukReceipt.wait();
+          const getArgs = async () => {
+            return [
+              snarkArgs[ZKArgIdx.PROOF_A],
+              snarkArgs[ZKArgIdx.PROOF_B],
+              snarkArgs[ZKArgIdx.PROOF_C],
+              [...snarkArgs[ZKArgIdx.DATA]],
+            ];
+          };
+
+          const txIntent: UnconfirmedUseKey = {
+            contract: contractsAPI.contract,
+            methodName: 'useKey',
+            args: getArgs(),
+          };
+
+          console.log(txIntent);
+          const tx = await contractsAPI.submitTransaction(txIntent);
+          console.log(tx);
+
+          // const ukReceipt = await contractsAPI.contract.useKey(
+          //   snarkArgs[ZKArgIdx.PROOF_A],
+          //   snarkArgs[ZKArgIdx.PROOF_B],
+          //   snarkArgs[ZKArgIdx.PROOF_C],
+          //   [...snarkArgs[ZKArgIdx.DATA]]
+          // );
+          // await ukReceipt.wait();
           terminal.current?.print('Successfully joined game. ', TerminalTextStyle.Green);
           terminal.current?.print(`Welcome, player `);
           terminal.current?.println(address, TerminalTextStyle.Text);
-          terminal.current?.print('Sent player $0.15 :) ', TerminalTextStyle.Blue);
+          // terminal.current?.print('Sent player $0.15 :) ', TerminalTextStyle.Blue);
+          // terminal.current?.printLink(
+          //   '(View Transaction)',
+          //   () => {
+          //     window.open(`${BLOCK_EXPLORER_URL}/${ukReceipt.hash}`);
+          //   },
+          //   TerminalTextStyle.Blue
+          // );
+
           terminal.current?.printLink(
             '(View Transaction)',
             () => {
-              window.open(`${BLOCK_EXPLORER_URL}/${ukReceipt.hash}`);
+              window.open(`${BLOCK_EXPLORER_URL}/${tx.hash}`);
             },
-            TerminalTextStyle.Blue
+            TerminalTextStyle.Pink
           );
           terminal.current?.newline();
           // setStep(TerminalPromptStep.ASKING_PLAYER_EMAIL);
@@ -724,9 +754,9 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         );
 
         terminal.current?.printLink(
-          'https://blockscout.com/poa/xdai/',
+          'https://explorer.holesky.redstone.xyz/',
           () => {
-            window.open('https://blockscout.com/poa/xdai/');
+            window.open('https://explorer.holesky.redstone.xyz/');
           },
           TerminalTextStyle.Red
         );
@@ -879,10 +909,8 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           _run = true;
           terminal.current?.println('Select area where is cursor pointer "👆🏻" on Minimap.');
 
-          terminal.current?.println(
-            'You can choose "Inner Nebula" only. *Dark Blue...',
-            TerminalTextStyle.Blue
-          );
+          terminal.current?.println('You can choose "Inner Nebula" only. ', TerminalTextStyle.Blue);
+
           terminal.current?.println(' ');
           // terminal.current?.println(`In WorldRadius = ${worldRadius.toFixed(2).toString()}`);
           // terminal.current?.println(
@@ -951,6 +979,43 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
             terminal.current?.println('');
             terminal.current?.println(e.message, TerminalTextStyle.Red);
             terminal.current?.println('');
+
+            terminal.current?.println(
+              "Don't worry :-) you can get more Redstone Holesky ETH this way 😘",
+              TerminalTextStyle.Pink
+            );
+
+            terminal.current?.newline();
+            terminal.current?.print('Step 1: ', TerminalTextStyle.Pink);
+            terminal.current?.printLink(
+              'Get more Holesky ETH here',
+              () => {
+                window.open('https://holesky-faucet.pk910.de/');
+              },
+              TerminalTextStyle.Pink
+            );
+            terminal.current?.println('');
+            terminal.current?.println('');
+            terminal.current?.print('Step 2: ', TerminalTextStyle.Pink);
+            terminal.current?.printLink(
+              'Deposit to Redstone',
+              () => {
+                window.open('https://redstone.xyz/deposit');
+              },
+              TerminalTextStyle.Pink
+            );
+            terminal.current?.newline();
+
+            //todo
+            //         <div>
+            //   <Link to={'https://holesky-faucet.pk910.de/'}>Get More HoleskyETH</Link>
+            // </div>
+
+            // <div>
+            //   {' '}
+            //   <Link to={'https://redstone.xyz/deposit'}>Deposit To Redstone</Link>
+            // </div>
+
             console.log(process.env.FAUCET_SERVICE_URL);
             if (e.message === 'ETH balance too low!' && process.env.FAUCET_SERVICE_URL) {
               terminal.current?.printElement(
@@ -995,7 +1060,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       setInitRenderState(InitRenderState.COMPLETE);
       terminal.current?.clear();
 
-      terminal.current?.println('Welcome to the Dark Forest.', TerminalTextStyle.Green);
+      terminal.current?.println('Welcome to the Dark Forest Ares.', TerminalTextStyle.Green);
       terminal.current?.println('');
       terminal.current?.println(
         "This is the Dark Forest interactive JavaScript terminal. Only use this if you know exactly what you're doing."
@@ -1049,9 +1114,9 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           TerminalTextStyle.Red
         );
         terminal.current?.printLink(
-          'https://blockscout.com/poa/xdai/optimism',
+          'https://explorer.holesky.redstone.xyz/',
           () => {
-            window.open('https://blockscout.com/xdai/optimism');
+            window.open('https://explorer.holesky.redstone.xyz/');
           },
           TerminalTextStyle.Red
         );
@@ -1199,8 +1264,8 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       <div>
         {isMiniMapOn && (
           <>
-            <div style={{ position: 'absolute', right: '50px' }}>
-              <div style={{ color: 'red', width: '100px', height: '50px' }}> </div>
+            <div style={{ position: 'absolute', right: '100px' }}>
+              <div style={{ color: 'red', width: '100px', height: '100px' }}> </div>
               <MinimapPluginWrapper plugin={minimapPlugin} />
             </div>
           </>

@@ -30,10 +30,11 @@ export function TwitterVerifyPane({ visible, onClose }: { visible: boolean; onCl
   const onTweetClick = async () => {
     if (uiManager) {
       const tweetText = await uiManager.generateVerificationTweet(twitterHandleInputValue);
+      // const str = `Verify my @dfares v0.6 account (https://zkga.me):
+      // ${tweetText}`;
+      const str = `Verifying my DF ARES v0.1 Round 2 account (https://dfares.xyz/)🩷\n @darkforest_eth Community Rounds hosted by @DFArchon: ${tweetText}`;
 
-      // const str = `Verifying my @dfares v0.6 account (https://zkga.me): ${tweetText}`;
-      const str = `Verifying my DF ARES v0.1.1 account (https://ares.netlify.app/)\nDF ARES are @darkforest_eth Community Rounds hosted by @DFArchon: ${tweetText}`;
-
+      // const str = `Verifying my DF Ares v0.1 Round 2 account (https://dfares.xyz/)🩷\n @darkforest_eth community round hosted by @DFArchon \n ${tweetText}`;
       window.open(`https://twitter.com/intent/tweet?hashtags=darkforest&text=${encodeURI(str)}`);
     }
   };

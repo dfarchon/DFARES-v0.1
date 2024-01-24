@@ -98,6 +98,7 @@ contract DFMoveFacet is WithStorage {
             );
         }
 
+        gs().players[msg.sender].moveCount++;
         _executeMove(args);
 
         LibGameUtils.updateWorldRadius();
@@ -331,6 +332,7 @@ contract DFMoveFacet is WithStorage {
         if (relevantWormhole.isInitialized) {
             wormholePresent = true;
             uint256[6] memory speedBoosts = [uint256(1), 2, 4, 8, 16, 32];
+
             effectiveDistModifier = speedBoosts[uint256(relevantWormhole.rarity)];
         }
     }
@@ -345,6 +347,10 @@ contract DFMoveFacet is WithStorage {
         returns (bool photoidPresent, Upgrade memory temporaryUpgrade)
     {
         Artifact memory activeArtifactFrom = LibGameUtils.getActiveArtifact(args.oldLoc);
+        Artifact memory activeArtifactTo = LibGameUtils.getActiveArtifact(args.newLoc);
+
+        Planet memory newPlanet = gs().planets[args.newLoc];
+
         if (
             activeArtifactFrom.isInitialized &&
             activeArtifactFrom.artifactType == ArtifactType.PhotoidCannon &&
@@ -354,6 +360,16 @@ contract DFMoveFacet is WithStorage {
             photoidPresent = true;
             LibArtifactUtils.deactivateArtifact(args.oldLoc);
             temporaryUpgrade = LibGameUtils.timeDelayUpgrade(activeArtifactFrom);
+
+            if (
+                activeArtifactTo.isInitialized &&
+                activeArtifactTo.artifactType == ArtifactType.StellarShield
+            ) {
+                require(
+                    activeArtifactFrom.rarity >= activeArtifactTo.rarity,
+                    "Photoid Canon rarity >= Stellar Shield rarity"
+                );
+            }
         }
     }
 

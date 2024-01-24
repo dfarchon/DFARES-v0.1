@@ -193,7 +193,7 @@ export function TxConfirmPopup({
   const hatLevel = localStorage.getItem(`${account}-hatLevel`);
   // const hatCost: number = method === 'buyHat' && hatLevel ? 2 **
   // parseInt(hatLevel) : 0;
-  const hatCost: number = method === 'buyHat' && hatLevel ? 1 : 0;
+  const hatCost: number = method === 'buyHat' && hatLevel ? 0.1 : 0;
 
   const upPlanet = localStorage.getItem(`${account}-upPlanet`);
   const branch = localStorage.getItem(`${account}-branch`);
@@ -236,6 +236,7 @@ export function TxConfirmPopup({
   }
 
   function price() {
+    return 50;
     // console.warn('this is price');
     // console.log(butArtifactType);
     // console.log(buyArtifactRarity);

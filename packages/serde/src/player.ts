@@ -22,6 +22,8 @@ export function decodePlayer(rawPlayer: RawPlayer): Player {
     lastRevealTimestamp: rawPlayer.lastRevealTimestamp.toNumber(),
     lastClaimTimestamp: rawPlayer.lastRevealTimestamp.toNumber(),
     lastBurnTimestamp: rawPlayer.lastRevealTimestamp.toNumber(),
+    lastActivateArtifactTimestamp: rawPlayer.lastRevealTimestamp.toNumber(),
+    lastBuyArtifactTimestamp: rawPlayer.lastRevealTimestamp.toNumber(),
     score: rawPlayer.score.toNumber(),
     spaceJunk: rawPlayer.spaceJunk.toNumber(),
     spaceJunkLimit: rawPlayer.spaceJunkLimit.toNumber(),
@@ -31,5 +33,10 @@ export function decodePlayer(rawPlayer: RawPlayer): Player {
     activateArtifactAmount: rawPlayer.activateArtifactAmount.toNumber(),
     buyArtifactAmount: rawPlayer.buyArtifactAmount.toNumber(),
     silver: rawPlayer.silver.toNumber() / CONTRACT_PRECISION,
+    dropBombAmount: rawPlayer.dropBombAmount.toNumber(),
+    pinkAmount: rawPlayer.pinkAmount.toNumber(),
+    pinkedAmount: rawPlayer.pinkedAmount.toNumber(),
+    moveCount: rawPlayer.moveCount.toNumber(),
+    hatCount: rawPlayer.hatCount.toNumber(),
   };
 }

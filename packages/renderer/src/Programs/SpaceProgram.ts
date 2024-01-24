@@ -432,8 +432,8 @@ export const SPACE_PROGRAM_DEFINITION = {
       float x = ${v.worldCoords}.x;
       float y = ${v.worldCoords}.y;
       float distFromOriginSquare = x * x + y * y;
-      float nebulaThresholdTop = 70000.0 * 70000.0;
-      float nebulaThresholdBottom = 60000.0 * 60000.0;
+      float nebulaThresholdTop = 131250.0 * 131250.0;
+      float nebulaThresholdBottom = 112500.0 * 112500.0;
 
       //fich dich
 

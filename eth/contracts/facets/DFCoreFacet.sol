@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 // External contract imports
 import {DFVerifierFacet} from "./DFVerifierFacet.sol";
 import {DFWhitelistFacet} from "./DFWhitelistFacet.sol";
+import {DFCaptureFacet} from "./DFCaptureFacet.sol";
 
 // Library imports
 import {ABDKMath64x64} from "../vendor/libraries/ABDKMath64x64.sol";
@@ -118,7 +119,12 @@ contract DFCoreFacet is WithStorage {
         //     LibPlanet.initializePlanetWithDefaults(_input[0], _input[1], false);
         // }
 
-        uint256 distFromOriginSquare = _input[2]**2 + _input[3]**2;
+        uint256 x = _input[2];
+        uint256 y = _input[3];
+        int256 planetX = DFCaptureFacet(address(this)).getIntFromUInt(x);
+        int256 planetY = DFCaptureFacet(address(this)).getIntFromUInt(y);
+        uint256 distFromOriginSquare = uint256(planetX * planetX + planetY * planetY);
+
         if (!gs().planets[_input[0]].isInitialized) {
             LibPlanet.initializePlanetWithDefaults(
                 _input[0],
@@ -139,8 +145,10 @@ contract DFCoreFacet is WithStorage {
     }
 
     function getEntryFee() public view returns (uint256) {
-        uint256 amount = gs().playerIds.length;
-        return (1 ether * amount * amount * amount) / 100000;
+        return 1 ether;
+        // return 30 ether;
+        // uint256 amount = gs().playerIds.length;
+        // return (1 ether * amount * amount * amount) / 100000;
     }
 
     function initializePlayer(
@@ -161,8 +169,16 @@ contract DFCoreFacet is WithStorage {
         uint256 entryFee = getEntryFee();
         require(msg.value == entryFee, "Wrong value sent");
 
+        // whitelist
+        if (!ws().enabled) {
+            require(!ws().allowedAccounts[msg.sender], "player is already allowed");
+            ws().allowedAccounts[msg.sender] = true;
+            ws().allowedAccountsArray.push(msg.sender);
+        }
+
         // Initialize player data
         gs().playerIds.push(msg.sender);
+
         gs().players[msg.sender] = Player(
             true,
             msg.sender,
@@ -175,6 +191,11 @@ contract DFCoreFacet is WithStorage {
             false,
             0,
             false,
+            0,
+            0,
+            0,
+            0,
+            0,
             0,
             0,
             0
@@ -240,24 +261,22 @@ contract DFCoreFacet is WithStorage {
         require(activeArtifact.artifactType != ArtifactType.Avatar, "need no active Avatar");
 
         // uint256 cost = (1 << gs().planets[_location].hatLevel) * 1 ether;
-        uint256 cost = 1 ether;
+        uint256 cost = 0.1 ether;
 
         require(msg.value == cost, "Wrong value sent");
 
+        if (gs().firstHat == address(0)) gs().firstHat = msg.sender;
+
+        gs().players[msg.sender].hatCount++;
         // gs().planets[_location].hatLevel += 1;
 
-        if(gs().planets[_location].hatLevel ==0){
-            gs().planets[_location].hatLevel =1;
+        if (gs().planets[_location].hatLevel == 0) {
+            gs().planets[_location].hatLevel = 1;
             gs().planets[_location].hatType = hatType;
-
-        }else {
-            gs().planets[_location].hatLevel=0;
+        } else {
+            gs().planets[_location].hatLevel = 0;
             gs().planets[_location].hatType = 0;
-
         }
-
-
-
 
         emit PlanetHatBought(
             msg.sender,

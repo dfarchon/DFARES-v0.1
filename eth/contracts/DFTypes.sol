@@ -38,6 +38,11 @@ struct Player {
     uint256 activateArtifactAmount;
     uint256 buyArtifactAmount;
     uint256 silver;
+    uint256 dropBombAmount;
+    uint256 pinkAmount;
+    uint256 pinkedAmount;
+    uint256 moveCount;
+    uint256 hatCount;
 }
 
 struct Planet {
@@ -313,4 +318,14 @@ struct BurnedCoords {
 struct LastBurnedStruct {
     address player;
     uint256 lastBurnTimestamp;
+}
+
+struct LastActivateArtifactStruct {
+    address player;
+    uint256 lastActivateArtifactTimestamp;
+}
+
+struct LastBuyArtifactStruct {
+    address player;
+    uint256 lastBuyArtifactTimestamp;
 }

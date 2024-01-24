@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 import {WithStorage, GameConstants} from "../libraries/LibStorage.sol";
 
 // Type imports
-import {RevealedCoords, ClaimedCoords, BurnedCoords, LastClaimedStruct, LastBurnedStruct} from "../DFTypes.sol";
+import {RevealedCoords, ClaimedCoords, BurnedCoords, LastClaimedStruct, LastBurnedStruct, LastActivateArtifactStruct, LastBuyArtifactStruct} from "../DFTypes.sol";
 
 contract DFGetterTwoFacet is WithStorage {
     //About Claim
@@ -151,5 +151,65 @@ contract DFGetterTwoFacet is WithStorage {
      */
     function getLastBurnTimestamp(address player) public view returns (uint256) {
         return gs().lastBurnTimestamp[player];
+    }
+
+    function bulkGetLastActivateArtifactTimestamp(uint256 startIdx, uint256 endIdx)
+        public
+        view
+        returns (LastActivateArtifactStruct[] memory ret)
+    {
+        ret = new LastActivateArtifactStruct[](endIdx - startIdx);
+
+        for (uint256 i = startIdx; i < endIdx; i++) {
+            address player = gs().playerIds[i];
+
+            ret[i - startIdx] = LastActivateArtifactStruct({
+                player: player,
+                lastActivateArtifactTimestamp: gs().lastActivateArtifactTimestamp[player]
+            });
+        }
+    }
+
+    /**
+     * Returns the last time that the given player activated artifact
+     */
+    function getLastActivateArtifactTimestamp(address player) public view returns (uint256) {
+        return gs().lastActivateArtifactTimestamp[player];
+    }
+
+    function bulkGetLastBuyArtifactTimestamp(uint256 startIdx, uint256 endIdx)
+        public
+        view
+        returns (LastBuyArtifactStruct[] memory ret)
+    {
+        ret = new LastBuyArtifactStruct[](endIdx - startIdx);
+
+        for (uint256 i = startIdx; i < endIdx; i++) {
+            address player = gs().playerIds[i];
+
+            ret[i - startIdx] = LastBuyArtifactStruct({
+                player: player,
+                lastBuyArtifactTimestamp: gs().lastBuyArtifactTimestamp[player]
+            });
+        }
+    }
+
+    /**
+     * Returns the last time that the given player activated artifact
+     */
+    function getLastBuyArtifactTimestamp(address player) public view returns (uint256) {
+        return gs().lastBuyArtifactTimestamp[player];
+    }
+
+    function getFirstMythicArtifactOwner() public view returns (address) {
+        return gs().firstMythicArtifactOwner;
+    }
+
+    function getFirstBurnLocationOperator() public view returns (address) {
+        return gs().firstBurnLocationOperator;
+    }
+
+    function getFirstHat() public view returns (address) {
+        return gs().firstHat;
     }
 }

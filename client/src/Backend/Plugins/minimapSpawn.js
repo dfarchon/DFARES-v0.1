@@ -52,8 +52,8 @@ class MinimapSpawnPlugin {
     // Sample points in a grid and determine space type
 
     const generate = () => {
-      div.style.width = '99%';
-      div.style.height = '99%';
+      div.style.width = '100%';
+      div.style.height = '100%';
       this.canvas.width = this.canvasSize;
       this.canvas.height = this.canvasSize;
       this.sizeFactor = this.canvasSize - 18;
@@ -136,7 +136,7 @@ class MinimapSpawnPlugin {
         ctx.fill();
         ctx.stroke();
       }
-      //mytodo:
+      //myNotice:
       // draw inner circle of map
       // let rimNormalized = (normalize(rim) / 2) * 0.91; // idk why here need
       // to be corection??
@@ -145,8 +145,8 @@ class MinimapSpawnPlugin {
 
       ctx.beginPath();
       ctx.arc(
-        radiusNormalized, // centerX
-        radiusNormalized, // centerY
+        radiusNormalized + 2, // centerX
+        radiusNormalized + 3, // centerY
         normalizeRadius, // rimNormalized, // radius
         0,
         2 * Math.PI
@@ -173,7 +173,6 @@ class MinimapSpawnPlugin {
       };
 
       // Draw the image at the center with the specified rim radius
-      // mytodo:
       drawImageAtCenter(ctx, image, radiusNormalized);
     };
 

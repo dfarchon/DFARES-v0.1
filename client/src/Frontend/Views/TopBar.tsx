@@ -20,7 +20,7 @@ import { Paused } from './Paused';
 const TopBarContainer = styled.div`
   z-index: ${DFZIndex.MenuBar};
   padding: 0 2px;
-  width: 530px;
+  width: 800px;
 `;
 
 const Numbers = styled.div`

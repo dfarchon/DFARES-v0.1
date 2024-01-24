@@ -210,8 +210,8 @@ export const PERLIN_PROGRAM_DEFINITION = {
       float x = ${v.worldCoords}.x;
       float y = ${v.worldCoords}.y;
       float distFromOriginSquare = x * x + y * y;
-      float nebulaThresholdTop = 70000.0 * 70000.0;
-      float nebulaThresholdBottom = 60000.0 * 60000.0;
+      float nebulaThresholdTop = 131250.0 * 131250.0;
+      float nebulaThresholdBottom = 112500.0 * 112500.0;
       //fich dich
 
       float p0 = perlin(scale * 1., x, y, ${v.p0botLeftGrad}, ${v.p0botRightGrad}, ${v.p0topLeftGrad}, ${v.p0topRightGrad});

@@ -33,6 +33,7 @@ export function getEthConnection(): Promise<EthConnection> {
   console.log(`rpc url: ${url}`);
   console.log(`is production: ${isProd}`);
   console.log(`webserver url: ${process.env.DF_WEBSERVER_URL}`);
+  console.log(`leaderboard url: ${process.env.LEADER_BOARD_URL}`);
   console.log(`faucet service url:${faucetServiceUrl}`);
 
   return createEthConnection(url);

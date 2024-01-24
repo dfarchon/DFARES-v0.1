@@ -6,8 +6,9 @@ import { BigNumber } from 'ethers';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Btn } from '../Components/Btn';
-import { CenterBackgroundSubtext, SelectFrom } from '../Components/CoreUI';
-import { Sub } from '../Components/Text';
+import { CenterBackgroundSubtext } from '../Components/CoreUI';
+import { Blue, Sub, White } from '../Components/Text';
+import { formatDuration, TimeUntil } from '../Components/TimeUntil';
 import { useAccount, usePlanet, useUIManager } from '../Utils/AppHooks';
 import { useEmitterValue } from '../Utils/EmitterHooks';
 import { ModalHandle } from '../Views/ModalPane';
@@ -46,28 +47,29 @@ export function BuyArtifactPane({
     useEmitterValue(uiManager.getEthConnection().myBalance$, BigNumber.from('0'))
   );
 
-  const currentBlockNumber = useEmitterValue(uiManager.getEthConnection().blockNumber$, undefined);
+  // const currentBlockNumber = useEmitterValue(uiManager.getEthConnection().blockNumber$, undefined);
 
-  //buyartifact
-  //myTodo: 60 min 1 artifact
-  const deltaTime = 60;
+  // //buyartifact
+  // //myTodo: 60 min 1 artifact
+  // const deltaTime = 60;
 
-  const maxAmount = currentBlockNumber
-    ? Math.floor(
-        ((currentBlockNumber - uiManager.contractConstants.GAME_START_BLOCK) * 2.0) /
-          (60 * deltaTime)
-      )
-    : 0;
+  // const maxAmount = currentBlockNumber
+  //   ? Math.floor(
+  //       ((currentBlockNumber - uiManager.contractConstants.GAME_START_BLOCK) * 2.0) /
+  //         (60 * deltaTime)
+  //     )
+  //   : 0;
 
-  const buyArtifactAmountInContract = account ? uiManager.getPlayerBuyArtifactAmount(account) : 0;
+  // const buyArtifactAmountInContract = account ? uiManager.getPlayerBuyArtifactAmount(account) : 0;
 
-  const buyArtifactAmount = buyArtifactAmountInContract ? buyArtifactAmountInContract : 0;
+  // const buyArtifactAmount = buyArtifactAmountInContract ? buyArtifactAmountInContract : 0;
 
   const [biome, setBiome] = useState(Biome.GRASSLAND.toString());
   const [type, setType] = useState(ArtifactType.Wormhole.toString());
   const [rarity, setRarity] = useState(ArtifactRarity.Legendary.toString());
 
   function isTypeOK() {
+    return true;
     const val = Number(type);
     if (val === Number(ArtifactType.Wormhole)) return true;
     if (val === Number(ArtifactType.PlanetaryShield)) return true;
@@ -75,11 +77,11 @@ export function BuyArtifactPane({
     if (val === Number(ArtifactType.FireLink)) return true;
     if (val === Number(ArtifactType.StellarShield)) return true;
     if (val === Number(ArtifactType.Avatar)) return true;
-
     return false;
   }
 
   function getCost() {
+    return 50;
     const rarityVal = parseInt(rarity);
     const typeVal = parseInt(type);
 
@@ -105,26 +107,46 @@ export function BuyArtifactPane({
   //   return 2 ** planet.hatLevel;
   // };
 
+  const buyArtifactCooldownPassed = uiManager.getNextBuyArtifactAvailableTimestamp() <= Date.now();
+
   const enabled = (planet: Planet): boolean =>
     !planet.transactions?.hasTransaction(isUnconfirmedBuyArtifactTx) &&
     planet?.owner === account &&
     cost > 0 &&
     balanceEth >= cost &&
-    maxAmount > buyArtifactAmount;
+    // maxAmount > buyArtifactAmount &&
+    buyArtifactCooldownPassed;
 
   if (planet && planet.owner === account) {
     return (
-      <StyledBuyArtifactPane>
-        <div>block number: {currentBlockNumber}</div>
-        <div> buy artifact amount {buyArtifactAmount}</div>
-        <div> max artifact amount {maxAmount} </div>
+      <>
         <div>
-          <Sub>Artifact Price</Sub>
-          <span>
-            {cost} ${TOKEN_NAME}
-          </span>
+          You can buy artifact once every{' '}
+          <White>{formatDuration(uiManager.contractConstants.BUY_ARTIFACT_COOLDOWN * 1000)}</White>.
         </div>
-        <div>
+
+        {!buyArtifactCooldownPassed && (
+          <p>
+            <Blue>INFO:</Blue> You must wait{' '}
+            <TimeUntil
+              timestamp={uiManager.getNextBuyArtifactAvailableTimestamp()}
+              ifPassed={'now!'}
+            />{' '}
+            to buy more.
+          </p>
+        )}
+
+        <StyledBuyArtifactPane>
+          {/* <div>block number: {currentBlockNumber}</div>
+        <div> buy artifact amount {buyArtifactAmount}</div>
+        <div> max artifact amount {maxAmount} </div> */}
+          <div>
+            <Sub>Artifact Price</Sub>
+            <span>
+              {cost} ${TOKEN_NAME}
+            </span>
+          </div>
+          {/*  <div>
           <div>Biome</div>
           <SelectFrom
             values={[
@@ -195,31 +217,32 @@ export function BuyArtifactPane({
             value={type.toString()}
             setValue={setType}
           />
-        </div>
+        </div> */}
 
-        <div>
-          <Sub>Current Balance</Sub>
-          <span>
-            {balanceEth} ${TOKEN_NAME}
-          </span>
-        </div>
-        <div>
-          <Btn
-            onClick={() => {
-              if (!enabled(planet) || !uiManager || !planet) return;
-              uiManager.buyArtifact(
-                planet.locationId,
-                parseInt(rarity) as ArtifactRarity,
-                parseInt(biome) as Biome,
-                parseInt(type) as ArtifactType
-              );
-            }}
-            disabled={!enabled(planet)}
-          >
-            Buy Artifact
-          </Btn>
-        </div>
-      </StyledBuyArtifactPane>
+          <div>
+            <Sub>Current Balance</Sub>
+            <span>
+              {balanceEth} ${TOKEN_NAME}
+            </span>
+          </div>
+          <div>
+            <Btn
+              onClick={() => {
+                if (!enabled(planet) || !uiManager || !planet) return;
+                uiManager.buyArtifact(
+                  planet.locationId,
+                  parseInt(rarity) as ArtifactRarity,
+                  parseInt(biome) as Biome,
+                  parseInt(type) as ArtifactType
+                );
+              }}
+              disabled={!enabled(planet)}
+            >
+              Buy Artifact
+            </Btn>
+          </div>
+        </StyledBuyArtifactPane>
+      </>
     );
   } else {
     return (

@@ -101,14 +101,22 @@ library LibArtifactUtils {
             )
         );
 
-        (ArtifactType artifactType, uint256 levelBonus) = LibGameUtils
-            ._randomArtifactTypeAndLevelBonus(artifactSeed, biome, planet.spaceType);
+        (
+            ArtifactType artifactType,
+            uint256 levelBonus,
+            ArtifactRarity artifactRarity
+        ) = LibGameUtils._randomArtifactTypeAndLevelBonus(
+                artifactSeed,
+                biome,
+                planet.spaceType,
+                planet.planetLevel
+            );
 
         DFTCreateArtifactArgs memory createArtifactArgs = DFTCreateArtifactArgs(
             artifactSeed,
             msg.sender,
             args.planetId,
-            LibGameUtils.artifactRarityFromPlanetLevel(levelBonus + planet.planetLevel),
+            artifactRarity,
             biome,
             artifactType,
             args.coreAddress,
@@ -120,6 +128,10 @@ library LibArtifactUtils {
             createArtifactArgs
         );
 
+        if (foundArtifact.rarity == ArtifactRarity.Mythic) {
+            if (gs().firstMythicArtifactOwner == address(0))
+                gs().firstMythicArtifactOwner = msg.sender;
+        }
         LibGameUtils._putArtifactOnPlanet(foundArtifact.id, args.planetId);
 
         planet.hasTriedFindingArtifact = true;
@@ -210,21 +222,29 @@ library LibArtifactUtils {
         require(!planet.frozen, "planet is frozen");
 
         require(artifact.isInitialized, "this artifact is not on this planet");
+        gs().players[msg.sender].activateArtifactAmount++;
 
-        if (artifact.artifactType != ArtifactType.Avatar) {
-            uint256 totalAmount = gs().players[msg.sender].activateArtifactAmount + 1;
-            uint256 totalGameBlocks = block.number - gameConstants().GAME_START_BLOCK;
+        // if (artifact.artifactType != ArtifactType.Avatar) {
+        //     uint256 totalAmount = gs().players[msg.sender].activateArtifactAmount + 1;
+        //     uint256 totalGameBlocks = block.number - gameConstants().GAME_START_BLOCK;
 
-            //myNotice: redstone 2 sec for 1 block
-            //1 hour 1 artifact
-            //require(totalGameBlocks * 2 >= amount * 60 * 60, "block number limit");
+        //     //myNotice: redstone 2 sec for 1 block
+        //     //1 hour 1 artifact
+        //     //require(totalGameBlocks * 2 >= amount * 60 * 60, "block number limit");
 
-            //myTodo: 2 min 1 artifact
-            uint256 deltaTime = 2;
-            require(totalGameBlocks * 2 >= totalAmount * 60 * deltaTime, "block number limit");
-            gs().players[msg.sender].activateArtifactAmount++;
-        }
+        //     //myTodo: 2 min 1 artifact
+        //     uint256 deltaTime = 2;
+        //     require(totalGameBlocks * 2 >= totalAmount * 60 * deltaTime, "block number limit");
+        //     gs().players[msg.sender].activateArtifactAmount++;
+        // }
 
+        require(
+            block.timestamp - gs().lastActivateArtifactTimestamp[msg.sender] >
+                gameConstants().ACTIVATE_ARTIFACT_COOLDOWN,
+            "wait for cooldown before activating artifact again"
+        );
+
+        gs().lastActivateArtifactTimestamp[msg.sender] = block.timestamp;
         // bool nonAvatarArtifactCanActivateWithAvatarActivated = LibGameUtils.getActiveArtifact(locationId).artifactType == ArtifactType.Avatar && artifact.artifactType != ArtifactType.Avatar;
 
         // Unknown is the 0th one, Monolith is the 1st, and so on.
@@ -272,8 +292,25 @@ library LibArtifactUtils {
             );
             require(!gs().planets[linkTo].destroyed, "planet destroyed");
             require(!gs().planets[linkTo].frozen, "planet frozen");
-
+            require(
+                2 * uint256(artifact.rarity) >= planet.planetLevel,
+                "artifact is not powerful enough to apply effect to this planet level"
+            );
+            require(
+                2 * uint256(artifact.rarity) >= gs().planets[linkTo].planetLevel,
+                "artifact is not powerful enough to apply effect to this planet level"
+            );
             artifact.linkTo = linkTo;
+        } else if (artifact.artifactType == ArtifactType.PlanetaryShield) {
+            require(
+                2 * uint256(artifact.rarity) >= planet.planetLevel,
+                "artifact is not powerful enough to apply effect to this planet level"
+            );
+        } else if (artifact.artifactType == ArtifactType.PhotoidCannon) {
+            require(
+                2 * uint256(artifact.rarity) >= planet.planetLevel,
+                "artifact is not powerful enough to apply effect to this planet level"
+            );
         } else if (artifact.artifactType == ArtifactType.BloomFilter) {
             require(
                 2 * uint256(artifact.rarity) >= planet.planetLevel,
@@ -445,6 +482,10 @@ library LibArtifactUtils {
             //     // gs().planets[linkTo].owner = msg.sender;
         } else if (artifact.artifactType == ArtifactType.StellarShield) {
             // MyTodo: maybe add some limit?
+            require(
+                2 * uint256(artifact.rarity) >= planet.planetLevel,
+                "artifact is not powerful enough to apply effect to this planet level"
+            );
         } else if (artifact.artifactType == ArtifactType.BlindBox) {
             // planet.owner = gs().planets[linkTo].owner;
             // gs().planets[linkTo].owner = msg.sender;

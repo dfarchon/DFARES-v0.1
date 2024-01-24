@@ -108,6 +108,14 @@ export type LobbyConfigAction =
       type: 'PINK_PLANET_COOLDOWN';
       value: Initializers['PINK_PLANET_COOLDOWN'] | undefined;
     }
+  | {
+      type: 'ACTIVATE_ARTIFACT_COOLDOWN';
+      value: Initializers['ACTIVATE_ARTIFACT_COOLDOWN'] | undefined;
+    }
+  | {
+      type: 'BUY_ARTIFACT_COOLDOWN';
+      value: Initializers['BUY_ARTIFACT_COOLDOWN'] | undefined;
+    }
   | { type: 'PLANET_TYPE_WEIGHTS'; value: Initializers['PLANET_TYPE_WEIGHTS'] | undefined }
   | { type: 'SILVER_SCORE_VALUE'; value: Initializers['SILVER_SCORE_VALUE'] | undefined }
   | {
@@ -333,6 +341,16 @@ export function lobbyConfigReducer(state: LobbyConfigState, action: LobbyAction)
       update = ofPositiveInteger(action, state);
       break;
     }
+
+    case 'ACTIVATE_ARTIFACT_COOLDOWN': {
+      update = ofPositiveInteger(action, state);
+      break;
+    }
+    case 'BUY_ARTIFACT_COOLDOWN': {
+      update = ofPositiveInteger(action, state);
+      break;
+    }
+
     case 'PLANET_TYPE_WEIGHTS': {
       // TODO: Add this
       update = ofNoop(action, state);
@@ -809,6 +827,28 @@ export function lobbyConfigInit(startingConfig: LobbyInitializers) {
       }
 
       case 'PINK_PLANET_COOLDOWN': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+
+      case 'ACTIVATE_ARTIFACT_COOLDOWN': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+
+      case 'BUY_ARTIFACT_COOLDOWN': {
         const defaultValue = startingConfig[key];
         state[key] = {
           currentValue: defaultValue,

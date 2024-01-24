@@ -147,6 +147,7 @@ import {
   TowardsCenterPatternV2,
 } from '../Miner/MiningPatterns';
 import { eventLogger, EventType } from '../Network/EventLogger';
+import { loadLeaderboard } from '../Network/LeaderboardApi';
 import { addMessage, deleteMessages, getMessagesOnPlanets } from '../Network/MessageAPI';
 import { loadNetworkHealth } from '../Network/NetworkHealthApi';
 import {
@@ -305,6 +306,11 @@ class GameManager extends EventEmitter {
    * Handle to an interval that periodically refreshes the network's health from our webserver.
    */
   private networkHealthInterval: ReturnType<typeof setInterval>;
+
+  /**
+   * Handle to an interval that periodically refreshes pinkZones.
+   */
+  private pinkZoneInterval: ReturnType<typeof setInterval>;
 
   /**
    * Manages the process of mining new space territory.
@@ -525,11 +531,13 @@ class GameManager extends EventEmitter {
     this.paused = paused;
 
     this.ethConnection = ethConnection;
-
-    this.diagnosticsInterval = setInterval(this.uploadDiagnostics.bind(this), 10_000);
+    // myNotice: event
+    // this.diagnosticsInterval = setInterval(this.uploadDiagnostics.bind(this), 10_000);
     this.scoreboardInterval = setInterval(this.refreshScoreboard.bind(this), 10_000);
-    this.networkHealthInterval = setInterval(this.refreshNetworkHealth.bind(this), 10_000);
 
+    //myNotice: network health
+    // this.networkHealthInterval = setInterval(this.refreshNetworkHealth.bind(this), 10_000);
+    this.pinkZoneInterval = setInterval(this.hardRefreshPinkZones.bind(this), 10_000);
     this.playerInterval = setInterval(() => {
       if (this.account) {
         this.hardRefreshPlayer(this.account);
@@ -552,7 +560,10 @@ class GameManager extends EventEmitter {
     });
 
     this.refreshScoreboard();
-    this.refreshNetworkHealth();
+    // myNotice: network health
+    // this.refreshNetworkHealth();
+    this.hardRefreshPinkZones();
+
     this.getSpaceships();
 
     this.safeMode = false;
@@ -567,85 +578,89 @@ class GameManager extends EventEmitter {
       this.networkHealth$.publish(await loadNetworkHealth());
     } catch (e) {
       // @todo - what do we do if we can't connect to the webserver
+      console.error(e);
     }
   }
 
   private async refreshScoreboard() {
-    try {
-      const knownScoringPlanets = [];
-      for (const planet of this.getAllPlanets()) {
-        if (!isLocatable(planet)) continue;
-        if (planet.destroyed) continue;
-        if (planet.planetLevel < 3) continue;
-        if (!planet?.location?.coords) continue;
-        if (planet.claimer === EMPTY_ADDRESS) continue;
-        if (planet.claimer === undefined) continue;
-        knownScoringPlanets.push({
-          locationId: planet.locationId,
-          claimer: planet.claimer,
-          score: Math.floor(df.getDistCoords(planet.location.coords, { x: 0, y: 0 })),
-        });
-      }
+    if (process.env.LEADER_BOARD_URL) {
+      console.warn('sdfdsfdsfdsf');
+      console.warn('sdfdsfdsfdsf');
+      console.warn('sdfdsfdsfdsf');
+      console.warn('sdfdsfdsfdsf');
+      console.warn('sdfdsfdsfdsf');
+      console.warn('sdfdsfdsfdsf');
+      try {
+        const leaderboard = await loadLeaderboard();
 
-      // console.log(knownScoringPlanets);
-      const cntMap = new Map<string, number>();
-
-      for (const planet of knownScoringPlanets) {
-        const claimer = planet.claimer;
-        if (claimer === undefined) continue;
-        const player = this.players.get(claimer);
-        if (player === undefined) continue;
-
-        let cnt = cntMap.get(claimer);
-        if (cnt === undefined) cnt = 0;
-        cnt = cnt + 1;
-        cntMap.set(claimer, cnt);
-
-        // console.log(player.address, ' ', this.account, ' ', planet.score);
-
-        if (player.address !== this.account) {
-          const score = planet.score;
-          if (player.score === 0 && player.lastClaimTimestamp) player.score = score;
-          else if (player.score === undefined) player.score = score;
-          else if (cnt <= 1) player.score = score;
-          else player.score = Math.min(player.score, score);
+        for (const entry of leaderboard.entries) {
+          const player = this.players.get(entry.ethAddress);
+          if (player) {
+            // current player's score is updated via `this.playerInterval`
+            if (player.address !== this.account && entry.score !== undefined) {
+              player.score = entry.score;
+            }
+          }
         }
+
+        this.playersUpdated$.publish();
+      } catch (e) {
+        // @todo - what do we do if we can't connect to the webserver? in general this should be a
+        // valid state of affairs because arenas is a thing.
       }
+    } else {
+      try {
+        const knownScoringPlanets = [];
+        for (const planet of this.getAllPlanets()) {
+          if (!isLocatable(planet)) continue;
+          if (planet.destroyed) continue;
+          if (planet.planetLevel < 3) continue;
+          if (!planet?.location?.coords) continue;
+          if (planet.claimer === EMPTY_ADDRESS) continue;
+          if (planet.claimer === undefined) continue;
+          knownScoringPlanets.push({
+            locationId: planet.locationId,
+            claimer: planet.claimer,
+            score: Math.floor(df.getDistCoords(planet.location.coords, { x: 0, y: 0 })),
+          });
+        }
 
-      // for (const player of df.getAllPlayers()) {
-      //   console.log(
-      //     player.address,
-      //     ' ',
-      //     player.lastClaimTimestamp === 0 ? undefined : player.score
-      //   );
-      // }
-      this.playersUpdated$.publish();
-    } catch (e) {
-      // @todo - what do we do if we can't connect to the webserver? in general this should be a
-      // valid state of affairs because arenas is a thing.
+        // console.log(knownScoringPlanets);
+        const cntMap = new Map<string, number>();
+
+        for (const planet of knownScoringPlanets) {
+          const claimer = planet.claimer;
+          if (claimer === undefined) continue;
+          const player = this.players.get(claimer);
+          if (player === undefined) continue;
+
+          let cnt = cntMap.get(claimer);
+          if (cnt === undefined) cnt = 0;
+          cnt = cnt + 1;
+          // cntMap.set(claimer, cnt);
+          // console.log(player.address, ' ', this.account, ' ', planet.score);
+          if (player.address !== this.account) {
+            const score = planet.score;
+            if (player.score === 0 && player.lastClaimTimestamp) player.score = score;
+            else if (player.score === undefined) player.score = score;
+            else if (cnt <= 1) player.score = score;
+            else player.score = Math.min(player.score, score);
+          }
+        }
+
+        // for (const player of df.getAllPlayers()) {
+        //   console.log(
+        //     player.address,
+        //     ' ',
+        //     player.lastClaimTimestamp === 0 ? undefined : player.score
+        //   );
+        // }
+        this.playersUpdated$.publish();
+      } catch (e) {
+        // @todo - what do we do if we can't connect to the webserver? in general this should be a
+        // valid state of affairs because arenas is a thing.
+      }
     }
-
-    return;
-
-    // try {
-    //   const leaderboard = await loadLeaderboard();
-
-    //   for (const entry of leaderboard.entries) {
-    //     const player = this.players.get(entry.ethAddress);
-
-    //     if (player) {
-    //       // current player's score is updated via `this.playerInterval`
-    //       if (player.address !== this.account) {
-    //         player.score = entry.score;
-    //       }
-    //     }
-    //   }
-
-    //   this.playersUpdated$.publish();
-    // } catch (e) {
-    //   // @todo - what do we do if we can't connect to the webserver? in general this should be a
-    //   // valid state of affairs because arenas is a thing.
-    // }
   }
 
   public getEthConnection() {
@@ -661,9 +676,12 @@ class GameManager extends EventEmitter {
     this.contractsAPI.destroy();
     this.persistentChunkStore.destroy();
     clearInterval(this.playerInterval);
-    clearInterval(this.diagnosticsInterval);
+    // myNotice: event
+    // clearInterval(this.diagnosticsInterval);
     clearInterval(this.scoreboardInterval);
-    clearInterval(this.networkHealthInterval);
+    // myNotice: network health
+    // clearInterval(this.networkHealthInterval);
+    clearInterval(this.pinkZoneInterval);
     this.settingsSubscription?.unsubscribe();
   }
 
@@ -885,6 +903,7 @@ class GameManager extends EventEmitter {
           await gameManager.hardRefreshPlanet(tx.intent.locationId);
         } else if (isUnconfirmedBurnTx(tx)) {
           await gameManager.hardRefreshPlanet(tx.intent.locationId);
+          await gameManager.hardRefreshPinkZones();
         } else if (isUnconfirmedPinkTx(tx)) {
           await gameManager.hardRefreshPlanet(tx.intent.locationId);
         } else if (isUnconfirmedInitTx(tx)) {
@@ -2002,17 +2021,8 @@ class GameManager extends EventEmitter {
    * Gets the timestamp (ms) of the next time that we can claim a planet.
    */
   public getNextClaimAvailableTimestamp() {
-    if (!this.account) {
-      throw new Error('no account set');
-    }
-    const myLastClaimTimestamp = this.players.get(this.account)?.lastClaimTimestamp;
-
-    if (!myLastClaimTimestamp) {
-      return Date.now();
-    }
-
     // both the variables in the next line are denominated in seconds
-    return (myLastClaimTimestamp + this.contractConstants.CLAIM_PLANET_COOLDOWN) * 1000;
+    return Date.now() + this.timeUntilNextClaimAvailable();
   }
 
   /**
@@ -2036,17 +2046,24 @@ class GameManager extends EventEmitter {
    * Gets the timestamp (ms) of the next time that we can burn a planet.
    */
   public getNextBurnAvailableTimestamp() {
+    return Date.now() + this.timeUntilNextBurnAvailable();
+  }
+
+  /**
+   * Gets the amount of time (ms) until the next time the current player can burn a planet.
+   */
+  public timeUntilNextBurnAvailable() {
     if (!this.account) {
       throw new Error('no account set');
     }
+
     const myLastBurnTimestamp = this.players.get(this.account)?.lastBurnTimestamp;
 
-    if (!myLastBurnTimestamp) {
-      return Date.now();
-    }
-
-    // both the variables in the next line are denominated in seconds
-    return (myLastBurnTimestamp + this.contractConstants.BURN_PLANET_COOLDOWN) * 1000;
+    // Calculation formula is the same
+    return timeUntilNextBroadcastAvailable(
+      myLastBurnTimestamp,
+      this.contractConstants.BURN_PLANET_COOLDOWN
+    );
   }
 
   /**
@@ -2080,19 +2097,53 @@ class GameManager extends EventEmitter {
     else return (result + this.contractConstants.PINK_PLANET_COOLDOWN) * 1000;
   }
   /**
-   * Gets the amount of time (ms) until the next time the current player can burn a planet.
+  /**
+   * Gets the timestamp (ms) of the next time that we can activate artifact.
    */
-  public timeUntilNextBurnAvailable() {
+  public getNextActivateArtifactAvailableTimestamp() {
+    return Date.now() + this.timeUntilNextActivateArtifactAvailable();
+  }
+
+  /**
+   * Gets the amount of time (ms) until the next time the current player can activate artifact.
+   */
+  public timeUntilNextActivateArtifactAvailable() {
     if (!this.account) {
       throw new Error('no account set');
     }
 
-    const myLastBurnTimestamp = this.players.get(this.account)?.lastBurnTimestamp;
+    const myLastActivateArtifactTimestamp = this.players.get(
+      this.account
+    )?.lastActivateArtifactTimestamp;
 
     // Calculation formula is the same
     return timeUntilNextBroadcastAvailable(
-      myLastBurnTimestamp,
-      this.contractConstants.BURN_PLANET_COOLDOWN
+      myLastActivateArtifactTimestamp,
+      this.contractConstants.ACTIVATE_ARTIFACT_COOLDOWN
+    );
+  }
+
+  /**
+   * Gets the timestamp (ms) of the next time that we can activate artifact.
+   */
+  public getNextBuyArtifactAvailableTimestamp() {
+    return Date.now() + this.timeUntilNextBuyArtifactAvailable();
+  }
+
+  /**
+   * Gets the amount of time (ms) until the next time the current player can activate artifact.
+   */
+  public timeUntilNextBuyArtifactAvailable() {
+    if (!this.account) {
+      throw new Error('no account set');
+    }
+
+    const myLastBuyArtifactTimestamp = this.players.get(this.account)?.lastBuyArtifactTimestamp;
+
+    // Calculation formula is the same
+    return timeUntilNextBroadcastAvailable(
+      myLastBuyArtifactTimestamp,
+      this.contractConstants.BUY_ARTIFACT_COOLDOWN
     );
   }
 
@@ -2112,8 +2163,6 @@ class GameManager extends EventEmitter {
       pinkZones.add({
         locationId: planet.locationId,
         coords: item.coords,
-
-        //mytodo: add different radius
         radius: this.getContractConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[planet.planetLevel],
       });
     }
@@ -2134,7 +2183,6 @@ class GameManager extends EventEmitter {
       pinkZones.add({
         locationId: planet.locationId,
         coords: item.coords,
-        //mytodo: add different radius
         radius: this.getContractConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[planet.planetLevel],
       });
     }
@@ -2848,6 +2896,10 @@ class GameManager extends EventEmitter {
       this.terminal.current?.print(` ${percentSpawn}%`, TerminalTextStyle.Text);
       this.terminal.current?.print(` chance of spawning a planet.`);
       this.terminal.current?.println('');
+      this.terminal.current?.println(
+        'It may take a long time to wait here. You can choose to wait for a while or refresh the web page.',
+        TerminalTextStyle.Pink
+      );
 
       this.terminal.current?.println(
         `Hashing first ${MIN_CHUNK_SIZE ** 2 * printProgress} potential home planets...`
@@ -2856,6 +2908,11 @@ class GameManager extends EventEmitter {
       homePlanetFinder.on(MinerManagerEvent.DiscoveredNewChunk, (chunk: Chunk) => {
         chunkStore.addChunk(chunk);
         minedChunksCount++;
+
+        this.terminal.current?.println(
+          `Hashed ${minedChunksCount * MIN_CHUNK_SIZE ** 2} potential home planets...`
+        );
+
         if (minedChunksCount % printProgress === 0) {
           this.terminal.current?.println(
             `Hashed ${minedChunksCount * MIN_CHUNK_SIZE ** 2} potential home planets...`
@@ -3156,6 +3213,11 @@ class GameManager extends EventEmitter {
       if (this.checkGameHasEnded()) {
         throw new Error('game has ended');
       }
+
+      if (!this.account) {
+        throw new Error('no account set');
+      }
+
       if (!bypassChecks) {
         const planet = this.entityStore.getPlanetWithId(locationId);
         if (this.checkGameHasEnded()) {
@@ -3167,6 +3229,16 @@ class GameManager extends EventEmitter {
         }
         if (!artifactId) {
           throw new Error('must supply an artifact id');
+        }
+        const myLastActivateArtifactTimestamp = this.players.get(
+          this.account
+        )?.lastActivateArtifactTimestamp;
+
+        if (
+          myLastActivateArtifactTimestamp &&
+          Date.now() < this.getNextActivateArtifactAvailableTimestamp()
+        ) {
+          throw new Error('still on cooldown for activating artifact');
         }
       }
 
@@ -3334,6 +3406,7 @@ class GameManager extends EventEmitter {
       }
 
       function price() {
+        return 50;
         const rarityVal = parseInt(rarity.toString());
         const typeVal = parseInt(type.toString());
 
@@ -3825,7 +3898,7 @@ class GameManager extends EventEmitter {
       const tx = await this.contractsAPI.submitTransaction(txIntent, {
         // MyNotice: when change gasLimit, need change the value in TxConfirmPopup.tsx
         gasLimit: 500000,
-        value: bigInt(1000000000000000000)
+        value: bigInt(100000000000000000) //0.1eth
           .multiply(1 + 0 * planet.hatLevel)
           .toString(),
       });
@@ -3881,7 +3954,7 @@ class GameManager extends EventEmitter {
     }
   }
 
-  // mytodo: get claimRoundEndReward back
+  // myNotice: get claimRoundEndReward back
   // /**
   //  * Receive XDAI for the claiming player based on their score rank at the end of the round.
   //  */

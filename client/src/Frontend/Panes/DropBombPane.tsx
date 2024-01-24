@@ -79,19 +79,32 @@ export function DropBombPane({
   const burnLocationCooldownPassed = uiManager.getNextBurnAvailableTimestamp() <= Date.now();
   const currentlyBurningAnyPlanet = uiManager.isCurrentlyBurning();
 
+  const getDropBombTime = () => {
+    const player = uiManager.getPlayer(account);
+    if (!player) return 0;
+    return player.dropBombAmount;
+  };
+
   const getSilverPassed = () => {
     if (!planet) return false;
     if (!account) return false;
     const playerSilver = uiManager.getPlayerSilver(account);
     if (playerSilver === undefined) return false;
-    const requireSilver = uiManager.getSilverOfBurnPlanet(planet.planetLevel);
+    const requireSilver = uiManager.getSilverOfBurnPlanet(account, planet.planetLevel);
+    if (!requireSilver) return false;
 
     return Math.floor(playerSilver) >= Math.ceil(requireSilver);
   };
 
-  const formatSilverAmount = planet
-    ? uiManager.getSilverOfBurnPlanet(planet.planetLevel).toLocaleString()
-    : 'n/a';
+  const getFormatSilverAmount = () => {
+    if (!planet) return 'n/a';
+    if (!account) return 'n/a';
+    const res = uiManager.getSilverOfBurnPlanet(account, planet.planetLevel);
+    // console.log(res);
+    if (res === undefined) return 'n/a';
+    else return res.toLocaleString();
+  };
+  const formatSilverAmount = getFormatSilverAmount();
 
   const silverPassed = getSilverPassed();
   const hasOwnedShipPink = useMemo(
@@ -179,6 +192,7 @@ export function DropBombPane({
           <Blue>INFO:</Blue> You need at least {formatSilverAmount} silver.
         </p>
       )}
+
       {!levelPassed && (
         <p>
           <Blue>INFO: </Blue> Planet level can't be 0.
@@ -195,6 +209,15 @@ export function DropBombPane({
           <White>{formatDuration(uiManager.contractConstants.BURN_PLANET_COOLDOWN * 1000)}</White>.
         </div>
 
+        <div className='row'>
+          <span>Your dropped bomb amount:</span>
+          <span>{getDropBombTime()}</span>
+        </div>
+
+        <div className='row'>
+          <span>Require silver amount: </span>
+          <span>{formatSilverAmount}</span>
+        </div>
         <div className='message'>{warningsSection}</div>
         <div className='row'>
           <span>Coordinates</span>

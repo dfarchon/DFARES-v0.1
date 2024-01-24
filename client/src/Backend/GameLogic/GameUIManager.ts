@@ -506,12 +506,28 @@ class GameUIManager extends EventEmitter {
     return this.gameManager.getNextBurnAvailableTimestamp();
   }
 
+  public timeUntilNextBurnAvailable() {
+    return this.gameManager.timeUntilNextBurnAvailable();
+  }
+
   public getNextPinkAvailableTimestamp(planetId: LocationId) {
     return this.gameManager.getNextPinkAvailableTimestamp(planetId);
   }
 
-  public timeUntilNextBurnAvailable() {
-    return this.gameManager.timeUntilNextBurnAvailable();
+  public getNextActivateArtifactAvailableTimestamp() {
+    return this.gameManager.getNextActivateArtifactAvailableTimestamp();
+  }
+
+  public timeUntilNextActivateArtifactAvailable() {
+    return this.gameManager.timeUntilNextBuyArtifactAvailable();
+  }
+
+  public getNextBuyArtifactAvailableTimestamp() {
+    return this.gameManager.getNextBuyArtifactAvailableTimestamp();
+  }
+
+  public timeUntilNextBuyArtifactAvailable() {
+    return this.gameManager.timeUntilNextBuyArtifactAvailable();
   }
 
   public getEnergyArrivingForMove(
@@ -1442,8 +1458,15 @@ class GameUIManager extends EventEmitter {
     return this.contractConstants.BURN_PLANET_LEVEL_EFFECT_RADIUS[planetLevel];
   }
 
-  public getSilverOfBurnPlanet(planetLevel: number): number {
-    return this.contractConstants.BURN_PLANET_REQUIRE_SILVER_AMOUNTS[planetLevel];
+  public getSilverOfBurnPlanet(account: EthAddress, planetLevel: number): number | undefined {
+    // const silverAmount = 10 ** this.player.dropBombAmount;
+    const player = this.getPlayer(account);
+    if (!player) return undefined;
+    const silverAmount =
+      this.contractConstants.BURN_PLANET_REQUIRE_SILVER_AMOUNTS[planetLevel] *
+      10 ** (player.dropBombAmount + 1);
+
+    return silverAmount;
   }
 
   public getDefaultSpaceJunkForPlanetLevel(level: number): number {

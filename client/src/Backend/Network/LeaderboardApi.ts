@@ -5,7 +5,7 @@ export async function loadLeaderboard(): Promise<Leaderboard> {
     return { entries: [] };
   }
 
-  const address = `${process.env.DF_WEBSERVER_URL}/leaderboard`;
+  const address = `${process.env.LEADER_BOARD_URL}/leaderboard`;
   const res = await fetch(address, {
     method: 'GET',
   });

@@ -24,16 +24,16 @@ import { ArtifactRarityLabelAnim, ArtifactTypeText } from '../Components/Labels/
 import { ArtifactBiomeLabelAnim } from '../Components/Labels/BiomeLabels';
 import { AccountLabel } from '../Components/Labels/Labels';
 import { ReadMore } from '../Components/ReadMore';
-import { Green, Red, Sub, Text, Text2, White } from '../Components/Text';
+import { Blue, Green, Red, Sub, Text, Text2, White } from '../Components/Text';
 import { TextPreview } from '../Components/TextPreview';
-import { TimeUntil } from '../Components/TimeUntil';
+import { formatDuration, TimeUntil } from '../Components/TimeUntil';
 import dfstyles from '../Styles/dfstyles';
 import { useAccount, useArtifact, useUIManager } from '../Utils/AppHooks';
-import { useEmitterValue } from '../Utils/EmitterHooks';
 import { ModalHandle } from '../Views/ModalPane';
 import { ArtifactActions } from './ManagePlanetArtifacts/ArtifactActions';
 import { ArtifactChangeImageType } from './ManagePlanetArtifacts/ArtifactChangeImageType';
 import { TooltipTrigger } from './Tooltip';
+
 const StatsContainer = styled.div`
   flex-grow: 1;
 `;
@@ -168,11 +168,14 @@ export function ArtifactDetailsBody({
   const artifactWrapper = useArtifact(uiManager, artifactId);
   const artifact = artifactWrapper.value;
 
-  const currentBlockNumber = useEmitterValue(uiManager.getEthConnection().blockNumber$, undefined);
+  // const currentBlockNumber = useEmitterValue(uiManager.getEthConnection().blockNumber$, undefined);
 
   if (!artifact) {
     return null;
   }
+
+  const activateArtifactCooldownPassed =
+    uiManager.getNextActivateArtifactAvailableTimestamp() <= Date.now();
 
   // console.log(ArtifactType);
 
@@ -229,24 +232,23 @@ export function ArtifactDetailsBody({
     );
   }
 
-  // about activate artifact block limit pane
+  // // about activate artifact block limit pane
+  // //myTodo: 2 min 1 artifact
+  // const deltaTime = 2;
 
-  //myTodo: 2 min 1 artifact
-  const deltaTime = 2;
+  // const maxAmount = currentBlockNumber
+  //   ? Math.floor(
+  //       ((currentBlockNumber - uiManager.contractConstants.GAME_START_BLOCK) * 2.0) /
+  //         (60 * deltaTime)
+  //     )
+  //   : 0;
 
-  const maxAmount = currentBlockNumber
-    ? Math.floor(
-        ((currentBlockNumber - uiManager.contractConstants.GAME_START_BLOCK) * 2.0) /
-          (60 * deltaTime)
-      )
-    : 0;
-
-  const activateArtifactAmountInContract = myAccount
-    ? uiManager.getPlayerActivateArtifactAmount(myAccount)
-    : 0;
-  const activateArtifactAmount = activateArtifactAmountInContract
-    ? activateArtifactAmountInContract
-    : 0;
+  // const activateArtifactAmountInContract = myAccount
+  //   ? uiManager.getPlayerActivateArtifactAmount(myAccount)
+  //   : 0;
+  // const activateArtifactAmount = activateArtifactAmountInContract
+  //   ? activateArtifactAmountInContract
+  //   : 0;
 
   return (
     <>
@@ -352,14 +354,37 @@ export function ArtifactDetailsBody({
 
         <ArtifactChangeImageType artifactId={artifactWrapper.value?.id} depositOn={depositOn} />
 
-        {artifact.artifactType !== ArtifactType.Avatar &&
+        {/* {artifact.artifactType !== ArtifactType.Avatar &&
           false === isSpaceShip(artifact.artifactType) && (
             <div>
               <div>block number: {currentBlockNumber}</div>
               <div> activate artifact amount: {activateArtifactAmount}</div>
               <div> max artifact amount: {maxAmount} </div>
             </div>
-          )}
+          )} */}
+
+        {!isSpaceShip(artifact.artifactType) && (
+          <div>
+            <br />
+            You can only activate artifact once every{' '}
+            <White>
+              {formatDuration(uiManager.contractConstants.ACTIVATE_ARTIFACT_COOLDOWN * 1000)}
+            </White>
+            .
+            <br />
+          </div>
+        )}
+
+        {!isSpaceShip(artifact.artifactType) && !activateArtifactCooldownPassed && (
+          <p>
+            <Blue>INFO:</Blue> You must wait{' '}
+            <TimeUntil
+              timestamp={uiManager.getNextActivateArtifactAvailableTimestamp()}
+              ifPassed={'now!'}
+            />{' '}
+            to activate artifact.
+          </p>
+        )}
 
         {!noActions && (
           <ArtifactActions artifactId={artifactWrapper.value?.id} depositOn={depositOn} />
@@ -403,20 +428,31 @@ function ArtifactDescription({
 
   const wormholeShrinkLevels = [0, 2, 4, 8, 16, 32];
 
+  const maxLevelsWormhole = [0, 2, 4, 6, 8, 9];
+  const maxLevelWormhole = maxLevelsWormhole[artifact.rarity];
+
+  const maxLevelsPlanetaryShield = [0, 2, 4, 6, 8, 9];
+  const maxLevelPlanetaryShield = maxLevelsPlanetaryShield[artifact.rarity];
+
   const maxLevelsBlackDomain = [0, 2, 4, 6, 8, 9];
   const maxLevelBlackDomain = maxLevelsBlackDomain[artifact.rarity];
+
+  const maxLevelsPhotoidCannon = [0, 2, 4, 6, 8, 9];
+  const maxLevelPhotoidCannon = maxLevelsPhotoidCannon[artifact.rarity];
 
   const maxLevelsBloomFilter = [0, 2, 4, 6, 8, 9];
   const maxLevelBloomFilter = maxLevelsBloomFilter[artifact.rarity];
 
-  // const photoidRanges = [0, 2, 2, 2, 2, 2];
-  // const photoidSpeeds = [0, 5, 10, 15, 20, 25];
+  const photoidRanges = [0, 2, 2, 2, 2, 2];
+  const photoidSpeeds = [0, 5, 10, 15, 20, 25];
 
   const maxLevelsIceLink = [0, 2, 4, 6, 8, 9];
   const maxLevelIceLink = maxLevelsIceLink[artifact.rarity];
 
   const maxLevelsFireLink = [0, 2, 4, 6, 8, 9];
   const maxLevelFireLink = maxLevelsFireLink[artifact.rarity];
+  const maxLevelsStellarShield = [0, 2, 4, 6, 8, 9];
+  const maxLevelStellarShield = maxLevelsStellarShield[artifact.rarity];
 
   const genericSpaceshipDescription = <>Can move between planets without sending energy.</>;
 
@@ -424,13 +460,19 @@ function ArtifactDescription({
     case ArtifactType.Wormhole:
       content = (
         <Text>
-          When activated, shortens the distance between this planet and another one. All moves
-          between those two planets decay less energy, and complete faster.{' '}
-          <Red>
-            Energy sent through your wormhole to a planet you do not control does not arrive.
-          </Red>{' '}
-          Because this one is <White>{rarityName}</White>, it shrinks the distance by a factor of{' '}
-          <White>{wormholeShrinkLevels[artifact.rarity]}</White>x.
+          <Text>
+            When activated, shortens the distance between this planet and another one. All moves
+            between those two planets decay less energy, and complete faster.{' '}
+            <Red>
+              Energy sent through your wormhole to a planet you do not control does not arrive.
+            </Red>{' '}
+            Because this one is <White>{rarityName}</White>, it shrinks the distance by a factor of{' '}
+            <White>{wormholeShrinkLevels[artifact.rarity]}</White>x.
+          </Text>
+          <Text2>
+            Because this one is <White>{rarityName}</White>, it can activate on planets up to level{' '}
+            <White>{maxLevelWormhole}</White>.
+          </Text2>
         </Text>
       );
       break;
@@ -443,14 +485,19 @@ function ArtifactDescription({
             range and speed. When this artifact is deactivated, it is destroyed and your planet's
             stats are reverted--so use it wisely!{' '}
           </Text>
-          <Text2>
+          {/* <Text2>
             Planet with activated planetary shield can defend against black domain's attack when
             planetary shield's rarity {'>='} block domain rarity.{' '}
-          </Text2>
+          </Text2> */}
           {/* <Text>
             Planet with activated planetary shield can defend against ice link's attack when
             planetary shield's rarity {'>='} ice link's rarity.
           </Text> */}
+
+          <Text2>
+            Because this one is <White>{rarityName}</White>, it can activate on planets up to level{' '}
+            <White>{maxLevelPlanetaryShield}</White>.
+          </Text2>
         </Text>
       );
       break;
@@ -460,40 +507,52 @@ function ArtifactDescription({
           <Text>
             When activated, permanently disables target planet. It'll still be others, but the owner
             won't be able to do anything with it. It turns completely black too. Just ... gone.
+          </Text>
+          <Text2>
             Because this one is <White>{rarityName}</White>, it can activate on planets up to level{' '}
             <White>{maxLevelBlackDomain}</White>.
-          </Text>
-          <Text2>The target planet must be owned by others. </Text2>
-          <Text>The target planet level must {'>='} source planet level. </Text>
+          </Text2>
+          {/* <Text2>The target planet must be owned by others. </Text2> */}
+          {/* <Text>The target planet level must {'>='} source planet level. </Text> */}
           <Text2>This artifact is consumed on activation. </Text2>
-          <Text>Block domain can be defended by planerary shield. </Text>
+          {/* <Text>Block domain can be defended by planerary shield. </Text> */}
         </Text>
       );
       break;
 
     case ArtifactType.PhotoidCannon:
-      // content = (
-      //   <Text>
-      //     Ahh, the Photoid Canon. Activate it, wait four hours. Because this one is{' '}
-      //     <White>{rarityName}</White>, the next move you send will be able to go{' '}
-      //     <White>{photoidRanges[artifact.rarity]}</White>x further and{' '}
-      //     <White>{photoidSpeeds[artifact.rarity]}</White>x faster. During the 4 hour waiting period,
-      //     your planet's defense is temporarily decreased. This artifact is consumed once the canon
-      //     is fired.
-      //   </Text>
-      // );
       content = (
         <Text>
           <Text>
-            Ahh, the Photoid Canon. Activate it, wait for sometimes. The next move you send will be
-            able to arrive in a very short time. During the waiting period, your planet's defense is
-            temporarily decreased.
+            Ahh, the Photoid Canon. Activate it, wait four hours. Because this one is{' '}
+            <White>{rarityName}</White>, the next move you send will be able to go{' '}
+            <White>{photoidRanges[artifact.rarity]}</White>x further and{' '}
+            <White>{photoidSpeeds[artifact.rarity]}</White>x faster. During the 4 hour waiting
+            period, your planet's defense is temporarily decreased. This artifact is consumed once
+            the canon is fired.
           </Text>
-          <Text2> This artifact is consumed once the canon is fired. </Text2>
-
-          <Text>The quick move can be defended by stellar Shield. </Text>
+          <Text2>
+            Because this one is <White>{rarityName}</White>, it can activate on planets up to level{' '}
+            <White>{maxLevelPhotoidCannon}</White>.
+          </Text2>
+          <Text2>
+            If target planet with active Stellar Shield, Photoid Canon rarity need {'>='} Stellar
+            Sheild rarity.
+          </Text2>
         </Text>
       );
+      // content = (
+      //   <Text>
+      //     <Text>
+      //       Ahh, the Photoid Canon. Activate it, wait for sometimes. The next move you send will be
+      //       able to arrive in a very short time. During the waiting period, your planet's defense is
+      //       temporarily decreased.
+      //     </Text>
+      //     <Text2> This artifact is consumed once the canon is fired. </Text2>
+
+      //     <Text>The quick move can be defended by stellar Shield. </Text>
+      //   </Text>
+      // );
       break;
 
     case ArtifactType.BloomFilter:
@@ -565,6 +624,11 @@ function ArtifactDescription({
             If stellar shield is activated on the target planet, it can resist a photoid cannon's
             quick move attack.
           </Text>
+
+          <Text>
+            Because this one is <White>{rarityName}</White>, it can be activated on planets up to
+            level <White>{maxLevelStellarShield}</White>.
+          </Text>
           <Text> Stellar shield will not disappear after deactivation.</Text>
         </Text>
       );
@@ -602,7 +666,6 @@ function ArtifactDescription({
       break;
 
     case ArtifactType.ShipPink:
-      //mytodo: update intro of pink ship
       content = (
         <Text>
           Activate Pink Ship to drop a nuclear bomb. This nuclear bomb will put all planets in the

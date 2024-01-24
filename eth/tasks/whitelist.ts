@@ -245,6 +245,39 @@ async function whitelistRegister(args: { address: string }, hre: HardhatRuntimeE
   }
 }
 
+task('whitelist:batchAddToWhitelist', 'add addresses to whitelist')
+  .addPositionalParam(
+    'filePath',
+    'the path to the file containing addresses to whitelist',
+    undefined,
+    types.string
+  )
+  .setAction(batchAddToWhitelist);
+
+async function batchAddToWhitelist(args: { filePath: string }, hre: HardhatRuntimeEnvironment) {
+  await hre.run('utils:assertChainId');
+  const keyFileContents = fs.readFileSync(args.filePath).toString();
+  const players = keyFileContents.split('\n').filter((k) => k.length > 0);
+
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+  const addressList = [];
+  for (let i = 0; i < players.length; i++) {
+    const addr = players[i];
+    addressList.push(addr);
+    console.log(i, addr);
+  }
+
+  try {
+    const receipt = await contract.batchAddToWhitelist(addressList, {
+      gasPrice: Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('5000000000')).toString(),
+    });
+    await receipt.wait();
+  } catch (e) {
+    console.log(e);
+  }
+  return;
+}
+
 task('whitelist:setRelayerReward', 'enable/disable relayer rewards and set the reward amount')
   .addOptionalParam('enable', 'enable/disable relayer rewards', undefined, types.boolean)
   .addOptionalParam(

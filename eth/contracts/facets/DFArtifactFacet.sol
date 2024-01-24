@@ -17,7 +17,7 @@ import {LibPlanet} from "../libraries/LibPlanet.sol";
 import {WithStorage} from "../libraries/LibStorage.sol";
 
 // Type imports
-import {Artifact, ArtifactType, ArtifactRarity, DFTCreateArtifactArgs, DFPFindArtifactArgs, Planet} from "../DFTypes.sol";
+import {Artifact, ArtifactType, Biome, ArtifactRarity, DFTCreateArtifactArgs, DFPFindArtifactArgs, Planet} from "../DFTypes.sol";
 
 contract DFArtifactFacet is WithStorage, ERC721 {
     using ERC721BaseStorage for ERC721BaseStorage.Layout;
@@ -351,6 +351,7 @@ contract DFArtifactFacet is WithStorage, ERC721 {
     }
 
     function buyArtifact(DFTCreateArtifactArgs memory args) public payable notPaused {
+        // myNotice: only use args.planetId
         uint256 _location = args.planetId;
         require(gs().planets[_location].isInitialized == true, "Planet is not initialized");
         LibPlanet.refreshPlanet(_location);
@@ -360,61 +361,152 @@ contract DFArtifactFacet is WithStorage, ERC721 {
             "Only owner account can perform that operation on planet."
         );
 
-        require(args.rarity != ArtifactRarity.Unknown, "can't buy Unknown");
-        require(args.rarity != ArtifactRarity.Mythic, "can't buy Mythics");
-
         require(
-            args.artifactType == ArtifactType.Wormhole ||
-                args.artifactType == ArtifactType.PlanetaryShield ||
-                args.artifactType == ArtifactType.BloomFilter ||
-                args.artifactType == ArtifactType.FireLink ||
-                args.artifactType == ArtifactType.StellarShield ||
-                args.artifactType == ArtifactType.Avatar,
-            "not support artifactType yet"
+            block.timestamp - gs().lastBuyArtifactTimestamp[msg.sender] >
+                gameConstants().BUY_ARTIFACT_COOLDOWN,
+            "wait for cooldown before buying artifact again"
         );
+        gs().lastBuyArtifactTimestamp[msg.sender] = block.timestamp;
 
-        uint256 totalAmount = gs().players[msg.sender].buyArtifactAmount + 1;
-
-        uint256 totalGameBlocks = block.number - gameConstants().GAME_START_BLOCK;
-
-        //MyTodo: altlayer 2 sec for 1 block
-        //1 hour 1 artifact
-        // require(totalGameBlocks * 2 >= amount * 60 * 60, "block number limit");
-
-        //MyTodo: buy artifact cd
-        // 60 min 1 artifact
-        uint256 deltaTime = 60;
-        require(totalGameBlocks * 2 >= totalAmount * 60 * deltaTime, "block number limit");
-        gs().players[msg.sender].buyArtifactAmount++;
-
-        uint256 cost = 1 ether;
-
-        if (
-            args.artifactType == ArtifactType.Wormhole ||
-            args.artifactType == ArtifactType.PlanetaryShield ||
-            args.artifactType == ArtifactType.BloomFilter ||
-            args.artifactType == ArtifactType.FireLink
-        ) {
-            if (args.rarity == ArtifactRarity.Common) cost = 1 ether;
-            else if (args.rarity == ArtifactRarity.Rare) cost = 2 ether;
-            else if (args.rarity == ArtifactRarity.Epic) cost = 4 ether;
-            else if (args.rarity == ArtifactRarity.Legendary) cost = 8 ether;
-        } else if (args.artifactType == ArtifactType.Avatar) {
-            cost = 1 ether;
-        } else if (args.artifactType == ArtifactType.StellarShield) {
-            cost = 8 ether;
-        }
-
+        uint256 cost = 50 ether;
         require(msg.value == cost, "Wrong value sent");
 
-        uint256 id = uint256(keccak256(abi.encodePacked(args.planetId, gs().miscNonce++)));
+        uint256 id = uint256(
+            keccak256(abi.encodePacked(args.planetId, blockhash(block.number), gs().miscNonce++))
+        );
+
         args.tokenId = id;
+        args.discoverer = msg.sender;
+        //planetId;
+        //biome;
+        args.owner = gs().diamondAddress;
+        args.controller = address(0);
+        args.imageType = 0;
+
+        uint256 lastByteOfSeed = id % 10000;
+        uint256 secondLastByteOfSeed = ((id - lastByteOfSeed) / 10000) % 10;
+
+        if (secondLastByteOfSeed == 0) {
+            args.biome = Biome.Ocean;
+        } else if (secondLastByteOfSeed == 1) {
+            args.biome = Biome.Forest;
+        } else if (secondLastByteOfSeed == 2) {
+            args.biome = Biome.Grassland;
+        } else if (secondLastByteOfSeed == 3) {
+            args.biome = Biome.Tundra;
+        } else if (secondLastByteOfSeed == 4) {
+            args.biome = Biome.Swamp;
+        } else if (secondLastByteOfSeed == 5) {
+            args.biome = Biome.Desert;
+        } else if (secondLastByteOfSeed == 6) {
+            args.biome = Biome.Ice;
+        } else if (secondLastByteOfSeed == 7) {
+            args.biome = Biome.Wasteland;
+        } else if (secondLastByteOfSeed == 8) {
+            args.biome = Biome.Lava;
+        } else {
+            args.biome = Biome.Corrupted;
+        }
+
+        if (lastByteOfSeed < 1400) {
+            args.rarity = ArtifactRarity.Common;
+            args.artifactType = ArtifactType.Wormhole;
+        } else if (lastByteOfSeed < 1750) {
+            args.rarity = ArtifactRarity.Rare;
+            args.artifactType = ArtifactType.Wormhole;
+        } else if (lastByteOfSeed < 1964) {
+            args.rarity = ArtifactRarity.Epic;
+            args.artifactType = ArtifactType.Wormhole;
+        } else if (lastByteOfSeed < 2016) {
+            args.rarity = ArtifactRarity.Legendary;
+            args.artifactType = ArtifactType.Wormhole;
+        } else if (lastByteOfSeed < 2033) {
+            args.rarity = ArtifactRarity.Mythic;
+            args.artifactType = ArtifactType.Wormhole;
+        } else if (lastByteOfSeed < 3373) {
+            args.rarity = ArtifactRarity.Common;
+            args.artifactType = ArtifactType.PlanetaryShield;
+        } else if (lastByteOfSeed < 3716) {
+            args.rarity = ArtifactRarity.Rare;
+            args.artifactType = ArtifactType.PlanetaryShield;
+        } else if (lastByteOfSeed < 3930) {
+            args.rarity = ArtifactRarity.Epic;
+            args.artifactType = ArtifactType.PlanetaryShield;
+        } else if (lastByteOfSeed < 3983) {
+            args.rarity = ArtifactRarity.Legendary;
+            args.artifactType = ArtifactType.PlanetaryShield;
+        } else if (lastByteOfSeed < 4000) {
+            args.rarity = ArtifactRarity.Mythic;
+            args.artifactType = ArtifactType.PlanetaryShield;
+        } else if (lastByteOfSeed < 5000) {
+            args.rarity = ArtifactRarity.Common;
+            args.artifactType = ArtifactType.PhotoidCannon;
+        } else if (lastByteOfSeed < 5550) {
+            args.rarity = ArtifactRarity.Rare;
+            args.artifactType = ArtifactType.PhotoidCannon;
+        } else if (lastByteOfSeed < 5800) {
+            args.rarity = ArtifactRarity.Epic;
+            args.artifactType = ArtifactType.PhotoidCannon;
+        } else if (lastByteOfSeed < 5950) {
+            args.rarity = ArtifactRarity.Legendary;
+            args.artifactType = ArtifactType.PhotoidCannon;
+        } else if (lastByteOfSeed < 6000) {
+            args.rarity = ArtifactRarity.Mythic;
+            args.artifactType = ArtifactType.PhotoidCannon;
+        } else if (lastByteOfSeed < 6700) {
+            args.rarity = ArtifactRarity.Common;
+            args.artifactType = ArtifactType.BloomFilter;
+        } else if (lastByteOfSeed < 6860) {
+            args.rarity = ArtifactRarity.Rare;
+            args.artifactType = ArtifactType.BloomFilter;
+        } else if (lastByteOfSeed < 6970) {
+            args.rarity = ArtifactRarity.Epic;
+            args.artifactType = ArtifactType.BloomFilter;
+        } else if (lastByteOfSeed < 6995) {
+            args.rarity = ArtifactRarity.Legendary;
+            args.artifactType = ArtifactType.BloomFilter;
+        } else if (lastByteOfSeed < 7000) {
+            args.rarity = ArtifactRarity.Mythic;
+            args.artifactType = ArtifactType.BloomFilter;
+        } else if (lastByteOfSeed < 7700) {
+            args.rarity = ArtifactRarity.Common;
+            args.artifactType = ArtifactType.BlackDomain;
+        } else if (lastByteOfSeed < 7860) {
+            args.rarity = ArtifactRarity.Rare;
+            args.artifactType = ArtifactType.BlackDomain;
+        } else if (lastByteOfSeed < 7970) {
+            args.rarity = ArtifactRarity.Epic;
+            args.artifactType = ArtifactType.BlackDomain;
+        } else if (lastByteOfSeed < 7995) {
+            args.rarity = ArtifactRarity.Legendary;
+            args.artifactType = ArtifactType.BlackDomain;
+        } else if (lastByteOfSeed < 8000) {
+            args.rarity = ArtifactRarity.Mythic;
+            args.artifactType = ArtifactType.BlackDomain;
+        } else if (lastByteOfSeed < 9000) {
+            args.rarity = ArtifactRarity.Common;
+            args.artifactType = ArtifactType.StellarShield;
+        } else if (lastByteOfSeed < 9550) {
+            args.rarity = ArtifactRarity.Rare;
+            args.artifactType = ArtifactType.StellarShield;
+        } else if (lastByteOfSeed < 9800) {
+            args.rarity = ArtifactRarity.Epic;
+            args.artifactType = ArtifactType.StellarShield;
+        } else if (lastByteOfSeed < 9950) {
+            args.rarity = ArtifactRarity.Legendary;
+            args.artifactType = ArtifactType.StellarShield;
+        } else {
+            args.rarity = ArtifactRarity.Mythic;
+            args.artifactType = ArtifactType.StellarShield;
+        }
 
         Artifact memory artifact = createArtifactToSell(args);
         transferArtifactToSell(artifact.id, address(this));
         LibGameUtils._putArtifactOnPlanet(artifact.id, args.planetId);
 
         emit ArtifactFound(args.owner, artifact.id, args.planetId);
+
+        gs().players[msg.sender].buyArtifactAmount++;
     }
 
     function changeArtifactImageType(

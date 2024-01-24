@@ -1,4 +1,9 @@
-import { EMPTY_ADDRESS, MAX_PLANET_LEVEL, MIN_PLANET_LEVEL } from '@dfares/constants';
+import {
+  CONTRACT_PRECISION,
+  EMPTY_ADDRESS,
+  MAX_PLANET_LEVEL,
+  MIN_PLANET_LEVEL,
+} from '@dfares/constants';
 import { Monomitter, monomitter } from '@dfares/events';
 import { hasOwner, isActivated, isLocatable } from '@dfares/gamelogic';
 import { bonusFromHex, getBytesFromHex } from '@dfares/hexgen';
@@ -1530,11 +1535,11 @@ export class GameObjects {
 
     range = Math.floor(range);
     speed = Math.floor(speed);
-    energyCap = Math.floor(energyCap);
-    energyGro = Math.floor(energyGro);
-    silCap = Math.floor(silCap);
-    silGro = Math.floor(silGro);
     defense = Math.floor(defense);
+    energyCap = Math.floor(energyCap * CONTRACT_PRECISION) / CONTRACT_PRECISION;
+    energyGro = Math.floor(energyGro * CONTRACT_PRECISION) / CONTRACT_PRECISION;
+    silCap = Math.floor(silCap * CONTRACT_PRECISION) / CONTRACT_PRECISION;
+    silGro = Math.floor(silGro * CONTRACT_PRECISION) / CONTRACT_PRECISION;
 
     // apply stat modifiers for special planet types
     if (planetType === PlanetType.SILVER_MINE) {
@@ -1554,11 +1559,11 @@ export class GameObjects {
 
     range = Math.floor(range);
     speed = Math.floor(speed);
-    energyCap = Math.floor(energyCap);
-    energyGro = Math.floor(energyGro);
-    silCap = Math.floor(silCap);
-    silGro = Math.floor(silGro);
     defense = Math.floor(defense);
+    energyCap = Math.floor(energyCap * CONTRACT_PRECISION) / CONTRACT_PRECISION;
+    energyGro = Math.floor(energyGro * CONTRACT_PRECISION) / CONTRACT_PRECISION;
+    silCap = Math.floor(silCap * CONTRACT_PRECISION) / CONTRACT_PRECISION;
+    silGro = Math.floor(silGro * CONTRACT_PRECISION) / CONTRACT_PRECISION;
 
     let pirates =
       (energyCap * this.contractConstants.defaultBarbarianPercentage[planetLevel]) / 100;
@@ -1579,11 +1584,11 @@ export class GameObjects {
 
     range = Math.floor(range);
     speed = Math.floor(speed);
-    energyCap = Math.floor(energyCap);
-    energyGro = Math.floor(energyGro);
-    silCap = Math.floor(silCap);
-    silGro = Math.floor(silGro);
     defense = Math.floor(defense);
+    energyCap = Math.floor(energyCap * CONTRACT_PRECISION) / CONTRACT_PRECISION;
+    energyGro = Math.floor(energyGro * CONTRACT_PRECISION) / CONTRACT_PRECISION;
+    silCap = Math.floor(silCap * CONTRACT_PRECISION) / CONTRACT_PRECISION;
+    silGro = Math.floor(silGro * CONTRACT_PRECISION) / CONTRACT_PRECISION;
 
     const biome = this.getBiome(location);
 

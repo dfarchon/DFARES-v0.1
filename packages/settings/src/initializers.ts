@@ -84,6 +84,8 @@ export const decodeInitializers = decoders.guard(
     BURN_END_TIMESTAMP: dateInSeconds,
     BURN_PLANET_COOLDOWN: decoders.number,
     PINK_PLANET_COOLDOWN: decoders.number,
+    ACTIVATE_ARTIFACT_COOLDOWN: decoders.number,
+    BUY_ARTIFACT_COOLDOWN: decoders.number,
 
     BURN_PLANET_LEVEL_EFFECT_RADIUS: exactArray10(decoders.number),
     BURN_PLANET_REQUIRE_SILVER_AMOUNTS: exactArray10(decoders.number),

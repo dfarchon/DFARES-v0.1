@@ -20,7 +20,7 @@ import {LibTrig} from "../vendor/libraries/LibTrig.sol";
 import {ABDKMath64x64} from "../vendor/libraries/ABDKMath64x64.sol";
 
 // Type imports
-import {Planet, BurnedCoords, Artifact, ArtifactType, RevealedCoords} from "../DFTypes.sol";
+import {Planet, Player, BurnedCoords, Artifact, ArtifactType, RevealedCoords} from "../DFTypes.sol";
 
 contract DFPinkBombFacet is WithStorage {
     modifier notPaused() {
@@ -42,7 +42,6 @@ contract DFPinkBombFacet is WithStorage {
 
     /**
      * Same snark args as DFCoreFacet#revealLocation
-     * mytodo: add more limit to burnLocation
      */
     function burnLocation(
         uint256[2] memory _a,
@@ -67,16 +66,22 @@ contract DFPinkBombFacet is WithStorage {
 
         uint256 x = _input[2];
         uint256 y = _input[3];
-
-        uint256 planetId = _input[0];
+        int256 planetX = DFCaptureFacet(address(this)).getIntFromUInt(x);
+        int256 planetY = DFCaptureFacet(address(this)).getIntFromUInt(y);
+        uint256 distFromOriginSquare = uint256(planetX * planetX + planetY * planetY);
 
         if (!gs().planets[_input[0]].isInitialized) {
-            LibPlanet.initializePlanetWithDefaults(_input[0], _input[1], x**2 + y**2, false);
+            LibPlanet.initializePlanetWithDefaults(
+                _input[0],
+                _input[1],
+                distFromOriginSquare,
+                false
+            );
         }
 
-        require(gs().burnedCoords[planetId].locationId == 0, "Location already burned");
-
+        uint256 planetId = _input[0];
         LibPlanet.refreshPlanet(planetId);
+        require(gs().burnedCoords[planetId].locationId == 0, "Location already burned");
 
         Planet storage planet = gs().planets[planetId];
 
@@ -84,17 +89,19 @@ contract DFPinkBombFacet is WithStorage {
         require(!planet.frozen, "planet is frozen");
         require(planet.burnStartTimestamp == 0, "planet is already burned");
         require(containsPinkShip(planetId), "pink ship must be present on planet");
+
         require(planet.planetLevel >= 1, "planet level >=1");
 
-        require(
-            gs().players[msg.sender].silver >=
-                gameConstants().BURN_PLANET_REQUIRE_SILVER_AMOUNTS[planet.planetLevel] * 1000,
-            "silver is not enough"
-        );
+        Player storage player = gs().players[msg.sender];
+        player.dropBombAmount++;
 
-        gs().players[msg.sender].silver -=
-            1000 *
-            gameConstants().BURN_PLANET_REQUIRE_SILVER_AMOUNTS[planet.planetLevel];
+        uint256 silverAmount = gameConstants().BURN_PLANET_REQUIRE_SILVER_AMOUNTS[
+            planet.planetLevel
+        ] * (10**(player.dropBombAmount));
+
+        require(gs().players[msg.sender].silver >= silverAmount * 1000, "silver is not enough");
+
+        gs().players[msg.sender].silver -= silverAmount * 1000;
 
         planet.operator = msg.sender;
 
@@ -112,6 +119,9 @@ contract DFPinkBombFacet is WithStorage {
             operator: msg.sender,
             burnedAt: block.timestamp
         });
+
+        if (gs().firstBurnLocationOperator == address(0))
+            gs().firstBurnLocationOperator = msg.sender;
         emit LocationBurned(msg.sender, _input[0], _input[2], _input[3]);
     }
 
@@ -145,14 +155,23 @@ contract DFPinkBombFacet is WithStorage {
             DFCoreFacet(address(this)).checkRevealProof(_a, _b, _c, _input),
             "Failed reveal pf check"
         );
-        uint256 planetId = _input[0];
+
         uint256 x = _input[2];
         uint256 y = _input[3];
+        int256 planetX = DFCaptureFacet(address(this)).getIntFromUInt(x);
+        int256 planetY = DFCaptureFacet(address(this)).getIntFromUInt(y);
+        uint256 distFromOriginSquare = uint256(planetX * planetX + planetY * planetY);
 
         if (!gs().planets[_input[0]].isInitialized) {
-            LibPlanet.initializePlanetWithDefaults(_input[0], _input[1], x**2 + y**2, false);
+            LibPlanet.initializePlanetWithDefaults(
+                _input[0],
+                _input[1],
+                distFromOriginSquare,
+                false
+            );
         }
 
+        uint256 planetId = _input[0];
         LibPlanet.refreshPlanet(planetId);
 
         Artifact memory activeArtifact = LibGameUtils.getActiveArtifact(planetId);
@@ -162,15 +181,18 @@ contract DFPinkBombFacet is WithStorage {
             "need no active StellarShield"
         );
 
-        int256 planetX = DFCaptureFacet(address(this)).getIntFromUInt(x);
-        int256 planetY = DFCaptureFacet(address(this)).getIntFromUInt(y);
-        uint256 distSquare = uint256(planetX**2 + planetY**2);
+        // int256 planetX = DFCaptureFacet(address(this)).getIntFromUInt(x);
+        // int256 planetY = DFCaptureFacet(address(this)).getIntFromUInt(y);
+        // uint256 distSquare = uint256(planetX**2 + planetY**2);
 
         Planet storage planet = gs().planets[planetId];
 
+        gs().players[msg.sender].pinkAmount++;
+        gs().players[planet.owner].pinkedAmount++;
+
         require(!planet.destroyed, "planet is destroyed");
         require(!planet.frozen, "planet is frozen");
-
+        require(planet.planetLevel >= 3, "planet level >=3");
         require(planetInPinkZone(x, y), "planet is not in your pink zone");
 
         planet.destroyed = true;
