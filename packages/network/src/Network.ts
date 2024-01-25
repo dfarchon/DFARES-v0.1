@@ -214,7 +214,7 @@ export function verifySignature(
  * Returns the given amount of gwei in wei as a big integer.
  */
 export function gweiToWei(gwei: number): BigNumber {
-  return utils.parseUnits(gwei + '', 'gwei');
+  return utils.parseUnits(gwei.toFixed(9) + '', 'gwei');
 }
 
 /**

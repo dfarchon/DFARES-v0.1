@@ -275,6 +275,12 @@ export function TxConfirmPopup({
   //MyTodo: chance to useUIManager
   const getTxCost = () => {
     if (!isNaN(Number(gasFeeGwei))) {
+      // console.log('first');
+      // console.log(Number(gasLimit));
+      // console.log(Number(gasFeeGwei));
+      // console.log(gweiToWei(Number(gasLimit) * Number(gasFeeGwei)));
+      // console.log(weiToEth(gweiToWei(Number(gasLimit) * Number(gasFeeGwei))));
+
       const res: number =
         hatCost +
         buyArtifactCost +
@@ -283,17 +289,25 @@ export function TxConfirmPopup({
 
       return res.toFixed(18).toString();
     } else {
+      // console.log('second');
+      // console.log(Number(gasLimit));
+      // console.log(Number(gasFeeGwei));
+      // console.log(gweiToWei(Number(gasLimit) * Number(gasFeeGwei)));
+      // console.log(weiToEth(gweiToWei(Number(gasLimit) * Number(gasFeeGwei))));
+
       const pre = 'Estimated: ';
       let val = '0';
       if (gasFeeGwei === 'Slow') val = '1';
       else if (gasFeeGwei === 'Average') val = '3';
       else if (gasFeeGwei === 'Fast') val = '10';
       else val = gasFeeGwei;
+
       const res: number =
         hatCost +
         buyArtifactCost +
         joinGameCost +
         weiToEth(gweiToWei(Number(gasLimit) * Number(val)));
+
       return pre + res.toFixed(18).toString();
     }
   };

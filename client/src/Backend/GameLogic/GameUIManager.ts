@@ -1367,7 +1367,7 @@ class GameUIManager extends EventEmitter {
 
   public buyHat(planet: Planet, hatType: number): void {
     // TODO: do something like JSON.stringify(args) so we know formatting is correct
-    this.terminal.current?.printShellLn(`df.buyHat('${planet.locationId},1')`);
+    this.terminal.current?.printShellLn(`df.buyHat('${planet.locationId}','${hatType}')`);
     this.gameManager.buyHat(planet.locationId, hatType);
   }
 
