@@ -685,15 +685,15 @@ export class PlanetRenderManager implements PlanetRenderManagerType {
       }
 
       tR.queueTextWorld(atkString, textLoc, color, 1);
-      if (planet.spaceJunk !== 0) {
-        const spaceJunkString = `(+${planet.spaceJunk} junk)`;
-        tR.queueTextWorld(
-          spaceJunkString,
-          { x: center.x, y: center.y - 1.1 * radius - 0.75 },
-          color,
-          2
-        );
-      }
+      // if (planet.spaceJunk !== 0) {
+      //   const spaceJunkString = `(+${planet.spaceJunk} junk)`;
+      //   tR.queueTextWorld(
+      //     spaceJunkString,
+      //     { x: center.x, y: center.y - 1.1 * radius - 0.75 },
+      //     color,
+      //     2
+      //   );
+      // }
     }
   }
 

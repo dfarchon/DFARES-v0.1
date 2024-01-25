@@ -1,9 +1,7 @@
-import { ArtifactRarity, ModalName, PlanetLevel } from '@dfares/types';
+import { ModalName } from '@dfares/types';
 import React from 'react';
 import styled from 'styled-components';
-import { EmSpacer, Link, Section, SectionHeader } from '../Components/CoreUI';
-import { ArtifactRarityLabel } from '../Components/Labels/ArtifactLabels';
-import { Gold, White } from '../Components/Text';
+import { Link, Section, SectionHeader } from '../Components/CoreUI';
 import dfstyles from '../Styles/dfstyles';
 import { useUIManager } from '../Utils/AppHooks';
 import { ModalPane } from '../Views/ModalPane';
@@ -25,34 +23,71 @@ export function HelpPane({ visible, onClose }: { visible: boolean; onClose: () =
   const artifactPointValues = uiManager.getArtifactPointValues();
   const captureZonePointValues = uiManager.getCaptureZonePointValues();
 
+  const DFArchonLinks = {
+    twitter: 'https://twitter.com/DFArchon',
+    email: 'mailto:dfarchon@gmail.com',
+    blog: 'https://mirror.xyz/dfarchon.eth',
+    discord: 'https://discord.com/invite/XpBPEnsvgX',
+    github: 'https://github.com/dfarchon',
+    wiki: 'https://dfwiki.net/wiki/Main_Page',
+    plugins: 'https://dfares-plugins.netlify.app/',
+  };
+
   return (
     <ModalPane id={ModalName.Help} title='Help' visible={visible} onClose={onClose}>
       <HelpContent>
         {uiManager.isRoundOver() && (
+          // <Section>
+          //   <SectionHeader>Round 5 Complete</SectionHeader>
+          //   Dark Forest v0.6 Round 5 is now complete! Scores are being compiled and winners will be
+          //   announced shortly. Also, Artifacts will no longer be mintable. Thanks for playing!
+          // </Section>
+
           <Section>
-            <SectionHeader>Round 5 Complete</SectionHeader>
-            Dark Forest v0.6 Round 5 is now complete! Scores are being compiled and winners will be
-            announced shortly. Also, Artifacts will no longer be mintable. Thanks for playing!
+            <SectionHeader>Round 2: Pinkship Complete</SectionHeader>
+            Dark Forest Ares v0.1 Round 2 is now complete! Scores are being compiled and winners
+            will be announced shortly. Also, Artifacts will no longer be mintable. Thanks for
+            playing!
           </Section>
         )}
 
         <Section>
-          <SectionHeader>Firstly, Some Links:</SectionHeader>
-          <Link to='https://blog.zkga.me'>Official Info and Announcements</Link>
+          <SectionHeader>Dark Forest Ares</SectionHeader>
+          Dark Forest Ares is a series of{' '}
+          <Link to='https://zkga.me' color='green'>
+            Dark Forest
+          </Link>{' '}
+          community rounds hosted by DFArchon team. We hope to innovate game mechanics while
+          maintaining the original style of Dark Forest. Recently We choose to host Dark Forest Ares
+          v0.1 Round 2: PinkShip on{' '}
+          <Link to='https://redstone.xyz/' color='red'>
+            Redstone
+          </Link>
+          .
+        </Section>
+
+        <Section>
+          <SectionHeader>Some Links:</SectionHeader>
+          {/* <Link to='https://blog.zkga.me'>Official Info and Announcements</Link>
           <br />
           <Link to='https://twitter.com/darkforest_eth'>Official Twitter</Link>
           <br />
           <Link to='https://discord.gg/2u2TN6v8r6'>Official Discord Server</Link>
+          <br /> */}
+          {/* <Link to='https://dfwiki.net/'>Community-Run Wiki</Link> */}
+          {/* <br /> */}
+          <Link to={DFArchonLinks.blog}>DFArchon's Info and Announcements</Link>
           <br />
-          <Link to='https://dfwiki.net/'>Community-Run Wiki</Link>
+          <Link to={DFArchonLinks.twitter}>DFArchon's Twitter</Link>
+          <br />
+          <Link to={DFArchonLinks.discord}>DFArchon's Discord Server</Link>
           <br />
           <br />
-          Secondly... welcome to
         </Section>
 
         <Section>
-          <SectionHeader>Dark Forest v0.6 R5: The Junk Wars</SectionHeader>
-          Dark Forest is a vast universe, obfuscated by zero-knowledge cryptography. Your{' '}
+          <SectionHeader>Dark Forest Ares v0.1 Round 2: PinkShip</SectionHeader>
+          {/* The game is a vast universe, obfuscated by zero-knowledge cryptography. Your{' '}
           <White>explorer</White> (bottom left) explores the universe, searching for{' '}
           <White>Planets</White> and other players.
           <EmSpacer height={1} />
@@ -64,10 +99,31 @@ export function HelpPane({ visible, onClose }: { visible: boolean; onClose: () =
           <White>Upgrades</White>.
           <EmSpacer height={1} /> Some planets contain <White>Artifacts</White> - ERC721 tokens that
           can be traded with other players. Artifacts can be harvested and deposited onto planets,
-          buffing their stats.
+          buffing their stats. */}
+          Please read{' '}
+          <Link
+            to='https://dfares.notion.site/DFAres-Guide-for-New-Players-4399ba1303db43ebb66bef6f986f3e1e?pvs=74'
+            color='pink'
+          >
+            {' '}
+            DFAres Guide for New Players
+          </Link>{' '}
+          to know how to play.
         </Section>
 
         <Section>
+          <SectionHeader>Prizes and Scoring</SectionHeader>
+          Please read{' '}
+          <Link
+            to='https://dfares.notion.site/6-Win-Conditions-Prizes-b87460a6c0454de6822b5da19e5c5774?pvs=74'
+            color='pink'
+          >
+            Win Conditions/Prizes
+          </Link>{' '}
+          to know the prizes.
+        </Section>
+
+        {/* <Section>
           <SectionHeader>Prizes and Scoring</SectionHeader>A snapshot of scores will be taken on{' '}
           <White>February 28, 2022</White> at 9PM Pacific Time. At that time, the top 63
           highest-scoring players will be awarded prizes from a pool 63 prize planets. You can see
@@ -79,9 +135,9 @@ export function HelpPane({ visible, onClose }: { visible: boolean; onClose: () =
           sections at the top of the screen.
           <EmSpacer height={1} />
           The values for each scoring type are provided below:
-        </Section>
+        </Section> */}
 
-        <Section>
+        {/* <Section>
           <SectionHeader>Scoring values</SectionHeader>
           Each single <Gold>silver</Gold> you withdraw increases your score by{' '}
           {silverScoreValue / 100}.
@@ -124,7 +180,7 @@ export function HelpPane({ visible, onClose }: { visible: boolean; onClose: () =
           Level {PlanetLevel.EIGHT}: {captureZonePointValues[PlanetLevel.EIGHT]}
           <br />
           Level {PlanetLevel.NINE}: {captureZonePointValues[PlanetLevel.NINE]}
-        </Section>
+        </Section> */}
       </HelpContent>
     </ModalPane>
   );
