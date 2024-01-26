@@ -89,7 +89,7 @@ export function ArtifactActions({
 
         if (
           artifact.artifactType === ArtifactType.Wormhole ||
-          artifact.artifactType === ArtifactType.BlackDomain ||
+          // artifact.artifactType === ArtifactType.BlackDomain ||
           artifact.artifactType === ArtifactType.SoulSwap ||
           artifact.artifactType === ArtifactType.IceLink ||
           artifact.artifactType === ArtifactType.FireLink ||
