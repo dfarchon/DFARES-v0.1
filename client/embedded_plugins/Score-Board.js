@@ -149,21 +149,27 @@ class Plugin {
       this.table.children[i + 1].children[1].innerHTML = name;
     }
 
+
     if (players.length >= 1) {
-      this.table.children[1].style.color = 'rgb(255, 68, 183)';
+      this.table.children[1].style.color = 'gold';
     }
 
     if (players.length >= 2) {
-      this.table.children[2].style.color = 'rgb(248, 183, 62)';
+      this.table.children[2].style.color = 'rgb(255, 68, 183)';
     }
 
     if (players.length >= 3) {
-      this.table.children[3].style.color = 'rgb(193, 60, 255)';
+      this.table.children[3].style.color = 'rgb(248, 183, 62)';
     }
 
-    let last_color = Math.min(players.length, 13);
+    const lvl_1 = Math.min(players.length, 10);
+    for (let i = 4; i <= lvl_1; i++) {
+      this.table.children[i].style.color = 'rgb(193, 60, 255)';
+    }
 
-    for (let i = 4; i <= last_color; i++) {
+    const lvl_2 = Math.min(players.length, 50);
+
+    for (let i = 11; i <= lvl_2; i++) {
       this.table.children[i].style.color = 'rgb(107, 104, 255)';
     }
   };
