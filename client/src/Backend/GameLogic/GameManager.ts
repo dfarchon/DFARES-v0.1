@@ -4236,10 +4236,10 @@ class GameManager extends EventEmitter {
 
     let deltaTime = dist / (speed / 100);
 
-    const artifact = this.getActiveArtifact(from);
-
-    //MyTodo:    //all photoid travel same time
-    if (artifact?.artifactType === ArtifactType.PhotoidCannon) deltaTime = 600;
+    // //round 1
+    // const artifact = this.getActiveArtifact(from);
+    // //MyTodo:    //all photoid travel same time
+    // if (artifact?.artifactType === ArtifactType.PhotoidCannon) deltaTime = 600;
 
     const to = this.getPlanetWithId(toId);
     if (to?.planetType === PlanetType.SILVER_BANK) deltaTime = deltaTime / 2;
