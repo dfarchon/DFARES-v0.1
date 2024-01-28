@@ -1,3 +1,4 @@
+import { decodePlayer } from '@dfares/serde';
 import { task } from 'hardhat/config';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 
@@ -107,4 +108,45 @@ async function getFirstHat({}, hre: HardhatRuntimeEnvironment) {
   const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
   const amount = await contract.getFirstHat();
   console.log('first hat owner: ', amount.toString());
+}
+
+task('game:rank', 'get the final rank').setAction(getRank);
+
+async function getRank({}, hre: HardhatRuntimeEnvironment) {
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  const rawPlayerAmount = await contract.getNPlayers();
+  const playerAmount = rawPlayerAmount.toNumber();
+  console.log('total player amount:', playerAmount);
+
+  const rawPlayers = await contract.bulkGetPlayers(0, playerAmount);
+  const players = rawPlayers.map((p) => decodePlayer(p));
+  console.log('players amount:', players.length);
+  for (let i = 0; i < players.length; i++) {
+    const address = players[i].address;
+    const score = await contract.getScore(address);
+    const scoreStr = score.toString();
+    if (
+      scoreStr === '115792089237316195423570985008687907853269984665640564039457584007913129639935'
+    ) {
+      players[i].score = undefined;
+    } else players[i].score = score.toNumber();
+
+    console.log(i, address, score.toString());
+  }
+
+  const haveScorePlayers = players
+    .filter((p) => p.score !== undefined)
+    .sort((a, b) => {
+      if (a.score === undefined) return -1;
+      else if (b.score === undefined) return -1;
+      return a.score - b.score;
+    });
+
+  console.log('have score player amount:', haveScorePlayers.length);
+
+  for (let i = 0; i < haveScorePlayers.length; i++) {
+    const player = haveScorePlayers[i];
+    console.log(i + 1, player.address, player.score);
+  }
 }
