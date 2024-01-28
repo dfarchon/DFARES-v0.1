@@ -46,8 +46,62 @@ async function getArtifactById(args: { id: string }, hre: HardhatRuntimeEnvironm
     console.log(arrival);
   }
 
-  // const artifactId = '0x4448b3bcc7142836e9c79c0a94cc9018d5ea93da12e90f6b7c730ba0b51acad7';
+  // const artifactId = '';
   // const rawArtifact = await contract.getArtifactById(artifactId);
   // const artifact = decodeArtifact(rawArtifact);
   // console.log(artifact);
+}
+
+task('artifact:dev', '').setAction(dev);
+
+async function dev(args: {}, hre: HardhatRuntimeEnvironment) {
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  // const artifactId = '';
+  // const rawArtifact = await contract.getArtifactById(artifactId);
+  // const artifact = decodeArtifact(rawArtifact);
+  // console.log(artifact);
+
+  const voyoageId = '149150';
+  if (voyoageId) {
+    const planetArrival = await contract.planetArrivals(voyoageId);
+    const arrival = decodeArrival(planetArrival);
+    console.log(arrival);
+  }
+}
+
+task('artifact:op', '').setAction(op);
+
+async function op(args: {}, hre: HardhatRuntimeEnvironment) {
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+  const name = await contract.name();
+  console.log(name, '');
+
+  const totalSupply = await contract.totalSupply();
+  console.log('supply:', totalSupply.toString());
+
+  const allArtifacts = [];
+
+  for (let i = 0; i < totalSupply.toNumber(); i += 500) {
+    let l = i;
+    let r = Math.min(i + 500, totalSupply.toNumber());
+    console.log(l, r);
+    const tmp = await contract.bulkGetArtifacts(l, r);
+    for (let j = 0; j < tmp.length; j++) {
+      const artifact = tmp[j];
+      allArtifacts.push(artifact);
+    }
+  }
+
+  console.log('artifact length:', allArtifacts.length);
+
+  const rawGear = allArtifacts.filter((rawArtifact) => {
+    const artifact = decodeArtifact(rawArtifact);
+
+    return artifact.controller === '' && artifact.artifactType === 20;
+  });
+
+  const gear = decodeArtifact(rawGear[0]);
+
+  console.log(gear);
 }
