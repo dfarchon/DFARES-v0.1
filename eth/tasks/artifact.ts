@@ -1,4 +1,4 @@
-import { decodeArrival, decodeArtifact } from '@dfares/serde';
+// import { decodeArrival, decodeArtifact } from '@dfares/serde';
 import { task, types } from 'hardhat/config';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 
@@ -26,82 +26,83 @@ async function getArtifactsOnPlanet(args: { planetId: string }, hre: HardhatRunt
   console.log(res);
 }
 
-task('artifact:getArtifactById', '')
-  .addOptionalParam('id', 'id', undefined, types.string)
-  .setAction(getArtifactById);
+// myNotice: after install dfares/serde
+// task('artifact:getArtifactById', '')
+//   .addOptionalParam('id', 'id', undefined, types.string)
+//   .setAction(getArtifactById);
 
-async function getArtifactById(args: { id: string }, hre: HardhatRuntimeEnvironment) {
-  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+// async function getArtifactById(args: { id: string }, hre: HardhatRuntimeEnvironment) {
+//   const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
 
-  const artifactId = args.id;
+//   const artifactId = args.id;
 
-  const rawArtifact = await contract.getArtifactById(artifactId);
-  const artifact = decodeArtifact(rawArtifact);
-  // console.log(artifact);
+//   const rawArtifact = await contract.getArtifactById(artifactId);
+//   const artifact = decodeArtifact(rawArtifact);
+//   // console.log(artifact);
 
-  const voyoageId = artifact.onVoyageId;
-  if (voyoageId) {
-    const planetArrival = await contract.planetArrivals(voyoageId);
-    const arrival = decodeArrival(planetArrival);
-    console.log(arrival);
-  }
+//   const voyoageId = artifact.onVoyageId;
+//   if (voyoageId) {
+//     const planetArrival = await contract.planetArrivals(voyoageId);
+//     const arrival = decodeArrival(planetArrival);
+//     console.log(arrival);
+//   }
 
-  // const artifactId = '';
-  // const rawArtifact = await contract.getArtifactById(artifactId);
-  // const artifact = decodeArtifact(rawArtifact);
-  // console.log(artifact);
-}
+//   // const artifactId = '';
+//   // const rawArtifact = await contract.getArtifactById(artifactId);
+//   // const artifact = decodeArtifact(rawArtifact);
+//   // console.log(artifact);
+// }
 
-task('artifact:dev', '').setAction(dev);
+// task('artifact:dev', '').setAction(dev);
 
-async function dev(args: {}, hre: HardhatRuntimeEnvironment) {
-  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+// async function dev(args: {}, hre: HardhatRuntimeEnvironment) {
+//   const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
 
-  // const artifactId = '';
-  // const rawArtifact = await contract.getArtifactById(artifactId);
-  // const artifact = decodeArtifact(rawArtifact);
-  // console.log(artifact);
+//   // const artifactId = '';
+//   // const rawArtifact = await contract.getArtifactById(artifactId);
+//   // const artifact = decodeArtifact(rawArtifact);
+//   // console.log(artifact);
 
-  const voyoageId = '149150';
-  if (voyoageId) {
-    const planetArrival = await contract.planetArrivals(voyoageId);
-    const arrival = decodeArrival(planetArrival);
-    console.log(arrival);
-  }
-}
+//   const voyoageId = '149150';
+//   if (voyoageId) {
+//     const planetArrival = await contract.planetArrivals(voyoageId);
+//     const arrival = decodeArrival(planetArrival);
+//     console.log(arrival);
+//   }
+// }
 
-task('artifact:op', '').setAction(op);
+// task('artifact:op', '').setAction(op);
 
-async function op(args: {}, hre: HardhatRuntimeEnvironment) {
-  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
-  const name = await contract.name();
-  console.log(name, '');
+// async function op(args: {}, hre: HardhatRuntimeEnvironment) {
+//   const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+//   const name = await contract.name();
+//   console.log(name, '');
 
-  const totalSupply = await contract.totalSupply();
-  console.log('supply:', totalSupply.toString());
+//   const totalSupply = await contract.totalSupply();
+//   console.log('supply:', totalSupply.toString());
 
-  const allArtifacts = [];
+//   const allArtifacts = [];
 
-  for (let i = 0; i < totalSupply.toNumber(); i += 500) {
-    let l = i;
-    let r = Math.min(i + 500, totalSupply.toNumber());
-    console.log(l, r);
-    const tmp = await contract.bulkGetArtifacts(l, r);
-    for (let j = 0; j < tmp.length; j++) {
-      const artifact = tmp[j];
-      allArtifacts.push(artifact);
-    }
-  }
+//   for (let i = 0; i < totalSupply.toNumber(); i += 500) {
+//     let l = i;
+//     let r = Math.min(i + 500, totalSupply.toNumber());
+//     console.log(l, r);
+//     const tmp = await contract.bulkGetArtifacts(l, r);
+//     for (let j = 0; j < tmp.length; j++) {
+//       const artifact = tmp[j];
+//       allArtifacts.push(artifact);
+//     }
+//   }
 
-  console.log('artifact length:', allArtifacts.length);
+//   console.log('artifact length:', allArtifacts.length);
 
-  const rawGear = allArtifacts.filter((rawArtifact) => {
-    const artifact = decodeArtifact(rawArtifact);
+//   const rawGear = allArtifacts.filter((rawArtifact) => {
+//     const artifact = decodeArtifact(rawArtifact);
 
-    return artifact.controller === '' && artifact.artifactType === 20;
-  });
+//     return artifact.controller === '' && artifact.artifactType === 20;
+//   });
 
-  const gear = decodeArtifact(rawGear[0]);
+//   const gear = decodeArtifact(rawGear[0]);
 
-  console.log(gear);
-}
+//   console.log(gear);
+// }
