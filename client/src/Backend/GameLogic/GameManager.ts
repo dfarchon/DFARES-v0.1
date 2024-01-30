@@ -2154,16 +2154,22 @@ class GameManager extends EventEmitter {
   public getPinkZones(): Set<PinkZone> {
     const pinkZones = new Set<PinkZone>();
     const burnedLocations = this.getBurnedLocations();
-    const allBurnedCoords = Array.from(burnedLocations.values());
+    const allBurnedLocationsValues = Array.from(burnedLocations.values());
 
-    for (const item of allBurnedCoords) {
+    for (const item of allBurnedLocationsValues) {
       const planet = this.getPlanetWithId(item.hash);
       if (planet === undefined) continue;
+      const locationId = planet.locationId;
+      const coords = { x: item.coords.x, y: item.coords.y };
+      const operator = item.operator;
+      const radius =
+        this.getContractConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[planet.planetLevel];
 
       pinkZones.add({
-        locationId: planet.locationId,
-        coords: item.coords,
-        radius: this.getContractConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[planet.planetLevel],
+        locationId: locationId,
+        coords: coords,
+        operator: operator,
+        radius: radius,
       });
     }
 
@@ -2173,17 +2179,23 @@ class GameManager extends EventEmitter {
   public getMyPinkZones(): Set<PinkZone> {
     const pinkZones = new Set<PinkZone>();
     const burnedLocations = this.getBurnedLocations();
-    const allBurnedCoords = Array.from(burnedLocations.values());
+    const allBurnedLocationsValues = Array.from(burnedLocations.values());
 
-    for (const item of allBurnedCoords) {
+    for (const item of allBurnedLocationsValues) {
       const planet = this.getPlanetWithId(item.hash);
       if (planet === undefined) continue;
       if (planet.operator !== this.account) continue;
+      const locationId = planet.locationId;
+      const coords = { x: item.coords.x, y: item.coords.y };
+      const operator = item.operator;
+      const radius =
+        this.getContractConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[planet.planetLevel];
 
       pinkZones.add({
-        locationId: planet.locationId,
-        coords: item.coords,
-        radius: this.getContractConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS[planet.planetLevel],
+        locationId: locationId,
+        coords: coords,
+        operator: operator,
+        radius: radius,
       });
     }
 
