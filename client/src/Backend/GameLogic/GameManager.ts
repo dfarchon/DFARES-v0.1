@@ -584,12 +584,6 @@ class GameManager extends EventEmitter {
 
   private async refreshScoreboard() {
     if (process.env.LEADER_BOARD_URL) {
-      console.warn('sdfdsfdsfdsf');
-      console.warn('sdfdsfdsfdsf');
-      console.warn('sdfdsfdsfdsf');
-      console.warn('sdfdsfdsfdsf');
-      console.warn('sdfdsfdsfdsf');
-      console.warn('sdfdsfdsfdsf');
       try {
         const leaderboard = await loadLeaderboard();
 
@@ -610,10 +604,23 @@ class GameManager extends EventEmitter {
       }
     } else {
       try {
+        //myTodo: use claimedLocations
+        // const claimedLocations = this.getClaimedLocations();
+        // const cntMap = new Map<string, number>();
+        // for (const claimedLocation of claimedLocations) {
+        //   const claimer = claimedLocation.claimer;
+        //   const score = claimedLocation.score;
+        //   const player = this.players.get(claimer);
+        //   if (player === undefined) continue;
+        //   let cnt = cntMap.get(claimer);
+        //   if (cnt === undefined) cnt = 0;
+        //   if (cnt === 0) player.score = score;
+        // }
+
         const knownScoringPlanets = [];
         for (const planet of this.getAllPlanets()) {
           if (!isLocatable(planet)) continue;
-          if (planet.destroyed) continue;
+          if (planet.destroyed || planet.frozen) continue;
           if (planet.planetLevel < 3) continue;
           if (!planet?.location?.coords) continue;
           if (planet.claimer === EMPTY_ADDRESS) continue;
@@ -637,7 +644,8 @@ class GameManager extends EventEmitter {
           let cnt = cntMap.get(claimer);
           if (cnt === undefined) cnt = 0;
           cnt = cnt + 1;
-          // cntMap.set(claimer, cnt);
+          cntMap.set(claimer, cnt);
+
           // console.log(player.address, ' ', this.account, ' ', planet.score);
           if (player.address !== this.account) {
             const score = planet.score;
