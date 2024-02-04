@@ -457,15 +457,18 @@ async function adminSetFinalScoreAndRank(
   const playerRank: string[] = [];
 
   for (let i = 0; i < players.length; i++) {
-    const playerInfo = players[i].split(',');
-    const addr = playerInfo[0];
-    const score = playerInfo[1];
-    const rank = playerInfo[2];
+    const playerInfo = players[i].split(' ');
+    const addr = playerInfo[1];
+    const score = playerInfo[2];
+    const rank = playerInfo[0];
     playerAddress.push(addr);
     playerScore.push(score);
     playerRank.push(rank);
   }
 
+  console.log(playerAddress);
+  console.log(playerScore);
+  console.log(playerRank);
   try {
     const receipt = await contract.adminSetFinalScoreAndRank(
       playerAddress,

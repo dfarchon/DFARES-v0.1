@@ -149,7 +149,6 @@ class Plugin {
       this.table.children[i + 1].children[1].innerHTML = name;
     }
 
-
     if (players.length >= 1) {
       this.table.children[1].style.color = 'gold';
     }
