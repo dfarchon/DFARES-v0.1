@@ -1,5 +1,5 @@
 // myNotice: after install dfares/serde
-// import { task } from 'hardhat/config';
+import { task } from 'hardhat/config';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 
 task('game:findCheaters', 'finds planets that have been captured more than once').setAction(
