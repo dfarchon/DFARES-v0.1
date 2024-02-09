@@ -10,7 +10,7 @@ import {
   html,
   render,
   useEffect,
-  useLayoutEffect, //@ts-ignore
+  useLayoutEffect,
   useState,
 } from 'https://unpkg.com/htm/preact/standalone.module.js';
 
