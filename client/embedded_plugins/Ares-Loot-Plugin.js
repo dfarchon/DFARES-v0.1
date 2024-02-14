@@ -114,6 +114,14 @@ function App() {
         setMintedTokenId(_minted.toString());
         const _main = await AresLoot.getBurnerToMain(burnerAccount);
         setMainAccount(_main.toLowerCase().toString());
+
+        if (_minted !== '0') {
+          const tokenURI = await AresLoot.tokenURI(_minted);
+
+          const content1 = atob(tokenURI.slice(29));
+          const obj = JSON.parse(content1);
+          setImage(obj.image);
+        }
       } catch (e) {
         console.error(e);
         window.alert('An error has occurred. Please contact the admin');
