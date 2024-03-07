@@ -104,6 +104,18 @@ export type LobbyConfigAction =
       type: 'BURN_PLANET_COOLDOWN';
       value: Initializers['BURN_PLANET_COOLDOWN'] | undefined;
     }
+  | {
+      type: 'PINK_PLANET_COOLDOWN';
+      value: Initializers['PINK_PLANET_COOLDOWN'] | undefined;
+    }
+  | {
+      type: 'ACTIVATE_ARTIFACT_COOLDOWN';
+      value: Initializers['ACTIVATE_ARTIFACT_COOLDOWN'] | undefined;
+    }
+  | {
+      type: 'BUY_ARTIFACT_COOLDOWN';
+      value: Initializers['BUY_ARTIFACT_COOLDOWN'] | undefined;
+    }
   | { type: 'PLANET_TYPE_WEIGHTS'; value: Initializers['PLANET_TYPE_WEIGHTS'] | undefined }
   | { type: 'SILVER_SCORE_VALUE'; value: Initializers['SILVER_SCORE_VALUE'] | undefined }
   | {
@@ -139,6 +151,10 @@ export type LobbyConfigAction =
   | {
       type: 'MAX_LEVEL_DIST';
       value: Initializers['MAX_LEVEL_DIST'] | undefined;
+    }
+  | {
+      type: 'RARITIES_DIST';
+      value: Initializers['RARITIES_DIST'] | undefined;
     }
   | {
       type: 'MAX_LEVEL_LIMIT';
@@ -325,6 +341,20 @@ export function lobbyConfigReducer(state: LobbyConfigState, action: LobbyAction)
       update = ofPositiveInteger(action, state);
       break;
     }
+    case 'PINK_PLANET_COOLDOWN': {
+      update = ofPositiveInteger(action, state);
+      break;
+    }
+
+    case 'ACTIVATE_ARTIFACT_COOLDOWN': {
+      update = ofPositiveInteger(action, state);
+      break;
+    }
+    case 'BUY_ARTIFACT_COOLDOWN': {
+      update = ofPositiveInteger(action, state);
+      break;
+    }
+
     case 'PLANET_TYPE_WEIGHTS': {
       // TODO: Add this
       update = ofNoop(action, state);
@@ -374,7 +404,7 @@ export function lobbyConfigReducer(state: LobbyConfigState, action: LobbyAction)
       update = ofBurnPlanetEffectRadius(action, state);
       break;
     }
-    
+
     case 'BURN_PLANET_REQUIRE_SILVER_AMOUNTS': {
       update = ofBurnPlanetRequireSilverAmounts(action, state);
       break;
@@ -382,6 +412,10 @@ export function lobbyConfigReducer(state: LobbyConfigState, action: LobbyAction)
 
     case 'MAX_LEVEL_DIST': {
       update = ofMaxLevelDist(action, state);
+      break;
+    }
+    case 'RARITIES_DIST': {
+      update = ofRaritiesDist(action, state);
       break;
     }
     case 'MAX_LEVEL_LIMIT': {
@@ -800,6 +834,39 @@ export function lobbyConfigInit(startingConfig: LobbyInitializers) {
         break;
       }
 
+      case 'PINK_PLANET_COOLDOWN': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+
+      case 'ACTIVATE_ARTIFACT_COOLDOWN': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+
+      case 'BUY_ARTIFACT_COOLDOWN': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+
       case 'PLANET_TYPE_WEIGHTS': {
         const defaultValue = startingConfig[key];
         state[key] = {
@@ -921,7 +988,7 @@ export function lobbyConfigInit(startingConfig: LobbyInitializers) {
         };
         break;
       }
-        
+
       case 'BURN_PLANET_REQUIRE_SILVER_AMOUNTS': {
         const defaultValue = startingConfig[key];
         state[key] = {
@@ -934,6 +1001,16 @@ export function lobbyConfigInit(startingConfig: LobbyInitializers) {
       }
 
       case 'MAX_LEVEL_DIST': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+      case 'RARITIES_DIST': {
         const defaultValue = startingConfig[key];
         state[key] = {
           currentValue: defaultValue,
@@ -2060,6 +2137,58 @@ export function ofMaxLevelDist(
 
 export function ofMaxLevelLimit(
   { type, value }: Extract<LobbyConfigAction, { type: 'MAX_LEVEL_LIMIT' }>,
+  state: LobbyConfigState
+) {
+  if (value === undefined) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: undefined,
+    };
+  }
+
+  if (typeof value !== 'number') {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be a number`,
+    };
+  }
+
+  if (value < 1) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be a greater than 0`,
+    };
+  }
+
+  if (value > SAFE_UPPER_BOUNDS) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value is too large`,
+    };
+  }
+
+  if (Math.floor(value) !== value) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be an integer`,
+    };
+  }
+
+  return {
+    ...state[type],
+    currentValue: value,
+    displayValue: value,
+    warning: undefined,
+  };
+}
+
+export function ofRaritiesDist(
+  { type, value }: Extract<LobbyConfigAction, { type: 'RARITIES_DIST' }>,
   state: LobbyConfigState
 ) {
   if (value === undefined) {

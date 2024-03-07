@@ -6,24 +6,24 @@ START_PAUSED = true #false
 ADMIN_CAN_ADD_PLANETS = true
 PLANET_TRANSFER_ENABLED = false
 WORLD_RADIUS_LOCKED = false
-WORLD_RADIUS_MIN = 53000
+WORLD_RADIUS_MIN = 150_000
 
 
 ##################################
 # SNARK keys & Perlin parameters #
 ##################################
 DISABLE_ZK_CHECKS = false
-PLANETHASH_KEY =2344 # 6279
-SPACETYPE_KEY =1233423 # 6280
-BIOMEBASE_KEY = 2424 # 6271
+PLANETHASH_KEY = 2574 #1234 # 6279
+SPACETYPE_KEY = 4123 #5678 #6280
+BIOMEBASE_KEY = 6139 #9101 # 6271
 PERLIN_MIRROR_X = false
 PERLIN_MIRROR_Y = false
-PERLIN_LENGTH_SCALE = 16384 # must be a power of two no greater than 16384
+PERLIN_LENGTH_SCALE = 8192 #16384 # must be a power of two no greater than 16384
 
 #############
 # Artifacts #
 #############
-TOKEN_MINT_END_TIMESTAMP = 2024-12-31T04:00:00.000Z # Mon Oct 04 2022 21:00:00 GMT-0700 (Pacific Daylight Time)
+TOKEN_MINT_END_TIMESTAMP = 2024-01-28T12:00:00.000Z
 ARTIFACT_POINT_VALUES = [
   0,
   2000,
@@ -41,12 +41,12 @@ ARTIFACT_POINT_VALUES = [
 #   0,
 #   0
 # ]
-PHOTOID_ACTIVATION_DELAY = 7200 #600 # seconds
+PHOTOID_ACTIVATION_DELAY =14400 # seconds
 STELLAR_ACTIVATION_DELAY = 0 # seconds
 ##############
 # Space junk #
 ##############
-SPACE_JUNK_ENABLED = true #false
+SPACE_JUNK_ENABLED = false
 # Total amount of space junk a player can take on. This can be overridden at runtime by updating this value for a specific player in storage.
 SPACE_JUNK_LIMIT = 3000
 # The amount of junk that each level of planet gives the player when moving to it for the first time.
@@ -59,7 +59,7 @@ ABANDON_RANGE_CHANGE_PERCENT = 150
 #################
 # Capture zones #
 #################
-CAPTURE_ZONES_ENABLED = true
+CAPTURE_ZONES_ENABLED = false
 # How often zones change location. Max 255.
 CAPTURE_ZONE_CHANGE_BLOCK_INTERVAL = 255
 # How big the capture zones are
@@ -90,13 +90,13 @@ MAX_NATURAL_PLANET_LEVEL = 9
 MAX_ARTIFACT_PER_PLANET = 5
 MAX_SENDING_PLANET = 8
 MAX_RECEIVING_PLANET = 8
-TIME_FACTOR_HUNDREDTHS = 1000  #100 # speedup/slowdown game
+TIME_FACTOR_HUNDREDTHS = 200  # speedup/slowdown game
 PERLIN_THRESHOLD_1 = 14
 PERLIN_THRESHOLD_2 = 15
 PERLIN_THRESHOLD_3 = 19
 INIT_PERLIN_MIN = 13
 INIT_PERLIN_MAX = 14
-SPAWN_RIM_AREA = 2106750000 # 0   # min radius around 46239
+SPAWN_RIM_AREA = 0 #2106750000 # 0   # min radius around 46239
 BIOME_THRESHOLD_1 = 15
 BIOME_THRESHOLD_2 = 17
 #  The chance for a planet to be a specific level.
@@ -118,53 +118,61 @@ PLANET_LEVEL_THRESHOLDS = [
 ]
 
 
-PLANET_RARITY = 16384
+PLANET_RARITY =  16384
 # How much score silver gives when withdrawing.
 # Expressed as a percentage integer.
 # (100 is 100%)
 SILVER_SCORE_VALUE = 100
 LOCATION_REVEAL_COOLDOWN = 86400 # seconds
-CLAIM_PLANET_COOLDOWN = 60 #10800 seconds
+CLAIM_PLANET_COOLDOWN = 14400 # seconds
 
-CLAIM_END_TIMESTAMP = 2024-12-31T04:00:00.000Z # Mon Oct 04 2022 21:00:00 GMT-0700 (Pacific Daylight Time)
+CLAIM_END_TIMESTAMP = 2024-01-28T12:00:00.000Z
 
 
-BURN_END_TIMESTAMP = 2024-12-31T04:00:00.000Z
-BURN_PLANET_COOLDOWN = 60
+BURN_END_TIMESTAMP = 2024-01-28T12:00:00.000Z
+BURN_PLANET_COOLDOWN =  86400 # seconds
+PINK_PLANET_COOLDOWN = 3600 #seconds
+
+ACTIVATE_ARTIFACT_COOLDOWN = 600
+BUY_ARTIFACT_COOLDOWN  = 43200
 
 BURN_PLANET_LEVEL_EFFECT_RADIUS = [
-  0,
-  1_000,
-  2_000,
-  3_000,
-  4_000,
-  5_000,
-  6_000,
-  7_000,
-  8_000,
-  9_000
+  2000,
+  2000,
+  2000,
+  2000,
+  2000,
+  2000,
+  2000,
+  2000,
+  2000,
+  2000
 ]
 
 
 BURN_PLANET_REQUIRE_SILVER_AMOUNTS = [
-  0,
-  1_000,
-  2_000,
-  3_000,
-  4_000,
-  5_000,
-  6_000,
-  7_000,
-  8_000,
-  9_000
+  15000,
+  15000,
+  15000,
+  15000,
+  15000,
+  15000,
+  15000,
+  15000,
+  15000,
+  15000
 ]
 
 #################
 # Planet Adjust #
 #################
-MAX_LEVEL_DIST=[40000, 30000, 20000, 10000, 5000]
-MAX_LEVEL_LIMIT=[1, 6, 7, 8, 9, 9]
-MIN_LEVEL_BIAS = [0, 0, 1, 1, 2, 2]
+
+# MAX_LEVEL_DIST=[70000, 60000, 50000, 40000, 30000]
+
+MAX_LEVEL_DIST =[131250, 112500, 93750, 75000, 56250]
+RARITIES_DIST=[16384, 16384, 32768, 65536, 131072, 262144]
+MAX_LEVEL_LIMIT=[9, 5, 6, 7, 8, 9]
+MIN_LEVEL_BIAS = [0, 0, 0, 0, 0, 1]
 
 PLANET_TYPE_WEIGHTS = [
   [
@@ -291,9 +299,9 @@ ROUND_END_REWARDS_BY_RANK=[
 # not include PinkShip yet
 [initializers.SPACESHIPS]
 GEAR = true
-MOTHERSHIP = true
-TITAN = true
-CRESCENT = true
+MOTHERSHIP = false
+TITAN = false
+CRESCENT = false
 WHALE = false
 PINKSHIP = true
 

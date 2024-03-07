@@ -75,6 +75,11 @@ struct GameStorage {
     uint256[] burnedIds;
     mapping(uint256 => BurnedCoords) burnedCoords;
     mapping(address => uint256) lastBurnTimestamp;
+    mapping(address => uint256) lastActivateArtifactTimestamp;
+    mapping(address => uint256) lastBuyArtifactTimestamp;
+    address firstMythicArtifactOwner;
+    address firstBurnLocationOperator;
+    address firstHat;
 }
 
 // Game config
@@ -143,11 +148,14 @@ struct GameConstants {
     uint256 CLAIM_END_TIMESTAMP;
     uint256 BURN_END_TIMESTAMP;
     uint256 BURN_PLANET_COOLDOWN;
-
+    uint256 PINK_PLANET_COOLDOWN;
+    uint256 ACTIVATE_ARTIFACT_COOLDOWN;
+    uint256 BUY_ARTIFACT_COOLDOWN;
     uint256[10] BURN_PLANET_LEVEL_EFFECT_RADIUS;
     uint256[10] BURN_PLANET_REQUIRE_SILVER_AMOUNTS;
     // planet adjust
     uint256[5] MAX_LEVEL_DIST;
+    uint256[6] RARITIES_DIST;
     uint256[6] MAX_LEVEL_LIMIT;
     uint256[6] MIN_LEVEL_BIAS;
 }

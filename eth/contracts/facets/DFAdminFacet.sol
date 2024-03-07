@@ -158,7 +158,7 @@ contract DFAdminFacet is WithStorage {
     function createPlanet(AdminCreatePlanetArgs memory args) public onlyAdmin {
         require(gameConstants().ADMIN_CAN_ADD_PLANETS, "admin can no longer add planets");
         if (args.requireValidLocationId) {
-            require(LibGameUtils._locationIdValid(args.location), "Not a valid planet location");
+            require(LibGameUtils._locationIdValid(args.location, 111), "Not a valid planet location"); // need pass dist here, get wrong space type if some condition at new map algo, need to be fixed
         }
         SpaceType spaceType = LibGameUtils.spaceTypeFromPerlin(args.perlin, 111);    // need pass dist here, get wrong space type if some condition at new map algo, need to be fixed
         LibPlanet._initializePlanet(

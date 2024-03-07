@@ -231,6 +231,8 @@ export interface ContractConstants {
   STELLAR_ACTIVATION_DELAY: number;
   LOCATION_REVEAL_COOLDOWN: number;
   CLAIM_PLANET_COOLDOWN: number;
+  ACTIVATE_ARTIFACT_COOLDOWN: number;
+  BUY_ARTIFACT_COOLDOWN: number;
   PLANET_TYPE_WEIGHTS: PlanetTypeWeightsBySpaceType;
 
   /**
@@ -398,8 +400,9 @@ export interface ContractConstants {
 
   BURN_END_TIMESTAMP: number;
   BURN_PLANET_COOLDOWN: number;
+  PINK_PLANET_COOLDOWN: number;
 
- BURN_PLANET_LEVEL_EFFECT_RADIUS: [
+  BURN_PLANET_LEVEL_EFFECT_RADIUS: [
     number,
     number,
     number,
@@ -426,9 +429,9 @@ export interface ContractConstants {
   ];
 
   MAX_LEVEL_DIST: number[];
+  RARITIES_DIST: number[];
   MAX_LEVEL_LIMIT: number[];
   MIN_LEVEL_BIAS: number[];
-
 }
 
 export type ClientMockchainData =

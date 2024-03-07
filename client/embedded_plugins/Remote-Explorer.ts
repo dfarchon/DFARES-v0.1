@@ -56,6 +56,8 @@ class RemoteWorker implements Worker {
       body: JSON.stringify({
         chunkFootprint: msgJson.chunkFootprint,
         planetRarity: msgJson.planetRarity,
+        planetLevelDist: msgJson.planetRarity,
+        planetRaritiesDist: msgJson.planetRarity,     //MYTODO: modify server side configs
         planetHashKey: msgJson.planetHashKey,
       }),
       headers: {

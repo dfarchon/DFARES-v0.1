@@ -368,6 +368,10 @@ class GameManager extends EventEmitter {
     return this.contractConstants.PLANET_RARITY;
   }
 
+  public get planetRaritiesDist(): number[] {
+    return this.contractConstants.RARITIES_DIST;
+  }
+
   /**
    * Generates capture zones.
    */
@@ -436,6 +440,8 @@ class GameManager extends EventEmitter {
       perlinMirrorX: contractConstants.PERLIN_MIRROR_X,
       perlinMirrorY: contractConstants.PERLIN_MIRROR_Y,
       planetRarity: contractConstants.PLANET_RARITY,
+      planetLevelDist: contractConstants.MAX_LEVEL_DIST,
+      planetRaritiesDist: contractConstants.RARITIES_DIST,
     };
     this.planetHashMimc = useMockHash
       ? fakeHash(this.hashConfig.planetRarity)
@@ -754,6 +760,8 @@ class GameManager extends EventEmitter {
       perlinMirrorX: initialState.contractConstants.PERLIN_MIRROR_X,
       perlinMirrorY: initialState.contractConstants.PERLIN_MIRROR_Y,
       planetRarity: initialState.contractConstants.PLANET_RARITY,
+      planetLevelDist: initialState.contractConstants.MAX_LEVEL_DIST,
+      planetRaritiesDist: initialState.contractConstants.RARITIES_DIST,
     };
 
     const useMockHash = initialState.contractConstants.DISABLE_ZK_CHECKS;
@@ -1327,6 +1335,10 @@ class GameManager extends EventEmitter {
    */
   public getPlanetRarity(): number {
     return this.contractConstants.PLANET_RARITY;
+  }
+
+  public getPlanetRaritiesDist(): number[] {
+    return this.contractConstants.RARITIES_DIST;
   }
 
   /**

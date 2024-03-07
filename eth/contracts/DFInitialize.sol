@@ -112,11 +112,14 @@ struct InitArgs {
     uint256[64] ROUND_END_REWARDS_BY_RANK;
     uint256 BURN_END_TIMESTAMP;
     uint256 BURN_PLANET_COOLDOWN;
-
+    uint256 PINK_PLANET_COOLDOWN;
+    uint256 ACTIVATE_ARTIFACT_COOLDOWN;
+    uint256 BUY_ARTIFACT_COOLDOWN;
     uint256[10] BURN_PLANET_LEVEL_EFFECT_RADIUS;
     uint256[10] BURN_PLANET_REQUIRE_SILVER_AMOUNTS;
     // planet adjust
     uint256[5] MAX_LEVEL_DIST;
+    uint256[6] RARITIES_DIST;
     uint256[6] MAX_LEVEL_LIMIT;
     uint256[6] MIN_LEVEL_BIAS;
 }
@@ -225,12 +228,15 @@ contract DFInitialize is WithStorage {
 
         gameConstants().BURN_END_TIMESTAMP = initArgs.BURN_END_TIMESTAMP;
         gameConstants().BURN_PLANET_COOLDOWN = initArgs.BURN_PLANET_COOLDOWN;
-
+        gameConstants().PINK_PLANET_COOLDOWN = initArgs.PINK_PLANET_COOLDOWN;
+        gameConstants().ACTIVATE_ARTIFACT_COOLDOWN = initArgs.ACTIVATE_ARTIFACT_COOLDOWN;
+        gameConstants().BUY_ARTIFACT_COOLDOWN = initArgs.BUY_ARTIFACT_COOLDOWN;
         gameConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS = initArgs.BURN_PLANET_LEVEL_EFFECT_RADIUS;
         gameConstants().BURN_PLANET_REQUIRE_SILVER_AMOUNTS = initArgs
             .BURN_PLANET_REQUIRE_SILVER_AMOUNTS;
         // planet adjust
         gameConstants().MAX_LEVEL_DIST = initArgs.MAX_LEVEL_DIST;
+        gameConstants().RARITIES_DIST = initArgs.RARITIES_DIST;
         gameConstants().MAX_LEVEL_LIMIT = initArgs.MAX_LEVEL_LIMIT;
         gameConstants().MIN_LEVEL_BIAS = initArgs.MIN_LEVEL_BIAS;
 
@@ -256,7 +262,7 @@ contract DFInitialize is WithStorage {
                 populationCap: 100000,
                 populationGrowth: 417,
                 range: 99,
-                speed: 75,
+                speed: 225,
                 defense: 400,
                 silverGrowth: 0,
                 silverCap: 0,
@@ -270,7 +276,7 @@ contract DFInitialize is WithStorage {
                 populationCap: 400000,
                 populationGrowth: 833,
                 range: 177,
-                speed: 75,
+                speed: 225,
                 defense: 400,
                 silverGrowth: 56,
                 silverCap: 100000,
@@ -284,7 +290,7 @@ contract DFInitialize is WithStorage {
                 populationCap: 1600000,
                 populationGrowth: 1250,
                 range: 315,
-                speed: 75,
+                speed: 225,
                 defense: 300,
                 silverGrowth: 167,
                 silverCap: 500000,
@@ -298,7 +304,7 @@ contract DFInitialize is WithStorage {
                 populationCap: 6000000,
                 populationGrowth: 1667,
                 range: 591,
-                speed: 75,
+                speed: 225,
                 defense: 300,
                 silverGrowth: 417,
                 silverCap: 2500000,
@@ -312,7 +318,7 @@ contract DFInitialize is WithStorage {
                 populationCap: 25000000,
                 populationGrowth: 2083,
                 range: 1025,
-                speed: 75,
+                speed: 225,
                 defense: 300,
                 silverGrowth: 833,
                 silverCap: 12000000,
@@ -326,7 +332,7 @@ contract DFInitialize is WithStorage {
                 populationCap: 100000000,
                 populationGrowth: 2500,
                 range: 1734,
-                speed: 75,
+                speed: 225,
                 defense: 200,
                 silverGrowth: 1667,
                 silverCap: 50000000,
@@ -340,7 +346,7 @@ contract DFInitialize is WithStorage {
                 populationCap: 300000000,
                 populationGrowth: 2917,
                 range: 2838,
-                speed: 75,
+                speed: 225,
                 defense: 200,
                 silverGrowth: 2778,
                 silverCap: 100000000,
@@ -354,7 +360,7 @@ contract DFInitialize is WithStorage {
                 populationCap: 500000000,
                 populationGrowth: 3333,
                 range: 4414,
-                speed: 75,
+                speed: 225,
                 defense: 200,
                 silverGrowth: 2778,
                 silverCap: 200000000,
@@ -368,7 +374,7 @@ contract DFInitialize is WithStorage {
                 populationCap: 700000000,
                 populationGrowth: 3750,
                 range: 6306,
-                speed: 75,
+                speed: 225,
                 defense: 200,
                 silverGrowth: 2778,
                 silverCap: 300000000,
@@ -382,7 +388,7 @@ contract DFInitialize is WithStorage {
                 populationCap: 800000000,
                 populationGrowth: 4167,
                 range: 8829,
-                speed: 75,
+                speed: 225,
                 defense: 200,
                 silverGrowth: 2778,
                 silverCap: 400000000,

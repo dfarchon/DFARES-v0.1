@@ -143,6 +143,9 @@ export function CreateLobby({ match }: RouteComponentProps<{ contract: string }>
             CLAIM_PLANET_COOLDOWN: config.CLAIM_PLANET_COOLDOWN,
             BURN_END_TIMESTAMP: config.BURN_END_TIMESTAMP,
             BURN_PLANET_COOLDOWN: config.BURN_PLANET_COOLDOWN,
+            PINK_PLANET_COOLDOWN: config.PINK_PLANET_COOLDOWN,
+            ACTIVATE_ARTIFACT_COOLDOWN: config.ACTIVATE_ARTIFACT_COOLDOWN,
+            BUY_ARTIFACT_COOLDOWN: config.BUY_ARTIFACT_COOLDOWN,
             BURN_PLANET_LEVEL_EFFECT_RADIUS: config.BURN_PLANET_LEVEL_EFFECT_RADIUS,
             BURN_PLANET_REQUIRE_SILVER_AMOUNTS: config.BURN_PLANET_LEVEL_EFFECT_RADIUS,
 
@@ -152,6 +155,14 @@ export function CreateLobby({ match }: RouteComponentProps<{ contract: string }>
               config.MAX_LEVEL_DIST[2],
               config.MAX_LEVEL_DIST[3],
               config.MAX_LEVEL_DIST[4],
+            ],
+            RARITIES_DIST: [
+              config.RARITIES_DIST[0],
+              config.RARITIES_DIST[1],
+              config.RARITIES_DIST[2],
+              config.RARITIES_DIST[3],
+              config.RARITIES_DIST[4],
+              config.RARITIES_DIST[5],
             ],
             MAX_LEVEL_LIMIT: [
               config.MAX_LEVEL_LIMIT[0],
@@ -169,9 +180,6 @@ export function CreateLobby({ match }: RouteComponentProps<{ contract: string }>
               config.MIN_LEVEL_BIAS[4],
               config.MIN_LEVEL_BIAS[5],
             ],
-
-      
-
           });
         })
         .catch((e) => {

@@ -57,7 +57,6 @@ import {
   ContractsAPIEvent,
 } from '../../_types/darkforest/api/ContractsAPITypes';
 import { loadDiamondContract } from '../Network/Blockchain';
-import { eventLogger, EventType } from '../Network/EventLogger';
 
 interface ContractsApiConfig {
   connection: EthConnection;
@@ -195,7 +194,8 @@ export class ContractsAPI extends EventEmitter {
   }
 
   private async afterTransaction(_txRequest: Transaction, txDiagnosticInfo: unknown) {
-    eventLogger.logEvent(EventType.Transaction, txDiagnosticInfo);
+    // myNotice: remove /event
+    // eventLogger.logEvent(EventType.Transaction, txDiagnosticInfo);
   }
 
   public destroy(): void {
@@ -405,10 +405,6 @@ export class ContractsAPI extends EventEmitter {
         _y: EthersBN,
         _: Event
       ) => {
-        //mytodo:
-        console.log('[testInfo] ContractEvent.LocationBurned');
-        console.log(revealerAddr);
-        console.log(locationIdFromEthersBN(location));
         this.emit(ContractsAPIEvent.PlanetUpdate, locationIdFromEthersBN(location));
         this.emit(
           ContractsAPIEvent.LocationRevealed,
@@ -526,9 +522,13 @@ export class ContractsAPI extends EventEmitter {
       CLAIM_END_TIMESTAMP,
       BURN_END_TIMESTAMP,
       BURN_PLANET_COOLDOWN,
+      PINK_PLANET_COOLDOWN,
+      ACTIVATE_ARTIFACT_COOLDOWN,
+      BUY_ARTIFACT_COOLDOWN,
       BURN_PLANET_LEVEL_EFFECT_RADIUS,
       BURN_PLANET_REQUIRE_SILVER_AMOUNTS,
       MAX_LEVEL_DIST,
+      RARITIES_DIST,
       MAX_LEVEL_LIMIT,
       MIN_LEVEL_BIAS,
     } = await this.makeCall(this.contract.getGameConstants);
@@ -730,7 +730,9 @@ export class ContractsAPI extends EventEmitter {
 
       BURN_END_TIMESTAMP: BURN_END_TIMESTAMP.toNumber(),
       BURN_PLANET_COOLDOWN: BURN_PLANET_COOLDOWN.toNumber(),
-      
+      PINK_PLANET_COOLDOWN: PINK_PLANET_COOLDOWN.toNumber(),
+      ACTIVATE_ARTIFACT_COOLDOWN: ACTIVATE_ARTIFACT_COOLDOWN.toNumber(),
+      BUY_ARTIFACT_COOLDOWN: BUY_ARTIFACT_COOLDOWN.toNumber(),
       BURN_PLANET_LEVEL_EFFECT_RADIUS: [
         BURN_PLANET_LEVEL_EFFECT_RADIUS[0].toNumber(),
         BURN_PLANET_LEVEL_EFFECT_RADIUS[1].toNumber(),
@@ -754,7 +756,6 @@ export class ContractsAPI extends EventEmitter {
         BURN_PLANET_REQUIRE_SILVER_AMOUNTS[7].toNumber(),
         BURN_PLANET_REQUIRE_SILVER_AMOUNTS[8].toNumber(),
         BURN_PLANET_REQUIRE_SILVER_AMOUNTS[9].toNumber(),
-
       ],
 
       MAX_LEVEL_DIST: [
@@ -763,6 +764,14 @@ export class ContractsAPI extends EventEmitter {
         MAX_LEVEL_DIST[2].toNumber(),
         MAX_LEVEL_DIST[3].toNumber(),
         MAX_LEVEL_DIST[4].toNumber(),
+      ],
+      RARITIES_DIST: [
+        RARITIES_DIST[0].toNumber(),
+        RARITIES_DIST[1].toNumber(),
+        RARITIES_DIST[2].toNumber(),
+        RARITIES_DIST[3].toNumber(),
+        RARITIES_DIST[4].toNumber(),
+        RARITIES_DIST[5].toNumber(),
       ],
       MAX_LEVEL_LIMIT: [
         MAX_LEVEL_LIMIT[0].toNumber(),
@@ -779,8 +788,7 @@ export class ContractsAPI extends EventEmitter {
         MIN_LEVEL_BIAS[3].toNumber(),
         MIN_LEVEL_BIAS[4].toNumber(),
         MIN_LEVEL_BIAS[5].toNumber(),
-      ]
-     
+      ],
     };
     // console.log(constants);
     return constants;

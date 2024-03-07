@@ -126,7 +126,7 @@ library LibPlanet {
         uint256 _distFromOriginSquare,
         bool _isHomePlanet
     ) public {
-        require(LibGameUtils._locationIdValid(_location), "Not a valid planet location");
+        require(LibGameUtils._locationIdValid(_location, _distFromOriginSquare), "Not a valid planet location");
 
         DFPInitPlanetArgs memory initArgs = getDefaultInitPlanetArgs(
             _location,

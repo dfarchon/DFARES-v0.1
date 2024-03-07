@@ -16,6 +16,8 @@ const exploreChunk = (
   workerIndex: number,
   totalWorkers: number,
   planetRarity: number,
+  planetLevelDist: number[],
+  planetRaritiesDist: number[],
   jobId: number,
   useFakeHash: boolean,
   planetHashKey: number,
@@ -54,15 +56,37 @@ const exploreChunk = (
             perlinMirrorY
           )(chunkFootprint, planetRarity);
   } else {
+
+
     const planetRarityBI: BigInteger = bigInt(planetRarity);
+    let tmpRarity: BigInteger = bigInt(0);
     let count = 0;
     const { x: bottomLeftX, y: bottomLeftY } = chunkFootprint.bottomLeft;
     const { sideLength } = chunkFootprint;
     for (let x = bottomLeftX; x < bottomLeftX + sideLength; x++) {
       for (let y = bottomLeftY; y < bottomLeftY + sideLength; y++) {
         if (count % totalWorkers === workerIndex) {
+          //MYTODO: FICK DDY
+          // console.log(planetLevelDist, planetRaritiesDist, x, y, "#################");
+          const distFromOriginSquare = x ** 2 + y ** 2;
+
+          if(distFromOriginSquare > planetLevelDist[0] * planetLevelDist[0]) tmpRarity = bigInt(planetRaritiesDist[0]);
+          for (let i = 0; i < planetLevelDist.length - 1; i++) {
+            if (
+              distFromOriginSquare < planetLevelDist[i] * planetLevelDist[i] &&
+              distFromOriginSquare > planetLevelDist[i + 1] * planetLevelDist[i + 1]
+            ) {
+              tmpRarity = bigInt(planetRaritiesDist[i+1]);
+            }
+          }
+
+          if(distFromOriginSquare < planetLevelDist[planetLevelDist.length - 1] * planetLevelDist[planetLevelDist.length - 1]) tmpRarity = bigInt(planetRaritiesDist[planetRaritiesDist.length - 1]);
+
+
+
+
           const hash: BigInteger = planetHashFn(x, y);
-          if (hash.lesser(LOCATION_ID_UB.divide(planetRarityBI))) {
+          if (hash.lesser(LOCATION_ID_UB.divide(tmpRarity))) {   //planetRarityBI
             planetLocations.push({
               coords: { x, y },
               hash: locationIdFromBigInt(hash),
@@ -95,6 +119,8 @@ ctx.addEventListener('message', (e: MessageEvent) => {
     exploreMessage.workerIndex,
     exploreMessage.totalWorkers,
     exploreMessage.planetRarity,
+    exploreMessage.planetLevelDist,
+    exploreMessage.planetRaritiesDist,
     exploreMessage.jobId,
     exploreMessage.useMockHash,
     exploreMessage.planetHashKey,

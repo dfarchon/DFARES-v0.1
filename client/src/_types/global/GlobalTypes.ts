@@ -29,6 +29,8 @@ export type HashConfig = {
   perlinMirrorX: boolean;
   perlinMirrorY: boolean;
   planetRarity: number; // only for fakeHash (DISABLE_ZK_CHECKS on)
+  planetLevelDist: number[];
+  planetRaritiesDist: number[]; //new added for different rarity circles
 };
 
 export const enum StatIdx {
@@ -45,6 +47,8 @@ export interface MinerWorkerMessage {
   workerIndex: number;
   totalWorkers: number;
   planetRarity: number;
+  planetLevelDist: number[];
+  planetRaritiesDist: number[];
   jobId: number;
   useMockHash: boolean;
   planetHashKey: number;

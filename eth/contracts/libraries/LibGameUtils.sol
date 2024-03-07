@@ -36,10 +36,36 @@ library LibGameUtils {
         }
     }
 
-    function _locationIdValid(uint256 _loc) public view returns (bool) {
-        return (_loc <
+    function _locationIdValid(uint256 _loc, uint256 _distFromOriginSquare) public view returns (bool) {
+        uint256[6] memory RARITIES_DIST = gameConstants().RARITIES_DIST;
+        uint256[5] memory MAX_LEVEL_DIST = gameConstants().MAX_LEVEL_DIST;
+
+        bool ret = false;
+
+        if (_distFromOriginSquare > MAX_LEVEL_DIST[0] * MAX_LEVEL_DIST[0]) ret = (_loc <
             (21888242871839275222246405745257275088548364400416034343698204186575808495617 /
-                gameConstants().PLANET_RARITY));
+                RARITIES_DIST[0]));
+
+        for (uint256 i = 0; i < MAX_LEVEL_DIST.length - 1; i++) {
+            if (
+                _distFromOriginSquare < MAX_LEVEL_DIST[i] * MAX_LEVEL_DIST[i] &&
+                _distFromOriginSquare > MAX_LEVEL_DIST[i + 1] * MAX_LEVEL_DIST[i + 1]
+            ) {
+                ret = (_loc <
+            (21888242871839275222246405745257275088548364400416034343698204186575808495617 /
+                RARITIES_DIST[i+1]));
+            }
+        }
+
+        if (_distFromOriginSquare < MAX_LEVEL_DIST[MAX_LEVEL_DIST.length - 1] * MAX_LEVEL_DIST[MAX_LEVEL_DIST.length - 1]) ret = (_loc <
+            (21888242871839275222246405745257275088548364400416034343698204186575808495617 /
+                RARITIES_DIST[RARITIES_DIST.length - 1]));
+
+        return ret;
+
+        // return (_loc <
+        //     (21888242871839275222246405745257275088548364400416034343698204186575808495617 /
+        //         gameConstants().PLANET_RARITY));
     }
 
     // if you don't check the public input snark perlin config values, then a player could specify a planet with for example the wrong PLANETHASH_KEY and the SNARK would verify but they'd have created an invalid planet.
