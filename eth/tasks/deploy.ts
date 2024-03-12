@@ -455,10 +455,16 @@ export async function deployLibraries({}, hre: HardhatRuntimeEnvironment) {
   await LibPlanet.deployTransaction.wait();
   console.log(`LibPlanet deployed to: ${LibPlanet.address}`);
 
+  const LibVRGDAFactory = await hre.ethers.getContractFactory('LibVRGDA');
+  const LibVRGDA = await LibVRGDAFactory.deploy();
+  await LibVRGDA.deployTransaction.wait();
+  console.log(`LibVRGDA deployed to: ${LibVRGDA.address}`);
+
   return {
     LibGameUtils: LibGameUtils.address,
     LibPlanet: LibPlanet.address,
     LibArtifactUtils: LibArtifactUtils.address,
+    LibVRGDA: LibVRGDA.address,
   };
 }
 

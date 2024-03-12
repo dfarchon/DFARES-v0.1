@@ -116,6 +116,22 @@ export type LobbyConfigAction =
       type: 'BUY_ARTIFACT_COOLDOWN';
       value: Initializers['BUY_ARTIFACT_COOLDOWN'] | undefined;
     }
+    | {
+      type: 'V_Target_Price';
+      value: Initializers['V_Target_Price'] | undefined;
+    }
+    | {
+      type: 'V_Price_Decay_Percent';
+      value: Initializers['V_Price_Decay_Percent'] | undefined;
+    }
+    | {
+      type: 'V_Max_Sellable';
+      value: Initializers['V_Max_Sellable'] | undefined;
+    }
+    | {
+      type: 'V_Time_Scale';
+      value: Initializers['V_Time_Scale'] | undefined;
+    }
   | { type: 'PLANET_TYPE_WEIGHTS'; value: Initializers['PLANET_TYPE_WEIGHTS'] | undefined }
   | { type: 'SILVER_SCORE_VALUE'; value: Initializers['SILVER_SCORE_VALUE'] | undefined }
   | {
@@ -347,6 +363,23 @@ export function lobbyConfigReducer(state: LobbyConfigState, action: LobbyAction)
       break;
     }
     case 'BUY_ARTIFACT_COOLDOWN': {
+      update = ofPositiveInteger(action, state);
+      break;
+    }
+
+    case 'V_Target_Price': {
+      update = ofPositiveInteger(action, state);
+      break;
+    }
+    case 'V_Price_Decay_Percent': {
+      update = ofPositiveInteger(action, state);
+      break;
+    }
+    case 'V_Max_Sellable': {
+      update = ofPositiveInteger(action, state);
+      break;
+    }
+    case 'V_Time_Scale': {
       update = ofPositiveInteger(action, state);
       break;
     }
@@ -849,6 +882,46 @@ export function lobbyConfigInit(startingConfig: LobbyInitializers) {
       }
 
       case 'BUY_ARTIFACT_COOLDOWN': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+      case 'V_Target_Price': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+      case 'V_Price_Decay_Percent': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+      case 'V_Max_Sellable': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+      case 'V_Time_Scale': {
         const defaultValue = startingConfig[key];
         state[key] = {
           currentValue: defaultValue,

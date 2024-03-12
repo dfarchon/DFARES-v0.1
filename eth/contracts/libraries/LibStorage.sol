@@ -151,6 +151,13 @@ struct GameConstants {
     uint256 PINK_PLANET_COOLDOWN;
     uint256 ACTIVATE_ARTIFACT_COOLDOWN;
     uint256 BUY_ARTIFACT_COOLDOWN;
+
+    //VRGDA CONFIGS
+    int256 V_Target_Price;
+    int256 V_Price_Decay_Percent;
+    uint256 V_Max_Sellable;
+    int256 V_Time_Scale;
+
     uint256[10] BURN_PLANET_LEVEL_EFFECT_RADIUS;
     uint256[10] BURN_PLANET_REQUIRE_SILVER_AMOUNTS;
     // planet adjust

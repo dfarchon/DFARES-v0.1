@@ -36,21 +36,21 @@ exports.INIT_ADDRESS = exports.CONTRACT_ADDRESS = exports.START_BLOCK = exports.
 /**
  * The name of the network where these contracts are deployed.
  */
-exports.NETWORK = 'redstoneTestnet';
+exports.NETWORK = 'localhost';
 /**
  * The id of the network where these contracts are deployed.
  */
-exports.NETWORK_ID = 17001;
+exports.NETWORK_ID = 31337;
 /**
  * The block in which the DarkForest contract was initialized.
  */
-exports.START_BLOCK = 3388098;
+exports.START_BLOCK = 0;
 /**
  * The address for the DarkForest contract.
  */
-exports.CONTRACT_ADDRESS = '0x9BEbF120D985Cb8835634E3c8565d320f79AaC76';
+exports.CONTRACT_ADDRESS = '0x8950bab77f29E8f81e6F78AEA0a79bADD88Eeb13';
 /**
  * The address for the initalizer contract. Useful for lobbies.
  */
-exports.INIT_ADDRESS = '0x892df44490124990f74A69214DAB72317d22EE66';
+exports.INIT_ADDRESS = '0x500cf53555c09948f4345594F9523E7B444cD67E';
 //# sourceMappingURL=index.js.map

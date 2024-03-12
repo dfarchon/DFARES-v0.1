@@ -115,6 +115,13 @@ struct InitArgs {
     uint256 PINK_PLANET_COOLDOWN;
     uint256 ACTIVATE_ARTIFACT_COOLDOWN;
     uint256 BUY_ARTIFACT_COOLDOWN;
+
+    //VRGDA CONFIGS
+    int256 V_Target_Price;
+    int256 V_Price_Decay_Percent;
+    uint256 V_Max_Sellable;
+    int256 V_Time_Scale;
+
     uint256[10] BURN_PLANET_LEVEL_EFFECT_RADIUS;
     uint256[10] BURN_PLANET_REQUIRE_SILVER_AMOUNTS;
     // planet adjust
@@ -230,6 +237,14 @@ contract DFInitialize is WithStorage {
         gameConstants().PINK_PLANET_COOLDOWN = initArgs.PINK_PLANET_COOLDOWN;
         gameConstants().ACTIVATE_ARTIFACT_COOLDOWN = initArgs.ACTIVATE_ARTIFACT_COOLDOWN;
         gameConstants().BUY_ARTIFACT_COOLDOWN = initArgs.BUY_ARTIFACT_COOLDOWN;
+
+        //VRGDA CONFIGS
+        gameConstants().V_Target_Price = initArgs.V_Target_Price * 1e12;
+        gameConstants().V_Price_Decay_Percent = initArgs.V_Price_Decay_Percent * 1e12;
+        gameConstants().V_Max_Sellable = initArgs.V_Max_Sellable;
+        gameConstants().V_Time_Scale = initArgs.V_Time_Scale * 1e12;
+
+
         gameConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS = initArgs.BURN_PLANET_LEVEL_EFFECT_RADIUS;
         gameConstants().BURN_PLANET_REQUIRE_SILVER_AMOUNTS = initArgs
             .BURN_PLANET_REQUIRE_SILVER_AMOUNTS;
