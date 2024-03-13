@@ -404,7 +404,7 @@ export async function deployVerifierFacet({}, {}: Libraries, hre: HardhatRuntime
 
 export async function deployArtifactFacet(
   {},
-  { LibGameUtils, LibPlanet, LibArtifactUtils }: Libraries,
+  { LibGameUtils, LibPlanet, LibArtifactUtils, LibVRGDA }: Libraries,
   hre: HardhatRuntimeEnvironment
 ) {
   const factory = await hre.ethers.getContractFactory('DFArtifactFacet', {
@@ -412,6 +412,7 @@ export async function deployArtifactFacet(
       LibArtifactUtils,
       LibGameUtils,
       LibPlanet,
+      LibVRGDA,
     },
   });
   const contract = await factory.deploy();
@@ -425,6 +426,12 @@ export async function deployLibraries({}, hre: HardhatRuntimeEnvironment) {
   const LibGameUtils = await LibGameUtilsFactory.deploy();
   await LibGameUtils.deployTransaction.wait();
   console.log(`LibGameUtils deployed to: ${LibGameUtils.address}`);
+
+  const LibVRGDAFactory = await hre.ethers.getContractFactory('LibVRGDA');
+  const LibVRGDA = await LibVRGDAFactory.deploy();
+  await LibVRGDA.deployTransaction.wait();
+  console.log(`LibVRGDA deployed to: ${LibVRGDA.address}`);
+
 
   const LibLazyUpdateFactory = await hre.ethers.getContractFactory('LibLazyUpdate', {
     libraries: {
@@ -455,10 +462,7 @@ export async function deployLibraries({}, hre: HardhatRuntimeEnvironment) {
   await LibPlanet.deployTransaction.wait();
   console.log(`LibPlanet deployed to: ${LibPlanet.address}`);
 
-  const LibVRGDAFactory = await hre.ethers.getContractFactory('LibVRGDA');
-  const LibVRGDA = await LibVRGDAFactory.deploy();
-  await LibVRGDA.deployTransaction.wait();
-  console.log(`LibVRGDA deployed to: ${LibVRGDA.address}`);
+
 
   return {
     LibGameUtils: LibGameUtils.address,

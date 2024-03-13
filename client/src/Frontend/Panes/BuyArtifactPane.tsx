@@ -3,7 +3,7 @@ import { weiToEth } from '@dfares/network';
 import { isUnconfirmedBuyArtifactTx } from '@dfares/serde';
 import { ArtifactRarity, ArtifactType, Biome, LocationId, Planet } from '@dfares/types';
 import { BigNumber } from 'ethers';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Btn } from '../Components/Btn';
 import { CenterBackgroundSubtext } from '../Components/CoreUI';
@@ -43,9 +43,7 @@ export function BuyArtifactPane({
   const planetId = useEmitterValue(uiManager.selectedPlanetId$, initialPlanetId);
   const planetWrapper = usePlanet(uiManager, planetId);
   const planet = planetWrapper.value;
-  const balanceEth = weiToEth(
-    useEmitterValue(uiManager.getEthConnection().myBalance$, BigNumber.from('0'))
-  );
+  const balanceEth = useEmitterValue(uiManager.getEthConnection().myBalance$, BigNumber.from('0'));
 
   // const currentBlockNumber = useEmitterValue(uiManager.getEthConnection().blockNumber$, undefined);
 
@@ -67,6 +65,12 @@ export function BuyArtifactPane({
   const [biome, setBiome] = useState(Biome.GRASSLAND.toString());
   const [type, setType] = useState(ArtifactType.Wormhole.toString());
   const [rarity, setRarity] = useState(ArtifactRarity.Legendary.toString());
+
+  const [price, setPrice] = useState(BigNumber.from('0'));
+
+  useEffect(() => {
+    uiManager.getGameManager().getArtifactPriceVRGDA().then(setPrice).catch(console.error);
+  }, [])
 
   function isTypeOK() {
     return true;
@@ -101,7 +105,7 @@ export function BuyArtifactPane({
     } else return 0;
   }
 
-  const cost: number = getCost();
+  const cost = getCost();
 
   // const getHatCostEth = (planet: Planet) => {
   //   return 2 ** planet.hatLevel;
@@ -112,8 +116,8 @@ export function BuyArtifactPane({
   const enabled = (planet: Planet): boolean =>
     !planet.transactions?.hasTransaction(isUnconfirmedBuyArtifactTx) &&
     planet?.owner === account &&
-    cost > 0 &&
-    balanceEth >= cost &&
+    price.gte(0) &&
+    balanceEth >= price &&
     // maxAmount > buyArtifactAmount &&
     buyArtifactCooldownPassed;
 
@@ -143,7 +147,7 @@ export function BuyArtifactPane({
           <div>
             <Sub>Artifact Price</Sub>
             <span>
-              {cost} ${TOKEN_NAME}
+              {weiToEth(price)} ${TOKEN_NAME}
             </span>
           </div>
           {/*  <div>
@@ -222,7 +226,7 @@ export function BuyArtifactPane({
           <div>
             <Sub>Current Balance</Sub>
             <span>
-              {balanceEth} ${TOKEN_NAME}
+              {weiToEth(balanceEth)} ${TOKEN_NAME}
             </span>
           </div>
           <div>

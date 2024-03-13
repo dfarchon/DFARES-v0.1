@@ -263,6 +263,10 @@ contract DFInitialize is WithStorage {
             );
         }
 
+
+        gs().ArtifactStartSellTime = block.timestamp;
+        gs().ArtifactTotalSold = 0;
+
         LibGameUtils.updateWorldRadius();
     }
 

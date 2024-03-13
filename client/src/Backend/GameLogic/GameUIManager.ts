@@ -423,14 +423,16 @@ class GameUIManager extends EventEmitter {
     this.gameManager.changeArtifactImageType(locationId, artifactId, newImageType);
   }
 
-  public buyArtifact(
+  public async buyArtifact(
     locationId: LocationId,
     rarity: ArtifactRarity,
     biome: Biome,
     type: ArtifactType
   ) {
+    const price = await this.gameManager.getArtifactPriceVRGDA();
+
     this.terminal.current?.printShellLn(
-      `df.buyArtifact('${locationId}','${rarity}','${biome}','${type}')`
+      `df.buyArtifact('${locationId}','${rarity}','${biome}','${type}, ${price}')`
     );
     this.gameManager.buyArtifact(locationId, rarity, biome, type);
   }

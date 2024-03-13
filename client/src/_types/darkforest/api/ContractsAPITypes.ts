@@ -233,10 +233,10 @@ export interface ContractConstants {
   CLAIM_PLANET_COOLDOWN: number;
   ACTIVATE_ARTIFACT_COOLDOWN: number;
   BUY_ARTIFACT_COOLDOWN: number;
-  V_Target_Price: number;
-  V_Price_Decay_Percent: number;
+  V_Target_Price: EthersBN;
+  V_Price_Decay_Percent: EthersBN;
   V_Max_Sellable: number;
-  V_Time_Scale: number;
+  V_Time_Scale: EthersBN;
   PLANET_TYPE_WEIGHTS: PlanetTypeWeightsBySpaceType;
 
   /**

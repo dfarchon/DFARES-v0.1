@@ -9,9 +9,13 @@ import {DFWhitelistFacet} from "./DFWhitelistFacet.sol";
 
 // Library Imports
 import {LibDiamond} from "../vendor/libraries/LibDiamond.sol";
+import {toDaysWadUnsafe} from "../vendor/libraries/SignedWadMath.sol";
 import {LibGameUtils} from "../libraries/LibGameUtils.sol";
 import {LibArtifactUtils} from "../libraries/LibArtifactUtils.sol";
 import {LibPlanet} from "../libraries/LibPlanet.sol";
+import {LibVRGDA} from "../libraries/LibVRGDA.sol";
+
+
 
 // Storage imports
 import {WithStorage} from "../libraries/LibStorage.sol";
@@ -131,6 +135,10 @@ contract DFArtifactFacet is WithStorage, ERC721 {
         gs().artifacts[args.tokenId] = newArtifact;
 
         return newArtifact;
+    }
+
+    function getArtifactPriceVRGDA() public view returns (uint256) {
+        return LibVRGDA.getVRGDAPrice(toDaysWadUnsafe(block.timestamp - gs().ArtifactStartSellTime), gs().ArtifactTotalSold);
     }
 
     function getArtifact(uint256 tokenId) public view returns (Artifact memory) {
@@ -368,8 +376,8 @@ contract DFArtifactFacet is WithStorage, ERC721 {
         );
         gs().lastBuyArtifactTimestamp[msg.sender] = block.timestamp;
 
-        uint256 cost = 50 ether;
-        require(msg.value == cost, "Wrong value sent");
+        uint256 cost = getArtifactPriceVRGDA(); //50 ether;
+        require(msg.value >= cost, "Wrong value sent");
 
         uint256 id = uint256(
             keccak256(abi.encodePacked(args.planetId, blockhash(block.number), gs().miscNonce++))
@@ -507,6 +515,7 @@ contract DFArtifactFacet is WithStorage, ERC721 {
         emit ArtifactFound(args.owner, artifact.id, args.planetId);
 
         gs().players[msg.sender].buyArtifactAmount++;
+        gs().ArtifactTotalSold++;
     }
 
     function changeArtifactImageType(

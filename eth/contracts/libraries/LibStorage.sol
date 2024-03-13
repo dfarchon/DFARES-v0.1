@@ -80,6 +80,10 @@ struct GameStorage {
     address firstMythicArtifactOwner;
     address firstBurnLocationOperator;
     address firstHat;
+
+    // Artifact selling stuff
+    uint256 ArtifactStartSellTime;
+    uint256 ArtifactTotalSold;
 }
 
 // Game config

@@ -736,10 +736,10 @@ export class ContractsAPI extends EventEmitter {
       PINK_PLANET_COOLDOWN: PINK_PLANET_COOLDOWN.toNumber(),
       ACTIVATE_ARTIFACT_COOLDOWN: ACTIVATE_ARTIFACT_COOLDOWN.toNumber(),
       BUY_ARTIFACT_COOLDOWN: BUY_ARTIFACT_COOLDOWN.toNumber(),
-      V_Target_Price: V_Target_Price.toNumber(),
-      V_Price_Decay_Percent: V_Price_Decay_Percent.toNumber(),
+      V_Target_Price: V_Target_Price,
+      V_Price_Decay_Percent: V_Price_Decay_Percent,
       V_Max_Sellable: V_Max_Sellable.toNumber(),
-      V_Time_Scale: V_Time_Scale.toNumber(),
+      V_Time_Scale: V_Time_Scale,
       BURN_PLANET_LEVEL_EFFECT_RADIUS: [
         BURN_PLANET_LEVEL_EFFECT_RADIUS[0].toNumber(),
         BURN_PLANET_LEVEL_EFFECT_RADIUS[1].toNumber(),
@@ -1143,6 +1143,11 @@ export class ContractsAPI extends EventEmitter {
     const decStrId = locationIdToDecStr(planetId);
     const rawPlanet = await this.makeCall(this.contract.planets, [decStrId]);
     return decodePlanet(decStrId, rawPlanet);
+  }
+
+  public async getArtifactPriceVRGDA(): Promise<EthersBN> {
+    const price = (await this.makeCall<EthersBN>(this.contract.getArtifactPriceVRGDA));
+    return price;
   }
 
   public async getArtifactById(artifactId: ArtifactId): Promise<Artifact | undefined> {

@@ -1,4 +1,5 @@
 import { Initializers } from '@dfares/settings';
+import { BigNumber as EthersBN} from 'ethers';
 
 export const SAFE_UPPER_BOUNDS = Number.MAX_SAFE_INTEGER - 1;
 
@@ -368,11 +369,11 @@ export function lobbyConfigReducer(state: LobbyConfigState, action: LobbyAction)
     }
 
     case 'V_Target_Price': {
-      update = ofPositiveInteger(action, state);
+      update = ofEthersBN(action, state);
       break;
     }
     case 'V_Price_Decay_Percent': {
-      update = ofPositiveInteger(action, state);
+      update = ofEthersBN(action, state);
       break;
     }
     case 'V_Max_Sellable': {
@@ -380,7 +381,7 @@ export function lobbyConfigReducer(state: LobbyConfigState, action: LobbyAction)
       break;
     }
     case 'V_Time_Scale': {
-      update = ofPositiveInteger(action, state);
+      update = ofEthersBN(action, state);
       break;
     }
 
@@ -1253,6 +1254,34 @@ export function ofPositiveInteger(
     ...state[type],
     currentValue: value,
     displayValue: value,
+    warning: undefined,
+  };
+}
+
+export function ofEthersBN(
+  { type, value }: Extract<LobbyConfigAction, { value: string | undefined }>,
+  state: LobbyConfigState
+) {
+  if (value === undefined) {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: undefined,
+    };
+  }
+
+  if (typeof value !== 'string') {
+    return {
+      ...state[type],
+      displayValue: value,
+      warning: `Value must be a number`,
+    };
+  }
+
+  return {
+    ...state[type],
+    currentValue: EthersBN.from(value),
+    displayValue: EthersBN.from(value),
     warning: undefined,
   };
 }

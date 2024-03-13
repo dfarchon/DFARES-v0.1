@@ -146,10 +146,10 @@ export function CreateLobby({ match }: RouteComponentProps<{ contract: string }>
             PINK_PLANET_COOLDOWN: config.PINK_PLANET_COOLDOWN,
             ACTIVATE_ARTIFACT_COOLDOWN: config.ACTIVATE_ARTIFACT_COOLDOWN,
             BUY_ARTIFACT_COOLDOWN: config.BUY_ARTIFACT_COOLDOWN,
-            V_Target_Price: config.V_Target_Price,
-            V_Price_Decay_Percent: config.V_Price_Decay_Percent,
+            V_Target_Price: config.V_Target_Price.toString(),
+            V_Price_Decay_Percent: config.V_Price_Decay_Percent.toString(),
             V_Max_Sellable: config.V_Max_Sellable,
-            V_Time_Scale: config.V_Time_Scale,
+            V_Time_Scale: config.V_Time_Scale.toString(),
             BURN_PLANET_LEVEL_EFFECT_RADIUS: config.BURN_PLANET_LEVEL_EFFECT_RADIUS,
             BURN_PLANET_REQUIRE_SILVER_AMOUNTS: config.BURN_PLANET_LEVEL_EFFECT_RADIUS,
 

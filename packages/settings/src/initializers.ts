@@ -88,10 +88,10 @@ export const decodeInitializers = decoders.guard(
     BUY_ARTIFACT_COOLDOWN: decoders.number,
 
     //vrgda configs  big number loses precision!!!!!!!!!!
-    V_Target_Price: decoders.number,
-    V_Price_Decay_Percent: decoders.number,
+    V_Target_Price: decoders.string,
+    V_Price_Decay_Percent: decoders.string,
     V_Max_Sellable: decoders.number,
-    V_Time_Scale: decoders.number,
+    V_Time_Scale: decoders.string,
 
     BURN_PLANET_LEVEL_EFFECT_RADIUS: exactArray10(decoders.number),
     BURN_PLANET_REQUIRE_SILVER_AMOUNTS: exactArray10(decoders.number),

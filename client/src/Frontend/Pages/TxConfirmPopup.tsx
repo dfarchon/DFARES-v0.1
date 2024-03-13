@@ -3,7 +3,7 @@ import { gweiToWei, weiToEth } from '@dfares/network';
 import { address } from '@dfares/serde';
 import { ArtifactType, Setting } from '@dfares/types';
 import { BigNumber } from 'ethers';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import styled, { css, keyframes } from 'styled-components';
 import { ONE_DAY } from '../../Backend/Utils/Utils';
@@ -12,6 +12,7 @@ import { Checkbox, DarkForestCheckbox } from '../Components/Input';
 import { Row } from '../Components/Row';
 import dfstyles from '../Styles/dfstyles';
 import { getSetting, setBooleanSetting } from '../Utils/SettingsHooks';
+// import { useUIManager } from '../Utils/AppHooks';
 
 const StyledTxConfirmPopup = styled.div`
   width: 100%;
@@ -118,8 +119,17 @@ export function TxConfirmPopup({
   actionId: string;
   balance: string;
   method: string;
+  value: string;
 }>) {
-  const { contract, addr, actionId, balance, method } = match.params;
+  // const uiManager = useUIManager();    //MYTODO: NEED BE IN SPECIFIC CONTEXT
+  // const [price, setPrice] = useState(BigNumber.from('0'));
+
+  // useEffect(() => {
+  //   uiManager.getGameManager().getArtifactPriceVRGDA().then(setPrice).catch(console.error);
+  // }, [])
+
+
+  const { contract, addr, actionId, balance, method, value } = match.params;
 
   const contractAddress = address(contract);
   const account = address(addr);
@@ -235,7 +245,7 @@ export function TxConfirmPopup({
     return false;
   }
 
-  function price() {
+  function priceLegacy() {
     return 50;
     // console.warn('this is price');
     // console.log(butArtifactType);
@@ -265,7 +275,7 @@ export function TxConfirmPopup({
   }
 
   const buyArtifactCost: number =
-    method === 'buyArtifact' && buyArtifactRarity && butArtifactType ? price() : 0;
+    method === 'buyArtifact' && buyArtifactRarity && butArtifactType ? parseFloat(value) : 0;
 
   const entryFee = localStorage.getItem(`${account}-entryFee`);
 

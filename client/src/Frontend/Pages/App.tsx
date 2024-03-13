@@ -40,7 +40,7 @@ function App() {
             <Route path='/planet/:locationId' component={SharePlanet} />
             <Route path='/artifact/:artifactId' component={ShareArtifact} />
             <Route
-              path='/wallet/:contract/:addr/:actionId/:balance/:method'
+              path='/wallet/:contract/:addr/:actionId/:balance/:method/:value'
               component={TxConfirmPopup}
             />
             <Route path='/unsubscribe' component={UnsubscribePage} />

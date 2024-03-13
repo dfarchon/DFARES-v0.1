@@ -1,6 +1,6 @@
 import { EthConnection, isPurchase, weiToEth } from '@dfares/network';
 import { EthAddress, Setting, TransactionId, TxIntent } from '@dfares/types';
-import { providers } from 'ethers';
+import { BigNumber, providers } from 'ethers';
 import { getBooleanSetting } from '../Utils/SettingsHooks';
 
 // tx is killed if user doesn't click popup within 20s
@@ -41,7 +41,7 @@ export async function openConfirmationWindowForTransaction({
     const balanceEth = weiToEth(await connection.loadBalance(account));
     const method = intent.methodName;
     const popup = window.open(
-      `/wallet/${contractAddress}/${from}/${id}/${balanceEth}/${method}`,
+      `/wallet/${contractAddress}/${from}/${id}/${balanceEth}/${method}/${weiToEth(BigNumber.from(overrides?.value))}/`,      // bignumber to float losing precision!!!!!!!!!!!!!!!!!!!!!
       'confirmationwindow',
       'width=600,height=500'
     );

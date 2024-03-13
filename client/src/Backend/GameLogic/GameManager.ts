@@ -109,7 +109,7 @@ import {
 } from '@dfares/types';
 import bigInt, { BigInteger } from 'big-integer';
 import delay from 'delay';
-import { BigNumber, Contract, ContractInterface, providers } from 'ethers';
+import { BigNumber , Contract, ContractInterface, providers } from 'ethers';
 import { EventEmitter } from 'events';
 import NotificationManager from '../../Frontend/Game/NotificationManager';
 import { MIN_CHUNK_SIZE } from '../../Frontend/Utils/constants';
@@ -1722,9 +1722,9 @@ class GameManager extends EventEmitter {
   /**
    * Gets the artifact with the given id. Null if no artifact with id exists.
    */
-  getArtifactWithId(artifactId?: ArtifactId): Artifact | undefined {
-    return this.entityStore.getArtifactById(artifactId);
-  }
+    getArtifactWithId(artifactId?: ArtifactId): Artifact | undefined {
+      return this.entityStore.getArtifactById(artifactId);
+    }
 
   /**
    * Gets the artifacts with the given ids, including ones we know exist but haven't been loaded,
@@ -3374,6 +3374,13 @@ class GameManager extends EventEmitter {
     }
   }
 
+  /**
+   * Gets the artifact Price.
+   */
+  public getArtifactPriceVRGDA(): Promise<BigNumber> {
+      return this.contractsAPI.getArtifactPriceVRGDA();
+  }
+
   public async buyArtifact(
     locationId: LocationId,
     rarity: ArtifactRarity,
@@ -3476,7 +3483,7 @@ class GameManager extends EventEmitter {
       const tx = await this.contractsAPI.submitTransaction(txIntent, {
         // MyNotice: when change gasLimit, need change the value in TxConfirmPopup.tsx
         gasLimit: 2000000,
-        value: bigInt(1000000000000000000).multiply(price()).toString(),
+        value: await this.getArtifactPriceVRGDA() //bigInt(1000000000000000000).multiply(price()).toString(),
       });
 
       return tx;

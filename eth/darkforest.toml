@@ -139,10 +139,10 @@ BUY_ARTIFACT_COOLDOWN  = 43200
 #######################
 # VRGDA PRICE CONFIGS #
 #######################
-V_Target_Price = 51_000_000
-V_Price_Decay_Percent = 210_000
+V_Target_Price = "65000000"
+V_Price_Decay_Percent = "310000"
 V_Max_Sellable = 500
-V_Time_Scale = 100_000
+V_Time_Scale = "100000"
 
 BURN_PLANET_LEVEL_EFFECT_RADIUS = [
   2000,
