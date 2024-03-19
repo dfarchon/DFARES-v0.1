@@ -1,6 +1,6 @@
 {
   "name": "@dfares/ui",
-  "version": "6.8.6",
+  "version": "6.8.7",
   "license": "MIT",
   "author": "0xPARC <ivan@0xPARC.org>",
   "engines": {
@@ -21,8 +21,8 @@
     "clean": "del-cli dist node_modules tsconfig.ref.tsbuildinfo"
   },
   "dependencies": {
-    "@dfares/constants": "6.8.6",
-    "@dfares/types": "6.8.6",
+    "@dfares/constants": "6.8.7",
+    "@dfares/types": "6.8.7",
     "@spectrum-web-components/slider": "^0.12.3",
     "@spectrum-web-components/theme": "^0.9.3",
     "color": "^3.0.2",
