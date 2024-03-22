@@ -1,6 +1,6 @@
 {
   "name": "@dfares/renderer",
-  "version": "6.8.6",
+  "version": "6.8.10",
   "license": "MIT",
   "author": "0xPARC <ivan@0xPARC.org>",
   "engines": {
@@ -23,12 +23,12 @@
     "clean": "del-cli dist node_modules tsconfig.ref.tsbuildinfo"
   },
   "dependencies": {
-    "@dfares/constants": "6.8.6",
-    "@dfares/gamelogic": "6.8.6",
-    "@dfares/hashing": "6.8.6",
-    "@dfares/procedural": "6.8.6",
-    "@dfares/serde": "6.8.6",
-    "@dfares/types": "6.8.6",
+    "@dfares/constants": "6.8.10",
+    "@dfares/gamelogic": "6.8.10",
+    "@dfares/hashing": "6.8.10",
+    "@dfares/procedural": "6.8.10",
+    "@dfares/serde": "6.8.10",
+    "@dfares/types": "6.8.10",
     "@types/gl-matrix": "^3.2.0",
     "@types/webgl2": "^0.0.5",
     "auto-bind": "^4.0.0",

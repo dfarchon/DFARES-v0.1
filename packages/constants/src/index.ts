@@ -210,7 +210,7 @@ export const MIN_HAT_TYPE = 1;
 export const MAX_HAT_TYPE = 10;
 
 // export const PICTURE_URL = 'http://localhost:8081';
-export const PICTURE_URL = 'https://dfares.xyz/public';
+export const PICTURE_URL = 'https://round3-test.netlify.app/public';
 // export const PICTURE_URL = 'https://dfares.xyz/public';
 export const MIN_MEME_TYPE = 1;
 export const MAX_MEME_TYPE = 20;

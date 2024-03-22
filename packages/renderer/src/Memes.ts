@@ -8,7 +8,7 @@ export type Meme = {
 };
 
 // const PICTURE_URL = 'https://dfares.xyz/public';
-const PICTURE_URL = 'https://dfares.xyz/public';
+const PICTURE_URL = 'https://round3-test.netlify.app/public';
 const URL = PICTURE_URL;
 
 const doge = {
