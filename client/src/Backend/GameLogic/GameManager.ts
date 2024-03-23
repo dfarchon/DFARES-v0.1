@@ -2633,10 +2633,11 @@ class GameManager extends EventEmitter {
         throw new Error('still on cooldown for claiming');
       }
 
-      const activeArtifact = this.getActiveArtifact(planet);
-      if (!activeArtifact || activeArtifact.artifactType !== ArtifactType.Bomb) {
-        throw new Error('no active bomb on this planet');
-      }
+      //NOTE: update code here into cherry/round3
+      // const activeArtifact = this.getActiveArtifact(planet);
+      // if (!activeArtifact || activeArtifact.artifactType !== ArtifactType.Bomb) {
+      //   throw new Error('no active bomb on this planet');
+      // }
 
       // this is shitty. used for the popup window
       localStorage.setItem(`${this.getAccount()?.toLowerCase()}-claimLocationId`, planetId);
@@ -2735,9 +2736,10 @@ class GameManager extends EventEmitter {
         throw new Error('player silver is not enough');
       }
 
+      //NOTE: update code here into cherry/round3
       const activeArtifact = this.getActiveArtifact(planet);
       if (!activeArtifact || activeArtifact.artifactType !== ArtifactType.Bomb) {
-        throw new Error('no active kardashev on this planet');
+        throw new Error('no active bomb on this planet');
       }
 
       // this is shitty. used for the popup window
