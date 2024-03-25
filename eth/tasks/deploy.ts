@@ -308,11 +308,16 @@ export async function deployAndCut(
   // in order to set state variables in the diamond during deployment or an upgrade
   // More info here: https://eips.ethereum.org/EIPS/eip-2535#diamond-interface
   const initAddress = diamondInit.address;
-  const initFunctionCall = diamondInit.interface.encodeFunctionData('init', [
-    whitelistEnabled,
-    tokenBaseUri,
-    initializers,
-  ]);
+
+  // @ts-ignore – can't infer the correct method overload to use
+  const initFunctionCall = diamondInit.interface.encodeFunctionData(
+    'init',
+    [
+      whitelistEnabled,
+      tokenBaseUri,
+      initializers,
+    ]
+  );
 
   const initTx = await diamondCut.diamondCut(toCut, initAddress, initFunctionCall);
   const initReceipt = await initTx.wait();
