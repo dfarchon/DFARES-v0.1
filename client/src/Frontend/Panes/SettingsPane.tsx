@@ -349,6 +349,17 @@ export function SettingsPane({
         </Section>
 
         <Section>
+          <SectionHeader>Send 100 percent energy</SectionHeader>
+          Whether or not the default setting, should be to send 100 percent energy from planets as the default.
+          <Spacer height={16} />
+          <BooleanSetting
+            uiManager={uiManager}
+            setting={Setting.Send100PercentEnergyAsDefault}
+            settingDescription={'send 100 percent energy as default'}
+          />
+        </Section>
+
+        <Section>
           <SectionHeader>Import and Export Map Data</SectionHeader>
           <Red>WARNING:</Red> Maps from others could be altered and are not guaranteed to be
           correct!

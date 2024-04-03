@@ -1,6 +1,6 @@
 import { formatNumber, isSpaceShip } from '@dfares/gamelogic';
 import { isUnconfirmedMoveTx, isUnconfirmedReleaseTx } from '@dfares/serde';
-import { Artifact, artifactNameFromArtifact, Planet, TooltipName } from '@dfares/types';
+import { Artifact, artifactNameFromArtifact, Planet, Setting, TooltipName } from '@dfares/types';
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { Wrapper } from '../../Backend/Utils/Wrapper';
@@ -19,6 +19,7 @@ import { useEmitterValue } from '../Utils/EmitterHooks';
 import { useOnUp } from '../Utils/KeyEmitters';
 import { TOGGLE_ABANDON, TOGGLE_SEND } from '../Utils/ShortcutConstants';
 import { SelectArtifactRow } from './ArtifactRow';
+import { getBooleanSetting, getSetting } from '../Utils/SettingsHooks';
 
 const StyledSendResources = styled.div`
   display: flex;

@@ -1142,7 +1142,12 @@ class GameUIManager extends EventEmitter {
    * Percent from 0 to 100.
    */
   public getForcesSending(planetId?: LocationId): number {
-    const defaultSending = 50;
+    const config = {
+      contractAddress: this.getContractAddress(),
+      account: this.getAccount(),
+    };
+    const send100Percent = getBooleanSetting(config, Setting.Send100PercentEnergyAsDefault);
+    const defaultSending = send100Percent ? 100 : 50;
     if (!planetId) return defaultSending;
 
     if (this.isAbandoning()) return 100;

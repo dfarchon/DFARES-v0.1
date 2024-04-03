@@ -37,6 +37,7 @@ function onlyInDevelopment(): string {
 const defaultSettings: Record<Setting, string> = {
   [Setting.OptOutMetrics]: onlyInDevelopment(),
   [Setting.AutoApproveNonPurchaseTransactions]: onlyInDevelopment(),
+  [Setting.Send100PercentEnergyAsDefault]: onlyInDevelopment(),
   [Setting.DrawChunkBorders]: 'false',
   [Setting.HighPerformanceRendering]: 'false',
   [Setting.MoveNotifications]: 'true',

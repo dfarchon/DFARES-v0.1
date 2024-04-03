@@ -32,6 +32,7 @@ export const Setting = {
   GasFeeLimit: 'GasFeeLimit' as Setting,
   TerminalVisible: 'TerminalVisible' as Setting,
   HasAcceptedPluginRisk: 'HasAcceptedPluginRisk' as Setting,
+  Send100PercentEnergyAsDefault: 'Send100PercentEnergyAsDefault' as Setting,
 
   FoundPirates: 'FoundPirates' as Setting,
   TutorialCompleted: 'TutorialCompleted' as Setting,
