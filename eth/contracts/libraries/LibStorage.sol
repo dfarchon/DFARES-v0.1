@@ -92,6 +92,7 @@ struct GameStorage {
     address firstBurnLocationOperator;
     address firstHat;
     address firstKardashevOperator;
+    mapping(uint256 => uint256[]) targetPlanetArrivalIds;
 }
 
 // Game config

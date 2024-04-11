@@ -486,6 +486,8 @@ contract DFMoveFacet is WithStorage {
             distance: args.actualDist
         });
 
+        gs().targetPlanetArrivalIds[args.newLoc].push(gs().planetEventsCount);
+
         if (args.movedArtifactId != 0) {
             LibGameUtils._takeArtifactOffPlanet(args.movedArtifactId, args.oldLoc);
             gs().artifactIdToVoyageId[args.movedArtifactId] = gs().planetEventsCount;

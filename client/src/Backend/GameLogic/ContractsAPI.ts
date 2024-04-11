@@ -1391,10 +1391,70 @@ export class ContractsAPI extends EventEmitter {
   ): Promise<Artifact[]> {
     if (playerId === undefined) return [];
 
-    const myArtifactIds = (await this.makeCall(this.contract.getMySpaceshipIds, [playerId])).map(
-      artifactIdFromEthersBN
-    );
+    const myArtifactIds = (
+      await this.makeCall<EthersBN[]>(this.contract.getMySpaceshipIds, [playerId])
+    ).map(artifactIdFromEthersBN);
     return this.bulkGetArtifacts(myArtifactIds, onProgress);
+  }
+
+  public async getNTargetPlanetArrivalIds(planetId: LocationId): Promise<number> {
+    const decStrId = locationIdToDecStr(planetId);
+    const result: number = (
+      await this.makeCall<EthersBN>(this.contract.getNTargetPlanetArrivalIds, [decStrId])
+    ).toNumber();
+    return result;
+  }
+
+  public async getTargetPlanetArrivalIdsRangeWithTimestamp(
+    planetId: LocationId,
+    timestamp: number
+  ): Promise<number[]> {
+    const decStrId = locationIdToDecStr(planetId);
+
+    const result: number[] = (
+      await this.makeCall<EthersBN[]>(this.contract.getTargetPlanetArrivalIdsRangeWithTimestamp, [
+        decStrId,
+        timestamp,
+      ])
+    ).map((value) => value.toNumber());
+    return result;
+  }
+
+  public async getTargetPlanetArrivalIdsWithTimestamp(
+    planetId: LocationId,
+    timestamp: number
+  ): Promise<number[]> {
+    const decStrId = locationIdToDecStr(planetId);
+
+    const result: number[] = (
+      await this.makeCall<EthersBN[]>(this.contract.getTargetPlanetArrivalIdsWithTimestamp, [
+        decStrId,
+        timestamp,
+      ])
+    ).map((value) => value.toNumber());
+
+    return result;
+  }
+
+  public async getTargetPlanetAllArrivals(
+    planetId: LocationId,
+    timestamp: number,
+    onProgress?: (fractionCompleted: number) => void
+  ): Promise<QueuedArrival[]> {
+    const arrivalIds = await this.getTargetPlanetArrivalIdsWithTimestamp(planetId, timestamp);
+
+    const arrivalsUnflattened = await aggregateBulkGetter(
+      arrivalIds.length,
+      200,
+      async (start, end) => {
+        return (
+          await this.makeCall(this.contract.bulkGetVoyagesByIds, [arrivalIds.slice(start, end)])
+        ).map(decodeArrival);
+      },
+      onProgress
+    );
+
+    return _.flatten(arrivalsUnflattened);
   }
 
   public setDiagnosticUpdater(diagnosticUpdater?: DiagnosticUpdater) {

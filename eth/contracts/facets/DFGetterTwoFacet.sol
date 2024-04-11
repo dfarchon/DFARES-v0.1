@@ -11,7 +11,7 @@ import {LibGameUtils} from "../libraries/LibGameUtils.sol";
 import {WithStorage, GameConstants} from "../libraries/LibStorage.sol";
 
 // Type imports
-import {Artifact, ArtifactWithMetadata, RevealedCoords, ClaimedCoords, BurnedCoords, LastClaimedStruct, LastBurnedStruct, LastActivateArtifactStruct, LastBuyArtifactStruct, KardashevCoords, LastKardashevStruct} from "../DFTypes.sol";
+import {Artifact, ArtifactWithMetadata, RevealedCoords, ClaimedCoords, BurnedCoords, LastClaimedStruct, LastBurnedStruct, LastActivateArtifactStruct, LastBuyArtifactStruct, KardashevCoords, LastKardashevStruct, ArrivalData} from "../DFTypes.sol";
 
 contract DFGetterTwoFacet is WithStorage {
     /**
@@ -315,5 +315,84 @@ contract DFGetterTwoFacet is WithStorage {
 
     function getFirstHat() public view returns (address) {
         return gs().firstHat;
+    }
+
+    function getNTargetPlanetArrivalIds(uint256 planetId) public view returns (uint256) {
+        return gs().targetPlanetArrivalIds[planetId].length;
+    }
+
+    // function getTargetPlanetArrivalIds(uint planetId) public view returns(uint256[] memory){
+    //     return gs().targetPlanetArrivalIds[planetId];
+    // }
+
+    function bulkGetTargetPlanetArrivals(
+        uint256 planetId,
+        uint256 startIdx,
+        uint256 endIdx
+    ) public view returns (ArrivalData[] memory ret) {
+        ret = new ArrivalData[](endIdx - startIdx);
+        for (uint256 i = startIdx; i < endIdx; i++) {
+            uint256 id = gs().targetPlanetArrivalIds[planetId][i];
+            ret[i - startIdx] = gs().planetArrivals[id];
+        }
+    }
+
+    // NOTE: for testing
+    function getTargetPlanetArrivalIdsRangeWithTimestamp2(uint256 planetId, uint256 timestamp)
+        public
+        view
+        returns (uint256 l, uint256 r)
+    {
+        uint256 length = gs().targetPlanetArrivalIds[planetId].length;
+
+        for (uint256 i = 0; i < length; i++) {
+            uint256 id = gs().targetPlanetArrivalIds[planetId][i];
+            ArrivalData memory arrival = gs().planetArrivals[id];
+            if (arrival.departureTime > timestamp) {
+                return (i, length);
+            }
+        }
+        return (length, length);
+    }
+
+    function getTargetPlanetArrivalIdsRangeWithTimestamp(uint256 planetId, uint256 timestamp)
+        public
+        view
+        returns (uint256, uint256)
+    {
+        uint256 length = gs().targetPlanetArrivalIds[planetId].length;
+        uint256 left = 0;
+        uint256 right = length;
+        uint256 result = length;
+        while (left < right) {
+            uint256 mid = left + (right - left) / 2;
+            uint256 id = gs().targetPlanetArrivalIds[planetId][mid];
+            ArrivalData memory arrival = gs().planetArrivals[id];
+            if (arrival.departureTime < timestamp) {
+                left = mid + 1;
+            } else {
+                result = mid;
+                right = mid;
+            }
+        }
+
+        return (result, length);
+    }
+
+    function getTargetPlanetArrivalIdsWithTimestamp(uint256 planetId, uint256 timestamp)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        (uint256 left, uint256 length) = getTargetPlanetArrivalIdsRangeWithTimestamp(
+            planetId,
+            timestamp
+        );
+
+        uint256[] memory ret = new uint256[](length - left);
+        for (uint256 i = left; i < length; i++) {
+            ret[i - left] = gs().targetPlanetArrivalIds[planetId][i];
+        }
+        return ret;
     }
 }
