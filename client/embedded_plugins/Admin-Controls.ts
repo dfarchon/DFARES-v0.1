@@ -214,7 +214,7 @@ import {
   useState,
   useCallback,
   //@ts-ignore
-} from 'https://unpkg.com/htm/preact/standalone.module.js';
+} from 'https://esm.sh/htm/preact/standalone';
 
 function random256Id() {
   const alphabet = '0123456789ABCDEF'.split('');

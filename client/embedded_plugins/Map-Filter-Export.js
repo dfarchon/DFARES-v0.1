@@ -26,7 +26,7 @@
 
 import { getPlayerColor } from 'https://cdn.skypack.dev/@dfares/procedural';
 import { PlanetLevel, PlanetType, SpaceType } from 'https://cdn.skypack.dev/@dfares/types';
-import { html, render, useState } from 'https://unpkg.com/htm/preact/standalone.module.js';
+import { html, render, useState } from 'https://esm.sh/htm/preact/standalone';
 
 let showPlanets = [];
 

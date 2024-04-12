@@ -4,7 +4,7 @@ import {
   render,
   useEffect,
   useState,
-} from 'https://unpkg.com/htm/preact/standalone.module.js';
+} from 'https://esm.sh/htm/preact/standalone';
 
 const URL = 'https://rpc.holesky.redstone.xyz';
 const AresLootAddress = '0x09684df18c0eee1e90af54e2cc52c121b35cc3a8';
