@@ -190,6 +190,9 @@ export enum GameManagerEvent {
   Moved = 'Moved',
 }
 
+const sleep =
+  (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 class GameManager extends EventEmitter {
   /**
    * This variable contains the internal state of objects that live in the game world.
@@ -3254,14 +3257,15 @@ class GameManager extends EventEmitter {
       const planet = await this.findRandomHomePlanet(_selectedCoords);
       this.homeLocation = planet.location;
       this.terminal.current?.println('');
-      this.terminal.current?.println(`Found Suitable Home Planet: ${getPlanetName(planet)} `);
       this.terminal.current?.println(
-        `Its coordinates are: (${planet.location.coords.x}, ${planet.location.coords.y})`
+        `Found Suitable Home Planet: ${getPlanetName(planet)}, coordinates: (${planet.location.coords.x}, ${planet.location.coords.y})`,
+        TerminalTextStyle.Pink
       );
-      this.terminal.current?.println('');
+      this.terminal.current?.newline();
 
       await this.persistentChunkStore.addHomeLocation(planet.location);
 
+      let txIntentCompleted = false;
       const getArgs = async () => {
         const args = await this.snarkHelper.getInitArgs(
           planet.location.coords.x,
@@ -3272,9 +3276,11 @@ class GameManager extends EventEmitter {
         this.terminal.current?.println('INIT: calculated SNARK with args:', TerminalTextStyle.Sub);
         this.terminal.current?.println(
           JSON.stringify(hexifyBigIntNestedArray(args.slice(0, 3) as unknown as string[])),
-          TerminalTextStyle.Sub
+          TerminalTextStyle.Text
         );
         this.terminal.current?.newline();
+
+        txIntentCompleted = true;
         return args;
         // return [...args, distFromOriginSquare];
       };
@@ -3308,6 +3314,11 @@ class GameManager extends EventEmitter {
           break;
         } catch (e) {
           if (beforeRetry) {
+            // make sure the tx intent has completed so all the message are printed together.
+            while (!txIntentCompleted) {
+              await sleep(100);
+            }
+
             if (await beforeRetry(e)) {
               continue;
             }
@@ -3378,6 +3389,13 @@ class GameManager extends EventEmitter {
     x: number;
     y: number;
   }): Promise<LocatablePlanet> {
+    this.terminal.current?.newline();
+    this.terminal.current?.println(`Initializing Home Planet Search...`);
+    this.terminal.current?.println('This may take up to 120s, and will consume a lot of CPU.');
+
+    // let other things happen in the bg.
+    await sleep(10);
+
     return new Promise<LocatablePlanet>((resolve, reject) => {
       const initPerlinMin = this.contractConstants.INIT_PERLIN_MIN;
       const initPerlinMax = this.contractConstants.INIT_PERLIN_MAX;
@@ -3455,8 +3473,6 @@ class GameManager extends EventEmitter {
       );
 
       this.terminal.current?.println(``);
-      this.terminal.current?.println(`Initializing Home Planet Search...`);
-      this.terminal.current?.println(``);
       this.terminal.current?.println(`Chunked explorer: start!`);
       this.terminal.current?.println(
         `Each chunk contains ${MIN_CHUNK_SIZE}x${MIN_CHUNK_SIZE} coordinates.`
@@ -3467,10 +3483,13 @@ class GameManager extends EventEmitter {
       this.terminal.current?.print(` ${percentSpawn}%`, TerminalTextStyle.Text);
       this.terminal.current?.print(` chance of spawning a planet.`);
       this.terminal.current?.println('');
+
+      this.terminal.current?.newline();
       this.terminal.current?.println(
         'It may take a long time to wait here. You can choose to wait for a while or refresh the web page.',
         TerminalTextStyle.Pink
       );
+      this.terminal.current?.newline();
 
       this.terminal.current?.println(
         `Hashing first ${MIN_CHUNK_SIZE ** 2 * printProgress} potential home planets...`

@@ -33,13 +33,19 @@ export interface TerminalHandle {
 
 export interface TerminalProps {
   promptCharacter: string;
+  visible?: boolean;
+  useCaretElement?: boolean;
 }
 
 export const Terminal = React.forwardRef<TerminalHandle | undefined, TerminalProps>(TerminalImpl);
 
 let terminalLineKey = 0;
 
-function TerminalImpl({ promptCharacter }: TerminalProps, ref: React.Ref<TerminalHandle>) {
+function TerminalImpl({
+  promptCharacter,
+  visible,
+  useCaretElement
+}: TerminalProps, ref: React.Ref<TerminalHandle>) {
   const containerRef = useRef(document.createElement('div'));
   const inputRef = useRef(document.createElement('textarea'));
   const heightMeasureRef = useRef(document.createElement('textarea'));
@@ -138,7 +144,10 @@ function TerminalImpl({ promptCharacter }: TerminalProps, ref: React.Ref<Termina
 
   const onKeyUp = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     e.stopPropagation();
-    if (e.keyCode === ENTER_KEY_CODE && !e.shiftKey) {
+    if (e.code === 'KeyL' && e.ctrlKey) {
+      e.preventDefault();
+      setFragments([]);
+    } else if (e.keyCode === ENTER_KEY_CODE && !e.shiftKey) {
       e.preventDefault();
       print(promptCharacter + ' ', TerminalTextStyle.Green);
       print(inputText, TerminalTextStyle.Text);
@@ -232,8 +241,16 @@ function TerminalImpl({ promptCharacter }: TerminalProps, ref: React.Ref<Termina
     [onInputEmitter, promptCharacter, newline, print, append, removeLast, setFragments]
   );
 
+  const containerStyle = visible
+    ? undefined
+    : { display: 'none'} as React.CSSProperties;
+
+  const inputRefStyles =  !useCaretElement
+    ? undefined
+    : { 'caret-color': 'transparent'} as React.CSSProperties;
+
   return (
-    <TerminalContainer ref={containerRef}>
+    <TerminalContainer ref={containerRef} style={containerStyle}>
       {fragments}
       <Prompt
         userInputEnabled={userInputEnabled}
@@ -255,9 +272,20 @@ function TerminalImpl({ promptCharacter }: TerminalProps, ref: React.Ref<Termina
                 setInputText(e.target.value);
               }
             }}
+            style={inputRefStyles}
           />
           {/* "ghost" textarea used to measure the scrollHeight of the input */}
           <InputTextArea height={0} ref={heightMeasureRef} onChange={() => {}} value={inputText} />
+
+          {/* "ghost" input to fake caret block element such as in real terminals */}
+          {
+            useCaretElement
+              ? <CaretElement>
+                  <GhostInput>{inputText}</GhostInput>
+                  <CaretBlock data-caret-block>&nbsp;</CaretBlock>
+                </CaretElement>
+              : undefined
+          }
         </TextAreas>
       </Prompt>
     </TerminalContainer>
@@ -274,10 +302,14 @@ const Prompt = styled.span`
 `;
 
 const TextAreas = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   width: 100%;
+  :focus-within span[data-caret-block] {
+    background-color: rgb(211, 211, 211);
+  }
 `;
 
 const InputTextArea = styled.textarea`
@@ -307,4 +339,22 @@ const TerminalContainer = styled.div`
   @media (max-width: ${dfstyles.screenSizeS}) {
     font-size: ${dfstyles.fontSizeXS};
   }
+`;
+
+const CaretElement = styled.div`
+  position: absolute;
+  top: 1px;
+  left: 0;
+`;
+
+const GhostInput = styled.span`
+  display: inline-block;
+  color: transparent;
+`;
+
+const CaretBlock = styled.span`
+  display: inline-block;
+  border: 1px solid rgb(211, 211, 211);
+  width: 8px;
+  height: 18px;
 `;

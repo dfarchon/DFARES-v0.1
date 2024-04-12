@@ -42,6 +42,7 @@ import { TerminalTextStyle } from '../Utils/TerminalTypes';
 import UIEmitter, { UIEmitterEvent } from '../Utils/UIEmitter';
 import { GameWindowLayout } from '../Views/GameWindowLayout';
 import { Terminal, TerminalHandle } from '../Views/Terminal';
+import styled from 'styled-components';
 
 const enum TerminalPromptStep {
   NONE,
@@ -68,6 +69,46 @@ const enum TerminalPromptStep {
 
 const minimapPlugin = new MinimapSpawnPlugin();
 
+type BrowserCompatibleState = 'unknown' | 'unsupported' | 'supported';
+type TerminalStateOptions = {
+  showHelp: boolean;
+  depth?: number;
+};
+
+const BrowserIssue = styled.p`
+  color: red;
+  font-size: 24px;
+  line-height: 1.2em;
+  width: 1000%;
+  padding: 1em 0.5em;
+`
+
+function BrowserIssues({
+  issues,
+  state,
+}: {
+  issues: Incompatibility[]
+  state: BrowserCompatibleState
+}): JSX.Element {
+  if (state !== 'unsupported') {
+    return <></>;
+  }
+
+  if (issues.includes(Incompatibility.MobileOrTablet)) {
+    return <BrowserIssue>ERROR: Mobile or tablet device detected. Please use desktop.</BrowserIssue>;
+  }
+
+  if (issues.includes(Incompatibility.NoIDB)) {
+    return <BrowserIssue>ERROR: IndexedDB not found. Try using a different browser</BrowserIssue>;
+  }
+
+  if (issues.includes(Incompatibility.UnsupportedBrowser)) {
+    return <BrowserIssue>ERROR: Unsupported browser. Try using Brave, Firefox, or Chrome.</BrowserIssue>;
+  }
+
+  return <BrowserIssue>ERROR: Unknonwn error, please refresh browser.</BrowserIssue>;
+}
+
 export function GameLandingPage({ match, location }: RouteComponentProps<{ contract: string }>) {
   const history = useHistory();
   const terminalHandle = useRef<TerminalHandle>();
@@ -80,6 +121,8 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
   const [ethConnection, setEthConnection] = useState<EthConnection | undefined>();
   const [step, setStep] = useState(TerminalPromptStep.NONE);
 
+  const [browserCompatibleState, setBrowserCompatibleState] = useState<BrowserCompatibleState>('unknown');
+  const [browserIssues, setBrowserIssues] = useState<Incompatibility[]>([]);
   const [isMiniMapOn, setMiniMapOn] = useState(false);
   const [spectate, setSpectate] = useState(false);
 
@@ -100,239 +143,99 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       });
   }, []);
 
+  useEffect(() => {
+    unsupportedFeatures().then((issues) => {
+      const supported = issues.length === 0;
+      setBrowserIssues(issues);
+      if (supported) {
+        setBrowserCompatibleState('supported');
+        setStep(TerminalPromptStep.COMPATIBILITY_CHECKS_PASSED);
+      } else {
+        setBrowserCompatibleState('unsupported');
+      }
+    });
+  }, []);
+
   const isProd = process.env.NODE_ENV === 'production';
 
-  const advanceStateFromNone = useCallback(
-    async (terminal: React.MutableRefObject<TerminalHandle | undefined>) => {
-      const issues = await unsupportedFeatures();
-
-      if (issues.includes(Incompatibility.MobileOrTablet)) {
-        terminal.current?.println(
-          'ERROR: Mobile or tablet device detected. Please use desktop.',
-          TerminalTextStyle.Red
-        );
-      }
-
-      if (issues.includes(Incompatibility.NoIDB)) {
-        terminal.current?.println(
-          'ERROR: IndexedDB not found. Try using a different browser.',
-          TerminalTextStyle.Red
-        );
-      }
-
-      if (issues.includes(Incompatibility.UnsupportedBrowser)) {
-        terminal.current?.println(
-          'ERROR: Browser unsupported. Try Brave, Firefox, or Chrome.',
-          TerminalTextStyle.Red
-        );
-      }
-
-      if (issues.length > 0) {
-        terminal.current?.print(
-          `${issues.length.toString()} errors found. `,
-          TerminalTextStyle.Red
-        );
-        terminal.current?.println('Please resolve them and refresh the page.');
-        setStep(TerminalPromptStep.ASKING_WAITLIST_EMAIL);
-      } else {
-        setStep(TerminalPromptStep.COMPATIBILITY_CHECKS_PASSED);
-      }
-    },
-    []
-  );
-
   const advanceStateFromCompatibilityPassed = useCallback(
-    async (terminal: React.MutableRefObject<TerminalHandle | undefined>) => {
-      if (isLobby) {
-        terminal.current?.newline();
-        terminal.current?.printElement(
-          <MythicLabelText text={`You are joining a Dark Forest Ares lobby`} />
-        );
-        terminal.current?.newline();
-        terminal.current?.newline();
-      } else {
-        terminal.current?.newline();
-        terminal.current?.newline();
-        terminal.current?.printElement(
-          <MythicLabelText
-            text={`Welcome To Dark Forest Ares v0.1.3: Kardashev`}
-            style={{ fontFamily: "'Start Press 2P', sans-serif" }}
-          />
-        );
-
-        terminal.current?.newline();
-
-        terminal.current?.newline();
-        terminal.current?.newline();
-        terminal.current?.printLink(
-          'Announcement',
-          () => {
-            window.open(
-              'https://mirror.xyz/dfarchon.eth/VkfBZcWWsdVqwPKctPX6GGzrpf_TY__hRUTQ13Ohd4c'
-            );
-          },
-          TerminalTextStyle.Pink
-        );
-        terminal.current?.newline();
-
-        terminal.current?.printLink(
-          'Pre-registration Form',
-          () => {
-            window.open('https://forms.gle/GB9kb1pHduiNuXi68');
-          },
-          TerminalTextStyle.Pink
-        );
-
-        terminal.current?.newline();
-        terminal.current?.newline();
-
-        // terminal.current?.print('    ');
-        // terminal.current?.print('Version', TerminalTextStyle.Sub);
-        // terminal.current?.print('    ');
-        // terminal.current?.print('Date', TerminalTextStyle.Sub);
-        // terminal.current?.print('              ');
-        // terminal.current?.print('Champion', TerminalTextStyle.Sub);
-        // terminal.current?.newline();
-
-        // terminal.current?.print('    v0.1       ', TerminalTextStyle.Text);
-        // terminal.current?.print('02/05/2020        ', TerminalTextStyle.Text);
-        // terminal.current?.printLink(
-        //   'Dylan Field',
-        //   () => {
-        //     window.open('https://twitter.com/zoink');
-        //   },
-        //   TerminalTextStyle.Text
-        // );
-        // terminal.current?.newline();
-        // terminal.current?.print('    v0.2       ', TerminalTextStyle.Text);
-        // terminal.current?.println('06/06/2020        Nate Foss', TerminalTextStyle.Text);
-        // terminal.current?.print('    v0.3       ', TerminalTextStyle.Text);
-        // terminal.current?.print('08/07/2020        ', TerminalTextStyle.Text);
-        // terminal.current?.printLink(
-        //   '@hideandcleanse',
-        //   () => {
-        //     window.open('https://twitter.com/hideandcleanse');
-        //   },
-        //   TerminalTextStyle.Text
-        // );
-        // terminal.current?.newline();
-        // terminal.current?.print('    v0.4       ', TerminalTextStyle.Text);
-        // terminal.current?.print('10/02/2020        ', TerminalTextStyle.Text);
-        // terminal.current?.printLink(
-        //   'Jacob Rosenthal',
-        //   () => {
-        //     window.open('https://twitter.com/jacobrosenthal');
-        //   },
-        //   TerminalTextStyle.Text
-        // );
-        // terminal.current?.newline();
-        // terminal.current?.print('    v0.5       ', TerminalTextStyle.Text);
-        // terminal.current?.print('12/25/2020        ', TerminalTextStyle.Text);
-        // terminal.current?.printElement(
-        //   <TextPreview
-        //     text={'0xb05d95422bf8d5024f9c340e8f7bd696d67ee3a9'}
-        //     focusedWidth={'100px'}
-        //     unFocusedWidth={'100px'}
-        //   />
-        // );
-        // terminal.current?.println('');
-
-        // terminal.current?.print('    v0.6 r1    ', TerminalTextStyle.Text);
-        // terminal.current?.print('05/22/2021        ', TerminalTextStyle.Text);
-        // terminal.current?.printLink(
-        //   'Ansgar Dietrichs',
-        //   () => {
-        //     window.open('https://twitter.com/adietrichs');
-        //   },
-        //   TerminalTextStyle.Text
-        // );
-        // terminal.current?.newline();
-
-        // terminal.current?.print('    v0.6 r2    ', TerminalTextStyle.Text);
-        // terminal.current?.print('06/28/2021        ', TerminalTextStyle.Text);
-        // terminal.current?.printLink(
-        //   '@orden_gg',
-        //   () => {
-        //     window.open('https://twitter.com/orden_gg');
-        //   },
-        //   TerminalTextStyle.Text
-        // );
-        // terminal.current?.newline();
-
-        // terminal.current?.print('    v0.6 r3    ', TerminalTextStyle.Text);
-        // terminal.current?.print('08/22/2021        ', TerminalTextStyle.Text);
-        // terminal.current?.printLink(
-        //   '@dropswap_gg',
-        //   () => {
-        //     window.open('https://twitter.com/dropswap_gg');
-        //   },
-        //   TerminalTextStyle.Text
-        // );
-        // terminal.current?.newline();
-
-        // terminal.current?.print('    v0.6 r4    ', TerminalTextStyle.Text);
-        // terminal.current?.print('10/01/2021        ', TerminalTextStyle.Text);
-        // terminal.current?.printLink(
-        //   '@orden_gg',
-        //   () => {
-        //     window.open('https://twitter.com/orden_gg');
-        //   },
-        //   TerminalTextStyle.Text
-        // );
-        // terminal.current?.newline();
-
-        // terminal.current?.print('    v0.6 r5    ', TerminalTextStyle.Text);
-        // terminal.current?.print('02/18/2022        ', TerminalTextStyle.Text);
-        // terminal.current?.printLink(
-        //   '@d_fdao',
-        //   () => {
-        //     window.open('https://twitter.com/d_fdao');
-        //   },
-        //   TerminalTextStyle.Text
-        // );
-        // terminal.current?.print(' + ');
-        // terminal.current?.printLink(
-        //   '@orden_gg',
-        //   () => {
-        //     window.open('https://twitter.com/orden_gg');
-        //   },
-        //   TerminalTextStyle.Text
-        // );
-        terminal.current?.println('Login or create an account.');
-        terminal.current?.println('To choose an option, type its symbol and press ENTER.');
-
-        terminal.current?.newline();
-        terminal.current?.newline();
-      }
-
+    async (
+      terminal: React.MutableRefObject<TerminalHandle | undefined>,
+      {
+        showHelp,
+        depth
+      }: TerminalStateOptions = {
+        showHelp: true,
+        depth: 0,
+      },
+    ) => {
       const accounts = getAccounts();
-      terminal.current?.println(`Found ${accounts.length} accounts on this device.`);
-      terminal.current?.println(``);
+      const totalAccounts = accounts.length;
 
-      if (accounts.length > 0) {
-        terminal.current?.print('(a) ', TerminalTextStyle.Sub);
-        terminal.current?.println('Login with existing account.');
+      if (showHelp) {
+        if (isLobby) {
+          terminal.current?.newline();
+          terminal.current?.printElement(
+            <MythicLabelText text={`You are joining a Dark Forest Ares lobby`} />
+          );
+          terminal.current?.newline();
+          terminal.current?.newline();
+        } else {
+          terminal.current?.newline();
+          if (depth === 0) {
+            terminal.current?.newline();
+
+            terminal.current?.newline();
+
+            terminal.current?.newline();
+            terminal.current?.newline();
+            terminal.current?.printLink(
+              'Announcement',
+              () => {
+                window.open(
+                  'https://mirror.xyz/dfarchon.eth/VkfBZcWWsdVqwPKctPX6GGzrpf_TY__hRUTQ13Ohd4c'
+                );
+              },
+              TerminalTextStyle.Pink
+            );
+            terminal.current?.newline();
+
+            terminal.current?.printLink(
+              'Pre-registration Form',
+              () => {
+                window.open('https://forms.gle/GB9kb1pHduiNuXi68');
+              },
+              TerminalTextStyle.Pink
+            );
+            terminal.current?.newline();
+            terminal.current?.newline();
+          }
+          terminal.current?.println('Login or create an account.', TerminalTextStyle.Green);
+          terminal.current?.println('Choose an option, type its symbol and press ENTER.');
+          terminal.current?.newline();
+        }
+        if (totalAccounts > 0) {
+          terminal.current?.println(`Found ${totalAccounts} account${totalAccounts > 1 ? 's' : ''} on this device.`);
+          terminal.current?.println(``);
+          terminal.current?.println('(a) Login with existing account.', TerminalTextStyle.Sub);
+        }
+
+        terminal.current?.println('(n) Generate new burner wallet account.', TerminalTextStyle.Sub);
+        terminal.current?.println(`(i) Import private key.`);
+
+        terminal.current?.println(`(s) Spectate.`, TerminalTextStyle.Sub);
+        terminal.current?.println(``);
+
+        terminal.current?.println(
+          totalAccounts > 0
+            ? 'Select one of the options above [a], [n], [i] or [s], then press [enter].'
+            : 'Select one of the options above [n], [i] or [s], then press [enter].',
+          TerminalTextStyle.Sub
+        );
       }
-
-      terminal.current?.print('(n) ', TerminalTextStyle.Sub);
-      terminal.current?.println(`Generate new burner wallet account.`);
-      terminal.current?.print('(i) ', TerminalTextStyle.Sub);
-      terminal.current?.println(`Import private key.`);
-
-      terminal.current?.print('(s) ', TerminalTextStyle.Sub);
-      terminal.current?.println(`Spectate.`);
-      terminal.current?.println(``);
-      terminal.current?.println(
-        'You can input [a], [n], [i] or [s], then press [enter].',
-        TerminalTextStyle.Pink
-      );
-      terminal.current?.println(`Select an option:`, TerminalTextStyle.Text);
 
       if (selectedAddress !== null) {
-        terminal.current?.println(
-          `Selecting account ${selectedAddress} from url...`,
-          TerminalTextStyle.Green
-        );
+        terminal.current?.println(`Selecting account ${selectedAddress} from url...`, TerminalTextStyle.Green);
 
         // Search accounts backwards in case a player has used a private key more than once.
         // In that case, we want to take the most recently created account.
@@ -346,67 +249,130 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           await ethConnection?.setAccount(account.privateKey);
           setStep(TerminalPromptStep.ACCOUNT_SET);
         } catch (e) {
-          terminal.current?.println(
-            'An unknown error occurred. please try again.',
-            TerminalTextStyle.Red
-          );
+          // unwanted state, client will need to reload browser here
+          terminal.current?.println('An unknown error occurred. please try again.', TerminalTextStyle.Red);
         }
-      } else {
-        const userInput = await terminal.current?.getInput();
-        if (userInput === 'a' && accounts.length > 0) {
+        return;
+      }
+
+      const userInput = (await terminal.current?.getInput())?.trim() ?? '';
+
+      // stop options, go to next step
+      switch (true) {
+        case userInput === 'a' && totalAccounts > 0:
           setStep(TerminalPromptStep.DISPLAY_ACCOUNTS);
-        } else if (userInput === 'n') {
+          return;
+        case userInput === 'n':
           setStep(TerminalPromptStep.GENERATE_ACCOUNT);
-        } else if (userInput === 's') {
+          return;
+        case userInput === 'i':
+          setStep(TerminalPromptStep.IMPORT_ACCOUNT)
+          return;
+        case userInput === 's':
           setStep(TerminalPromptStep.SPECTATING);
-        } else if (userInput === 'i') {
-          setStep(TerminalPromptStep.IMPORT_ACCOUNT);
-        } else {
-          terminal.current?.println('Unrecognized input. Please try again.');
-          await advanceStateFromCompatibilityPassed(terminal);
+          return;
+      }
+
+      // continue waiting for user input
+      switch (true) {
+        case userInput === 'clear': {
+          terminal.current?.clear();
+          showHelp = false;
+          break;
+        }
+        case userInput === 'h' || userInput === 'help': {
+          showHelp = true;
+          break;
+        }
+        default: {
+          terminal.current?.println('Invalid option, please try again', TerminalTextStyle.Red);
+          showHelp = false;
         }
       }
+
+      advanceStateFromCompatibilityPassed(terminal, {
+        showHelp,
+        depth: depth! + 1
+      });
     },
     [isLobby, ethConnection, selectedAddress]
   );
 
   const advanceStateFromDisplayAccounts = useCallback(
-    async (terminal: React.MutableRefObject<TerminalHandle | undefined>) => {
-      terminal.current?.println(``);
-      const accounts = getAccounts();
-      for (let i = 0; i < accounts.length; i += 1) {
-        terminal.current?.print(`(${i + 1}): `, TerminalTextStyle.Sub);
-        terminal.current?.println(`${accounts[i].address}`);
+    async (
+      terminal: React.MutableRefObject<TerminalHandle | undefined>,
+      {
+        showHelp,
+      }: TerminalStateOptions = {
+        showHelp: true,
       }
-      terminal.current?.println(``);
-      terminal.current?.println(
-        'You can input [1], [2], [3] or other number, then press [enter].',
-        TerminalTextStyle.Pink
-      );
-      terminal.current?.println(`Select an account:`, TerminalTextStyle.Text);
+    ) => {
+      const accounts = getAccounts();
+      const totalAccounts = accounts.length;
+      if (showHelp) {
+        terminal.current?.println('Login with existing account.', TerminalTextStyle.Green);
+        terminal.current?.println('select account.', TerminalTextStyle.Sub);
+        terminal.current?.println('');
 
-      const selection = +((await terminal.current?.getInput()) || '');
-      if (isNaN(selection) || selection > accounts.length) {
-        terminal.current?.println('Unrecognized input. Please try again.');
-        await advanceStateFromDisplayAccounts(terminal);
-      } else {
+        for (let i = 0; i < accounts.length; i += 1) {
+          terminal.current?.println(`(${i + 1}): ${accounts[i].address}`, TerminalTextStyle.Sub);
+        }
+        terminal.current?.println('');
+
+        let accountsMessage = 'Select account option [1], then press [enter].';
+        if (totalAccounts > 1) {
+          let args = [...Array(totalAccounts - 1)].map((_, i) => `[${i + 1}]`);
+          accountsMessage = `Select one of the account options ${args.join(', ')} or [${totalAccounts}], then press [enter].`;
+        }
+
+        terminal.current?.println(accountsMessage, TerminalTextStyle.Sub);
+      }
+
+      const userInput = (await terminal.current?.getInput())?.trim() ?? '';
+      const selection = userInput !== ''
+        ? Number(userInput)
+        : NaN;
+
+      // stop option, go to next step
+      if (Number.isInteger(selection) && accounts[selection - 1] !== undefined) {
         const account = accounts[selection - 1];
         try {
           await ethConnection?.setAccount(account.privateKey);
           setStep(TerminalPromptStep.ACCOUNT_SET);
         } catch (e) {
-          terminal.current?.println(
-            'An unknown error occurred. please try again.',
-            TerminalTextStyle.Red
-          );
+          terminal.current?.println('An unknown error occurred. please try again.',TerminalTextStyle.Red);
+          advanceStateFromDisplayAccounts(terminal, {
+            showHelp: false
+          });
+        }
+        return;
+      }
+
+      // continue waiting for user input
+      switch(true) {
+        case userInput === 'clear': {
+          terminal.current?.clear();
+          showHelp = false;
+          break;
+        }
+        case userInput === 'h' || userInput === 'help': {
+          showHelp = true;
+          break;
+        }
+        default: {
+          terminal.current?.println('Invalid option, please try again.', TerminalTextStyle.Red);
+          showHelp = false;
         }
       }
+
+      advanceStateFromDisplayAccounts(terminal, { showHelp });
     },
     [ethConnection]
   );
 
   const advanceStateFromGenerateAccount = useCallback(
-    async (terminal: React.MutableRefObject<TerminalHandle | undefined>) => {
+    async (
+      terminal: React.MutableRefObject<TerminalHandle | undefined>) => {
       const newWallet = Wallet.createRandom();
       const newSKey = newWallet.privateKey;
       const newAddr = address(newWallet.address);
@@ -437,43 +403,75 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         await terminal.current?.getInput();
         setStep(TerminalPromptStep.ACCOUNT_SET);
       } catch (e) {
-        terminal.current?.println(
-          'An unknown error occurred. please try again.',
-          TerminalTextStyle.Red
-        );
+        // unwanted state, user will need to reload browser here
+        terminal.current?.println('An unknown error occurred. please try again.', TerminalTextStyle.Red);
       }
     },
     [ethConnection]
   );
 
   const advanceStateFromImportAccount = useCallback(
-    async (terminal: React.MutableRefObject<TerminalHandle | undefined>) => {
-      terminal.current?.println(
-        'Enter the 0x-prefixed private key of the account you wish to import',
-        TerminalTextStyle.Text
-      );
-      terminal.current?.println(
-        "NOTE: THIS WILL STORE THE PRIVATE KEY IN YOUR BROWSER'S LOCAL STORAGE",
-        TerminalTextStyle.Text
-      );
-      terminal.current?.println(
-        'Local storage is relatively insecure. We recommend only importing accounts with zero-to-no funds.'
-      );
-      const newSKey = (await terminal.current?.getInput()) || '';
-      try {
-        const newAddr = address(utils.computeAddress(newSKey));
-
-        addAccount(newSKey);
-
-        ethConnection?.setAccount(newSKey);
-        terminal.current?.println(`Imported account with address ${newAddr}.`);
-        setStep(TerminalPromptStep.ACCOUNT_SET);
-      } catch (e) {
+    async (
+      terminal: React.MutableRefObject<TerminalHandle | undefined>,
+      {
+        showHelp,
+      }: TerminalStateOptions = {
+        showHelp: true,
+      }
+    ) => {
+      if (showHelp) {
+        terminal.current?.println('Import private key.', TerminalTextStyle.Green);
         terminal.current?.println(
-          'An unknown error occurred. please try again.',
-          TerminalTextStyle.Red
+          'Enter the 0x-prefixed private key of the account you wish to import',
+          TerminalTextStyle.Text
+        );
+        terminal.current?.println(
+          "NOTE: THIS WILL STORE THE PRIVATE KEY IN YOUR BROWSER'S LOCAL STORAGE",
+          TerminalTextStyle.Text
+        );
+        terminal.current?.println(
+          'Local storage is relatively insecure. We recommend only importing accounts with zero-to-no funds.'
         );
       }
+
+      const userInput = (await terminal.current?.getInput())?.trim() ?? '';
+      const validSkeyPattern = /^0x[0-9a-fA-F]{64}$/;
+      if (validSkeyPattern.test(userInput)) {
+        try {
+          const newSKey = userInput;
+          const newAddr = address(utils.computeAddress(newSKey));
+
+          addAccount(newSKey);
+
+          ethConnection?.setAccount(newSKey);
+          terminal.current?.println(`Imported account with address ${newAddr}.`);
+          setStep(TerminalPromptStep.ACCOUNT_SET);
+          return;
+        } catch (e) {
+          terminal.current?.println('An unknown error occurred. please try again.', TerminalTextStyle.Red);
+          advanceStateFromImportAccount(terminal, { showHelp: false });
+          return;
+        }
+      }
+
+      // continue waiting for user input
+      switch(true) {
+        case userInput === 'clear': {
+          terminal.current?.clear();
+          showHelp = false;
+          break;
+        }
+        case userInput === 'h' || userInput === 'help': {
+          showHelp = true;
+          break;
+        }
+        default: {
+          terminal.current?.println('Invalid option, please try again.', TerminalTextStyle.Red);
+          showHelp = false;
+        }
+      }
+
+      advanceStateFromImportAccount(terminal, { showHelp });
     },
     [ethConnection]
   );
@@ -543,7 +541,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         setStep(TerminalPromptStep.ASKING_WAITLIST_EMAIL);
       } else {
         terminal.current?.println('Unrecognized input. Please try again.');
-        await advanceStateFromAskHasWhitelistKey(terminal);
+        advanceStateFromAskHasWhitelistKey(terminal);
       }
     },
     []
@@ -785,6 +783,16 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
 
       terminal.current?.newline();
       terminal.current?.println('Connected to Dark Forest Ares Contract');
+
+      terminal.current?.newline();
+      terminal.current?.println('Welcome to DARK FOREST.');
+      terminal.current?.newline();
+      terminal.current?.println('We collect a minimal set of statistics such as SNARK proving');
+      terminal.current?.println('times and average transaction times across browsers, to help ');
+      terminal.current?.println('us optimize performance and fix bugs. You can opt out of this');
+      terminal.current?.println('in the Settings pane.');
+      terminal.current?.newline();
+
       gameUIManagerRef.current = newGameUIManager;
 
       if (!newGameManager.hasJoinedGame() && spectate === false) {
@@ -799,7 +807,9 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           );
           setStep(TerminalPromptStep.ASK_ADD_ACCOUNT);
           return;
-        } else if (!browserHasData) {
+        }
+
+        if (!browserHasData) {
           terminal.current?.println(
             'ERROR: Home coords not found on this browser.',
             TerminalTextStyle.Red
@@ -807,6 +817,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           setStep(TerminalPromptStep.ASK_ADD_ACCOUNT);
           return;
         }
+
         terminal.current?.println('Validated Local Data...');
         setStep(TerminalPromptStep.ALL_CHECKS_PASS);
       }
@@ -816,24 +827,25 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
 
   const advanceStateFromAskAddAccount = useCallback(
     async (terminal: React.MutableRefObject<TerminalHandle | undefined>) => {
-      console.log('spectate:', spectate);
       if (spectate) {
         setStep(TerminalPromptStep.ADD_ACCOUNT);
+        return;
+      }
+
+
+      terminal.current?.println('Import account home coordinates? (y/n)', TerminalTextStyle.Text);
+      terminal.current?.println(
+        "If you're importing an account, make sure you know what you're doing."
+      );
+      const userInput = await terminal.current?.getInput();
+      if (userInput === 'y') {
+        setStep(TerminalPromptStep.ADD_ACCOUNT);
+      } else if (userInput === 'n') {
+        terminal.current?.println('Try using a different account and reload.');
+        setStep(TerminalPromptStep.TERMINATED);
       } else {
-        terminal.current?.println('Import account home coordinates? (y/n)', TerminalTextStyle.Text);
-        terminal.current?.println(
-          "If you're importing an account, make sure you know what you're doing."
-        );
-        const userInput = await terminal.current?.getInput();
-        if (userInput === 'y') {
-          setStep(TerminalPromptStep.ADD_ACCOUNT);
-        } else if (userInput === 'n') {
-          terminal.current?.println('Try using a different account and reload.');
-          setStep(TerminalPromptStep.TERMINATED);
-        } else {
-          terminal.current?.println('Unrecognized input. Please try again.');
-          await advanceStateFromAskAddAccount(terminal);
-        }
+        terminal.current?.println('Unrecognized input. Please try again.');
+        advanceStateFromAskAddAccount(terminal);
       }
     },
     [spectate]
@@ -887,31 +899,33 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
   );
 
   const advanceStateFromNoHomePlanet = useCallback(
-    async (terminal: React.MutableRefObject<TerminalHandle | undefined>) => {
-      terminal.current?.println('Welcome to DARK FOREST.');
-
+    async (
+      terminal: React.MutableRefObject<TerminalHandle | undefined>,
+      {
+        showHelp,
+        coords,
+      }: TerminalStateOptions & { coords?: { x: number; y: number }} = {
+        showHelp: true,
+        coords: undefined,
+      },
+    ) => {
       const gameUIManager = gameUIManagerRef.current;
       if (!gameUIManager) {
-        terminal.current?.println('ERROR: Game UI Manager not found. Terminating session.');
+        terminal.current?.println('ERROR: Game UI Manager not found. Terminating session.', TerminalTextStyle.Red);
         setStep(TerminalPromptStep.TERMINATED);
         return;
       }
 
       if (Date.now() / 1000 > gameUIManager.getEndTimeSeconds()) {
-        terminal.current?.println('ERROR: This game has ended. Terminating session.');
+        terminal.current?.println('ERROR: This game has ended. Terminating session.', TerminalTextStyle.Red);
         setStep(TerminalPromptStep.TERMINATED);
         return;
       }
 
-      terminal.current?.newline();
+      if (showHelp) {
+        terminal.current?.println('Select home planet.', TerminalTextStyle.Green);
+      }
 
-      terminal.current?.println('We collect a minimal set of statistics such as SNARK proving');
-      terminal.current?.println('times and average transaction times across browsers, to help ');
-      terminal.current?.println('us optimize performance and fix bugs. You can opt out of this');
-      terminal.current?.println('in the Settings pane.');
-      terminal.current?.println('');
-
-      terminal.current?.newline();
 
       // terminal.current?.println('Press ENTER to find a home planet. This may take up to 120s.');
       // terminal.current?.println('This will consume a lot of CPU.');
@@ -920,74 +934,77 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       // ##############
       // Run the Minimap and get the selected coordinates
 
-      setMiniMapOn(true);
+      if (!coords) {
+        setMiniMapOn(true);
+      }
 
-      let selectedCoords = { x: 0, y: 0 };
-      let distFromOriginSquare = 0;
-      const worldRadius = df.getContractConstants().WORLD_RADIUS_MIN;
-      const rimRadius = df.getContractConstants().SPAWN_RIM_AREA;
+      // const worldRadius = df.getContractConstants().WORLD_RADIUS_MIN;
+      // const rimRadius = df.getContractConstants().SPAWN_RIM_AREA;
 
-      let _run = false;
-      do {
-        try {
-          _run = true;
-          terminal.current?.println(
-            'Please left-click on the right map to select your birth area.',
-            TerminalTextStyle.Pink
-          );
+      if (showHelp) {
+        terminal.current?.println(
+          'Please left-click on the right map to select your birth area.',
+          TerminalTextStyle.Pink
+        );
 
-          terminal.current?.println('You can choose "Inner Nebula" only. ', TerminalTextStyle.Blue);
+        terminal.current?.println('You can choose "Inner Nebula" only. ', TerminalTextStyle.Blue);
+        terminal.current?.newline();
+      }
 
-          terminal.current?.println(' ');
-          // terminal.current?.println(`In WorldRadius = ${worldRadius.toFixed(2).toString()}`);
-          // terminal.current?.println(
-          //   `Out of SpawnRimRadius limit = ${Math.sqrt(rimRadius).toFixed(2).toString()}`
-          // );
-          // todo timer 0.1s
+      // Introduce a 100ms (0.1s) delay using a timer
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
-          // Introduce a 100ms (0.1s) delay using a timer
-          await new Promise((resolve) => setTimeout(resolve, 100));
-          //  debugger;
-          selectedCoords = await minimapPlugin.runAndGetUserCoords();
+      const selectedCoords = coords
+        ? coords
+        : await minimapPlugin.runAndGetUserCoords();
+      const distFromOrigin = Math.sqrt(selectedCoords.x ** 2 + selectedCoords.y ** 2);
 
-          distFromOriginSquare = selectedCoords.x ** 2 + selectedCoords.y ** 2;
+      if (selectedCoords.x === 0 || selectedCoords.y === 0) {
+        terminal.current?.println('Invalid selection, please try again.', TerminalTextStyle.Red);
+        terminal.current?.newline();
+        advanceStateFromNoHomePlanet(terminal, { showHelp: false });
+        return;
+      }
 
-          if (selectedCoords.x !== 0 && selectedCoords.y !== 0) {
-            terminal.current?.println(`SELECTION IN SPAWN AREA. WELL DONE !!!`);
-            terminal.current?.println(
-              `Minimap selected coordinates: (${selectedCoords.x}, ${selectedCoords.y})`
-            );
-            terminal.current?.println(
-              `Your selection is ${Math.sqrt(distFromOriginSquare).toFixed(0)} away from center.`
-            );
-          } else {
-            terminal.current?.println(
-              `Minimap selected coordinates: (${selectedCoords.x}, ${selectedCoords.y})`
-            );
-            terminal.current?.println(`WRONG SELECTION REFRESH AND START AGAIN!!!`);
-          }
-
-          _run = false;
-        } catch (error) {
-          console.error('Error in the loop:', error);
-          // Handle the error or break out of the loop as needed
-          _run = false;
-        }
-      } while (
-        distFromOriginSquare < rimRadius &&
-        //distFromOriginSquare > worldRadius &&
-        selectedCoords.x !== 0 &&
-        selectedCoords.y !== 0
+      terminal.current?.println(
+        `Coordinates: (${selectedCoords.x}, ${selectedCoords.y}) were selected, ${distFromOrigin.toFixed(0)} ly away from center.`
       );
 
-      setMiniMapOn(false);
-      terminal.current?.println('To select different spawn area please refresh website page.');
-      terminal.current?.println('This may take up to 120s, and will consume a lot of CPU.');
+      terminal.current?.println('(f) find home planet.');
+      terminal.current?.println('(s) select new coordinates.');
+      terminal.current?.newline();
+      terminal.current?.println('Select one of the options above [f] or [s], then press [enter]');
 
-      terminal.current?.println('Press [enter] to find a home planet. ', TerminalTextStyle.Pink);
+      const userInput = (await terminal.current?.getInput())?.trim() ?? '';
+      if (userInput !== 'f') {
+        coords = selectedCoords;
+        switch(true) {
+          case userInput === 'clear': {
+            terminal.current?.clear();
+            showHelp = false;
+            break;
+          }
+          case userInput === 'h' || userInput === 'help': {
+            showHelp = true;
+            break;
+          }
+          case userInput === 's': {
+            showHelp = true;
+            coords = undefined;
+            break;
+          }
+          default: {
+            showHelp = false;
+            terminal.current?.println('Invalid option, please try again.', TerminalTextStyle.Red);
+            terminal.current?.newline();
+          }
+        }
 
-      await terminal.current?.getInput();
+        advanceStateFromNoHomePlanet(terminal, { showHelp, coords });
+        return;
+      }
 
+      let start = Date.now();
       gameUIManager.getGameManager().on(GameManagerEvent.InitializedPlayer, () => {
         setTimeout(() => {
           terminal.current?.println('Initializing game...');
@@ -995,8 +1012,13 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         });
       });
 
+      console.log('getGameManager', Date.now() - start)
+      start = Date.now();
+
       // requestFaucet
       const playerAddress = ethConnection?.getAddress();
+      console.log('getAddress', Date.now() - start)
+      start = Date.now();
 
       gameUIManager
         .joinGame(
@@ -1004,16 +1026,13 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
             console.error(e);
 
             terminal.current?.println('Error Joining Game:');
-            terminal.current?.println('');
             terminal.current?.println(e.message, TerminalTextStyle.Red);
-            terminal.current?.println('');
+            terminal.current?.newline();
 
             terminal.current?.println(
               "Don't worry :-) you can get more Redstone Holesky ETH this way 😘",
               TerminalTextStyle.Pink
             );
-
-            terminal.current?.newline();
             terminal.current?.print('Step 1: ', TerminalTextStyle.Pink);
             terminal.current?.printLink(
               'Get more Holesky ETH here',
@@ -1022,8 +1041,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
               },
               TerminalTextStyle.Pink
             );
-            terminal.current?.println('');
-            terminal.current?.println('');
+            terminal.current?.newline();
             terminal.current?.print('Step 2: ', TerminalTextStyle.Pink);
             terminal.current?.printLink(
               'Deposit to Redstone',
@@ -1033,16 +1051,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
               TerminalTextStyle.Pink
             );
             terminal.current?.newline();
-
-            //todo
-            //         <div>
-            //   <Link to={'https://holesky-faucet.pk910.de/'}>Get More HoleskyETH</Link>
-            // </div>
-
-            // <div>
-            //   {' '}
-            //   <Link to={'https://redstone.xyz/deposit'}>Deposit To Redstone</Link>
-            // </div>
+            terminal.current?.newline();
 
             console.log(process.env.FAUCET_SERVICE_URL);
             if (e.message === 'ETH balance too low!' && process.env.FAUCET_SERVICE_URL) {
@@ -1072,20 +1081,50 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
   );
 
   const advanceStateFromAllChecksPass = useCallback(
-    async (terminal: React.MutableRefObject<TerminalHandle | undefined>) => {
-      terminal.current?.println('');
-      terminal.current?.println('Press [enter] to begin', TerminalTextStyle.Pink);
-      terminal.current?.println(
-        'Press [s] then [enter] to begin in SAFE MODE - plugins disabled',
-        TerminalTextStyle.Pink
-      );
+    async (
+      terminal: React.MutableRefObject<TerminalHandle | undefined>,
+      showHelp: boolean = true,
+      depth = 0,
+    ) => {
+      if (showHelp) {
+        if (depth === 0) {
+          terminal.current?.println('');
+        }
 
-      const input = await terminal.current?.getInput();
-
-      if (input === 's') {
-        const gameUIManager = gameUIManagerRef.current;
-        gameUIManager?.getGameManager()?.setSafeMode(true);
+        terminal.current?.println('Enter game.', TerminalTextStyle.Green);
+        terminal.current?.println('Press [enter] to begin', TerminalTextStyle.Pink);
+        terminal.current?.println(
+          'Press [s] then [enter] to begin in SAFE MODE - plugins disabled',
+          TerminalTextStyle.Pink
+        );
       }
+
+      const input = (await terminal.current?.getInput())?.trim() ?? '';
+      switch(true) {
+        // set safe mode
+        case input === 's': {
+          const gameUIManager = gameUIManagerRef.current;
+          gameUIManager?.getGameManager()?.setSafeMode(true);
+          break;
+        }
+
+        // recursive advance
+        case input === 'h' || input === 'help': {
+          advanceStateFromAllChecksPass(terminal, true, depth + 1);
+          return;
+        }
+        case input === 'clear': {
+          terminal.current?.clear();
+          advanceStateFromAllChecksPass(terminal, false, depth + 1);
+          return;
+        }
+        case input !== '': {
+          terminal.current?.println('Invalid option, please try again...', TerminalTextStyle.Red);
+          advanceStateFromAllChecksPass(terminal, false, depth + 1);
+          return;
+      }
+    }
+
 
       setStep(TerminalPromptStep.COMPLETE);
       setInitRenderState(InitRenderState.COMPLETE);
@@ -1159,43 +1198,66 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
   );
 
   const advanceState = useCallback(
-    async (terminal: React.MutableRefObject<TerminalHandle | undefined>) => {
-      if (step === TerminalPromptStep.NONE && ethConnection) {
-        await advanceStateFromNone(terminal);
-      } else if (step === TerminalPromptStep.COMPATIBILITY_CHECKS_PASSED) {
-        await advanceStateFromCompatibilityPassed(terminal);
-      } else if (step === TerminalPromptStep.DISPLAY_ACCOUNTS) {
-        await advanceStateFromDisplayAccounts(terminal);
-      } else if (step === TerminalPromptStep.GENERATE_ACCOUNT) {
-        await advanceStateFromGenerateAccount(terminal);
-      } else if (step === TerminalPromptStep.IMPORT_ACCOUNT) {
-        await advanceStateFromImportAccount(terminal);
-      } else if (step === TerminalPromptStep.ACCOUNT_SET) {
-        await advanceStateFromAccountSet(terminal);
-      } else if (step === TerminalPromptStep.ASKING_HAS_WHITELIST_KEY) {
-        await advanceStateFromAskHasWhitelistKey(terminal);
-      } else if (step === TerminalPromptStep.ASKING_WHITELIST_KEY) {
-        await advanceStateFromAskWhitelistKey(terminal);
-      } else if (step === TerminalPromptStep.ASKING_WAITLIST_EMAIL) {
-        await advanceStateFromAskWaitlistEmail(terminal);
-      } else if (step === TerminalPromptStep.ASKING_PLAYER_EMAIL) {
-        await advanceStateFromAskPlayerEmail(terminal);
-      } else if (step === TerminalPromptStep.FETCHING_ETH_DATA) {
-        await advanceStateFromFetchingEthData(terminal);
-      } else if (step === TerminalPromptStep.ASK_ADD_ACCOUNT) {
-        await advanceStateFromAskAddAccount(terminal);
-      } else if (step === TerminalPromptStep.ADD_ACCOUNT) {
-        await advanceStateFromAddAccount(terminal);
-      } else if (step === TerminalPromptStep.NO_HOME_PLANET) {
-        await advanceStateFromNoHomePlanet(terminal);
-      } else if (step === TerminalPromptStep.ALL_CHECKS_PASS) {
-        await advanceStateFromAllChecksPass(terminal);
-      } else if (step === TerminalPromptStep.COMPLETE) {
-        await advanceStateFromComplete(terminal);
-      } else if (step === TerminalPromptStep.ERROR) {
-        await advanceStateFromError();
-      } else if (step === TerminalPromptStep.SPECTATING) {
-        await advanceStateFromSpectating(terminal);
+    (terminal: React.MutableRefObject<TerminalHandle | undefined>) => {
+      if (browserCompatibleState !== 'supported') {
+        return;
+      }
+      if (ethConnection === undefined) {
+        return;
+      }
+
+      switch (true) {
+        case  step === TerminalPromptStep.COMPATIBILITY_CHECKS_PASSED:
+          advanceStateFromCompatibilityPassed(terminal);
+          return;
+        case (step === TerminalPromptStep.DISPLAY_ACCOUNTS):
+          advanceStateFromDisplayAccounts(terminal);
+          return;
+        case step === TerminalPromptStep.GENERATE_ACCOUNT:
+          advanceStateFromGenerateAccount(terminal);
+          return;
+        case step === TerminalPromptStep.IMPORT_ACCOUNT:
+          advanceStateFromImportAccount(terminal);
+          return;
+        case step === TerminalPromptStep.ACCOUNT_SET:
+          advanceStateFromAccountSet(terminal);
+          return;
+        case step === TerminalPromptStep.ASKING_HAS_WHITELIST_KEY:
+          advanceStateFromAskHasWhitelistKey(terminal);
+          return;
+        case step === TerminalPromptStep.ASKING_WHITELIST_KEY:
+          advanceStateFromAskWhitelistKey(terminal);
+          return;
+        case step === TerminalPromptStep.ASKING_WAITLIST_EMAIL:
+          advanceStateFromAskWaitlistEmail(terminal);
+          return;
+        case step === TerminalPromptStep.ASKING_PLAYER_EMAIL:
+          advanceStateFromAskPlayerEmail(terminal);
+          return;
+        case step === TerminalPromptStep.FETCHING_ETH_DATA:
+          advanceStateFromFetchingEthData(terminal);
+          return;
+        case step === TerminalPromptStep.ASK_ADD_ACCOUNT:
+          advanceStateFromAskAddAccount(terminal);
+          return;
+        case step === TerminalPromptStep.ADD_ACCOUNT:
+          advanceStateFromAddAccount(terminal);
+          return;
+        case step === TerminalPromptStep.NO_HOME_PLANET:
+          advanceStateFromNoHomePlanet(terminal);
+          return;
+        case step === TerminalPromptStep.ALL_CHECKS_PASS:
+          advanceStateFromAllChecksPass(terminal);
+          return;
+        case step === TerminalPromptStep.COMPLETE:
+          advanceStateFromComplete(terminal);
+          return;
+        case step === TerminalPromptStep.ERROR:
+          advanceStateFromError();
+          return;
+        case step === TerminalPromptStep.SPECTATING:
+          advanceStateFromSpectating(terminal);
+          return;
       }
     },
     [
@@ -1216,9 +1278,9 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       advanceStateFromGenerateAccount,
       advanceStateFromImportAccount,
       advanceStateFromNoHomePlanet,
-      advanceStateFromNone,
       advanceStateFromSpectating,
       ethConnection,
+      browserCompatibleState,
     ]
   );
 
@@ -1289,7 +1351,20 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         />
       </GameWindowWrapper>
       <TerminalWrapper initRender={initRenderState} terminalEnabled={terminalVisible}>
-        <Terminal ref={terminalHandle} promptCharacter={'$'} />
+        <MythicLabelText
+          text={`Welcome To Dark Forest Ares v0.1.3: Kardashev`}
+          style={{
+            fontFamily: "'Start Press 2P', sans-serif",
+            display: initRenderState !== InitRenderState.COMPLETE ? 'block' : 'none'
+          }}
+        />
+        <BrowserIssues issues={browserIssues} state={browserCompatibleState}/>
+        <Terminal
+          ref={terminalHandle}
+          promptCharacter={'>'}
+          visible={browserCompatibleState === 'supported'}
+          useCaretElement={initRenderState !== InitRenderState.COMPLETE}
+        />
       </TerminalWrapper>
       <div ref={topLevelContainer}></div>
       <div>
