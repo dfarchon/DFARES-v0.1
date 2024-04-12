@@ -38,7 +38,8 @@ export const TOKEN_NAME = 'ETH';
 export const BLOCKCHAIN_NAME = 'Redstone Testnet';
 export const HOST_TEAM_NAME = 'DF Archon';
 
-export const GAS_ADJUST_DELTA = '0.00000005'; //'1'; //'0.00000005';
+// export const GAS_ADJUST_DELTA = '0.00000005'; //'1'; //'0.00000005';
+export const GAS_ADJUST_DELTA = '0.000000001'; //'1'; //'0.00000005';
 
 export const FIXED_DIGIT_NUMBER = 9;
 
@@ -155,9 +156,8 @@ export const MAX_AUTO_GAS_PRICE_GWEI = 15 as const;
  * The URL to the block explorer for the chain being used. Prepended to transaction links, etc
  */
 // Careful, don't add a slash to the end of this.
-// export const BLOCK_EXPLORER_URL = 'https://dashboard.tenderly.co/tx/xdai' as const;
-// export const BLOCK_EXPLORER_URL = 'https://dfares-explorer.altlayer.io/tx' as const;
-export const BLOCK_EXPLORER_URL = 'https://explorer.holesky.redstone.xyz/tx' as const;
+// export const BLOCK_EXPLORER_URL = 'https://explorer.holesky.redstone.xyz/tx' as const;
+export const BLOCK_EXPLORER_URL = 'https://explorer.garnet.qry.live';
 /**
  * The amount of time between gas price refreshes when fetching prices from the oracle.
  */
@@ -211,7 +211,7 @@ export const MAX_HAT_TYPE = 10;
 
 // export const PICTURE_URL = 'http://localhost:8081';
 export const PICTURE_URL = 'https://dfares.xyz/public';
-// export const PICTURE_URL = 'https://dfares.xyz/public';
+// export const PICTURE_URL = 'https://round3-test2.netlify.app/public';
 export const MIN_MEME_TYPE = 1;
 export const MAX_MEME_TYPE = 20;
 
