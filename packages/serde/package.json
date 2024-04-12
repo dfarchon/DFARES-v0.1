@@ -1,6 +1,6 @@
 {
   "name": "@dfares/serde",
-  "version": "6.8.11",
+  "version": "6.8.12",
   "license": "MIT",
   "author": "0xPARC <ivan@0xPARC.org>",
   "engines": {
@@ -21,10 +21,10 @@
     "clean": "del-cli dist node_modules tsconfig.ref.tsbuildinfo"
   },
   "dependencies": {
-    "@dfares/constants": "6.8.11",
-    "@dfares/contracts": "6.8.11",
-    "@dfares/hexgen": "6.8.11",
-    "@dfares/types": "6.8.11",
+    "@dfares/constants": "6.8.12",
+    "@dfares/contracts": "6.8.12",
+    "@dfares/hexgen": "6.8.12",
+    "@dfares/types": "6.8.12",
     "big-integer": "^1.6.48",
     "ethers": "^5.5.1"
   },
