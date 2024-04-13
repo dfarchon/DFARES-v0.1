@@ -52,9 +52,11 @@ import { TopBar } from './TopBar';
 export function GameWindowLayout({
   terminalVisible,
   setTerminalVisible,
+  spectate,
 }: {
   terminalVisible: boolean;
   setTerminalVisible: (visible: boolean) => void;
+  spectate: boolean;
 }) {
   const uiManager = useUIManager();
   const modalManager = uiManager.getModalManager();
@@ -340,7 +342,7 @@ export function GameWindowLayout({
           <NotificationsPane />
           {paneVisible && <CoordsPane />}
           {paneVisible && <ExplorePane />}
-          {bottomHotkeyVisible && !userHotKeysVisibleSetting && userExperimentalVisibleSetting && (
+          {bottomHotkeyVisible && !userHotKeysVisibleSetting && userExperimentalVisibleSetting && !spectate && (
             <>
               <HotkeysArtShipPane selectedPlanetVisible={selectedPlanetVisible} />
               <HotkeysMainLinePane selectedPlanetVisible={selectedPlanetVisible} />
