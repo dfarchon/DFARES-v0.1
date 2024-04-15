@@ -173,8 +173,8 @@ export function TxConfirmPopup({
   // ethConnection.getAutoGasPriceGwei(ethConnection.getAutoGasPrices(), autoGasPriceSetting);
 
   const wrapGasFee = () => {
-    if (method === 'initializePlayer' || method === 'getSpaceShips')
-      return Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('5'))
+    if (method === 'initializePlayer' || method === 'giveSpaceShips')
+      return Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('6'))
         .toFixed(FIXED_DIGIT_NUMBER)
         .toString();
 

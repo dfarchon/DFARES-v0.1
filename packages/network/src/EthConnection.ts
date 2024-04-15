@@ -208,6 +208,7 @@ export class EthConnection {
   ): number {
     // if the gas price setting represents an 'auto' choice, return that choice's current price
     const autoPrice = getGasSettingGwei(gasPriceSetting as AutoGasSetting, gasPrices);
+    console.log('autoPrice', autoPrice);
 
     if (autoPrice !== undefined) {
       return autoPrice;
@@ -216,10 +217,15 @@ export class EthConnection {
     // if the gas price setting is not an auto choice, it is a string representing the user's
     // preferred gas price, measured in gwei.
     const parsedSetting = parseFloat(gasPriceSetting);
+    console.log('parsedSettings');
+
+    console.log(parsedSetting);
 
     if (!isNaN(parsedSetting)) {
       return parsedSetting;
     }
+    console.log('gasPrices.average');
+    console.log(gasPrices.average);
 
     // if the setting has become corrupted, just return an average gas price
     return gasPrices.average;

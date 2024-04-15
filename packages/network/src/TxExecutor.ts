@@ -255,6 +255,11 @@ export class TxExecutor {
     const autoGasPriceSetting = this.gasSettingProvider(tx);
     tx.autoGasPriceSetting = autoGasPriceSetting;
 
+    console.log('tx.autoGasPriceSetting');
+    console.log(tx.autoGasPriceSetting);
+    console.log('overrides');
+    console.log(overrides);
+
     if (tx.overrides?.gasPrice === undefined) {
       tx.overrides = tx.overrides ?? {};
 
@@ -263,7 +268,10 @@ export class TxExecutor {
         autoGasPriceSetting
       );
 
+      console.log('t1', t1);
+
       const t2 = t1.toFixed(FIXED_DIGIT_NUMBER);
+      console.log('t2', t2);
 
       tx.overrides.gasPrice = utils.parseUnits(t2, 'gwei');
     }

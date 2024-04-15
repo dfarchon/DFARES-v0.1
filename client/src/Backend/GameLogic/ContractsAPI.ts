@@ -126,10 +126,11 @@ export class ContractsAPI extends EventEmitter {
    */
   private getGasFeeForTransaction(tx: Transaction): AutoGasSetting | string {
     if (
-      (tx.intent.methodName === 'initializePlayer' || tx.intent.methodName === 'getSpaceShips') &&
+      (tx.intent.methodName === 'initializePlayer' || tx.intent.methodName === 'giveSpaceShips') &&
       tx.intent.contract.address === this.contract.address
     ) {
-      return Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('5'))
+      //NOTE: here to set the transaction fee
+      return Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('6'))
         .toFixed(16)
         .toString();
     }
@@ -172,6 +173,9 @@ export class ContractsAPI extends EventEmitter {
     const gasFeeGwei = overrides?.gasPrice
       ? EthersBN.from(overrides?.gasPrice).toNumber()
       : Number(getSetting(config, Setting.GasFeeGwei));
+
+    console.log(Number(getSetting(config, Setting.GasFeeGwei)));
+    console.log('NOTE: gas fee gwei', gasFeeGwei);
 
     const gasFeeLimit = Number(overrides?.gasLimit || getSetting(config, Setting.GasFeeLimit));
 
@@ -1467,6 +1471,9 @@ export class ContractsAPI extends EventEmitter {
     txIntent: T,
     overrides?: providers.TransactionRequest
   ): Promise<Transaction<T>> {
+    console.log('submitTransaction');
+    console.log(overrides);
+
     const config = {
       contractAddress: this.contractAddress,
       account: this.ethConnection.getAddress(),
