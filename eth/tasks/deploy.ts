@@ -41,8 +41,10 @@ async function deploy(
   // Were only using one account, getSigners()[0], the deployer.
   // Is deployer of all contracts, but ownership is transferred to ADMIN_PUBLIC_ADDRESS if set
   const [deployer] = await hre.ethers.getSigners();
+  const beginBalance = await deployer.getBalance();
+  console.log('begin balance:', beginBalance.toString());
 
-  const requires = hre.ethers.utils.parseEther('2.1');
+  const requires = hre.ethers.utils.parseEther('0.01');
   const balance = await deployer.getBalance();
 
   // Only when deploying to production, give the deployer wallet money,
@@ -76,6 +78,8 @@ async function deploy(
     to: diamond.address,
     value: hre.ethers.utils.parseEther(args.fund.toString()),
   });
+  //NOTE:
+  console.log('------tx:', tx.hash);
   await tx.wait();
 
   console.log(
@@ -86,6 +90,8 @@ async function deploy(
   if (hre.ADMIN_PUBLIC_ADDRESS) {
     const ownership = await hre.ethers.getContractAt('DarkForest', diamond.address);
     const tx = await ownership.transferOwnership(hre.ADMIN_PUBLIC_ADDRESS);
+    //NOTE
+    console.log('tx:', tx.hash);
     await tx.wait();
     console.log(`transfered diamond ownership to ${hre.ADMIN_PUBLIC_ADDRESS}`);
   }
@@ -99,10 +105,16 @@ async function deploy(
   console.log(`Whitelist balance ${whitelistBalance}`);
 
   const value = 0; // drip value in ether
-  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
-  const txReceipt = await contract.changeDrip(hre.ethers.utils.parseEther(value.toString()));
-  await txReceipt.wait();
-  console.log(`changed drip to ${value}`);
+  if (value !== 0) {
+    const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+    const txReceipt = await contract.changeDrip(
+      hre.ethers.utils.parseEther(Number(value).toString())
+    );
+    //NOTE
+    console.log('------tx:', txReceipt.hash);
+    await txReceipt.wait();
+    console.log(`changed drip to ${value}`);
+  }
 
   // TODO: Upstream change to update task name from `hardhat-4byte-uploader`
   if (!isDev) {
@@ -115,6 +127,15 @@ async function deploy(
   }
 
   console.log('Deployed successfully. Godspeed cadet.');
+
+  const endBalance = await deployer.getBalance();
+  console.log('end balance:', endBalance.toString());
+  const cost = beginBalance.sub(endBalance);
+  console.log('cost:', cost.toString(), ' wei');
+  const gweiAmount = hre.ethers.utils.formatUnits(cost, 'gwei');
+  console.log(gweiAmount, 'gwei');
+  const ethAmount = hre.ethers.utils.formatUnits(cost);
+  console.log(ethAmount, 'eth');
 }
 
 async function saveDeploy(
@@ -323,7 +344,10 @@ export async function deployAndCut(
   ]);
 
   const initTx = await diamondCut.diamondCut(toCut, initAddress, initFunctionCall);
+  //NOTE
+  console.log('------tx:', initTx.hash);
   const initReceipt = await initTx.wait();
+
   if (!initReceipt.status) {
     throw Error(`Diamond cut failed: ${initTx.hash}`);
   }
@@ -343,6 +367,7 @@ export async function deployGetterOneFacet(
     },
   });
   const contract = await factory.deploy();
+  console.log('------tx:', contract.address);
   await contract.deployTransaction.wait();
   console.log('DFGetterOneFacet deployed to:', contract.address);
   return contract;
@@ -359,6 +384,7 @@ export async function deployGetterTwoFacet(
     },
   });
   const contract = await factory.deploy();
+  console.log('------tx:', contract.address);
   await contract.deployTransaction.wait();
   console.log('DFGetterTwoFacet deployed to:', contract.address);
   return contract;
@@ -377,6 +403,7 @@ export async function deployAdminFacet(
     },
   });
   const contract = await factory.deploy();
+  console.log('------tx:', contract.address);
   await contract.deployTransaction.wait();
   console.log(`DFAdminFacet deployed to: ${contract.address}`);
   return contract;
@@ -385,6 +412,7 @@ export async function deployAdminFacet(
 export async function deployDebugFacet({}, {}: Libraries, hre: HardhatRuntimeEnvironment) {
   const factory = await hre.ethers.getContractFactory('DFDebugFacet');
   const contract = await factory.deploy();
+  console.log('------tx:', contract.address);
   await contract.deployTransaction.wait();
   console.log(`DFDebugFacet deployed to: ${contract.address}`);
   return contract;
@@ -393,6 +421,7 @@ export async function deployDebugFacet({}, {}: Libraries, hre: HardhatRuntimeEnv
 export async function deployWhitelistFacet({}, {}: Libraries, hre: HardhatRuntimeEnvironment) {
   const factory = await hre.ethers.getContractFactory('DFWhitelistFacet');
   const contract = await factory.deploy();
+  console.log('------tx:', contract.address);
   await contract.deployTransaction.wait();
   console.log(`DFWhitelistFacet deployed to: ${contract.address}`);
   return contract;
@@ -401,6 +430,7 @@ export async function deployWhitelistFacet({}, {}: Libraries, hre: HardhatRuntim
 export async function deployRewardFacet({}, {}: Libraries, hre: HardhatRuntimeEnvironment) {
   const factory = await hre.ethers.getContractFactory('DFRewardFacet');
   const contract = await factory.deploy();
+  console.log('------tx:', contract.address);
   await contract.deployTransaction.wait();
   console.log(`DFRewardFacet deployed to: ${contract.address}`);
   return contract;
@@ -409,6 +439,7 @@ export async function deployRewardFacet({}, {}: Libraries, hre: HardhatRuntimeEn
 export async function deployVerifierFacet({}, {}: Libraries, hre: HardhatRuntimeEnvironment) {
   const factory = await hre.ethers.getContractFactory('DFVerifierFacet');
   const contract = await factory.deploy();
+  console.log('------tx:', contract.address);
   await contract.deployTransaction.wait();
   console.log(`DFVerifierFacet deployed to: ${contract.address}`);
   return contract;
@@ -428,6 +459,7 @@ export async function deployArtifactFacet(
     },
   });
   const contract = await factory.deploy();
+  console.log('------tx:', contract.address);
   await contract.deployTransaction.wait();
   console.log(`DFArtifactFacet deployed to: ${contract.address}`);
   return contract;
@@ -436,6 +468,7 @@ export async function deployArtifactFacet(
 export async function deployLibraries({}, hre: HardhatRuntimeEnvironment) {
   const LibGameUtilsFactory = await hre.ethers.getContractFactory('LibGameUtils');
   const LibGameUtils = await LibGameUtilsFactory.deploy();
+  console.log('------tx:', LibGameUtils.address);
   await LibGameUtils.deployTransaction.wait();
   console.log(`LibGameUtils deployed to: ${LibGameUtils.address}`);
 
@@ -445,6 +478,7 @@ export async function deployLibraries({}, hre: HardhatRuntimeEnvironment) {
     },
   });
   const LibLazyUpdate = await LibLazyUpdateFactory.deploy();
+  console.log('------tx:', LibLazyUpdate.address);
   await LibLazyUpdate.deployTransaction.wait();
   console.log(`LibLazyUpdate deployed to: ${LibLazyUpdate.address}`);
 
@@ -455,6 +489,7 @@ export async function deployLibraries({}, hre: HardhatRuntimeEnvironment) {
   });
 
   const LibArtifactUtils = await LibArtifactUtilsFactory.deploy();
+  console.log('------tx:', LibArtifactUtils.address);
   await LibArtifactUtils.deployTransaction.wait();
   console.log(`LibArtifactUtils deployed to: ${LibArtifactUtils.address}`);
 
@@ -464,6 +499,7 @@ export async function deployLibraries({}, hre: HardhatRuntimeEnvironment) {
   );
 
   const LibArtifactExtendUtils = await LibArtifactExtendUtilsFactory.deploy();
+  console.log('------tx:', LibArtifactExtendUtils.address);
   await LibArtifactExtendUtils.deployTransaction.wait();
   console.log(`LibArtifactExtendUtils deployed to: ${LibArtifactExtendUtils.address}`);
 
@@ -474,6 +510,7 @@ export async function deployLibraries({}, hre: HardhatRuntimeEnvironment) {
     },
   });
   const LibPlanet = await LibPlanetFactory.deploy();
+  console.log('------tx:', LibPlanet.address);
   await LibPlanet.deployTransaction.wait();
   console.log(`LibPlanet deployed to: ${LibPlanet.address}`);
 
@@ -498,6 +535,7 @@ export async function deployCoreFacet(
     },
   });
   const contract = await factory.deploy();
+  console.log('------tx:', contract.address);
   await contract.deployTransaction.wait();
   console.log(`DFCoreFacet deployed to: ${contract.address}`);
   return contract;
@@ -516,6 +554,7 @@ export async function deployMoveFacet(
     },
   });
   const contract = await factory.deploy();
+  console.log('------tx:', contract.address);
   await contract.deployTransaction.wait();
   console.log(`DFMoveFacet deployed to: ${contract.address}`);
   return contract;
@@ -532,6 +571,7 @@ export async function deployCaptureFacet(
     },
   });
   const contract = await factory.deploy();
+  console.log('------tx:', contract.address);
   await contract.deployTransaction.wait();
   console.log(`DFCaptureFacet deployed to: ${contract.address}`);
   return contract;
@@ -550,6 +590,7 @@ export async function deployPinkBombFacet(
     },
   });
   const contract = await factory.deploy();
+  console.log('------tx:', contract.address);
   await contract.deployTransaction.wait();
   console.log(`DFPinkBombFacet deployed to: ${contract.address}`);
   return contract;
@@ -568,6 +609,7 @@ export async function deployKardashevFacet(
     },
   });
   const contract = await factory.deploy();
+  console.log('------tx:', contract.address);
   await contract.deployTransaction.wait();
   console.log(`DFKardashevFacet deployed to: ${contract.address}`);
   return contract;
@@ -586,6 +628,7 @@ export async function deployTradeFacet(
     },
   });
   const contract = await factory.deploy();
+  console.log('------tx:', contract.address);
   await contract.deployTransaction.wait();
   console.log(`DFTradeFacet deployed to: ${contract.address}`);
   return contract;
@@ -594,6 +637,7 @@ export async function deployTradeFacet(
 async function deployDiamondCutFacet({}, libraries: Libraries, hre: HardhatRuntimeEnvironment) {
   const factory = await hre.ethers.getContractFactory('DiamondCutFacet');
   const contract = await factory.deploy();
+  console.log('------tx:', contract.address);
   await contract.deployTransaction.wait();
   console.log(`DiamondCutFacet deployed to: ${contract.address}`);
   return contract;
@@ -612,6 +656,7 @@ async function deployDiamond(
 ) {
   const factory = await hre.ethers.getContractFactory('Diamond');
   const contract = await factory.deploy(ownerAddress, diamondCutAddress);
+  console.log('------tx:', contract.address);
   await contract.deployTransaction.wait();
   console.log(`Diamond deployed to: ${contract.address}`);
   return contract;
@@ -624,6 +669,7 @@ async function deployDiamondInit({}, { LibGameUtils }: Libraries, hre: HardhatRu
     libraries: { LibGameUtils },
   });
   const contract = await factory.deploy();
+  console.log('------tx:', contract.address);
   await contract.deployTransaction.wait();
   console.log(`DFInitialize deployed to: ${contract.address}`);
   return contract;
@@ -632,6 +678,7 @@ async function deployDiamondInit({}, { LibGameUtils }: Libraries, hre: HardhatRu
 async function deployDiamondLoupeFacet({}, {}: Libraries, hre: HardhatRuntimeEnvironment) {
   const factory = await hre.ethers.getContractFactory('DiamondLoupeFacet');
   const contract = await factory.deploy();
+  console.log('------tx:', contract.address);
   await contract.deployTransaction.wait();
   console.log(`DiamondLoupeFacet deployed to: ${contract.address}`);
   return contract;
@@ -640,6 +687,7 @@ async function deployDiamondLoupeFacet({}, {}: Libraries, hre: HardhatRuntimeEnv
 async function deployOwnershipFacet({}, {}: Libraries, hre: HardhatRuntimeEnvironment) {
   const factory = await hre.ethers.getContractFactory('OwnershipFacet');
   const contract = await factory.deploy();
+  console.log('------tx:', contract.address);
   await contract.deployTransaction.wait();
   console.log(`OwnershipFacet deployed to: ${contract.address}`);
   return contract;
@@ -648,6 +696,7 @@ async function deployOwnershipFacet({}, {}: Libraries, hre: HardhatRuntimeEnviro
 export async function deployLobbyFacet({}, {}: Libraries, hre: HardhatRuntimeEnvironment) {
   const factory = await hre.ethers.getContractFactory('DFLobbyFacet');
   const contract = await factory.deploy();
+  console.log('------tx:', contract.address);
   await contract.deployTransaction.wait();
   console.log(`DFLobbyFacet deployed to: ${contract.address}`);
   return contract;

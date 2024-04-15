@@ -174,7 +174,7 @@ export function TxConfirmPopup({
 
   const wrapGasFee = () => {
     if (method === 'initializePlayer' || method === 'getSpaceShips')
-      return Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('40'))
+      return Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('5'))
         .toFixed(FIXED_DIGIT_NUMBER)
         .toString();
 

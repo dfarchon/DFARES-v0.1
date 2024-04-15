@@ -129,7 +129,7 @@ export class ContractsAPI extends EventEmitter {
       (tx.intent.methodName === 'initializePlayer' || tx.intent.methodName === 'getSpaceShips') &&
       tx.intent.contract.address === this.contract.address
     ) {
-      return Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('50'))
+      return Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('5'))
         .toFixed(16)
         .toString();
     }
