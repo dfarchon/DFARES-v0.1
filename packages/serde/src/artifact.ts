@@ -68,7 +68,7 @@ export function artifactIdFromEthersBN(artifactId: EthersBN): ArtifactId {
  * representing an artifact's ID
  */
 export function artifactIdToDecStr(artifactId: ArtifactId): string {
-  let str = artifactId.toLowerCase();
+  let str = artifactId.toString().toLowerCase();
   if (str[0] === '0' && str[1] === 'x') str = str.slice(2);
   return bigInt(str, 16).toString(10);
 }

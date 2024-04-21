@@ -629,7 +629,8 @@ library LibArtifactUtils {
         );
         require(!isSpaceship(artifact.artifactType), "cannot withdraw spaceships");
 
-        require(artifact.artifactType != ArtifactType.Avatar, "cannot withdraw logo artifacts");
+        // NOTE: round 3 can withdraw Avatar artifact
+        // require(artifact.artifactType != ArtifactType.Avatar, "cannot withdraw avatar artifact");
 
         LibGameUtils._takeArtifactOffPlanet(artifactId, locationId);
 

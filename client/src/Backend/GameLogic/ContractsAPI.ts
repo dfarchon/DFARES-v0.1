@@ -922,7 +922,7 @@ export class ContractsAPI extends EventEmitter {
       nPlayers,
       5,
       async (start: number, end: number) =>
-        this.contractCaller.makeCall(this.contract.bulkGetLastClaimTimestamp, [start, end])
+        this.makeCall(this.contract.bulkGetLastClaimTimestamp, [start, end])
     );
     const playerLastClaimTimestampMap = lastClaimTimestamps.reduce(
       (acc, pair): Map<string, EthersBN> => {
@@ -936,7 +936,7 @@ export class ContractsAPI extends EventEmitter {
       nPlayers,
       5,
       async (start: number, end: number) =>
-        this.contractCaller.makeCall(this.contract.bulkGetLastBurnTimestamp, [start, end])
+        this.makeCall(this.contract.bulkGetLastBurnTimestamp, [start, end])
     );
 
     const playerLastBurnTimestampMap = lastBurnTimestamps.reduce(
@@ -951,7 +951,7 @@ export class ContractsAPI extends EventEmitter {
       nPlayers,
       5,
       async (start: number, end: number) =>
-        this.contractCaller.makeCall(this.contract.bulkGetLastKardashevTimestamp, [start, end])
+        this.makeCall(this.contract.bulkGetLastKardashevTimestamp, [start, end])
     );
 
     const playerLastKardashevTimestampMap = lastKardashevTimestamps.reduce(
@@ -966,10 +966,7 @@ export class ContractsAPI extends EventEmitter {
       nPlayers,
       5,
       async (start: number, end: number) =>
-        this.contractCaller.makeCall(this.contract.bulkGetLastActivateArtifactTimestamp, [
-          start,
-          end,
-        ])
+        this.makeCall(this.contract.bulkGetLastActivateArtifactTimestamp, [start, end])
     );
     const playerLastActivateArtifactTimestampsMap = lastActivateArtifactTimestamps.reduce(
       (acc, pair): Map<string, EthersBN> => {
@@ -983,7 +980,7 @@ export class ContractsAPI extends EventEmitter {
       nPlayers,
       5,
       async (start: number, end: number) =>
-        this.contractCaller.makeCall(this.contract.bulkGetLastBuyArtifactTimestamp, [start, end])
+        this.makeCall(this.contract.bulkGetLastBuyArtifactTimestamp, [start, end])
     );
     const playerLastBuyArtifactTimestampsMap = lastBuyArtifactTimestamps.reduce(
       (acc, pair): Map<string, EthersBN> => {
