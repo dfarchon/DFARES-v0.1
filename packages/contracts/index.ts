@@ -34,20 +34,20 @@
 /**
  * The name of the network where these contracts are deployed.
  */
-export const NETWORK = 'localhost';
+export const NETWORK = 'redstoneTestnet';
 /**
  * The id of the network where these contracts are deployed.
  */
-export const NETWORK_ID = 31337;
+export const NETWORK_ID = 17069;
 /**
  * The block in which the DarkForest contract was initialized.
  */
-export const START_BLOCK = 0;
+export const START_BLOCK = 771919;
 /**
  * The address for the DarkForest contract.
  */
-export const CONTRACT_ADDRESS = '0x500cf53555c09948f4345594F9523E7B444cD67E';
+export const CONTRACT_ADDRESS = '0x8a223091b5c75228622b748E69d030076d60dD02';
 /**
  * The address for the initalizer contract. Useful for lobbies.
  */
-export const INIT_ADDRESS = '0xc2EEd1AdAAe36B640f64c06FeF8Cd32F7473afAA';
+export const INIT_ADDRESS = '0x4562E275a6A0e8f58f22ca47cc26F2a0CdBdd1a7';
