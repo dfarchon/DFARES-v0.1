@@ -184,24 +184,24 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           if (depth === 0) {
             terminal.current?.newline();
 
-            terminal.current?.printLink(
-              'Announcement',
-              () => {
-                window.open(
-                  'https://mirror.xyz/dfarchon.eth/VkfBZcWWsdVqwPKctPX6GGzrpf_TY__hRUTQ13Ohd4c'
-                );
-              },
-              TerminalTextStyle.Pink
-            );
-            terminal.current?.newline();
+            // terminal.current?.printLink(
+            //   'Announcement',
+            //   () => {
+            //     window.open(
+            //       'https://mirror.xyz/dfarchon.eth/VkfBZcWWsdVqwPKctPX6GGzrpf_TY__hRUTQ13Ohd4c'
+            //     );
+            //   },
+            //   TerminalTextStyle.Pink
+            // );
+            // terminal.current?.newline();
 
-            terminal.current?.printLink(
-              'Pre-registration Form',
-              () => {
-                window.open('https://forms.gle/GB9kb1pHduiNuXi68');
-              },
-              TerminalTextStyle.Pink
-            );
+            // terminal.current?.printLink(
+            //   'Pre-registration Form',
+            //   () => {
+            //     window.open('https://forms.gle/GB9kb1pHduiNuXi68');
+            //   },
+            //   TerminalTextStyle.Pink
+            // );
             terminal.current?.newline();
             terminal.current?.newline();
           }
