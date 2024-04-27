@@ -129,6 +129,12 @@ const Xiaoyifu = {
   bottomLayer: [],
 };
 
+const Yuppie = {
+  legacy: false,
+  topLayer: [URL + '/img/avatar/yuppie.png'],
+  bottomLayer: [],
+};
+
 export const avatarFromType = (type: AvatarType): Avatar => avatars[type];
 
 export const avatars: Record<AvatarType, Avatar> = {
@@ -150,4 +156,5 @@ export const avatars: Record<AvatarType, Avatar> = {
   [AvatarType.Skoon]: Skoon,
   [AvatarType.MUDAI]: MUDAI,
   [AvatarType.Xiaoyifu]: Xiaoyifu,
+  [AvatarType.Yuppie]: Yuppie,
 };

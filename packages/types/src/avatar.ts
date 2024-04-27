@@ -25,6 +25,7 @@ export const AvatarType = {
   Skoon: 16 as AvatarType,
   MUDAI: 17 as AvatarType,
   Xiaoyifu: 18 as AvatarType,
+  Yuppie: 19 as AvatarType,
   // Don't forget to update MIN_AVATAR_TYPE and/or MAX_AVATAR_TYPE in the `constants` package
 };
 
@@ -51,4 +52,5 @@ export const AvatarTypeNames = {
   [AvatarType.Skoon]: 'Skoon',
   [AvatarType.MUDAI]: ' MUD AI',
   [AvatarType.Xiaoyifu]: 'Xiaoyifu',
+  [AvatarType.Yuppie]: 'yuppie',
 } as const;
