@@ -12,21 +12,33 @@ type Square = Readonly<{
   size: number;
 }>;
 
-export type SpawnArea = {
-  readonly key: string;
+export type SpawnArea = Readonly<{
+  key: string;
   // local point where top left of the map container is (0, 0), and the point is located at the center of drawn square
-  readonly point: Point;
+  point: Point;
   // normalized point where the center of the square container is (0, 0), and point is located at (+-x, +-y).
-  readonly normdPoint: Point;
+  normdPoint: Point;
   // scaled up normalized point onto the DF world map
-  readonly worldPoint: Point;
+  worldPoint: Point;
   // the square drawn for the spawn point
-  readonly square: Square;
+  square: Square;
   // the space type for this maybe spawn point
-  readonly spaceType: SpaceType;
+  spaceType: SpaceType;
   // allows us to mark the spawn area as invalid, which we will do if spawn takes more than 2min for the given area
-  invalid?: true;
+  state: 'valid' | 'in-pink-zone' | 'in-blue-zone' | 'invalid';
+}>;
+
+type WritableSpawnAreaState = {
+  state: SpawnArea['state'];
 };
+
+type Zone = {
+  worldPoint: Point;
+  worldRadius: number;
+  point: Point;
+  radius: number;
+};
+
 export interface MiniMapHandle {
   getSelectedSpawnArea(): SpawnArea | undefined;
   setSelectable(value: boolean): void;
@@ -46,7 +58,7 @@ const Colors = {
   DeepSpaceColor: '#505050' as const, // '#000000';
   CorruptedSpaceColor: '#505050' as const, // '#460046';
   SelectedSpawnArea: '#00FF00' as const,
-  Pink: 'rgb(255, 180, 193, 1.0)',
+  Pink: 'rgb(255, 180, 193, 1.0)' as const,
 };
 
 const StyledMiniMap = styled.div`
@@ -63,12 +75,18 @@ function point_on_circle(point: Point, radius: number): boolean {
   return Math.sqrt(point.x ** 2 + point.y ** 2) < radius;
 }
 
-function make_mouse_points(areas: SpawnArea[]): Record<string, SpawnArea> {
+function point_on_circle2(from: Point, to: Point, radius: number): boolean {
+  return Math.sqrt((from.x - to.x) ** 2 + (from.y - to.y) ** 2) < radius;
+}
+
+function makeMousePoints(areas: SpawnArea[]): Record<string, SpawnArea> {
   const gapWooble = 3;
   const table: Record<string, SpawnArea> = {};
   for (const area of areas) {
-    // skip areas marked as invalid
-    if (area.invalid) {
+    if (area.spaceType !== SpaceType.NEBULA) {
+      continue;
+    }
+    if (area.state !== 'valid') {
       continue;
     }
 
@@ -93,82 +111,178 @@ function make_mouse_points(areas: SpawnArea[]): Record<string, SpawnArea> {
   return table;
 }
 
+function makeSquares(): Square[] {
+  const squares = [];
+  for (let x = -(stepSize / Math.PI); x < canvasSize + stepSize; x += stepSize) {
+    for (let y = -(stepSize / Math.PI); y < canvasSize + stepSize; y += stepSize) {
+      const square: Square = {
+        origin: { x, y },
+        size: dotSize,
+      };
+      squares.push(square);
+    }
+  }
+
+  return squares;
+}
+
+function getSpawnAreas({
+  squares,
+  radius,
+  rimRadius,
+  scaleFactor,
+} : {
+  squares: Square[],
+  radius: number;
+  rimRadius: number;
+  scaleFactor: number;
+}): SpawnArea[] {
+  const areas: SpawnArea[] = [];
+  for (const square of squares) {
+    // create point at the center of the square
+    const point: Point = {
+      x: square.origin.x - square.size / 2,
+      y: square.origin.y - square.size / 2,
+    };
+
+    // normalize point onto a plane with with 0,0 as center and point can have coords (+-x, +-y)
+    const normdPoint: Point = {
+      x: point.x - radius,
+      y: radius - point.y,
+    };
+
+    // skip points outside circle
+    if (!point_on_circle(normdPoint, radius)) {
+      continue;
+    }
+
+    // skip points inside rim
+    if (point_on_circle(normdPoint, rimRadius)) {
+      continue;
+    }
+
+    // map normalized point onto DF world map by scaling it up
+    const worldPoint: Point = {
+      x: normdPoint.x * scaleFactor,
+      y: normdPoint.y * scaleFactor,
+    };
+
+    const distFromOrigin = Math.floor(Math.sqrt(worldPoint.x ** 2 + worldPoint.y ** 2));
+    const spaceType = df.spaceTypeFromPerlin(
+      df.spaceTypePerlin(worldPoint, false),
+      distFromOrigin
+    );
+
+    areas.push({
+      key: `(${point.x},${point.y})`,
+      point,
+      normdPoint,
+      worldPoint,
+      square,
+      spaceType,
+      state: 'valid',
+    });
+  }
+
+  return areas;
+}
+
+function mapZone(
+  zone: { coords: Point, radius: number},
+  options: { scaleFactor: number; radius: number; }
+): Zone {
+  return {
+    worldPoint: zone.coords,
+    worldRadius: zone.radius,
+    point: {
+      x: (zone.coords.x / options.scaleFactor) + options.radius,
+      y: (zone.coords.y / options.scaleFactor) * -1 + options.radius,
+    },
+    radius: zone.radius / options.scaleFactor,
+  };
+}
+
+function getBlueZones(options: {
+  scaleFactor: number;
+  radius: number;
+}): Zone[] {
+  return Array.from(df.getBlueZones()).map((zone) => mapZone(zone, options));
+}
+
+function getPinkZones(options: {
+  scaleFactor: number;
+  radius: number;
+}): Zone[] {
+  return Array.from(df.getPinkZones()).map((zone) => mapZone(zone, options));
+}
+
+function updateSpawnAreas({
+  spawnAreas,
+  blueZones,
+  pinkZones,
+}: {
+  spawnAreas: SpawnArea[];
+  blueZones: Zone[];
+  pinkZones: Zone[];
+}) {
+  for (const area of spawnAreas) {
+    // skip areas that are no longer valid
+    if (area.state !== 'valid') {
+      continue;
+    }
+
+    const inBlueZone = Boolean(blueZones.find((zone) => point_on_circle2(area.worldPoint, zone.worldPoint, zone.worldRadius)));
+    if (inBlueZone) {
+      (area as WritableSpawnAreaState).state = 'in-blue-zone';
+      continue;
+    }
+
+    const inPinkZone = Boolean(pinkZones.find((zone) => point_on_circle2(area.worldPoint, zone.worldPoint, zone.worldRadius)));
+    if (inPinkZone) {
+      (area as WritableSpawnAreaState).state = 'in-pink-zone';
+      continue;
+    }
+  }
+}
+
 function draw(
   ctx: CanvasRenderingContext2D,
   {
+    squares,
+    spawnAreas,
     rimRadius,
-    radius,
-    scaleFactor,
+    selectedSpawnArea,
+    blueZones,
+    pinkZones,
   }: {
+    squares: Square[];
+    spawnAreas: SpawnArea[];
     rimRadius: number;
-    radius: number;
-    scaleFactor: number;
+    selectedSpawnArea?: SpawnArea;
+    blueZones: Zone[];
+    pinkZones: Zone[];
   }
-): SpawnArea[] {
+) {
+  // clear background
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
   // Draw mini-map background square
   ctx.fillStyle = '#151515';
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
   // draw square pattern background by walking the square containing our circle
-  const areas: SpawnArea[] = [];
-  for (let x = -(stepSize / Math.PI); x < canvasSize + stepSize; x += stepSize) {
-    for (let y = -(stepSize / Math.PI); y < canvasSize + stepSize; y += stepSize) {
-      // create background square and draw it
-      const square: Square = {
-        origin: { x, y },
-        size: dotSize,
-      };
-      ctx.fillStyle = '#505050';
-      ctx.fillRect(square.origin.x, square.origin.y, square.size, square.size);
-
-      // create point at the center of the square
-      const point: Point = {
-        x: x - square.size / 2,
-        y: y - square.size / 2,
-      };
-
-      // normalize point onto a plane with with 0,0 as center and point can have coords (+-x, +-y)
-      const normdPoint: Point = {
-        x: point.x - radius,
-        y: radius - point.y,
-      };
-
-      // skip points outside circle
-      if (!point_on_circle(normdPoint, radius)) {
-        continue;
-      }
-
-      // skip points inside rim
-      if (point_on_circle(normdPoint, rimRadius)) {
-        continue;
-      }
-
-      // map normalized point onto DF world map by scaling it up
-      const worldPoint: Point = {
-        x: normdPoint.x * scaleFactor,
-        y: normdPoint.y * scaleFactor,
-      };
-
-      const distFromOrigin = Math.floor(Math.sqrt(worldPoint.x ** 2 + worldPoint.y ** 2));
-      const spaceType = df.spaceTypeFromPerlin(
-        df.spaceTypePerlin(worldPoint, false),
-        distFromOrigin
-      );
-
-      areas.push({
-        key: `(${point.x},${point.y})`,
-        point,
-        normdPoint,
-        worldPoint,
-        square,
-        spaceType,
-      });
-    }
+  for (const square of squares) {
+    ctx.fillStyle = '#505050';
+    ctx.fillRect(square.origin.x, square.origin.y, square.size, square.size);
   }
 
   // draw all the spawn areas that are of the spawnable space type NEBULA
-  for (const { square, spaceType } of areas) {
+  for (const { square, spaceType, state } of spawnAreas) {
     if (spaceType !== SpaceType.NEBULA) {
+      continue;
+    }
+
+    if (state !== 'valid') {
       continue;
     }
 
@@ -176,50 +290,37 @@ function draw(
     ctx.fillRect(square.origin.x, square.origin.y, square.size, square.size);
   }
 
-  // TODO: Handle pink and blue zones
-  // // draw pink circles
-  // for (const { coords, radius: pinkZoneRadius } of Array.from(df.getPinkZones())) {
-  //   const normalizeX = normalize(coords.x);
-  //   const normalizeY = normalize(coords.y * -1);
-  //   // let normalizePinkCircleRadius = radius / radiusNormalized
-  //   const normalizePinkCircleRadius = (pinkZoneRadius * radiusNormalized) / radius;
-
-  //   ctx.beginPath();
-  //   ctx.arc(normalizeX, normalizeY, normalizePinkCircleRadius, 0, 2 * Math.PI);
-  //   // pink color
-  //   ctx.strokeStyle = 'rgb(255,180,193,1)';
-  //   ctx.lineWidth = 1;
-  //   ctx.fill();
-  //   ctx.stroke();
-  // }
-
-  // // draw blue circles
-  // for (const { coords, radius: blueZoneRadius } of Array.from(df.getBlueZones())) {
-  //   const normalizeX = normalize(coords.x);
-  //   const normalizeY = normalize(coords.y * -1);
-  //   const normalizeBlueCircleRadius = (blueZoneRadius * radiusNormalized) / radius;
-  //   ctx.beginPath();
-  //   ctx.arc(normalizeX, normalizeY, normalizeBlueCircleRadius, 0, 2 * Math.PI);
-  //   // blue circle
-  //   ctx.strokeStyle = 'rgb(0, 173, 225, 1)';
-  //   ctx.fillStyle = 'rgb(0, 173, 225, 0.6)';
-
-  //   ctx.lineWidth = 1;
-  //   ctx.fill();
-  //   ctx.stroke();
-  // }
-
-  return areas;
-}
-
-function drawRimCircle(
-  ctx: CanvasRenderingContext2D,
-  {
-    rimRadius,
-  }: {
-    rimRadius: number;
+  // draw pink circles
+  for (const zone of pinkZones) {
+    ctx.beginPath();
+    ctx.arc(zone.point.x, zone.point.y, zone.radius * 0.9, 0, 2 * Math.PI);
+    // pink color
+    ctx.strokeStyle = 'rgb(255,180,193,1)';
+    ctx.fillStyle = 'rgb(255,180,193, 0.85)';
+    ctx.lineWidth = 1;
+    ctx.fill();
+    ctx.stroke();
   }
-) {
+
+  // draw blue circles
+  for (const zone of blueZones) {
+    ctx.beginPath();
+    ctx.arc(zone.point.x, zone.point.y, zone.radius * 0.9, 0, 2 * Math.PI);
+    // blue circle
+    ctx.strokeStyle = 'rgb(0, 173, 225, 1)';
+    ctx.fillStyle = 'rgb(0, 173, 225, 0.85)';
+    ctx.lineWidth = 1;
+    ctx.fill();
+    ctx.stroke();
+  }
+
+  if (selectedSpawnArea) {
+    const { origin, size } = selectedSpawnArea.square;
+    ctx.fillStyle = Colors.SelectedSpawnArea;
+    ctx.fillRect(origin.x, origin.y, size, size);
+  }
+
+  // draw rim radius
   const offset = canvasRadius - rimRadius + canvasBorderSize;
   ctx.beginPath();
   ctx.arc(rimRadius + offset, rimRadius + offset, rimRadius, 0, 2 * Math.PI);
@@ -250,51 +351,10 @@ type InfoOptions = {
   point?: Point;
 };
 
-function Info({
-  type,
-  point,
-} : InfoOptions) {
-  switch(type) {
-    case 'no-drop': {
-      return (
-        <StyledCoords style={{
-            color: Colors.Pink,
-        }}>
-          Can't spawn here 😅
-        </StyledCoords>
-      )
-    }
-    case 'coords': {
-      return (
-        <StyledCoords style={{
-            color: Colors.InnerNebulaColor,
-        }}>
-          ({point!.x.toFixed(0)}, {point!.y.toFixed(0)})
-        </StyledCoords>
-      )
-    }
-
-    case 'selected': {
-      return (
-        <StyledCoords style={{
-            color: Colors.SelectedSpawnArea,
-        }}>
-          Selected spawn point: ({point!.x.toFixed(0)}, {point!.y.toFixed(0)}) 🚀
-        </StyledCoords>
-      )
-    }
-    default: {
-      return (<StyledCoords></StyledCoords>);
-    }
-  }
-}
-
 function MiniMapImpl({}, ref: React.Ref<MiniMapHandle>) {
   const canvasRef = useRef(null);
-  const [infoOptions, setInfoOptions] = useState<InfoOptions>({
-    type: 'none',
-  });
-  const [selectable, setSelectable] = useState<boolean>(true);
+  const infoOptionsRef = useRef(null);
+  const overlayRef = useRef(null);
 
   const MAX_LEVEL_DIST = df.getContractConstants().MAX_LEVEL_DIST[1];
 
@@ -302,67 +362,129 @@ function MiniMapImpl({}, ref: React.Ref<MiniMapHandle>) {
   const rimRadius = canvasRadius * (MAX_LEVEL_DIST / worldRadius);
   const radius = canvasRadius;
   const scaleFactor = worldRadius / radius;
+
+  const squares = makeSquares();
+  const spawnAreas = getSpawnAreas({
+    squares,
+    radius,
+    rimRadius,
+    scaleFactor
+  });
+  const blueZones = getBlueZones({
+    scaleFactor,
+    radius,
+  });
+  const pinkZones = getPinkZones({
+    scaleFactor,
+    radius,
+  });
+  updateSpawnAreas({
+    spawnAreas,
+    blueZones,
+    pinkZones,
+  });
+
+  let mousePoints = makeMousePoints(spawnAreas);
+  let selectable = true;
   let selectedSpawnArea: SpawnArea | undefined = undefined;
 
+  // render loop
   useEffect(() => {
     const canvas = canvasRef.current! as HTMLCanvasElement;
     const ctx = canvas.getContext('2d')! as CanvasRenderingContext2D;
-    const spawnAreas: SpawnArea[] = draw(ctx, {
-      rimRadius,
-      radius,
-      scaleFactor,
-    }).filter((area) => area.spaceType === SpaceType.NEBULA);
-    drawRimCircle(ctx, {
-      rimRadius,
-    });
 
-    // populate valid mouse points
-    let mousePoints: Record<string, SpawnArea> = make_mouse_points(spawnAreas);
+    let animationFrameId: number;
+    const render = () => {
+      draw(ctx, {
+        squares,
+        spawnAreas,
+        rimRadius,
+        selectedSpawnArea,
+        blueZones,
+        pinkZones,
+      });
+
+      animationFrameId = window.requestAnimationFrame(render);
+    };
+    render();
+
+    return () => {
+      window.cancelAnimationFrame(animationFrameId);
+    }
+  }, []);
+
+  // handle canvas mouse events
+  useEffect(() => {
+    const canvas = canvasRef.current! as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d')! as CanvasRenderingContext2D;
+
+    const updateInfoOptions = ({ type, point }: InfoOptions) => {
+      const element = infoOptionsRef.current! as HTMLDivElement;
+      switch(type) {
+        case 'no-drop': {
+          element.style.color = Colors.Pink;
+          element.innerText = "Can't spawn here 😅";
+          break;
+        }
+        case 'coords': {
+          element.style.color = Colors.InnerNebulaColor;
+          element.innerText = `(${point!.x.toFixed(0)}, ${point!.y.toFixed(0)})`
+          break;
+        }
+        case 'selected': {
+          element.style.color = Colors.SelectedSpawnArea;
+          element.innerText = `Selected spawn point: (${point!.x.toFixed(0)}, ${point!.y.toFixed(0)}) 🚀`
+          break;
+        }
+        default: {
+          element.style.color = '';
+          element.innerText = '';
+        }
+      }
+    };
 
     // add mouse move listener
     let timeoutId = 0;
-    canvas.addEventListener('mousemove', (event: MouseEvent) => {
+    const handleMouseMove = (event: MouseEvent) => {
       const [x, y] = [event.offsetX, event.offsetY];
-      if (!point_on_circle({ x: x - canvasRadius, y: y - canvasRadius }, radius)) {
-        setInfoOptions({
-          type: 'none',
-          point: undefined,
-        });
-        return;
-      }
-
-      clearTimeout(timeoutId);
       const key = `(${x},${y})`;
       const area = mousePoints[key];
-      if (area) {
-        canvas.style.cursor = 'pointer';
-        setInfoOptions({
-          type: 'coords',
-          point: area.worldPoint,
-        });
-      } else {
-        canvas.style.cursor = 'no-drop';
-        setInfoOptions({
-          type: 'no-drop',
-        });
+
+      let infoOptions: InfoOptions;
+      let cursorStyle = 'pointer';
+      switch (true) {
+        case !point_on_circle({ x: x - canvasRadius, y: y - canvasRadius }, radius): {
+          infoOptions = { type:  'none' };
+          break;
+        }
+        case Boolean(area): {
+          infoOptions = {
+            type:  'coords',
+            point: area.worldPoint,
+          };
+          break;
+        }
+        default: {
+          cursorStyle = 'no-drop';
+          infoOptions = { type:  'no-drop' };
+          break;
+        }
       }
+      canvas.style.cursor = cursorStyle;
+      updateInfoOptions(infoOptions);
+      clearTimeout(timeoutId);
 
       timeoutId = window.setTimeout(() => {
-        if (selectedSpawnArea) {
-          setInfoOptions({
-            type: 'selected',
-            point: selectedSpawnArea.worldPoint,
-          });
-        } else {
-          setInfoOptions({
-            type: 'none',
-          });
-        }
+        updateInfoOptions(
+          selectedSpawnArea
+            ? { type: 'selected', point: selectedSpawnArea.worldPoint,}
+            : { type: 'none' }
+        );
       }, 500);
-    });
+    };
 
     // add mouse click listener
-    canvas.addEventListener('click', (event: MouseEvent) => {
+    const handleClick = (event: MouseEvent) => {
       const [x, y] = [event.offsetX, event.offsetY];
       const key = `(${x},${y})`;
       const area = mousePoints[key];
@@ -381,30 +503,70 @@ function MiniMapImpl({}, ref: React.Ref<MiniMapHandle>) {
       ctx.fillStyle = Colors.SelectedSpawnArea;
       ctx.fillRect(origin.x, origin.y, size, size);
 
-      selectedSpawnArea = area;
+      updateInfoOptions({
+        type: 'selected',
+        point: area.worldPoint,
+      })
 
-      // make sure rim circle stays on top
-      drawRimCircle(ctx, {
-        rimRadius,
+      selectedSpawnArea = area;
+    };
+
+    canvas.addEventListener('mousemove', handleMouseMove);
+    canvas.addEventListener('click', handleClick);
+
+    return () => {
+      canvas.removeEventListener('mousemove', handleMouseMove);
+      canvas.removeEventListener('click', handleClick);
+      window.clearTimeout(timeoutId);
+    };
+  }, []);
+
+  useEffect(() => {
+    const oneMinuteInMs = 60_000;
+    const updateZones = () => {
+      // empty and update the blue zones
+      blueZones.splice(0, blueZones.length);
+      blueZones.push(
+        ...getBlueZones({ scaleFactor, radius, }),
+      );
+
+      // empty and update the pink zones
+      pinkZones.splice(0, pinkZones.length);
+      pinkZones.push(
+        ...getPinkZones({ scaleFactor, radius, }),
+      );
+
+      updateSpawnAreas({
+        spawnAreas,
+        blueZones,
+        pinkZones,
       });
 
-      setInfoOptions({
-        type: 'selected',
-        point: selectedSpawnArea.worldPoint,
-      })
-    });
+      // update mouse points
+      mousePoints = makeMousePoints(spawnAreas);
 
-    // unmount the component
-    return () => {};
-  }, [setInfoOptions]);
+      timeoutId = window.setTimeout(updateZones, oneMinuteInMs);
+    };
 
+    let timeoutId = window.setTimeout(updateZones, oneMinuteInMs);
+    return () => {
+      window.clearTimeout(timeoutId);
+    }
+  }, []);
+
+  // implement api
   useImperativeHandle(
     ref,
     () => ({
       getSelectedSpawnArea: () => selectedSpawnArea,
-      setSelectable,
+      setSelectable: (value: boolean) => {
+        selectable = value;
+        (overlayRef.current! as HTMLDivElement).style.display = selectable
+          ? 'none'
+          : 'block';
+      },
     }),
-    [selectedSpawnArea]
+    []
   );
 
   return (
@@ -419,23 +581,17 @@ function MiniMapImpl({}, ref: React.Ref<MiniMapHandle>) {
         }}
       />
       <DFARESLogo rimRadius={rimRadius} />
-      <Info type={infoOptions.type} point={infoOptions.point} />
-      <div style={
-        selectable
-          ?
-            // allow selecting
-            undefined
-          :
-            // overlay if unselectable
-            {
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: `${canvasSize}px`,
-              height: `${canvasSize}px`,
-              backgroundColor: 'rgb(0, 0, 0, 0)',
-            }
-      } />
+      <StyledCoords ref={infoOptionsRef}></StyledCoords>
+      <div ref={overlayRef} style={{
+          display: 'none',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: `${canvasSize}px`,
+          height: `${canvasSize}px`,
+          backgroundColor: 'rgb(0, 0, 0, 0)',
+        }}
+      />
     </StyledMiniMap>
   );
 }
