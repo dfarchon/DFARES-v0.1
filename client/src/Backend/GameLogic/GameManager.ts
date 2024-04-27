@@ -3532,7 +3532,9 @@ class GameManager extends EventEmitter {
           }
           if (lastChunkSize && lastChunkSize !== chunkSize) {
             this.terminal.current?.println(
-              `Hashed ${lastChunkSize * MIN_CHUNK_SIZE ** 2} potential home planets${values[index - 1]}`
+              `Hashed ${lastChunkSize * MIN_CHUNK_SIZE ** 2} potential home planets${
+                values[index - 1]
+              }`
             );
             index = 1;
           }

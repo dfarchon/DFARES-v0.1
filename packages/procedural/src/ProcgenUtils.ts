@@ -18,6 +18,7 @@ import { hashToInt } from '@dfares/serde';
 import {
   ArtifactId,
   AvatarType,
+  AvatarTypeNames,
   Biome,
   EthAddress,
   HatType,
@@ -26,6 +27,7 @@ import {
   LogoType,
   LogoTypeNames,
   MemeType,
+  MemeTypeNames,
   Planet,
   PlanetCosmeticInfo,
   RGBAVec,
@@ -556,9 +558,16 @@ export function getPlanetTitle(planet: Planet | undefined) {
 
 export function getPlanetName(planet: Planet | undefined): string {
   if (!planet) return 'Unknown';
+  if (planet.hatLevel > 0 && isMeme(planet.hatType)) {
+    return MemeTypeNames[numToMemeType(planet.hatType)];
+  }
   if (planet.hatLevel > 0 && isLogo(planet.hatType)) {
     return LogoTypeNames[numToLogoType(planet.hatType)];
   }
+  if (planet.hatLevel > 0 && isAvatar(planet.hatType)) {
+    return AvatarTypeNames[numToAvatarType(planet.hatType)];
+  }
+
   return getPlanetNameHash(planet.locationId);
 }
 
