@@ -1408,7 +1408,7 @@ class GameManager extends EventEmitter {
     this.terminal.current?.printLink(
       `${tx.hash?.slice(0, 6) ?? ''}`,
       () => {
-        window.open(`${BLOCK_EXPLORER_URL}/${tx.hash ?? ''}`);
+        window.open(`${BLOCK_EXPLORER_URL}/tx/${tx.hash ?? ''}`);
       },
       TerminalTextStyle.White
     );
@@ -1420,7 +1420,7 @@ class GameManager extends EventEmitter {
     this.terminal.current?.printLink(
       `${tx.hash?.slice(0, 6) ?? ''}`,
       () => {
-        window.open(`${BLOCK_EXPLORER_URL}/${tx.hash ?? ''}`);
+        window.open(`${BLOCK_EXPLORER_URL}/tx/${tx.hash ?? ''}`);
       },
       TerminalTextStyle.White
     );
@@ -1432,7 +1432,7 @@ class GameManager extends EventEmitter {
     this.terminal.current?.printLink(
       `${tx.hash?.slice(0, 6) ?? ''}`,
       () => {
-        window.open(`${BLOCK_EXPLORER_URL}/${tx.hash ?? ''}`);
+        window.open(`${BLOCK_EXPLORER_URL}/tx/${tx.hash ?? ''}`);
       },
       TerminalTextStyle.White
     );
@@ -1446,7 +1446,7 @@ class GameManager extends EventEmitter {
     this.terminal.current?.printLink(
       `${tx.hash?.slice(0, 6) ?? ''}`,
       () => {
-        window.open(`${BLOCK_EXPLORER_URL}/${tx.hash ?? ''}`);
+        window.open(`${BLOCK_EXPLORER_URL}/tx/${tx.hash ?? ''}`);
       },
       TerminalTextStyle.White
     );

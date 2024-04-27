@@ -103,6 +103,15 @@ const redstoneTestnet = {
   },
   chainId: Number(process.env.REDSTONE_TESTNET_CHAINID),
 };
+
+const redstone = {
+  url: process.env.REDSTONE_RPC_URL,
+  accounts: {
+    mnemonic: process.env.DEPLOYER_MNEMONIC,
+  },
+  chainId: Number(process.env.REDSTONE_CHAINID),
+};
+
 const config: HardhatUserConfig = {
   defaultNetwork: 'hardhat',
   networks: {
@@ -113,6 +122,7 @@ const config: HardhatUserConfig = {
     ...(DEPLOYER_MNEMONIC ? { mainnet } : undefined),
     ...(DEPLOYER_MNEMONIC ? { altlayer } : undefined),
     ...(DEPLOYER_MNEMONIC ? { redstoneTestnet } : undefined),
+    ...(DEPLOYER_MNEMONIC ? { redstone } : undefined),
     localhost: {
       url: 'http://localhost:8545/',
       accounts: {

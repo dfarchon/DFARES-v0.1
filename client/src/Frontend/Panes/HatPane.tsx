@@ -159,13 +159,9 @@ export function HatPane({
         </div>
 
         <EmSpacer height={1} />
-        <div>
-          <Link to={'https://holesky-faucet.pk910.de/'}>Get More HoleskyETH</Link>
-        </div>
 
         <div>
-          {' '}
-          <Link to={BLOCKCHAIN_BRIDGE}>Deposit To Redstone</Link>
+          <Link to={BLOCKCHAIN_BRIDGE}>Deposit ETH To Redstone</Link>
         </div>
 
         {/* <Link to={'https://blog.zkga.me/df-04-faq'}>Get More ${TOKEN_NAME}</Link> */}

@@ -1019,18 +1019,11 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
               "Don't worry :-) you can get more Redstone Holesky ETH this way 😘",
               TerminalTextStyle.Pink
             );
-            terminal.current?.print('Step 1: ', TerminalTextStyle.Pink);
-            terminal.current?.printLink(
-              'Get more Holesky ETH here',
-              () => {
-                window.open('https://holesky-faucet.pk910.de/');
-              },
-              TerminalTextStyle.Pink
-            );
+
             terminal.current?.newline();
-            terminal.current?.print('Step 2: ', TerminalTextStyle.Pink);
+            // terminal.current?.print('Step 2: ', TerminalTextStyle.Pink);
             terminal.current?.printLink(
-              'Deposit to Redstone',
+              'Deposit ETH to Redstone',
               () => {
                 window.open(BLOCKCHAIN_BRIDGE);
               },
