@@ -254,6 +254,9 @@ export function SettingsPane({
               Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('20'))
                 .toFixed(FIXED_DIGIT_NUMBER)
                 .toString(), //'20 gwei (need4speed)',
+              Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('30'))
+                .toFixed(FIXED_DIGIT_NUMBER)
+                .toString(), //30 gwei (need4speed)',
               Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('50'))
                 .toFixed(FIXED_DIGIT_NUMBER)
                 .toString(), // '50 gwei (gigafast)',
@@ -306,6 +309,9 @@ export function SettingsPane({
                 .toFixed(FIXED_DIGIT_NUMBER)
                 .toString() + ' gwei', // '10 gwei (mega turbo)',
               Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('20'))
+                .toFixed(FIXED_DIGIT_NUMBER)
+                .toString() + ' gwei', //'20 gwei (need4speed)',
+              Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('30'))
                 .toFixed(FIXED_DIGIT_NUMBER)
                 .toString() + ' gwei', //'20 gwei (need4speed)',
               Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('50'))

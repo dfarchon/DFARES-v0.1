@@ -174,10 +174,15 @@ export function TxConfirmPopup({
   // ethConnection.getAutoGasPriceGwei(ethConnection.getAutoGasPrices(), autoGasPriceSetting);
 
   const wrapGasFee = () => {
-    if (method === 'initializePlayer' || method === 'giveSpaceShips')
+    if (method === 'initializePlayer' || method === 'giveSpaceShips') {
+      const settingValue = getSetting(config, Setting.GasFeeGwei);
+      return Number(parseFloat(settingValue) * parseInt('10'))
+        .toFixed(FIXED_DIGIT_NUMBER)
+        .toString();
       return Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('5'))
         .toFixed(FIXED_DIGIT_NUMBER)
         .toString();
+    }
 
     const res = getSetting(config, Setting.GasFeeGwei);
 
@@ -386,7 +391,7 @@ export function TxConfirmPopup({
 
             <Row>
               <b>Half Price</b>
-              <span>{halfPrice}</span>
+              <span>{halfPrice ? halfPrice : 'false'}</span>
             </Row>
 
             <Row>

@@ -76,7 +76,7 @@ export class ContractsAPI extends EventEmitter {
    * Don't allow users to submit txs if balance falls below this amount/
    */
   //todo: this should be change for round 3
-  private static readonly MIN_BALANCE = ethToWei(0.002);
+  private static readonly MIN_BALANCE = ethToWei(0.0001);
 
   /**
    * Instrumented {@link ThrottledConcurrentQueue} for blockchain reads.
@@ -125,19 +125,25 @@ export class ContractsAPI extends EventEmitter {
    * a string representing that we want to use an auto gas setting.
    */
   private getGasFeeForTransaction(tx: Transaction): AutoGasSetting | string {
-    if (
-      (tx.intent.methodName === 'initializePlayer' || tx.intent.methodName === 'giveSpaceShips') &&
-      tx.intent.contract.address === this.contract.address
-    ) {
-      return Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('5'))
-        .toFixed(16)
-        .toString();
-    }
-
     const config = {
       contractAddress: this.contractAddress,
       account: this.ethConnection.getAddress(),
     };
+
+    if (
+      (tx.intent.methodName === 'initializePlayer' || tx.intent.methodName === 'giveSpaceShips') &&
+      tx.intent.contract.address === this.contract.address
+    ) {
+      const settingValue = getSetting(config, Setting.GasFeeGwei);
+
+      return Number(parseFloat(settingValue) * parseInt('10'))
+        .toFixed(16)
+        .toString();
+
+      return Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('5'))
+        .toFixed(16)
+        .toString();
+    }
 
     return getSetting(config, Setting.GasFeeGwei);
   }
