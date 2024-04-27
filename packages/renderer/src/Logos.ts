@@ -117,7 +117,7 @@ const DownStream = {
   name: 'DownStream',
   desc: "Help a super intelligent AI rebuild after an unfortunate accident. The world's first Post Singularity Civilisation Simulator, by @PlaymintUK",
   color: '#fb7001',
-  website: 'https://twitter.com/DownstreamGame',
+  website: 'https://downstream.game/',
 };
 
 //10
@@ -126,7 +126,7 @@ const Dear = {
   topLayer: [URL + '/img/logo/Dear.png'],
   bottomLayer: [],
   name: 'Dear',
-  desc: 'Hold a Token of Emotion in your wallet to start interacting.',
+  desc: 'A digital creature living on blockchain.',
   color: 'white',
   website: 'https://twitter.com/dear_dyr',
 };
@@ -165,7 +165,7 @@ const GGQuest = {
    This can help build reputation & unlock personalized gaming experiences.',
   color: '#fff',
   bottomLayer: [],
-  website: '',
+  website: 'https://twitter.com/gg_quest_gg',
 };
 
 //14

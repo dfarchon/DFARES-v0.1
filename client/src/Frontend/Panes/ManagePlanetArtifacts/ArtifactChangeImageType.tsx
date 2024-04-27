@@ -111,7 +111,7 @@ export function ArtifactChangeImageType({
         <StyledBuyArtifactPane>
           <div>
             <div> Image Type </div>
-            {/* MyTodo: change to like buyHatPane */}
+            {/* MyTodo: change to like buySkinPane */}
             <SelectFrom
               values={values}
               labels={labels}

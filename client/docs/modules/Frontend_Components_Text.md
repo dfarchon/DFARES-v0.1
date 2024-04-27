@@ -10,6 +10,7 @@
 - [Green](Frontend_Components_Text.md#green)
 - [HideSmall](Frontend_Components_Text.md#hidesmall)
 - [Invisible](Frontend_Components_Text.md#invisible)
+- [Pink](Frontend_Components_Text.md#pink)
 - [Red](Frontend_Components_Text.md#red)
 - [Smaller](Frontend_Components_Text.md#smaller)
 - [Sub](Frontend_Components_Text.md#sub)
@@ -65,6 +66,12 @@
 ### Invisible
 
 • `Const` **Invisible**: `StyledComponent`<`"span"`, `any`, {}, `never`\>
+
+---
+
+### Pink
+
+• `Const` **Pink**: `StyledComponent`<`"span"`, `any`, {}, `never`\>
 
 ---
 

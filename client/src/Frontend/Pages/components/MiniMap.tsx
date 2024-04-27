@@ -250,41 +250,44 @@ type InfoOptions = {
   point?: Point;
 };
 
-function Info({
-  type,
-  point,
-} : InfoOptions) {
-  switch(type) {
+function Info({ type, point }: InfoOptions) {
+  switch (type) {
     case 'no-drop': {
       return (
-        <StyledCoords style={{
+        <StyledCoords
+          style={{
             color: Colors.Pink,
-        }}>
+          }}
+        >
           Can't spawn here 😅
         </StyledCoords>
-      )
+      );
     }
     case 'coords': {
       return (
-        <StyledCoords style={{
+        <StyledCoords
+          style={{
             color: Colors.InnerNebulaColor,
-        }}>
+          }}
+        >
           ({point!.x.toFixed(0)}, {point!.y.toFixed(0)})
         </StyledCoords>
-      )
+      );
     }
 
     case 'selected': {
       return (
-        <StyledCoords style={{
+        <StyledCoords
+          style={{
             color: Colors.SelectedSpawnArea,
-        }}>
+          }}
+        >
           Selected spawn point: ({point!.x.toFixed(0)}, {point!.y.toFixed(0)}) 🚀
         </StyledCoords>
-      )
+      );
     }
     default: {
-      return (<StyledCoords></StyledCoords>);
+      return <StyledCoords></StyledCoords>;
     }
   }
 }
@@ -391,7 +394,7 @@ function MiniMapImpl({}, ref: React.Ref<MiniMapHandle>) {
       setInfoOptions({
         type: 'selected',
         point: selectedSpawnArea.worldPoint,
-      })
+      });
     });
 
     // unmount the component
@@ -420,22 +423,22 @@ function MiniMapImpl({}, ref: React.Ref<MiniMapHandle>) {
       />
       <DFARESLogo rimRadius={rimRadius} />
       <Info type={infoOptions.type} point={infoOptions.point} />
-      <div style={
-        selectable
-          ?
-            // allow selecting
-            undefined
-          :
-            // overlay if unselectable
-            {
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: `${canvasSize}px`,
-              height: `${canvasSize}px`,
-              backgroundColor: 'rgb(0, 0, 0, 0)',
-            }
-      } />
+      <div
+        style={
+          selectable
+            ? // allow selecting
+              undefined
+            : // overlay if unselectable
+              {
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: `${canvasSize}px`,
+                height: `${canvasSize}px`,
+                backgroundColor: 'rgb(0, 0, 0, 0)',
+              }
+        }
+      />
     </StyledMiniMap>
   );
 }

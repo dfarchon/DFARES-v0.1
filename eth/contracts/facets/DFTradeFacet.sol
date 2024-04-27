@@ -193,7 +193,7 @@ contract DFTradeFacet is WithStorage {
         ls().setHatCnt++;
     }
 
-    function buyHat(uint256 _location, uint256 hatType) public payable notPaused {
+    function buySkin(uint256 _location, uint256 hatType) public payable notPaused {
         require(gs().planets[_location].isInitialized == true, "Planet is not initialized");
         LibPlanet.refreshPlanet(_location);
 
@@ -221,9 +221,9 @@ contract DFTradeFacet is WithStorage {
 
             ls().hatEarnSum += fee;
             ls().hatEarn[hatType] += fee;
-            ls().buyHatCnt++;
-            ls().playerLog[msg.sender].buyHatCnt++;
-            ls().playerLog[msg.sender].buyHatCost += fee;
+            ls().buySkinCnt++;
+            ls().playerLog[msg.sender].buySkinCnt++;
+            ls().playerLog[msg.sender].buySkinCost += fee;
             ls().playerHatSpent[msg.sender][hatType] += fee;
             ls().hatPlayerSpent[hatType][msg.sender] += fee;
 
@@ -235,8 +235,8 @@ contract DFTradeFacet is WithStorage {
             gs().planets[_location].hatLevel = 0;
             gs().planets[_location].hatType = 0;
 
-            ls().takeOffHatCnt++;
-            ls().playerLog[msg.sender].takeOffHatCnt++;
+            ls().takeOffSkinCnt++;
+            ls().playerLog[msg.sender].takeOffSkinCnt++;
         }
 
         emit PlanetHatBought(

@@ -62,13 +62,19 @@
 - [activateArtifact](Backend_GameLogic_GameUIManager.default.md#activateartifact)
 - [addAccount](Backend_GameLogic_GameUIManager.default.md#addaccount)
 - [addNewChunk](Backend_GameLogic_GameUIManager.default.md#addnewchunk)
+- [blueLocation](Backend_GameLogic_GameUIManager.default.md#bluelocation)
 - [bulkAddNewChunks](Backend_GameLogic_GameUIManager.default.md#bulkaddnewchunks)
+- [burnLocation](Backend_GameLogic_GameUIManager.default.md#burnlocation)
 - [buyArtifact](Backend_GameLogic_GameUIManager.default.md#buyartifact)
-- [buyHat](Backend_GameLogic_GameUIManager.default.md#buyhat)
+- [buyPlanet](Backend_GameLogic_GameUIManager.default.md#buyplanet)
+- [buySkin](Backend_GameLogic_GameUIManager.default.md#buyskin)
+- [buySpaceship](Backend_GameLogic_GameUIManager.default.md#buyspaceship)
 - [centerCoords](Backend_GameLogic_GameUIManager.default.md#centercoords)
 - [centerLocationId](Backend_GameLogic_GameUIManager.default.md#centerlocationid)
 - [centerPlanet](Backend_GameLogic_GameUIManager.default.md#centerplanet)
 - [changeArtifactImageType](Backend_GameLogic_GameUIManager.default.md#changeartifactimagetype)
+- [checkPlanetCanBlue](Backend_GameLogic_GameUIManager.default.md#checkplanetcanblue)
+- [checkPlanetCanPink](Backend_GameLogic_GameUIManager.default.md#checkplanetcanpink)
 - [claimLocation](Backend_GameLogic_GameUIManager.default.md#claimlocation)
 - [deactivateArtifact](Backend_GameLogic_GameUIManager.default.md#deactivateartifact)
 - [depositArtifact](Backend_GameLogic_GameUIManager.default.md#depositartifact)
@@ -76,6 +82,7 @@
 - [disableCustomRenderer](Backend_GameLogic_GameUIManager.default.md#disablecustomrenderer)
 - [disconnectTwitter](Backend_GameLogic_GameUIManager.default.md#disconnecttwitter)
 - [discoverBiome](Backend_GameLogic_GameUIManager.default.md#discoverbiome)
+- [donate](Backend_GameLogic_GameUIManager.default.md#donate)
 - [drawAllRunningPlugins](Backend_GameLogic_GameUIManager.default.md#drawallrunningplugins)
 - [findArtifact](Backend_GameLogic_GameUIManager.default.md#findartifact)
 - [generateVerificationTweet](Backend_GameLogic_GameUIManager.default.md#generateverificationtweet)
@@ -97,6 +104,9 @@
 - [getArtifactsWithIds](Backend_GameLogic_GameUIManager.default.md#getartifactswithids)
 - [getBiomeKey](Backend_GameLogic_GameUIManager.default.md#getbiomekey)
 - [getBiomePerlin](Backend_GameLogic_GameUIManager.default.md#getbiomeperlin)
+- [getBlueRequireSilverAmount](Backend_GameLogic_GameUIManager.default.md#getbluerequiresilveramount)
+- [getBlueZoneCenterPlanetId](Backend_GameLogic_GameUIManager.default.md#getbluezonecenterplanetid)
+- [getBlueZones](Backend_GameLogic_GameUIManager.default.md#getbluezones)
 - [getBooleanSetting](Backend_GameLogic_GameUIManager.default.md#getbooleansetting)
 - [getCaptureZoneGenerator](Backend_GameLogic_GameUIManager.default.md#getcapturezonegenerator)
 - [getCaptureZonePointValues](Backend_GameLogic_GameUIManager.default.md#getcapturezonepointvalues)
@@ -117,6 +127,8 @@
 - [getGameManager](Backend_GameLogic_GameUIManager.default.md#getgamemanager)
 - [getGameObjects](Backend_GameLogic_GameUIManager.default.md#getgameobjects)
 - [getGlManager](Backend_GameLogic_GameUIManager.default.md#getglmanager)
+- [getHalfPrice](Backend_GameLogic_GameUIManager.default.md#gethalfprice)
+- [getHalfPrice$](Backend_GameLogic_GameUIManager.default.md#gethalfprice$)
 - [getHashConfig](Backend_GameLogic_GameUIManager.default.md#gethashconfig)
 - [getHashesPerSec](Backend_GameLogic_GameUIManager.default.md#gethashespersec)
 - [getHomeCoords](Backend_GameLogic_GameUIManager.default.md#gethomecoords)
@@ -126,6 +138,7 @@
 - [getHoveringOverPlanet](Backend_GameLogic_GameUIManager.default.md#gethoveringoverplanet)
 - [getIsChoosingTargetPlanet](Backend_GameLogic_GameUIManager.default.md#getischoosingtargetplanet)
 - [getIsHighPerfMode](Backend_GameLogic_GameUIManager.default.md#getishighperfmode)
+- [getKardashevRequireSilverAmount](Backend_GameLogic_GameUIManager.default.md#getkardashevrequiresilveramount)
 - [getLinkSourceArtifactType](Backend_GameLogic_GameUIManager.default.md#getlinksourceartifacttype)
 - [getLinks](Backend_GameLogic_GameUIManager.default.md#getlinks)
 - [getLocationOfPlanet](Backend_GameLogic_GameUIManager.default.md#getlocationofplanet)
@@ -141,14 +154,24 @@
 - [getMyBalance](Backend_GameLogic_GameUIManager.default.md#getmybalance)
 - [getMyBalance$](Backend_GameLogic_GameUIManager.default.md#getmybalance$)
 - [getMyBalanceBn](Backend_GameLogic_GameUIManager.default.md#getmybalancebn)
+- [getMyBlueZones](Backend_GameLogic_GameUIManager.default.md#getmybluezones)
+- [getMyPinkZones](Backend_GameLogic_GameUIManager.default.md#getmypinkzones)
 - [getMyPlanetMap](Backend_GameLogic_GameUIManager.default.md#getmyplanetmap)
 - [getMyScore](Backend_GameLogic_GameUIManager.default.md#getmyscore)
+- [getNextActivateArtifactAvailableTimestamp](Backend_GameLogic_GameUIManager.default.md#getnextactivateartifactavailabletimestamp)
+- [getNextBlueAvailableTimestamp](Backend_GameLogic_GameUIManager.default.md#getnextblueavailabletimestamp)
 - [getNextBroadcastAvailableTimestamp](Backend_GameLogic_GameUIManager.default.md#getnextbroadcastavailabletimestamp)
+- [getNextBurnAvailableTimestamp](Backend_GameLogic_GameUIManager.default.md#getnextburnavailabletimestamp)
+- [getNextBuyArtifactAvailableTimestamp](Backend_GameLogic_GameUIManager.default.md#getnextbuyartifactavailabletimestamp)
+- [getNextClaimAvailableTimestamp](Backend_GameLogic_GameUIManager.default.md#getnextclaimavailabletimestamp)
+- [getNextKardashevAvailableTimestamp](Backend_GameLogic_GameUIManager.default.md#getnextkardashevavailabletimestamp)
+- [getNextPinkAvailableTimestamp](Backend_GameLogic_GameUIManager.default.md#getnextpinkavailabletimestamp)
 - [getOverlayContainer](Backend_GameLogic_GameUIManager.default.md#getoverlaycontainer)
 - [getPaused](Backend_GameLogic_GameUIManager.default.md#getpaused)
 - [getPaused$](Backend_GameLogic_GameUIManager.default.md#getpaused$)
 - [getPerlinConfig](Backend_GameLogic_GameUIManager.default.md#getperlinconfig)
 - [getPerlinThresholds](Backend_GameLogic_GameUIManager.default.md#getperlinthresholds)
+- [getPinkZones](Backend_GameLogic_GameUIManager.default.md#getpinkzones)
 - [getPlanetHoveringInRenderer](Backend_GameLogic_GameUIManager.default.md#getplanethoveringinrenderer)
 - [getPlanetLevel](Backend_GameLogic_GameUIManager.default.md#getplanetlevel)
 - [getPlanetMap](Backend_GameLogic_GameUIManager.default.md#getplanetmap)
@@ -159,15 +182,18 @@
 - [getPlayerActivateArtifactAmount](Backend_GameLogic_GameUIManager.default.md#getplayeractivateartifactamount)
 - [getPlayerBuyArtifactAmount](Backend_GameLogic_GameUIManager.default.md#getplayerbuyartifactamount)
 - [getPlayerScore](Backend_GameLogic_GameUIManager.default.md#getplayerscore)
+- [getPlayerSilver](Backend_GameLogic_GameUIManager.default.md#getplayersilver)
 - [getPluginManager](Backend_GameLogic_GameUIManager.default.md#getpluginmanager)
 - [getPreviousSelectedPlanet](Backend_GameLogic_GameUIManager.default.md#getpreviousselectedplanet)
 - [getPrivateKey](Backend_GameLogic_GameUIManager.default.md#getprivatekey)
+- [getRadiusOfPinkCircle](Backend_GameLogic_GameUIManager.default.md#getradiusofpinkcircle)
 - [getRadiusOfPlanetLevel](Backend_GameLogic_GameUIManager.default.md#getradiusofplanetlevel)
 - [getRangeBuff](Backend_GameLogic_GameUIManager.default.md#getrangebuff)
 - [getRenderer](Backend_GameLogic_GameUIManager.default.md#getrenderer)
 - [getSelectedCoords](Backend_GameLogic_GameUIManager.default.md#getselectedcoords)
 - [getSelectedPlanet](Backend_GameLogic_GameUIManager.default.md#getselectedplanet)
 - [getSilverCurveAtPercent](Backend_GameLogic_GameUIManager.default.md#getsilvercurveatpercent)
+- [getSilverOfBurnPlanet](Backend_GameLogic_GameUIManager.default.md#getsilverofburnplanet)
 - [getSilverOfPlayer](Backend_GameLogic_GameUIManager.default.md#getsilverofplayer)
 - [getSilverScoreValue](Backend_GameLogic_GameUIManager.default.md#getsilverscorevalue)
 - [getSilverSending](Backend_GameLogic_GameUIManager.default.md#getsilversending)
@@ -180,6 +206,7 @@
 - [getUIEmitter](Backend_GameLogic_GameUIManager.default.md#getuiemitter)
 - [getUnconfirmedLinkActivations](Backend_GameLogic_GameUIManager.default.md#getunconfirmedlinkactivations)
 - [getUnconfirmedMoves](Backend_GameLogic_GameUIManager.default.md#getunconfirmedmoves)
+- [getUnconfirmedRefreshPlanets](Backend_GameLogic_GameUIManager.default.md#getunconfirmedrefreshplanets)
 - [getUnconfirmedUpgrades](Backend_GameLogic_GameUIManager.default.md#getunconfirmedupgrades)
 - [getUniverseTotalEnergy](Backend_GameLogic_GameUIManager.default.md#getuniversetotalenergy)
 - [getUpgrade](Backend_GameLogic_GameUIManager.default.md#getupgrade)
@@ -189,7 +216,11 @@
 - [hasMinedChunk](Backend_GameLogic_GameUIManager.default.md#hasminedchunk)
 - [isAbandoning](Backend_GameLogic_GameUIManager.default.md#isabandoning)
 - [isAdmin](Backend_GameLogic_GameUIManager.default.md#isadmin)
+- [isCurrentlyBlueing](Backend_GameLogic_GameUIManager.default.md#iscurrentlyblueing)
+- [isCurrentlyBurning](Backend_GameLogic_GameUIManager.default.md#iscurrentlyburning)
 - [isCurrentlyClaiming](Backend_GameLogic_GameUIManager.default.md#iscurrentlyclaiming)
+- [isCurrentlyKardasheving](Backend_GameLogic_GameUIManager.default.md#iscurrentlykardasheving)
+- [isCurrentlyPinking](Backend_GameLogic_GameUIManager.default.md#iscurrentlypinking)
 - [isCurrentlyRevealing](Backend_GameLogic_GameUIManager.default.md#iscurrentlyrevealing)
 - [isMining](Backend_GameLogic_GameUIManager.default.md#ismining)
 - [isOverOwnPlanet](Backend_GameLogic_GameUIManager.default.md#isoverownplanet)
@@ -198,6 +229,7 @@
 - [isSendingForces](Backend_GameLogic_GameUIManager.default.md#issendingforces)
 - [isSendingShip](Backend_GameLogic_GameUIManager.default.md#issendingship)
 - [joinGame](Backend_GameLogic_GameUIManager.default.md#joingame)
+- [kardashev](Backend_GameLogic_GameUIManager.default.md#kardashev)
 - [onDiscoveredChunk](Backend_GameLogic_GameUIManager.default.md#ondiscoveredchunk)
 - [onEmitInitializedPlayer](Backend_GameLogic_GameUIManager.default.md#onemitinitializedplayer)
 - [onEmitInitializedPlayerError](Backend_GameLogic_GameUIManager.default.md#onemitinitializedplayererror)
@@ -209,8 +241,10 @@
 - [onSendCancel](Backend_GameLogic_GameUIManager.default.md#onsendcancel)
 - [onSendComplete](Backend_GameLogic_GameUIManager.default.md#onsendcomplete)
 - [onSendInit](Backend_GameLogic_GameUIManager.default.md#onsendinit)
+- [pinkLocation](Backend_GameLogic_GameUIManager.default.md#pinklocation)
 - [potentialCaptureScore](Backend_GameLogic_GameUIManager.default.md#potentialcapturescore)
 - [prospectPlanet](Backend_GameLogic_GameUIManager.default.md#prospectplanet)
+- [refreshPlanet](Backend_GameLogic_GameUIManager.default.md#refreshplanet)
 - [removeExtraMinerLocation](Backend_GameLogic_GameUIManager.default.md#removeextraminerlocation)
 - [revealLocation](Backend_GameLogic_GameUIManager.default.md#reveallocation)
 - [setAbandoning](Backend_GameLogic_GameUIManager.default.md#setabandoning)
@@ -231,7 +265,11 @@
 - [startExplore](Backend_GameLogic_GameUIManager.default.md#startexplore)
 - [startLinkFrom](Backend_GameLogic_GameUIManager.default.md#startlinkfrom)
 - [stopExplore](Backend_GameLogic_GameUIManager.default.md#stopexplore)
+- [timeUntilNextActivateArtifactAvailable](Backend_GameLogic_GameUIManager.default.md#timeuntilnextactivateartifactavailable)
 - [timeUntilNextBroadcastAvailable](Backend_GameLogic_GameUIManager.default.md#timeuntilnextbroadcastavailable)
+- [timeUntilNextBurnAvailable](Backend_GameLogic_GameUIManager.default.md#timeuntilnextburnavailable)
+- [timeUntilNextBuyArtifactAvailable](Backend_GameLogic_GameUIManager.default.md#timeuntilnextbuyartifactavailable)
+- [timeUntilNextClaimAvailable](Backend_GameLogic_GameUIManager.default.md#timeuntilnextclaimavailable)
 - [toggleExplore](Backend_GameLogic_GameUIManager.default.md#toggleexplore)
 - [toggleTargettingExplorer](Backend_GameLogic_GameUIManager.default.md#toggletargettingexplorer)
 - [updateDiagnostics](Backend_GameLogic_GameUIManager.default.md#updatediagnostics)
@@ -579,6 +617,22 @@ choose to render themselves into this overlay container using React Portals.
 
 ---
 
+### blueLocation
+
+▸ **blueLocation**(`locationId`): `void`
+
+#### Parameters
+
+| Name         | Type         |
+| :----------- | :----------- |
+| `locationId` | `LocationId` |
+
+#### Returns
+
+`void`
+
+---
+
 ### bulkAddNewChunks
 
 ▸ **bulkAddNewChunks**(`chunks`): `Promise`<`void`\>
@@ -592,6 +646,22 @@ choose to render themselves into this overlay container using React Portals.
 #### Returns
 
 `Promise`<`void`\>
+
+---
+
+### burnLocation
+
+▸ **burnLocation**(`locationId`): `void`
+
+#### Parameters
+
+| Name         | Type         |
+| :----------- | :----------- |
+| `locationId` | `LocationId` |
+
+#### Returns
+
+`void`
 
 ---
 
@@ -614,9 +684,25 @@ choose to render themselves into this overlay container using React Portals.
 
 ---
 
-### buyHat
+### buyPlanet
 
-▸ **buyHat**(`planet`, `hatType`): `void`
+▸ **buyPlanet**(`planet`): `void`
+
+#### Parameters
+
+| Name     | Type     |
+| :------- | :------- |
+| `planet` | `Planet` |
+
+#### Returns
+
+`void`
+
+---
+
+### buySkin
+
+▸ **buySkin**(`planet`, `hatType`): `void`
 
 #### Parameters
 
@@ -624,6 +710,22 @@ choose to render themselves into this overlay container using React Portals.
 | :-------- | :------- |
 | `planet`  | `Planet` |
 | `hatType` | `number` |
+
+#### Returns
+
+`void`
+
+---
+
+### buySpaceship
+
+▸ **buySpaceship**(`planet`): `void`
+
+#### Parameters
+
+| Name     | Type     |
+| :------- | :------- |
+| `planet` | `Planet` |
 
 #### Returns
 
@@ -694,6 +796,38 @@ choose to render themselves into this overlay container using React Portals.
 #### Returns
 
 `Promise`<`void`\>
+
+---
+
+### checkPlanetCanBlue
+
+▸ **checkPlanetCanBlue**(`planetId`): `boolean`
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
+
+#### Returns
+
+`boolean`
+
+---
+
+### checkPlanetCanPink
+
+▸ **checkPlanetCanPink**(`planetId`): `boolean`
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
+
+#### Returns
+
+`boolean`
 
 ---
 
@@ -802,6 +936,22 @@ renderer is on top of the renderering stack the next renderer will be the one be
 | Name     | Type              |
 | :------- | :---------------- |
 | `planet` | `LocatablePlanet` |
+
+#### Returns
+
+`void`
+
+---
+
+### donate
+
+▸ **donate**(`amount`): `void`
+
+#### Parameters
+
+| Name     | Type     |
+| :------- | :------- |
+| `amount` | `number` |
 
 #### Returns
 
@@ -1082,6 +1232,48 @@ the CanvasRenderingContext2D for the game canvas.
 
 ---
 
+### getBlueRequireSilverAmount
+
+▸ **getBlueRequireSilverAmount**(`planetLevel`): `number`
+
+#### Parameters
+
+| Name          | Type     |
+| :------------ | :------- |
+| `planetLevel` | `number` |
+
+#### Returns
+
+`number`
+
+---
+
+### getBlueZoneCenterPlanetId
+
+▸ **getBlueZoneCenterPlanetId**(`planetId`): `undefined` \| `LocationId`
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
+
+#### Returns
+
+`undefined` \| `LocationId`
+
+---
+
+### getBlueZones
+
+▸ **getBlueZones**(): `Set`<`PinkZone`\>
+
+#### Returns
+
+`Set`<`PinkZone`\>
+
+---
+
 ### getBooleanSetting
 
 ▸ **getBooleanSetting**(`setting`): `boolean`
@@ -1349,6 +1541,26 @@ state in some way
 
 ---
 
+### getHalfPrice
+
+▸ **getHalfPrice**(): `boolean`
+
+#### Returns
+
+`boolean`
+
+---
+
+### getHalfPrice$
+
+▸ **getHalfPrice$**(): `Monomitter`<`boolean`\>
+
+#### Returns
+
+`Monomitter`<`boolean`\>
+
+---
+
 ### getHashConfig
 
 ▸ **getHashConfig**(): [`HashConfig`](../modules/types_global_GlobalTypes.md#hashconfig)
@@ -1436,6 +1648,22 @@ state in some way
 #### Returns
 
 `boolean`
+
+---
+
+### getKardashevRequireSilverAmount
+
+▸ **getKardashevRequireSilverAmount**(`planetLevel`): `number`
+
+#### Parameters
+
+| Name          | Type     |
+| :------------ | :------- |
+| `planetLevel` | `number` |
+
+#### Returns
+
+`number`
 
 ---
 
@@ -1600,6 +1828,26 @@ state in some way
 
 ---
 
+### getMyBlueZones
+
+▸ **getMyBlueZones**(): `Set`<`PinkZone`\>
+
+#### Returns
+
+`Set`<`PinkZone`\>
+
+---
+
+### getMyPinkZones
+
+▸ **getMyPinkZones**(): `Set`<`PinkZone`\>
+
+#### Returns
+
+`Set`<`PinkZone`\>
+
+---
+
 ### getMyPlanetMap
 
 ▸ **getMyPlanetMap**(): `Map`<`LocationId`, `Planet`\>
@@ -1620,9 +1868,91 @@ state in some way
 
 ---
 
+### getNextActivateArtifactAvailableTimestamp
+
+▸ **getNextActivateArtifactAvailableTimestamp**(): `number`
+
+#### Returns
+
+`number`
+
+---
+
+### getNextBlueAvailableTimestamp
+
+▸ **getNextBlueAvailableTimestamp**(`planetId`): `number`
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
+
+#### Returns
+
+`number`
+
+---
+
 ### getNextBroadcastAvailableTimestamp
 
 ▸ **getNextBroadcastAvailableTimestamp**(): `number`
+
+#### Returns
+
+`number`
+
+---
+
+### getNextBurnAvailableTimestamp
+
+▸ **getNextBurnAvailableTimestamp**(): `number`
+
+#### Returns
+
+`number`
+
+---
+
+### getNextBuyArtifactAvailableTimestamp
+
+▸ **getNextBuyArtifactAvailableTimestamp**(): `number`
+
+#### Returns
+
+`number`
+
+---
+
+### getNextClaimAvailableTimestamp
+
+▸ **getNextClaimAvailableTimestamp**(): `number`
+
+#### Returns
+
+`number`
+
+---
+
+### getNextKardashevAvailableTimestamp
+
+▸ **getNextKardashevAvailableTimestamp**(): `number`
+
+#### Returns
+
+`number`
+
+---
+
+### getNextPinkAvailableTimestamp
+
+▸ **getNextPinkAvailableTimestamp**(`planetId`): `number`
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
 
 #### Returns
 
@@ -1686,6 +2016,16 @@ about what the overlay container is.
 #### Returns
 
 [`number`, `number`, `number`]
+
+---
+
+### getPinkZones
+
+▸ **getPinkZones**(): `Set`<`PinkZone`\>
+
+#### Returns
+
+`Set`<`PinkZone`\>
 
 ---
 
@@ -1834,6 +2174,22 @@ over in the renderer.
 
 ---
 
+### getPlayerSilver
+
+▸ **getPlayerSilver**(`player`): `undefined` \| `number`
+
+#### Parameters
+
+| Name     | Type         |
+| :------- | :----------- |
+| `player` | `EthAddress` |
+
+#### Returns
+
+`undefined` \| `number`
+
+---
+
 ### getPluginManager
 
 ▸ **getPluginManager**(): [`PluginManager`](Backend_GameLogic_PluginManager.PluginManager.md)
@@ -1861,6 +2217,22 @@ over in the renderer.
 #### Returns
 
 `undefined` \| `string`
+
+---
+
+### getRadiusOfPinkCircle
+
+▸ **getRadiusOfPinkCircle**(`planetLevel`): `number`
+
+#### Parameters
+
+| Name          | Type     |
+| :------------ | :------- |
+| `planetLevel` | `number` |
+
+#### Returns
+
+`number`
 
 ---
 
@@ -1930,6 +2302,23 @@ over in the renderer.
 | :-------- | :------- |
 | `planet`  | `Planet` |
 | `percent` | `number` |
+
+#### Returns
+
+`undefined` \| `number`
+
+---
+
+### getSilverOfBurnPlanet
+
+▸ **getSilverOfBurnPlanet**(`account`, `planetLevel`): `undefined` \| `number`
+
+#### Parameters
+
+| Name          | Type         |
+| :------------ | :----------- |
+| `account`     | `EthAddress` |
+| `planetLevel` | `number`     |
 
 #### Returns
 
@@ -2097,6 +2486,16 @@ drill fields like this anymore.
 
 ---
 
+### getUnconfirmedRefreshPlanets
+
+▸ **getUnconfirmedRefreshPlanets**(): `Transaction`<`UnconfirmedRefreshPlanet`\>[]
+
+#### Returns
+
+`Transaction`<`UnconfirmedRefreshPlanet`\>[]
+
+---
+
 ### getUnconfirmedUpgrades
 
 ▸ **getUnconfirmedUpgrades**(): `Transaction`<`UnconfirmedUpgrade`\>[]
@@ -2200,9 +2599,49 @@ drill fields like this anymore.
 
 ---
 
+### isCurrentlyBlueing
+
+▸ **isCurrentlyBlueing**(): `boolean`
+
+#### Returns
+
+`boolean`
+
+---
+
+### isCurrentlyBurning
+
+▸ **isCurrentlyBurning**(): `boolean`
+
+#### Returns
+
+`boolean`
+
+---
+
 ### isCurrentlyClaiming
 
 ▸ **isCurrentlyClaiming**(): `boolean`
+
+#### Returns
+
+`boolean`
+
+---
+
+### isCurrentlyKardasheving
+
+▸ **isCurrentlyKardasheving**(): `boolean`
+
+#### Returns
+
+`boolean`
+
+---
+
+### isCurrentlyPinking
+
+▸ **isCurrentlyPinking**(): `boolean`
 
 #### Returns
 
@@ -2300,17 +2739,37 @@ drill fields like this anymore.
 
 ### joinGame
 
-▸ **joinGame**(`beforeRetry`): `Promise`<`void`\>
+▸ **joinGame**(`beforeRetry`, `_selectedCoords`, `spectate`): `Promise`<`void`\>
 
 #### Parameters
 
-| Name          | Type                                    |
-| :------------ | :-------------------------------------- |
-| `beforeRetry` | (`e`: `Error`) => `Promise`<`boolean`\> |
+| Name                | Type                                    |
+| :------------------ | :-------------------------------------- |
+| `beforeRetry`       | (`e`: `Error`) => `Promise`<`boolean`\> |
+| `_selectedCoords`   | `Object`                                |
+| `_selectedCoords.x` | `number`                                |
+| `_selectedCoords.y` | `number`                                |
+| `spectate`          | `boolean`                               |
 
 #### Returns
 
 `Promise`<`void`\>
+
+---
+
+### kardashev
+
+▸ **kardashev**(`locationId`): `void`
+
+#### Parameters
+
+| Name         | Type         |
+| :----------- | :----------- |
+| `locationId` | `LocationId` |
+
+#### Returns
+
+`void`
 
 ---
 
@@ -2472,6 +2931,22 @@ drill fields like this anymore.
 
 ---
 
+### pinkLocation
+
+▸ **pinkLocation**(`locationId`): `void`
+
+#### Parameters
+
+| Name         | Type         |
+| :----------- | :----------- |
+| `locationId` | `LocationId` |
+
+#### Returns
+
+`void`
+
+---
+
 ### potentialCaptureScore
 
 ▸ **potentialCaptureScore**(`planetLevel`): `number`
@@ -2497,6 +2972,22 @@ drill fields like this anymore.
 | Name       | Type         |
 | :--------- | :----------- |
 | `planetId` | `LocationId` |
+
+#### Returns
+
+`void`
+
+---
+
+### refreshPlanet
+
+▸ **refreshPlanet**(`planet`): `void`
+
+#### Parameters
+
+| Name     | Type     |
+| :------- | :------- |
+| `planet` | `Planet` |
 
 #### Returns
 
@@ -2774,13 +3265,14 @@ about what the overlay container is.
 
 ### spaceTypeFromPerlin
 
-▸ **spaceTypeFromPerlin**(`perlin`): `SpaceType`
+▸ **spaceTypeFromPerlin**(`perlin`, `distFromOrigin`): `SpaceType`
 
 #### Parameters
 
-| Name     | Type     |
-| :------- | :------- |
-| `perlin` | `number` |
+| Name             | Type     |
+| :--------------- | :------- |
+| `perlin`         | `number` |
+| `distFromOrigin` | `number` |
 
 #### Returns
 
@@ -2825,9 +3317,49 @@ about what the overlay container is.
 
 ---
 
+### timeUntilNextActivateArtifactAvailable
+
+▸ **timeUntilNextActivateArtifactAvailable**(): `number`
+
+#### Returns
+
+`number`
+
+---
+
 ### timeUntilNextBroadcastAvailable
 
 ▸ **timeUntilNextBroadcastAvailable**(): `number`
+
+#### Returns
+
+`number`
+
+---
+
+### timeUntilNextBurnAvailable
+
+▸ **timeUntilNextBurnAvailable**(): `number`
+
+#### Returns
+
+`number`
+
+---
+
+### timeUntilNextBuyArtifactAvailable
+
+▸ **timeUntilNextBuyArtifactAvailable**(): `number`
+
+#### Returns
+
+`number`
+
+---
+
+### timeUntilNextClaimAvailable
+
+▸ **timeUntilNextClaimAvailable**(): `number`
 
 #### Returns
 

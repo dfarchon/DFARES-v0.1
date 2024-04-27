@@ -14,17 +14,23 @@
 - [ArtifactDeposited](types_darkforest_api_ContractsAPITypes.ContractEvent.md#artifactdeposited)
 - [ArtifactFound](types_darkforest_api_ContractsAPITypes.ContractEvent.md#artifactfound)
 - [ArtifactWithdrawn](types_darkforest_api_ContractsAPITypes.ContractEvent.md#artifactwithdrawn)
+- [HalfPriceChanged](types_darkforest_api_ContractsAPITypes.ContractEvent.md#halfpricechanged)
+- [Kardashev](types_darkforest_api_ContractsAPITypes.ContractEvent.md#kardashev)
 - [LobbyCreated](types_darkforest_api_ContractsAPITypes.ContractEvent.md#lobbycreated)
+- [LocationBlued](types_darkforest_api_ContractsAPITypes.ContractEvent.md#locationblued)
+- [LocationBurned](types_darkforest_api_ContractsAPITypes.ContractEvent.md#locationburned)
+- [LocationClaimed](types_darkforest_api_ContractsAPITypes.ContractEvent.md#locationclaimed)
 - [LocationRevealed](types_darkforest_api_ContractsAPITypes.ContractEvent.md#locationrevealed)
 - [PauseStateChanged](types_darkforest_api_ContractsAPITypes.ContractEvent.md#pausestatechanged)
+- [PlanetBought](types_darkforest_api_ContractsAPITypes.ContractEvent.md#planetbought)
 - [PlanetCaptured](types_darkforest_api_ContractsAPITypes.ContractEvent.md#planetcaptured)
-- [PlanetClaimed](types_darkforest_api_ContractsAPITypes.ContractEvent.md#planetclaimed)
 - [PlanetHatBought](types_darkforest_api_ContractsAPITypes.ContractEvent.md#planethatbought)
 - [PlanetInvaded](types_darkforest_api_ContractsAPITypes.ContractEvent.md#planetinvaded)
 - [PlanetSilverWithdrawn](types_darkforest_api_ContractsAPITypes.ContractEvent.md#planetsilverwithdrawn)
 - [PlanetTransferred](types_darkforest_api_ContractsAPITypes.ContractEvent.md#planettransferred)
 - [PlanetUpgraded](types_darkforest_api_ContractsAPITypes.ContractEvent.md#planetupgraded)
 - [PlayerInitialized](types_darkforest_api_ContractsAPITypes.ContractEvent.md#playerinitialized)
+- [SpaceshipBought](types_darkforest_api_ContractsAPITypes.ContractEvent.md#spaceshipbought)
 
 ## Enumeration members
 
@@ -76,9 +82,39 @@
 
 ---
 
+### HalfPriceChanged
+
+• **HalfPriceChanged** = `"HalfPriceChanged"`
+
+---
+
+### Kardashev
+
+• **Kardashev** = `"Kardashev"`
+
+---
+
 ### LobbyCreated
 
 • **LobbyCreated** = `"LobbyCreated"`
+
+---
+
+### LocationBlued
+
+• **LocationBlued** = `"LocationBlued"`
+
+---
+
+### LocationBurned
+
+• **LocationBurned** = `"LocationBurned"`
+
+---
+
+### LocationClaimed
+
+• **LocationClaimed** = `"LocationClaimed"`
 
 ---
 
@@ -94,15 +130,15 @@
 
 ---
 
-### PlanetCaptured
+### PlanetBought
 
-• **PlanetCaptured** = `"PlanetCaptured"`
+• **PlanetBought** = `"PlanetBought"`
 
 ---
 
-### PlanetClaimed
+### PlanetCaptured
 
-• **PlanetClaimed** = `"PlanetClaimed"`
+• **PlanetCaptured** = `"PlanetCaptured"`
 
 ---
 
@@ -139,3 +175,9 @@
 ### PlayerInitialized
 
 • **PlayerInitialized** = `"PlayerInitialized"`
+
+---
+
+### SpaceshipBought
+
+• **SpaceshipBought** = `"SpaceshipBought"`

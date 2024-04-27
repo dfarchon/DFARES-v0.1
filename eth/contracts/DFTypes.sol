@@ -50,9 +50,9 @@ struct Player {
 }
 
 struct PlayerLog {
-    uint256 buyHatCnt;
-    uint256 buyHatCost;
-    uint256 takeOffHatCnt;
+    uint256 buySkinCnt;
+    uint256 buySkinCost;
+    uint256 takeOffSkinCnt;
     uint256 withdrawSilverCnt;
     uint256 claimLocationCnt;
     uint256 changeArtifactImageTypeCnt;

@@ -14,6 +14,7 @@
 - [PLANETHASH_KEY](types_darkforest_api_ContractsAPITypes.InitArgIdxs.md#planethash_key)
 - [RADIUS](types_darkforest_api_ContractsAPITypes.InitArgIdxs.md#radius)
 - [SPACETYPE_KEY](types_darkforest_api_ContractsAPITypes.InitArgIdxs.md#spacetype_key)
+- [TARGET_DIST_FROM_ORIGIN_SQUARE](types_darkforest_api_ContractsAPITypes.InitArgIdxs.md#target_dist_from_origin_square)
 
 ## Enumeration members
 
@@ -62,3 +63,9 @@
 ### SPACETYPE_KEY
 
 • **SPACETYPE_KEY** = `4`
+
+---
+
+### TARGET_DIST_FROM_ORIGIN_SQUARE
+
+• **TARGET_DIST_FROM_ORIGIN_SQUARE** = `8`

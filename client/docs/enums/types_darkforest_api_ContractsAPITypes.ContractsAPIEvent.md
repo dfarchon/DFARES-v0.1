@@ -8,10 +8,11 @@
 
 - [ArrivalQueued](types_darkforest_api_ContractsAPITypes.ContractsAPIEvent.md#arrivalqueued)
 - [ArtifactUpdate](types_darkforest_api_ContractsAPITypes.ContractsAPIEvent.md#artifactupdate)
+- [HalfPriceChanged](types_darkforest_api_ContractsAPITypes.ContractsAPIEvent.md#halfpricechanged)
 - [LobbyCreated](types_darkforest_api_ContractsAPITypes.ContractsAPIEvent.md#lobbycreated)
+- [LocationClaimed](types_darkforest_api_ContractsAPITypes.ContractsAPIEvent.md#locationclaimed)
 - [LocationRevealed](types_darkforest_api_ContractsAPITypes.ContractsAPIEvent.md#locationrevealed)
 - [PauseStateChanged](types_darkforest_api_ContractsAPITypes.ContractsAPIEvent.md#pausestatechanged)
-- [PlanetClaimed](types_darkforest_api_ContractsAPITypes.ContractsAPIEvent.md#planetclaimed)
 - [PlanetTransferred](types_darkforest_api_ContractsAPITypes.ContractsAPIEvent.md#planettransferred)
 - [PlanetUpdate](types_darkforest_api_ContractsAPITypes.ContractsAPIEvent.md#planetupdate)
 - [PlayerUpdate](types_darkforest_api_ContractsAPITypes.ContractsAPIEvent.md#playerupdate)
@@ -38,9 +39,21 @@
 
 ---
 
+### HalfPriceChanged
+
+• **HalfPriceChanged** = `"HalfPriceChanged"`
+
+---
+
 ### LobbyCreated
 
 • **LobbyCreated** = `"LobbyCreated"`
+
+---
+
+### LocationClaimed
+
+• **LocationClaimed** = `"LocationClaimed"`
 
 ---
 
@@ -53,12 +66,6 @@
 ### PauseStateChanged
 
 • **PauseStateChanged** = `"PauseStateChanged"`
-
----
-
-### PlanetClaimed
-
-• **PlanetClaimed** = `"PlanetClaimed"`
 
 ---
 

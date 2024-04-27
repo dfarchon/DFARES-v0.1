@@ -35,6 +35,7 @@
 - [NetworkHealthPane](Frontend_Panes_TooltipPanes.md#networkhealthpane)
 - [PiratesTooltipPane](Frontend_Panes_TooltipPanes.md#piratestooltippane)
 - [PlanetRankTooltipPane](Frontend_Panes_TooltipPanes.md#planetranktooltippane)
+- [PlayerSilverTooltipPane](Frontend_Panes_TooltipPanes.md#playersilvertooltippane)
 - [RangeMultiplierPane](Frontend_Panes_TooltipPanes.md#rangemultiplierpane)
 - [RangeTooltipPane](Frontend_Panes_TooltipPanes.md#rangetooltippane)
 - [RankTooltipPane](Frontend_Panes_TooltipPanes.md#ranktooltippane)
@@ -359,6 +360,16 @@
 ### PlanetRankTooltipPane
 
 ▸ **PlanetRankTooltipPane**(): `Element`
+
+#### Returns
+
+`Element`
+
+---
+
+### PlayerSilverTooltipPane
+
+▸ **PlayerSilverTooltipPane**(): `Element`
 
 #### Returns
 

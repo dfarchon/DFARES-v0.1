@@ -9,7 +9,7 @@ export type ContractMethodName =
   | 'initializePlayer'
   | 'move'
   | 'upgradePlanet'
-  | 'buyHat'
+  | 'buySkin'
   | 'transferPlanet'
   | 'findArtifact'
   | 'prospectPlanet'
@@ -134,7 +134,7 @@ export type UnconfirmedRefreshPlanet = TxIntent & {
  * @hidden
  */
 export type UnconfirmedBuyHat = TxIntent & {
-  methodName: 'buyHat';
+  methodName: 'buySkin';
   locationId: LocationId;
   hatType: number;
 };

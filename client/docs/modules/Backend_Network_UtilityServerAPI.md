@@ -16,7 +16,6 @@
 - [disconnectTwitter](Backend_Network_UtilityServerAPI.md#disconnecttwitter)
 - [getAllTwitters](Backend_Network_UtilityServerAPI.md#getalltwitters)
 - [requestDevFaucet](Backend_Network_UtilityServerAPI.md#requestdevfaucet)
-- [requestFaucet](Backend_Network_UtilityServerAPI.md#requestfaucet)
 - [submitInterestedEmail](Backend_Network_UtilityServerAPI.md#submitinterestedemail)
 - [submitPlayerEmail](Backend_Network_UtilityServerAPI.md#submitplayeremail)
 - [submitUnsubscribeEmail](Backend_Network_UtilityServerAPI.md#submitunsubscribeemail)
@@ -97,22 +96,6 @@ polls for success.
 | Name      | Type         |
 | :-------- | :----------- |
 | `address` | `EthAddress` |
-
-#### Returns
-
-`Promise`<`boolean`\>
-
----
-
-### requestFaucet
-
-▸ **requestFaucet**(`address`): `Promise`<`boolean`\>
-
-#### Parameters
-
-| Name      | Type     |
-| :-------- | :------- |
-| `address` | `string` |
 
 #### Returns
 

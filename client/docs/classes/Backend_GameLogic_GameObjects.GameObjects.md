@@ -16,9 +16,11 @@ Representation of the objects which exist in the world.
 - [arrivals](Backend_GameLogic_GameObjects.GameObjects.md#arrivals)
 - [artifactUpdated$](Backend_GameLogic_GameObjects.GameObjects.md#artifactupdated$)
 - [artifacts](Backend_GameLogic_GameObjects.GameObjects.md#artifacts)
+- [burnedLocations](Backend_GameLogic_GameObjects.GameObjects.md#burnedlocations)
 - [claimedLocations](Backend_GameLogic_GameObjects.GameObjects.md#claimedlocations)
 - [contractConstants](Backend_GameLogic_GameObjects.GameObjects.md#contractconstants)
 - [coordsToLocation](Backend_GameLogic_GameObjects.GameObjects.md#coordstolocation)
+- [kardashevLocations](Backend_GameLogic_GameObjects.GameObjects.md#kardashevlocations)
 - [layeredMap](Backend_GameLogic_GameObjects.GameObjects.md#layeredmap)
 - [links](Backend_GameLogic_GameObjects.GameObjects.md#links)
 - [myArtifacts](Backend_GameLogic_GameObjects.GameObjects.md#myartifacts)
@@ -53,8 +55,10 @@ Representation of the objects which exist in the world.
 - [getArtifactsOnPlanetsOwnedBy](Backend_GameLogic_GameObjects.GameObjects.md#getartifactsonplanetsownedby)
 - [getArtifactsOwnedBy](Backend_GameLogic_GameObjects.GameObjects.md#getartifactsownedby)
 - [getBiome](Backend_GameLogic_GameObjects.GameObjects.md#getbiome)
+- [getBurnedLocations](Backend_GameLogic_GameObjects.GameObjects.md#getburnedlocations)
 - [getClaimedLocations](Backend_GameLogic_GameObjects.GameObjects.md#getclaimedlocations)
 - [getEnergyCurveAtPercent](Backend_GameLogic_GameObjects.GameObjects.md#getenergycurveatpercent)
+- [getKardashevLocations](Backend_GameLogic_GameObjects.GameObjects.md#getkardashevlocations)
 - [getLinks](Backend_GameLogic_GameObjects.GameObjects.md#getlinks)
 - [getLocationOfPlanet](Backend_GameLogic_GameObjects.GameObjects.md#getlocationofplanet)
 - [getMyArtifactMap](Backend_GameLogic_GameObjects.GameObjects.md#getmyartifactmap)
@@ -83,7 +87,9 @@ Representation of the objects which exist in the world.
 - [replaceArtifactsFromContractData](Backend_GameLogic_GameObjects.GameObjects.md#replaceartifactsfromcontractdata)
 - [replacePlanetFromContractData](Backend_GameLogic_GameObjects.GameObjects.md#replaceplanetfromcontractdata)
 - [setArtifact](Backend_GameLogic_GameObjects.GameObjects.md#setartifact)
+- [setBurnedLocation](Backend_GameLogic_GameObjects.GameObjects.md#setburnedlocation)
 - [setClaimedLocation](Backend_GameLogic_GameObjects.GameObjects.md#setclaimedlocation)
+- [setKardashevLocation](Backend_GameLogic_GameObjects.GameObjects.md#setkardashevlocation)
 - [setPlanet](Backend_GameLogic_GameObjects.GameObjects.md#setplanet)
 - [spaceTypeFromPerlin](Backend_GameLogic_GameObjects.GameObjects.md#spacetypefromperlin)
 - [updateArtifact](Backend_GameLogic_GameObjects.GameObjects.md#updateartifact)
@@ -97,7 +103,7 @@ Representation of the objects which exist in the world.
 
 ### constructor
 
-• **new GameObjects**(`address`, `touchedPlanets`, `allTouchedPlanetIds`, `revealedLocations`, `claimedLocations`, `artifacts`, `allChunks`, `unprocessedArrivals`, `unprocessedPlanetArrivalIds`, `contractConstants`, `worldRadius`)
+• **new GameObjects**(`address`, `touchedPlanets`, `allTouchedPlanetIds`, `revealedLocations`, `claimedLocations`, `burnedLocations`, `kardashevLocations`, `artifacts`, `allChunks`, `unprocessedArrivals`, `unprocessedPlanetArrivalIds`, `contractConstants`, `worldRadius`)
 
 #### Parameters
 
@@ -108,6 +114,8 @@ Representation of the objects which exist in the world.
 | `allTouchedPlanetIds`         | `Set`<`LocationId`\>                                                                             |
 | `revealedLocations`           | `Map`<`LocationId`, `RevealedLocation`\>                                                         |
 | `claimedLocations`            | `Map`<`LocationId`, `ClaimedLocation`\>                                                          |
+| `burnedLocations`             | `Map`<`LocationId`, `BurnedLocation`\>                                                           |
+| `kardashevLocations`          | `Map`<`LocationId`, `KardashevLocation`\>                                                        |
 | `artifacts`                   | `Map`<`ArtifactId`, `Artifact`\>                                                                 |
 | `allChunks`                   | `Iterable`<`Chunk`\>                                                                             |
 | `unprocessedArrivals`         | `Map`<`VoyageId`, `QueuedArrival`\>                                                              |
@@ -155,6 +163,16 @@ Cached index of all known artifact data.
 
 ---
 
+### burnedLocations
+
+• `Private` `Readonly` **burnedLocations**: `Map`<`LocationId`, `BurnedLocation`\>
+
+Map from location ids to, if that location id has been burned on-chain, the world coordinates
+of that location id, as well as some extra information regarding the circumstances of the
+revealing of this planet.
+
+---
+
 ### claimedLocations
 
 • `Private` `Readonly` **claimedLocations**: `Map`<`LocationId`, `ClaimedLocation`\>
@@ -182,6 +200,12 @@ contracts.
 
 Map from a stringified representation of an x-y coordinate to an object that contains some more
 information about the world at that location.
+
+---
+
+### kardashevLocations
+
+• `Private` `Readonly` **kardashevLocations**: `Map`<`LocationId`, `BurnedLocation`\>
 
 ---
 
@@ -630,6 +654,16 @@ if the artifact is not on either, then it is the owner of the artifact NFT
 
 ---
 
+### getBurnedLocations
+
+▸ **getBurnedLocations**(): `Map`<`LocationId`, `BurnedLocation`\>
+
+#### Returns
+
+`Map`<`LocationId`, `BurnedLocation`\>
+
+---
+
 ### getClaimedLocations
 
 ▸ **getClaimedLocations**(): `Map`<`LocationId`, `ClaimedLocation`\>
@@ -657,6 +691,16 @@ time may be in the past
 #### Returns
 
 `number`
+
+---
+
+### getKardashevLocations
+
+▸ **getKardashevLocations**(): `Map`<`LocationId`, `KardashevLocation`\>
+
+#### Returns
+
+`Map`<`LocationId`, `KardashevLocation`\>
 
 ---
 
@@ -991,14 +1035,15 @@ Whenever we update an entity, we must do it via that entity's type's correspondi
 
 ### planetLevelFromHexPerlin
 
-▸ **planetLevelFromHexPerlin**(`hex`, `perlin`): `PlanetLevel`
+▸ **planetLevelFromHexPerlin**(`hex`, `perlin`, `distFromOrigin?`): `PlanetLevel`
 
 #### Parameters
 
-| Name     | Type         |
-| :------- | :----------- |
-| `hex`    | `LocationId` |
-| `perlin` | `number`     |
+| Name             | Type         | Default value |
+| :--------------- | :----------- | :------------ |
+| `hex`            | `LocationId` | `undefined`   |
+| `perlin`         | `number`     | `undefined`   |
+| `distFromOrigin` | `number`     | `-1`          |
 
 #### Returns
 
@@ -1008,14 +1053,15 @@ Whenever we update an entity, we must do it via that entity's type's correspondi
 
 ### planetTypeFromHexPerlin
 
-▸ **planetTypeFromHexPerlin**(`hex`, `perlin`): `PlanetType`
+▸ **planetTypeFromHexPerlin**(`hex`, `perlin`, `distFromOrigin?`): `PlanetType`
 
 #### Parameters
 
-| Name     | Type         |
-| :------- | :----------- |
-| `hex`    | `LocationId` |
-| `perlin` | `number`     |
+| Name             | Type         | Default value |
+| :--------------- | :----------- | :------------ |
+| `hex`            | `LocationId` | `undefined`   |
+| `perlin`         | `number`     | `undefined`   |
+| `distFromOrigin` | `number`     | `-1`          |
 
 #### Returns
 
@@ -1093,7 +1139,7 @@ received some artifact data from the contract. update our stores
 
 ### replacePlanetFromContractData
 
-▸ **replacePlanetFromContractData**(`planet`, `updatedArrivals?`, `updatedArtifactsOnPlanet?`, `revealedLocation?`, `claimerEthAddress?`): `void`
+▸ **replacePlanetFromContractData**(`planet`, `updatedArrivals?`, `updatedArtifactsOnPlanet?`, `revealedLocation?`, `claimerEthAddress?`, `burnOperator?`, `kardashevOperator?`): `void`
 
 received some planet data from the contract. update our stores
 
@@ -1106,6 +1152,8 @@ received some planet data from the contract. update our stores
 | `updatedArtifactsOnPlanet?` | `ArtifactId`[]     |
 | `revealedLocation?`         | `RevealedLocation` |
 | `claimerEthAddress?`        | `EthAddress`       |
+| `burnOperator?`             | `EthAddress`       |
+| `kardashevOperator?`        | `EthAddress`       |
 
 #### Returns
 
@@ -1133,6 +1181,22 @@ This function also handles managing artifact update messages and indexing the ma
 
 ---
 
+### setBurnedLocation
+
+▸ **setBurnedLocation**(`burnedLocation`): `void`
+
+#### Parameters
+
+| Name             | Type             |
+| :--------------- | :--------------- |
+| `burnedLocation` | `BurnedLocation` |
+
+#### Returns
+
+`void`
+
+---
+
 ### setClaimedLocation
 
 ▸ **setClaimedLocation**(`claimedLocation`): `void`
@@ -1142,6 +1206,22 @@ This function also handles managing artifact update messages and indexing the ma
 | Name              | Type              |
 | :---------------- | :---------------- |
 | `claimedLocation` | `ClaimedLocation` |
+
+#### Returns
+
+`void`
+
+---
+
+### setKardashevLocation
+
+▸ **setKardashevLocation**(`kardashevLocation`): `void`
+
+#### Parameters
+
+| Name                | Type                |
+| :------------------ | :------------------ |
+| `kardashevLocation` | `KardashevLocation` |
 
 #### Returns
 
@@ -1171,13 +1251,14 @@ This function also handles managing planet update messages and indexing the map 
 
 ### spaceTypeFromPerlin
 
-▸ **spaceTypeFromPerlin**(`perlin`): `SpaceType`
+▸ **spaceTypeFromPerlin**(`perlin`, `distFromOrigin`): `SpaceType`
 
 #### Parameters
 
-| Name     | Type     |
-| :------- | :------- |
-| `perlin` | `number` |
+| Name             | Type     |
+| :--------------- | :------- |
+| `perlin`         | `number` |
+| `distFromOrigin` | `number` |
 
 #### Returns
 

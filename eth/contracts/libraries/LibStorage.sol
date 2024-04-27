@@ -103,8 +103,8 @@ struct LogStorage {
     uint256 transferPlanetCnt;
     uint256 hatEarnSum;
     mapping(uint256 => uint256) hatEarn;
-    uint256 buyHatCnt;
-    uint256 takeOffHatCnt;
+    uint256 buySkinCnt;
+    uint256 takeOffSkinCnt;
     uint256 setHatCnt;
     uint256 setPlanetCanShowCnt;
     uint256 withdrawSilverCnt;

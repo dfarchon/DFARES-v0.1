@@ -47,19 +47,30 @@ reading and writing to and from the blockchain.
 - [getArrival](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getarrival)
 - [getArrivalsForPlanet](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getarrivalsforplanet)
 - [getArtifactById](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getartifactbyid)
+- [getBurnedCoordsByIdIfExists](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getburnedcoordsbyidifexists)
+- [getBurnedPlanetsCoords](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getburnedplanetscoords)
 - [getClaimedCoordsByIdIfExists](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getclaimedcoordsbyidifexists)
 - [getClaimedPlanetsCoords](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getclaimedplanetscoords)
 - [getConstants](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getconstants)
 - [getContractAddress](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getcontractaddress)
+- [getEntryFee](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getentryfee)
 - [getGasFeeForTransaction](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getgasfeefortransaction)
+- [getIsHalfPrice](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getishalfprice)
 - [getIsPaused](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getispaused)
+- [getKardashevCoordsByIdIfExists](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getkardashevcoordsbyidifexists)
+- [getKardashevPlanetsCoords](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getkardashevplanetscoords)
+- [getNTargetPlanetArrivalIds](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getntargetplanetarrivalids)
 - [getPlanetById](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getplanetbyid)
 - [getPlayerArtifacts](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getplayerartifacts)
 - [getPlayerById](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getplayerbyid)
+- [getPlayerSpaceships](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getplayerspaceships)
 - [getPlayers](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getplayers)
 - [getRevealedCoordsByIdIfExists](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getrevealedcoordsbyidifexists)
 - [getRevealedPlanetsCoords](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getrevealedplanetscoords)
 - [getScoreV3](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getscorev3)
+- [getTargetPlanetAllArrivals](Backend_GameLogic_ContractsAPI.ContractsAPI.md#gettargetplanetallarrivals)
+- [getTargetPlanetArrivalIdsRangeWithTimestamp](Backend_GameLogic_ContractsAPI.ContractsAPI.md#gettargetplanetarrivalidsrangewithtimestamp)
+- [getTargetPlanetArrivalIdsWithTimestamp](Backend_GameLogic_ContractsAPI.ContractsAPI.md#gettargetplanetarrivalidswithtimestamp)
 - [getTokenMintEndTimestamp](Backend_GameLogic_ContractsAPI.ContractsAPI.md#gettokenmintendtimestamp)
 - [getTouchedPlanetIds](Backend_GameLogic_ContractsAPI.ContractsAPI.md#gettouchedplanetids)
 - [getWorldRadius](Backend_GameLogic_ContractsAPI.ContractsAPI.md#getworldradius)
@@ -374,6 +385,40 @@ game - these {@code ContractsAPIEvent} events.
 
 ---
 
+### getBurnedCoordsByIdIfExists
+
+▸ **getBurnedCoordsByIdIfExists**(`planetId`): `Promise`<`undefined` \| `BurnedCoords`\>
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
+
+#### Returns
+
+`Promise`<`undefined` \| `BurnedCoords`\>
+
+---
+
+### getBurnedPlanetsCoords
+
+▸ **getBurnedPlanetsCoords**(`startingAt`, `onProgressIds?`, `onProgressCoords?`): `Promise`<`BurnedCoords`[]\>
+
+#### Parameters
+
+| Name                | Type                                      |
+| :------------------ | :---------------------------------------- |
+| `startingAt`        | `number`                                  |
+| `onProgressIds?`    | (`fractionCompleted`: `number`) => `void` |
+| `onProgressCoords?` | (`fractionCompleted`: `number`) => `void` |
+
+#### Returns
+
+`Promise`<`BurnedCoords`[]\>
+
+---
+
 ### getClaimedCoordsByIdIfExists
 
 ▸ **getClaimedCoordsByIdIfExists**(`planetId`): `Promise`<`undefined` \| `ClaimedCoords`\>
@@ -428,6 +473,16 @@ game - these {@code ContractsAPIEvent} events.
 
 ---
 
+### getEntryFee
+
+▸ **getEntryFee**(): `Promise`<`BigNumber`\>
+
+#### Returns
+
+`Promise`<`BigNumber`\>
+
+---
+
 ### getGasFeeForTransaction
 
 ▸ `Private` **getGasFeeForTransaction**(`tx`): `string` \| `AutoGasSetting`
@@ -448,6 +503,16 @@ a string representing that we want to use an auto gas setting.
 
 ---
 
+### getIsHalfPrice
+
+▸ **getIsHalfPrice**(): `Promise`<`boolean`\>
+
+#### Returns
+
+`Promise`<`boolean`\>
+
+---
+
 ### getIsPaused
 
 ▸ **getIsPaused**(): `Promise`<`boolean`\>
@@ -455,6 +520,56 @@ a string representing that we want to use an auto gas setting.
 #### Returns
 
 `Promise`<`boolean`\>
+
+---
+
+### getKardashevCoordsByIdIfExists
+
+▸ **getKardashevCoordsByIdIfExists**(`planetId`): `Promise`<`undefined` \| `KardashevCoords`\>
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
+
+#### Returns
+
+`Promise`<`undefined` \| `KardashevCoords`\>
+
+---
+
+### getKardashevPlanetsCoords
+
+▸ **getKardashevPlanetsCoords**(`startingAt`, `onProgressIds?`, `onProgressCoords?`): `Promise`<`KardashevCoords`[]\>
+
+#### Parameters
+
+| Name                | Type                                      |
+| :------------------ | :---------------------------------------- |
+| `startingAt`        | `number`                                  |
+| `onProgressIds?`    | (`fractionCompleted`: `number`) => `void` |
+| `onProgressCoords?` | (`fractionCompleted`: `number`) => `void` |
+
+#### Returns
+
+`Promise`<`KardashevCoords`[]\>
+
+---
+
+### getNTargetPlanetArrivalIds
+
+▸ **getNTargetPlanetArrivalIds**(`planetId`): `Promise`<`number`\>
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
+
+#### Returns
+
+`Promise`<`number`\>
 
 ---
 
@@ -504,6 +619,23 @@ a string representing that we want to use an auto gas setting.
 #### Returns
 
 `Promise`<`undefined` \| `Player`\>
+
+---
+
+### getPlayerSpaceships
+
+▸ **getPlayerSpaceships**(`playerId?`, `onProgress?`): `Promise`<`Artifact`[]\>
+
+#### Parameters
+
+| Name          | Type                            |
+| :------------ | :------------------------------ |
+| `playerId?`   | `EthAddress`                    |
+| `onProgress?` | (`percent`: `number`) => `void` |
+
+#### Returns
+
+`Promise`<`Artifact`[]\>
 
 ---
 
@@ -573,6 +705,58 @@ the center. If this player does not have a claimed planet, then the score is und
 #### Returns
 
 `Promise`<`undefined` \| `number`\>
+
+---
+
+### getTargetPlanetAllArrivals
+
+▸ **getTargetPlanetAllArrivals**(`planetId`, `timestamp`, `onProgress?`): `Promise`<`QueuedArrival`[]\>
+
+#### Parameters
+
+| Name          | Type                                      |
+| :------------ | :---------------------------------------- |
+| `planetId`    | `LocationId`                              |
+| `timestamp`   | `number`                                  |
+| `onProgress?` | (`fractionCompleted`: `number`) => `void` |
+
+#### Returns
+
+`Promise`<`QueuedArrival`[]\>
+
+---
+
+### getTargetPlanetArrivalIdsRangeWithTimestamp
+
+▸ **getTargetPlanetArrivalIdsRangeWithTimestamp**(`planetId`, `timestamp`): `Promise`<`number`[]\>
+
+#### Parameters
+
+| Name        | Type         |
+| :---------- | :----------- |
+| `planetId`  | `LocationId` |
+| `timestamp` | `number`     |
+
+#### Returns
+
+`Promise`<`number`[]\>
+
+---
+
+### getTargetPlanetArrivalIdsWithTimestamp
+
+▸ **getTargetPlanetArrivalIdsWithTimestamp**(`planetId`, `timestamp`): `Promise`<`number`[]\>
+
+#### Parameters
+
+| Name        | Type         |
+| :---------- | :----------- |
+| `planetId`  | `LocationId` |
+| `timestamp` | `number`     |
+
+#### Returns
+
+`Promise`<`number`[]\>
 
 ---
 

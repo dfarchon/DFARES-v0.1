@@ -4,6 +4,7 @@ export type Avatar = {
   legacy: boolean;
   topLayer: Array<string>;
   bottomLayer: Array<string>;
+  desc: string;
   // image?: () => Promise<HTMLImageElement>;
 };
 
@@ -25,114 +26,140 @@ const Cathy = {
   legacy: false,
   topLayer: [URL + '/img/avatar/Cathy.png'],
   bottomLayer: [],
+  desc: '',
 };
 
 const BaliGee = {
   legacy: false,
   topLayer: [URL + '/img/avatar/BaliGee.png'],
   bottomLayer: [],
+  desc: '',
 };
 
 const Christine = {
   legacy: false,
   topLayer: [URL + '/img/avatar/Christine.png'],
   bottomLayer: [],
+  desc: '',
 };
 
 const Ddy = {
   legacy: false,
   topLayer: [URL + '/img/avatar/ddy.png'],
   bottomLayer: [],
+  desc: '',
 };
 
 const Flicka = {
   legacy: false,
   topLayer: [URL + '/img/avatar/Flicka.png'],
   bottomLayer: [],
+  desc: '',
 };
 
 const Gink = {
   legacy: false,
   topLayer: [URL + '/img/avatar/gink.png'],
   bottomLayer: [],
+  desc: '',
 };
 
 const Hope = {
   legacy: false,
   topLayer: [URL + '/img/avatar/Hope.png'],
   bottomLayer: [],
+  desc: '',
 };
 
 const Modukon = {
   legacy: false,
   topLayer: [URL + '/img/avatar/modukon.png'],
   bottomLayer: [],
+  desc: '',
 };
 
 const Wesely = {
   legacy: false,
   topLayer: [URL + '/img/avatar/wesely.png'],
   bottomLayer: [],
+  desc: '',
 };
 
 const Zeroxlau = {
   legacy: false,
   topLayer: [URL + '/img/avatar/0xlau.png'],
   bottomLayer: [],
+  desc: '',
 };
 
 const Hooks = {
   legacy: false,
   topLayer: [URL + '/img/avatar/hooks.png'],
   bottomLayer: [],
+  desc: '',
 };
 
 const k1ic = {
   legacy: false,
   topLayer: [URL + '/img/avatar/k1ic.png'],
   bottomLayer: [],
+  desc: '',
 };
 
 const zknevermore = {
   legacy: false,
   topLayer: [URL + '/img/avatar/zknevermore.png'],
   bottomLayer: [],
+  desc: '',
 };
 
 const ZOOJOO = {
   legacy: false,
   topLayer: [URL + '/img/avatar/ZOOJOO.png'],
   bottomLayer: [],
+  desc: 'Traveling in the blockchain universe is the ultimate romance',
 };
 
 const ZT = {
   legacy: false,
   topLayer: [URL + '/img/avatar/ZT.png'],
   bottomLayer: [],
+  desc: '',
 };
 
 const Skoon = {
   legacy: false,
   topLayer: [URL + '/img/avatar/skooh.png'],
   bottomLayer: [],
+  desc: '',
 };
 
 const MUDAI = {
   legacy: false,
   topLayer: [URL + '/img/avatar/MUDAI.png'],
   bottomLayer: [],
+  desc: '',
 };
 
 const Xiaoyifu = {
   legacy: false,
   topLayer: [URL + '/img/avatar/xiaoyifu.png'],
   bottomLayer: [],
+  desc: '',
 };
 
 const Yuppie = {
   legacy: false,
   topLayer: [URL + '/img/avatar/yuppie.png'],
   bottomLayer: [],
+  desc: '',
+};
+
+const Snow = {
+  legacy: false,
+  topLayer: [URL + '/img/avatar/snow.png'],
+  bottomLayer: [],
+  desc: '',
 };
 
 export const avatarFromType = (type: AvatarType): Avatar => avatars[type];
@@ -157,4 +184,5 @@ export const avatars: Record<AvatarType, Avatar> = {
   [AvatarType.MUDAI]: MUDAI,
   [AvatarType.Xiaoyifu]: Xiaoyifu,
   [AvatarType.Yuppie]: Yuppie,
+  [AvatarType.Snow]: Snow,
 };
