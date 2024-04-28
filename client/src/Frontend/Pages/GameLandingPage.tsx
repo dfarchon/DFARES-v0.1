@@ -1016,7 +1016,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
             terminal.current?.newline();
 
             terminal.current?.println(
-              "Don't worry :-) you can get more Redstone Holesky ETH this way 😘",
+              "Don't worry :-) you can get more ETH on Redstone this way 😘",
               TerminalTextStyle.Pink
             );
 

@@ -50,7 +50,7 @@ function OnboardMoney({ advance }: { advance: () => void }) {
   const uiManager = useUIManager();
   const account = useAccount(uiManager);
 
-  const explorerAddressLink = `${BLOCK_EXPLORER_URL}+'/address/${account}`;
+  const explorerAddressLink = `${BLOCK_EXPLORER_URL}/address/${account}`;
 
   return (
     <StyledOnboardingContent>
