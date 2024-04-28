@@ -1,8 +1,39 @@
-import { BLOCKCHAIN_BRIDGE, MAX_LOGO_TYPE, MIN_LOGO_TYPE, TOKEN_NAME } from '@dfares/constants';
+import {
+  BLOCKCHAIN_BRIDGE,
+  MAX_AVATAR_TYPE,
+  MAX_LOGO_TYPE,
+  MAX_MEME_TYPE,
+  MIN_AVATAR_TYPE,
+  MIN_LOGO_TYPE,
+  MIN_MEME_TYPE,
+  TOKEN_NAME,
+} from '@dfares/constants';
 import { weiToEth } from '@dfares/network';
-import { getHatSizeName, logoTypeToNum } from '@dfares/procedural';
+import {
+  avatarTypeToNum,
+  isAvatar,
+  isHat,
+  isLogo,
+  isMeme,
+  logoTypeToNum,
+  memeTypeToNum,
+  numToAvatarType,
+  numToHatType,
+  numToLogoType,
+  numToMemeType,
+} from '@dfares/procedural';
 import { isUnconfirmedBuyHatTx } from '@dfares/serde';
-import { LocationId, LogoType, LogoTypeNames, Planet } from '@dfares/types';
+import {
+  AvatarType,
+  AvatarTypeNames,
+  HatTypeNames,
+  LocationId,
+  LogoType,
+  LogoTypeNames,
+  MemeType,
+  MemeTypeNames,
+  Planet,
+} from '@dfares/types';
 import { BigNumber } from 'ethers';
 import React, { useState } from 'react';
 import styled from 'styled-components';
@@ -76,37 +107,46 @@ export function HatPane({
   //   labels.push(HatTypeNames[i]);
   // }
 
-  // for (let i = MIN_MEME_TYPE; i <= MAX_MEME_TYPE; i++) {
-  //   values.push(memeTypeToNum(Number(i) as MemeType).toString());
-  //   labels.push(MemeTypeNames[i]);
-  // }
+  for (let i = MIN_MEME_TYPE; i <= MAX_MEME_TYPE; i++) {
+    values.push(memeTypeToNum(Number(i) as MemeType).toString());
+    labels.push(MemeTypeNames[i]);
+  }
 
   for (let i = MIN_LOGO_TYPE; i <= MAX_LOGO_TYPE; i++) {
     values.push(logoTypeToNum(Number(i) as LogoType).toString());
     labels.push(LogoTypeNames[i]);
   }
 
-  // for (let i = MIN_AVATAR_TYPE; i <= MAX_AVATAR_TYPE; i++) {
-  //   values.push(avatarTypeToNum(Number(i) as AvatarType).toString());
-  //   labels.push(AvatarTypeNames[i]);
-  // }
+  for (let i = MIN_AVATAR_TYPE; i <= MAX_AVATAR_TYPE; i++) {
+    values.push(avatarTypeToNum(Number(i) as AvatarType).toString());
+    labels.push(AvatarTypeNames[i]);
+  }
+
+  const getSkinTypeName = (hatType: number): string => {
+    if (isHat(hatType)) return HatTypeNames[numToHatType(hatType)];
+    else if (isMeme(hatType)) return MemeTypeNames[numToMemeType(hatType)];
+    else if (isLogo(hatType)) return LogoTypeNames[numToLogoType(hatType)];
+    else if (isAvatar(hatType)) return AvatarTypeNames[numToAvatarType(hatType)];
+    return "Let's wear Skin 🌍";
+  };
 
   if (planet && planet.owner === account) {
     return (
       <StyledHatPane>
         {halfPrice && <MythicLabelText text={'Everything is half price !!!'} />}
         <div>
-          <Sub>HAT Type</Sub>
+          <Sub>Skin Type</Sub>
           {/* <span>{getPlanetCosmetic(planet).hatType}</span> */}
-          <span> {planet.hatType}</span>
+          <span> {getSkinTypeName(planet.hatType)}</span>
         </div>
-        <div>
+
+        {/* <div>
           <Sub>HAT Level</Sub>
           <span>{getHatSizeName(planet)}</span>
-        </div>
+        </div> */}
         <div className='margin-top'>
           {/* <Sub>Next Level HAT Cost</Sub> */}
-          <Sub>{planet && planet.hatLevel > 0 ? 'Take Off' : 'Buy'} HAT Cost</Sub>
+          <Sub>{planet && planet.hatLevel > 0 ? 'Take Off' : 'Buy'} Skin Cost</Sub>
           <span>
             {getHatCostEth(planet)} ${TOKEN_NAME}
           </span>
@@ -133,7 +173,7 @@ export function HatPane({
         <EmSpacer height={0.5} />
 
         <div>
-          <div>Hat Type</div>
+          <div>Skin Type</div>
           <SelectFrom
             values={values}
             labels={labels}
@@ -145,11 +185,11 @@ export function HatPane({
         <Btn
           onClick={() => {
             if (!enabled(planet) || !uiManager || !planet) return;
-            uiManager.buyHat(planet, Number(hatType));
+            uiManager.buySkin(planet, Number(hatType));
           }}
           disabled={!enabled(planet)}
         >
-          {planet && planet.hatLevel > 0 ? 'Take Off' : 'Buy'} HAT
+          {planet && planet.hatLevel > 0 ? 'Take Off' : 'Buy'} Skin
         </Btn>
       </StyledHatPane>
     );

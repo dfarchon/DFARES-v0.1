@@ -67,7 +67,7 @@ export function isUnconfirmedRefreshPlanet(
 }
 
 export function isUnconfirmedBuyHat(txIntent: TxIntent): txIntent is UnconfirmedBuyHat {
-  return txIntent.methodName === 'buyHat';
+  return txIntent.methodName === 'buySkin';
 }
 
 export function isUnconfirmedTransfer(txIntent: TxIntent): txIntent is UnconfirmedPlanetTransfer {

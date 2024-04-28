@@ -10,6 +10,7 @@
 - [Green](Frontend_Utils_TerminalTypes.TerminalTextStyle.md#green)
 - [Invisible](Frontend_Utils_TerminalTypes.TerminalTextStyle.md#invisible)
 - [Mythic](Frontend_Utils_TerminalTypes.TerminalTextStyle.md#mythic)
+- [Pink](Frontend_Utils_TerminalTypes.TerminalTextStyle.md#pink)
 - [Red](Frontend_Utils_TerminalTypes.TerminalTextStyle.md#red)
 - [Sub](Frontend_Utils_TerminalTypes.TerminalTextStyle.md#sub)
 - [Subber](Frontend_Utils_TerminalTypes.TerminalTextStyle.md#subber)
@@ -33,13 +34,19 @@
 
 ### Invisible
 
-• **Invisible** = `7`
+• **Invisible** = `8`
 
 ---
 
 ### Mythic
 
-• **Mythic** = `9`
+• **Mythic** = `10`
+
+---
+
+### Pink
+
+• **Pink** = `7`
 
 ---
 
@@ -69,7 +76,7 @@
 
 ### Underline
 
-• **Underline** = `8`
+• **Underline** = `9`
 
 ---
 

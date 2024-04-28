@@ -183,9 +183,9 @@ async function getPlayerLog(
 
   const rawPlayerLog = await contract.getPlayerLog(playerAddress);
   // // console.log(rawPlayerLog);
-  const buyHatCnt = rawPlayerLog.buyHatCnt.toNumber();
-  const buyHatCost = hre.ethers.utils.formatUnits(rawPlayerLog.buyHatCost);
-  const takeOffHatCnt = rawPlayerLog.takeOffHatCnt.toNumber();
+  const buySkinCnt = rawPlayerLog.buySkinCnt.toNumber();
+  const buySkinCost = hre.ethers.utils.formatUnits(rawPlayerLog.buySkinCost);
+  const takeOffSkinCnt = rawPlayerLog.takeOffSkinCnt.toNumber();
   const withdrawSilverCnt = rawPlayerLog.withdrawSilverCnt.toNumber();
   const claimLocationCnt = rawPlayerLog.claimLocationCnt.toNumber();
   const changeArtifactImageTypeCnt = rawPlayerLog.changeArtifactImageTypeCnt.toNumber();
@@ -208,12 +208,12 @@ async function getPlayerLog(
   const donateSum = hre.ethers.utils.formatUnits(rawPlayerLog.donateSum);
 
   console.log('account:', playerAddress.toLocaleLowerCase());
-  console.log('       Hat Cost:', buyHatCost, 'ether');
+  console.log('       Hat Cost:', buySkinCost, 'ether');
   console.log('    Planet Cost:', buyPlanetCost, 'ether');
   console.log(' Spaceship Cost:', buySpaceshipCost, 'ether');
   console.log('     Donate Sum:', donateSum, 'ether');
-  console.log('                 buyHat Cnt:', buyHatCnt);
-  console.log('             takeOffHat Cnt:', takeOffHatCnt);
+  console.log('                buySkin Cnt:', buySkinCnt);
+  console.log('            takeOffSkin Cnt:', takeOffSkinCnt);
   console.log('         withdrawSilver Cnt:', withdrawSilverCnt);
   console.log('          claimLocation Cnt:', claimLocationCnt);
   console.log('changeArtifactImageType Cnt:', changeArtifactImageTypeCnt);
@@ -286,8 +286,8 @@ async function analysisGameLog({}, hre: HardhatRuntimeEnvironment) {
   const entryCost = hre.ethers.utils.formatUnits(rawResult[1]);
   const transferPlanetCnt = rawResult[2].toNumber();
   const hatEarnSum = hre.ethers.utils.formatUnits(rawResult[3]);
-  const buyHatCnt = rawResult[4].toNumber();
-  const takeOffHatCnt = rawResult[5].toNumber();
+  const buySkinCnt = rawResult[4].toNumber();
+  const takeOffSkinCnt = rawResult[5].toNumber();
   const setHatCnt = rawResult[6].toNumber();
   const setPlanetCanShowCnt = rawResult[7].toNumber();
   const withdrawSilverCnt = rawResult[8].toNumber();
@@ -322,8 +322,8 @@ async function analysisGameLog({}, hre: HardhatRuntimeEnvironment) {
   console.log('         transferPlanet Cnt:', transferPlanetCnt);
   console.log('       setPlanetCanShow Cnt:', setPlanetCanShowCnt);
   console.log('                 setHat Cnt:', setHatCnt);
-  console.log('                 buyHat Cnt:', buyHatCnt);
-  console.log('             takeOffHat Cnt:', takeOffHatCnt);
+  console.log('                 buySkin Cnt:', buySkinCnt);
+  console.log('             takeOffSkin Cnt:', takeOffSkinCnt);
   console.log('         withdrawSilver Cnt:', withdrawSilverCnt);
   console.log('          claimLocation Cnt:', claimLocationCnt);
   console.log('changeArtifactImageType Cnt:', changeArtifactImageTypeCnt);

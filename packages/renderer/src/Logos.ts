@@ -55,6 +55,83 @@ const Redstone = {
 };
 
 //4
+const Mud = {
+  legacy: false,
+  topLayer: [URL + '/img/logo/Mud.png'],
+  bottomLayer: [],
+  name: 'MUD',
+  desc: 'MUD provides you with the tools to build ambitious onchain applications.',
+  color: '#ff7612',
+  website: 'https://mud.dev/',
+};
+
+//5
+const Biomes = {
+  legacy: false,
+  topLayer: [URL + '/img/logo/Biomes.png'],
+  bottomLayer: [],
+  name: 'Biomes',
+  desc: 'Create and Play Onchain Biomes.',
+  color: '#42a232',
+  website: 'https://twitter.com/biomesAW',
+};
+
+//6
+const ThisCursedMachine = {
+  legacy: false,
+  topLayer: [URL + '/img/logo/MovingCastles.png'],
+  bottomLayer: [],
+  name: 'Moving Castles',
+  desc: 'Game studio for the tactical research and development of autonomous worlds.',
+  color: 'white',
+  website: 'https://twitter.com/movingcastles_/',
+};
+
+//7
+const SkyStrife = {
+  legacy: false,
+  topLayer: [URL + '/img/logo/SkyStrife.png'],
+  bottomLayer: [],
+  name: 'Sky Strife',
+  desc: 'The free-to-play, fully onchain real-time strategy game.',
+  color: 'white',
+  website: 'https://www.skystrife.xyz/',
+};
+
+// 8
+const SmallBrainGames = {
+  legacy: false,
+  topLayer: [URL + '/img/logo/SmallBrain.png'],
+  bottomLayer: [],
+  name: 'Small Brain Games',
+  desc: 'Building a new on-chain game every 6 weeks.',
+  color: 'white',
+  website: 'https://twitter.com/0xsmallbrain',
+};
+
+//9
+const DownStream = {
+  legacy: false,
+  topLayer: [URL + '/img/logo/DownStream.png'],
+  bottomLayer: [],
+  name: 'DownStream',
+  desc: "Help a super intelligent AI rebuild after an unfortunate accident. The world's first Post Singularity Civilisation Simulator, by @PlaymintUK",
+  color: '#fb7001',
+  website: 'https://downstream.game/',
+};
+
+//10
+const Dear = {
+  legacy: false,
+  topLayer: [URL + '/img/logo/Dear.png'],
+  bottomLayer: [],
+  name: 'Dear',
+  desc: 'A digital creature living on blockchain.',
+  color: 'white',
+  website: 'https://twitter.com/dear_dyr',
+};
+
+//11
 const DFARES = {
   legacy: false,
   topLayer: [URL + '/img/logo/DFARES.png'],
@@ -66,7 +143,32 @@ const DFARES = {
   website: 'https://dfares.xyz/',
 };
 
-//5
+//12
+const PixeLAW = {
+  legacy: false,
+  topLayer: [URL + '/img/logo/PixeLAW.png'],
+  bottomLayer: [],
+  name: 'PixeLAW',
+  desc: 'A pixel-based Autonomous World.',
+  color: 'white',
+  website: 'https://pixelaw.xyz/',
+};
+
+//13
+const GGQuest = {
+  legacy: false,
+  topLayer: [URL + '/img/logo/ggQuest.png'],
+  name: 'GGQuest',
+  desc: 'GGQuest is the ultimate on-chain progression system for gamers. \
+  We track & aggregate all gaming-related data across various platforms & \
+  ecosystems and showcase them under one unified dashboard- Quest ID.\
+   This can help build reputation & unlock personalized gaming experiences.',
+  color: '#fff',
+  bottomLayer: [],
+  website: 'https://twitter.com/gg_quest_gg',
+};
+
+//14
 const DFArchon = {
   legacy: false,
   topLayer: [URL + '/img/logo/DFArchon.png'],
@@ -83,7 +185,18 @@ const DFArchon = {
   website: 'https://twitter.com/DFArchon',
 };
 
-//6
+//15
+const Mask = {
+  legacy: false,
+  topLayer: [URL + '/img/logo/Mask.svg'],
+  bottomLayer: [],
+  name: 'Mask Network',
+  desc: 'Mask Network brings privacy and benefits from Web3 to social media like Facebook & Twitter - with an open-sourced browser extension.',
+  color: '#1FB3FB',
+  website: 'https://twitter.com/realMaskNetwork',
+};
+
+//16
 const AGLDDAO = {
   legacy: false,
   topLayer: [URL + '/img/logo/AGLDDAO.png'],
@@ -96,57 +209,42 @@ const AGLDDAO = {
   website: 'https://twitter.com/GoldAdventure',
 };
 
-//7
-const Mask = {
+//17
+const AWHouse = {
   legacy: false,
-  topLayer: [URL + '/img/logo/Mask.svg'],
+  topLayer: [URL + '/img/logo/AWHouse.png'],
+  name: 'AW House',
+  desc: 'AW House is an Ecosystem for Autonomous World builders.',
+  color: '#fff',
   bottomLayer: [],
-  name: 'Mask Network',
-  desc: 'Mask Network brings privacy and benefits from Web3 to social media like Facebook & Twitter - with an open-sourced browser extension.',
-  color: '#1FB3FB',
-  website: 'https://twitter.com/realMaskNetwork',
+  website: 'https://twitter.com/AW_house',
 };
 
-//8
-const Web3MQ = {
+//18
+const OrdenGG = {
   legacy: false,
-  topLayer: [URL + '/img/logo/Web3MQ.png'],
-  bottomLayer: [],
-  name: 'Web3MQ',
-  desc: 'Message relay network for Web3 based on current test results,\
-  offering a trustless and seamless interactive experience. \
-  With its interoperability, permissionless composability, and other features,\
-   Web3MQ lowers integration barriers and provides developers with\
-    convenient customization options. Web3MQ offers solutions for games, \
-    social applications, and wallets, making it the next-generation provider\
-     for fully on-chain gaming communication. ',
+  topLayer: [URL + '/img/logo/OrdenGG.png'],
+  name: 'ordengg',
+  desc: 'We are the orden, a professional on-chain esport team | We won 3/4 of the last dark forest rounds.',
 
-  color: '#9A26F9',
-  website: 'https://twitter.com/Web3MQ',
+  color: '#fff201',
+  bottomLayer: [],
+  website: 'https://twitter.com/orden_gg',
 };
 
-//9
-const AltLayer = {
+//19
+const DFDAO = {
   legacy: false,
-  topLayer: [URL + '/img/logo/AltLayer.png'],
-  bottomLayer: [],
-  name: 'AltLayer',
-  desc: 'Decentralized & Elastic Rollups-as-a-Service Protocol.\
-  Backed by \
-  @balajis\
-  @polychaincap\
-  @hjmomtazi\
-  @jump_\
-  @gavofyork\
-  @kaiynne\
-  @tekinsalimi\
-  @twobitidiot',
+  topLayer: [URL + '/img/logo/DFDAO.png'],
+  name: 'DFDAO',
+  desc: 'DFDAO is a collective of Dark Forest players. To play Dark Forest is to build Dark Forest.',
 
-  color: '#787ab4',
-  website: 'https://altlayer.io/',
+  color: '#03ce95',
+  bottomLayer: [],
+  website: 'https://twitter.com/d_fdao',
 };
 
-//10
+//20
 const FunBlocks = {
   legacy: false,
   topLayer: [URL + '/img/logo/FunBlocks.png'],
@@ -159,102 +257,7 @@ const FunBlocks = {
   website: 'https://twitter.com/0xFunBlocks',
 };
 
-//11
-const GamePhylum = {
-  legacy: false,
-  topLayer: [URL + '/img/logo/GamePhylum.png'],
-  bottomLayer: [],
-  name: 'GamePhylum',
-  desc: 'GamePhylum is a DAO-driven platform focused on game content creation and distribution,\
-   with a vision to create an immersive Web3 game player community.',
-  logo: '/images/logo/GamePhylum.png',
-  color: '#06beca',
-  website: 'https://twitter.com/GamePhylum',
-};
-
-//12
-const OrdenGG = {
-  legacy: false,
-  topLayer: [URL + '/img/logo/OrdenGG.png'],
-  name: 'ordengg',
-  desc: 'We are the orden, a professional on-chain esport team | We won 3/4 of the last dark forest rounds.',
-
-  color: '#fff201',
-  bottomLayer: [],
-  website: 'https://twitter.com/orden_gg',
-};
-
-//13
-const MarrowDAO = {
-  legacy: false,
-  topLayer: [URL + '/img/logo/MarrowDAO.png'],
-  name: 'Guild W',
-  desc: 'Guild W is the first on-chain e-sports team, incubated by MarrowDAO.\
-  The main members are Solidity developers, node operators,\
-  blockchain game players and investment analysts. All of them are loyal players of the Dark Forest.\
- Guild W believes in the future of native blockchain games and in the power of technology.\
- We are building a professional e-sports team with both software developers and game players.',
-  color: '#fff',
-  bottomLayer: [],
-  website: 'https://twitter.com/marrowdao',
-};
-
-//14
-const DFDAO = {
-  legacy: false,
-  topLayer: [URL + '/img/logo/DFDAO.png'],
-  name: 'DFDAO',
-  desc: 'DFDAO is a collective of Dark Forest players. To play Dark Forest is to build Dark Forest.',
-
-  color: '#03ce95',
-  bottomLayer: [],
-  website: 'https://twitter.com/d_fdao',
-};
-
-//15
-const Two77DAO = {
-  legacy: false,
-  topLayer: [URL + '/img/logo/277DAO.png'],
-  name: '277 DAO',
-  desc: 'We, 277 DAO, are a Chinese community that provides technical support, strategy sharing and NFT rewards for blockchain game players.\
-  In order to make players enjoy blockchain game better, we will often organize community rounds with great rewards for you to win.\
-  We look forward to your joining us!',
-
-  color: '#c3c8d0',
-  bottomLayer: [],
-  website: 'https://twitter.com/277dao_',
-};
-
-//16
-const WeirdaoGhostGang = {
-  legacy: false,
-  topLayer: [URL + '/img/logo/WeirdoGhostGang.png'],
-  desc: 'Weirdo Ghost Gang, affectionately known as "Lil Ghost",\
-  is a Web3 native IP incubated by ManesLAB. \
-  Having a storied background in pioneering aesthetics,\
-   a free-spirited community culture, and diverse development trajectories, \
-   Weirdo Ghost Gang has captivated collectors, artists, and musicians worldwide.\
-    Embodying Web3\'s free, open, innovative, \
-    and inclusive lifestyle, Weirdo Ghost Gang amplifies creative content and operations to inspire. \
-    Their unwavering essence is to "OUTA THE BOX, BE A WEIRDO."',
-  name: 'Weirdao Ghost Gang',
-  color: '#fff',
-  bottomLayer: [],
-  website: 'https://twitter.com/WeirdoGhostGang',
-};
-
-//17
-const OVERLORDS = {
-  legacy: false,
-  topLayer: [URL + '/img/logo/Overlords.png'],
-  name: 'OVERLORDS',
-  desc: 'Our overall mission is to be a central hub for on-chain games players to coordinate games with each other and to collect game winning resources and strategies.',
-  color: '#fff',
-  bottomLayer: [],
-  website: '',
-};
-
-//18
+//21
 const WASD = {
   legacy: false,
   topLayer: [URL + '/img/logo/WASD.png'],
@@ -268,7 +271,18 @@ const WASD = {
   website: 'https://twitter.com/WASD_0x',
 };
 
-19;
+//22
+const FunCraft = {
+  legacy: false,
+  topLayer: [URL + '/img/logo/FunCraft.png'],
+  bottomLayer: [],
+  name: 'Funcraft Guild',
+  desc: 'play for fun, fun to craft.',
+  color: 'f3b43b',
+  website: 'https://twitter.com/Funcraftguild',
+};
+
+//23
 const WorldExplorers = {
   legacy: false,
   topLayer: [URL + '/img/logo/WorldExplorers.png'],
@@ -279,44 +293,7 @@ const WorldExplorers = {
   website: 'https://twitter.com/awexplorers',
 };
 
-//20
-const AWHouse = {
-  legacy: false,
-  topLayer: [URL + '/img/logo/AWHouse.png'],
-  name: 'AW House',
-  desc: 'AW House is an Ecosystem for Autonomous World builders.',
-  color: '#fff',
-  bottomLayer: [],
-  website: 'https://twitter.com/AW_house',
-};
-
-//21
-const GGQuest = {
-  legacy: false,
-  topLayer: [URL + '/img/logo/ggQuest.png'],
-  name: 'GGQuest',
-  desc: 'GGQuest is the ultimate on-chain progression system for gamers. \
-  We track & aggregate all gaming-related data across various platforms & \
-  ecosystems and showcase them under one unified dashboard- Quest ID.\
-   This can help build reputation & unlock personalized gaming experiences.',
-  color: '#fff',
-  bottomLayer: [],
-  website: '',
-};
-
-//22
-const ComposableLabs = {
-  legacy: false,
-  topLayer: [URL + '/img/logo/ComposableLabs.png'],
-  name: 'ComposableLabs',
-  desc: 'Composable Labs pushes the boundaries of composable realities, \
-  providing tools and services that empower both creatives and gamers 💪',
-  color: '#fff',
-  bottomLayer: [],
-  website: '',
-};
-
-//23
+//24
 const AWResearch = {
   legacy: false,
   topLayer: [URL + '/img/logo/AWResearch.png'],
@@ -330,31 +307,14 @@ const AWResearch = {
   website: '',
 };
 
-//24
-const LXDAO = {
-  legacy: false,
-  topLayer: [URL + '/img/logo/LXDAO.png'],
-  name: ' LXDAO',
-  desc: 'LXDAO is an R&D-focused DAO in Web3. Focus on supporting valuable Web3 \
-  Public Goods and Open Source sustainably. As of now, LXDAO has supported 12+ projects, \
-  reaching out to a community of 2000+ members and having 65+ registered members.',
-
-  color: '#36AFF9',
-  bottomLayer: [],
-  website: '',
-};
-
 //25
-const CryptoChasers = {
+const ComposableLabs = {
   legacy: false,
-  topLayer: [URL + '/img/logo/CryptoChasers.png'],
-  name: 'CryptoChasers',
-  desc: 'The CryptoChasers community was established in December 2020, \
-  created by Script Money. The community mainly consists of experienced \
-  Crypto players and technically proficient developers. In October 2021,\
-   it issued robot NFT, established the Robot DAO, and defined the mission, values, and goals of the DAO.',
-
-  color: '#f7931a',
+  topLayer: [URL + '/img/logo/ComposableLabs.png'],
+  name: 'ComposableLabs',
+  desc: 'Composable Labs pushes the boundaries of composable realities, \
+  providing tools and services that empower both creatives and gamers 💪',
+  color: '#fff',
   bottomLayer: [],
   website: '',
 };
@@ -370,143 +330,35 @@ const MetaCat = {
   website: '',
 };
 
-//27
-const BlockPI = {
-  legacy: false,
-  topLayer: [URL + '/img/logo/BlockPi.png'],
-  name: 'BlockPI',
-  desc: 'BlockPI is a multi-chain globally distributed RPC Network, \
-  offering topnotch RPC services with low cost, high performance, \
-  low latency for all web3 projects. Also, BlockPI is paving its way on building a \
-  unified platform with a suite of tools designed for Account Abstraction infrastructures.',
-  color: '#22DEBB',
-  bottomLayer: [],
-  website: '',
-};
-
-//28
-const BlockBeats = {
-  legacy: false,
-  topLayer: [URL + '/img/logo/BlockBeats.png'],
-  name: 'BlockBeats',
-  desc: 'News and one of the sharpest Chinese observers on Crypto, Web3.0 industry.',
-  color: '#457cee',
-  bottomLayer: [],
-  website: '',
-};
-
-//29
-const ChainCatcher = {
-  legacy: false,
-  topLayer: [URL + '/img/logo/ChainCatcher.png'],
-  name: 'ChainCatcher',
-  desc: 'ChainCatcher is a leading Web3 Chinese media founded in January 2018, \
-  with over 1 million+ users and 1 billion+ reads. \
-  ChainCatcher has accumulated profound industry resources after five years\
-   in this field and has reached cooperation with industry leaders such as Flow, Binance, Mina, and Filecoin.',
-  color: '#e9edfc',
-  bottomLayer: [],
-  website: '',
-};
-
-//30
-const NetherScape = {
-  legacy: false,
-  topLayer: [URL + '/img/logo/NetherScape.png'],
-  desc: 'on-chain game using MUD engine to build a permissionless, composable, and autonomous RPG world.',
-  color: '#fff',
-  bottomLayer: [],
-  website: '',
-};
-
-//31
-const SeeDAO = {
-  legacy: false,
-  topLayer: [URL + '/img/logo/SeeDAO.png'],
-  name: 'SeeDAO',
-  desc: 'SeeDAO is a blockchain-based digital city-state, \
-  which manifests itself as a decentralized digital network (SeeDAO Network) \
-  and physical strong holds Seeshore manned around the world, built governed and shared by SeeDAO members.\
-  It aims to help the birth of quality Web3 projects from education, information, and activities',
-
-  color: '#fff',
-  bottomLayer: [],
-  website: '',
-};
-
-//32
-const Gametaverse = {
-  legacy: false,
-  topLayer: [URL + '/img/logo/Gametaverse.png'],
-  desc: 'Gametaverse strives to be the go-to aggregator for fully on-chain(FOC) and Web3 games, \
-  offering users a user-friendly, real-time dashboard that consolidates\
-   all blockchain game data and monitors the entire FOC game infrastructure.',
-
-  color: '#31a8ff',
-  bottomLayer: [],
-  website: '',
-};
-
-//33
-const GWGDAO = {
-  legacy: false,
-  name: 'GWGDAO',
-  topLayer: [URL + '/img/logo/GWGDAO.png'],
-  desc: 'Girls Who Game (GWG) Blockchain Gaming Community. Share new information and tutorials.',
-  color: '#FFF',
-  bottomLayer: [],
-  website: '',
-};
-
-//34
-const Web3Games = {
-  legacy: false,
-  topLayer: [URL + '/img/logo/Web3Games.png'],
-  bottomLayer: [],
-  name: 'Web3Games',
-  desc: "🌐 Accelerate the world's transition to Fully On-Chain Gaming (FOCG) with http://Web3Games.com \
-  Platform & W3Gamez Network. $W3G Public Sale starts from 23 January. 🔥",
-  color: '#FFF',
-  website: '',
-};
-
 export const logoFromType = (type: LogoType): Logo => logos[type];
 
 export const logos: Record<LogoType, Logo> = {
-  [LogoType.DF]: DF,
+  [LogoType.DarkForest]: DF,
   [LogoType.Lattice]: Lattice,
   [LogoType.Redstone]: Redstone,
+  [LogoType.Mud]: Mud,
+  [LogoType.Biomes]: Biomes,
+  [LogoType.ThisCursedMachine]: ThisCursedMachine,
+  [LogoType.SkyStrife]: SkyStrife,
+  [LogoType.SmallBrainGames]: SmallBrainGames,
+  [LogoType.DownStream]: DownStream,
+  [LogoType.Dear]: Dear,
   [LogoType.DFARES]: DFARES,
+  [LogoType.PixeLAW]: PixeLAW,
+  [LogoType.GGQuest]: GGQuest,
   [LogoType.DFArchon]: DFArchon,
-  [LogoType.AGLDDAO]: AGLDDAO,
   [LogoType.Mask]: Mask,
-  [LogoType.Web3MQ]: Web3MQ,
-  [LogoType.AltLayer]: AltLayer,
-  [LogoType.FunBlocks]: FunBlocks,
-  [LogoType.GamePhylum]: GamePhylum,
+  [LogoType.AGLDDAO]: AGLDDAO,
+  [LogoType.AWHouse]: AWHouse,
   [LogoType.OrdenGG]: OrdenGG,
   [LogoType.DFDAO]: DFDAO,
-  [LogoType.MarrowDAO]: MarrowDAO,
-  [LogoType.Two77DAO]: Two77DAO,
-  [LogoType.WeirdaoGhostGang]: WeirdaoGhostGang,
-  [LogoType.Overlords]: OVERLORDS,
+  [LogoType.FunBlocks]: FunBlocks,
   [LogoType.WASD]: WASD,
+  [LogoType.FunCraft]: FunCraft,
   [LogoType.WorldExplorers]: WorldExplorers,
-  [LogoType.AWHouse]: AWHouse,
-  [LogoType.GGQuest]: GGQuest,
-  [LogoType.ComposableLabs]: ComposableLabs,
   [LogoType.AWResearch]: AWResearch,
-  [LogoType.LXDAO]: LXDAO,
-  [LogoType.CryptoChasers]: CryptoChasers,
+  [LogoType.ComposableLabs]: ComposableLabs,
   [LogoType.MetaCat]: MetaCat,
-  [LogoType.BlockPi]: BlockPI,
-  [LogoType.BlockBeats]: BlockBeats,
-  [LogoType.ChainCatcher]: ChainCatcher,
-  [LogoType.NetherScape]: NetherScape,
-  [LogoType.SeeDAO]: SeeDAO,
-  [LogoType.Gametaverse]: Gametaverse,
-  [LogoType.GWGDAO]: GWGDAO,
-  [LogoType.Web3Games]: Web3Games,
 };
 
 // export const avatarFromArtifactIdAndImageType = (

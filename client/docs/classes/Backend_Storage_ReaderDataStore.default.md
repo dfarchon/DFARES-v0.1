@@ -178,13 +178,14 @@ particular user.
 
 ### spaceTypeFromPerlin
 
-▸ `Private` **spaceTypeFromPerlin**(`perlin`): `SpaceType`
+▸ `Private` **spaceTypeFromPerlin**(`perlin`, `distFromOrigin`): `SpaceType`
 
 #### Parameters
 
-| Name     | Type     |
-| :------- | :------- |
-| `perlin` | `number` |
+| Name             | Type     |
+| :--------------- | :------- |
+| `perlin`         | `number` |
+| `distFromOrigin` | `number` |
 
 #### Returns
 

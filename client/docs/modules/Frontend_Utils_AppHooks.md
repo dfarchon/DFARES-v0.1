@@ -16,6 +16,7 @@
 - [useAccount](Frontend_Utils_AppHooks.md#useaccount)
 - [useActiveArtifact](Frontend_Utils_AppHooks.md#useactiveartifact)
 - [useArtifact](Frontend_Utils_AppHooks.md#useartifact)
+- [useHalfPrice](Frontend_Utils_AppHooks.md#usehalfprice)
 - [useHoverArtifact](Frontend_Utils_AppHooks.md#usehoverartifact)
 - [useHoverArtifactId](Frontend_Utils_AppHooks.md#usehoverartifactid)
 - [useHoverPlanet](Frontend_Utils_AppHooks.md#usehoverplanet)
@@ -104,6 +105,16 @@ Get the currently used account on the client.
 #### Returns
 
 [`Wrapper`](../classes/Backend_Utils_Wrapper.Wrapper.md)<`undefined` \| `Artifact`\>
+
+---
+
+### useHalfPrice
+
+▸ **useHalfPrice**(): `boolean`
+
+#### Returns
+
+`boolean`
 
 ---
 

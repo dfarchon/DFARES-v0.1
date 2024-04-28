@@ -8,7 +8,9 @@
 
 ### Interfaces
 
+- [BurnCountdownInfo](../interfaces/types_global_GlobalTypes.BurnCountdownInfo.md)
 - [ClaimCountdownInfo](../interfaces/types_global_GlobalTypes.ClaimCountdownInfo.md)
+- [KardashevCountdownInfo](../interfaces/types_global_GlobalTypes.KardashevCountdownInfo.md)
 - [MinerWorkerMessage](../interfaces/types_global_GlobalTypes.MinerWorkerMessage.md)
 - [RevealCountdownInfo](../interfaces/types_global_GlobalTypes.RevealCountdownInfo.md)
 

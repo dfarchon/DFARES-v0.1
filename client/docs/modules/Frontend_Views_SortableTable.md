@@ -23,7 +23,7 @@
 | Name                              | Type                                       |
 | :-------------------------------- | :----------------------------------------- |
 | `__namedParameters`               | `Object`                                   |
-| `__namedParameters.alignments?`   | (`"r"` \| `"l"` \| `"c"`)[]                |
+| `__namedParameters.alignments?`   | (`"r"` \| `"c"` \| `"l"`)[]                |
 | `__namedParameters.columns`       | (`t`: `T`, `i`: `number`) => `ReactNode`[] |
 | `__namedParameters.headers`       | `ReactNode`[]                              |
 | `__namedParameters.paginated?`    | `boolean`                                  |

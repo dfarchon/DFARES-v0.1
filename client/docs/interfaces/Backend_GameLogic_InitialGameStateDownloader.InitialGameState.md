@@ -6,14 +6,19 @@
 
 ### Properties
 
+- [allBurnedCoords](Backend_GameLogic_InitialGameStateDownloader.InitialGameState.md#allburnedcoords)
 - [allClaimedCoords](Backend_GameLogic_InitialGameStateDownloader.InitialGameState.md#allclaimedcoords)
+- [allKardashevCoords](Backend_GameLogic_InitialGameStateDownloader.InitialGameState.md#allkardashevcoords)
 - [allRevealedCoords](Backend_GameLogic_InitialGameStateDownloader.InitialGameState.md#allrevealedcoords)
 - [allTouchedPlanetIds](Backend_GameLogic_InitialGameStateDownloader.InitialGameState.md#alltouchedplanetids)
 - [arrivals](Backend_GameLogic_InitialGameStateDownloader.InitialGameState.md#arrivals)
 - [artifactsOnVoyages](Backend_GameLogic_InitialGameStateDownloader.InitialGameState.md#artifactsonvoyages)
+- [burnedCoordsMap](Backend_GameLogic_InitialGameStateDownloader.InitialGameState.md#burnedcoordsmap)
 - [claimedCoordsMap](Backend_GameLogic_InitialGameStateDownloader.InitialGameState.md#claimedcoordsmap)
 - [contractConstants](Backend_GameLogic_InitialGameStateDownloader.InitialGameState.md#contractconstants)
+- [halfPrice](Backend_GameLogic_InitialGameStateDownloader.InitialGameState.md#halfprice)
 - [heldArtifacts](Backend_GameLogic_InitialGameStateDownloader.InitialGameState.md#heldartifacts)
+- [kardashevCoordsMap](Backend_GameLogic_InitialGameStateDownloader.InitialGameState.md#kardashevcoordsmap)
 - [loadedPlanets](Backend_GameLogic_InitialGameStateDownloader.InitialGameState.md#loadedplanets)
 - [myArtifacts](Backend_GameLogic_InitialGameStateDownloader.InitialGameState.md#myartifacts)
 - [paused](Backend_GameLogic_InitialGameStateDownloader.InitialGameState.md#paused)
@@ -27,9 +32,21 @@
 
 ## Properties
 
+### allBurnedCoords
+
+• **allBurnedCoords**: `BurnedCoords`[]
+
+---
+
 ### allClaimedCoords
 
 • **allClaimedCoords**: `ClaimedCoords`[]
+
+---
+
+### allKardashevCoords
+
+• **allKardashevCoords**: `KardashevCoords`[]
 
 ---
 
@@ -57,6 +74,12 @@
 
 ---
 
+### burnedCoordsMap
+
+• **burnedCoordsMap**: `Map`<`LocationId`, `BurnedCoords`\>
+
+---
+
 ### claimedCoordsMap
 
 • **claimedCoordsMap**: `Map`<`LocationId`, `ClaimedCoords`\>
@@ -69,9 +92,21 @@
 
 ---
 
+### halfPrice
+
+• **halfPrice**: `boolean`
+
+---
+
 ### heldArtifacts
 
 • **heldArtifacts**: `Artifact`[][]
+
+---
+
+### kardashevCoordsMap
+
+• **kardashevCoordsMap**: `Map`<`LocationId`, `KardashevCoords`\>
 
 ---
 

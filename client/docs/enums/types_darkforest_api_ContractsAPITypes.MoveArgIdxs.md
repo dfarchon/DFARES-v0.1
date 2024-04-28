@@ -13,6 +13,7 @@
 - [PERLIN_MIRROR_Y](types_darkforest_api_ContractsAPITypes.MoveArgIdxs.md#perlin_mirror_y)
 - [PLANETHASH_KEY](types_darkforest_api_ContractsAPITypes.MoveArgIdxs.md#planethash_key)
 - [SPACETYPE_KEY](types_darkforest_api_ContractsAPITypes.MoveArgIdxs.md#spacetype_key)
+- [TARGET_DIST_FROM_ORIGIN_SQUARE](types_darkforest_api_ContractsAPITypes.MoveArgIdxs.md#target_dist_from_origin_square)
 - [TO_ID](types_darkforest_api_ContractsAPITypes.MoveArgIdxs.md#to_id)
 - [TO_PERLIN](types_darkforest_api_ContractsAPITypes.MoveArgIdxs.md#to_perlin)
 - [TO_RADIUS](types_darkforest_api_ContractsAPITypes.MoveArgIdxs.md#to_radius)
@@ -58,6 +59,12 @@
 ### SPACETYPE_KEY
 
 • **SPACETYPE_KEY** = `6`
+
+---
+
+### TARGET_DIST_FROM_ORIGIN_SQUARE
+
+• **TARGET_DIST_FROM_ORIGIN_SQUARE** = `10`
 
 ---
 

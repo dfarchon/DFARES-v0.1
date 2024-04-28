@@ -1,5 +1,5 @@
+import { PICTURE_URL } from '@dfares/constants';
 import { MemeType } from '@dfares/types';
-
 export type Meme = {
   legacy: boolean;
   topLayer: Array<string>;
@@ -7,8 +7,6 @@ export type Meme = {
   // image?: () => Promise<HTMLImageElement>;
 };
 
-// const PICTURE_URL = 'https://dfares.xyz/public';
-const PICTURE_URL = 'https://dfares.xyz/public';
 const URL = PICTURE_URL;
 
 const doge = {
@@ -137,27 +135,44 @@ const SuccessfulKid = {
   bottomLayer: [],
 };
 
+const Slerf = {
+  legacy: false,
+  topLayer: [URL + '/img/meme/slerf.png'],
+  bottomLayer: [],
+};
+
 export const memeFromType = (type: MemeType): Meme => memes[type];
 
 export const memes: Record<MemeType, Meme> = {
   [MemeType.Doge]: doge,
   [MemeType.Cat]: cat,
-  [MemeType.ChunZhen]: chunZhen,
-  [MemeType.IKunBird]: iKunBird,
-  [MemeType.Mike]: mike,
-  [MemeType.Panda]: panda,
   [MemeType.Pepe]: pepe,
-  [MemeType.PigMan]: pigMan,
   [MemeType.RobotCat]: robotCat,
-  [MemeType.TaiKuLa]: taiKuLa,
-  [MemeType.Wojak1]: wojak1,
-  [MemeType.Wojak2]: wojak2,
-  [MemeType.Wojak3]: wojak3,
-  [MemeType.Wojak4]: wojak4,
+  [MemeType.Wojak]: wojak3,
   [MemeType.NyanCat]: NyanCat,
   [MemeType.Harold]: Harold,
-  [MemeType.TheMerge]: TheMerge,
   [MemeType.Undream]: Undream,
-  [MemeType.KakaiKiki]: KakaiKiki,
-  [MemeType.SucessfulKid]: SuccessfulKid,
+  [MemeType.Slerf]: Slerf,
+  [MemeType.ChunZhen]: chunZhen,
+  // ==================================================
+  // [MemeType.Doge]: doge,
+  // [MemeType.Cat]: cat,
+
+  // [MemeType.IKunBird]: iKunBird,
+  // [MemeType.Mike]: mike,
+  // [MemeType.Panda]: panda,
+  // [MemeType.Pepe]: pepe,
+  // [MemeType.PigMan]: pigMan,
+  // [MemeType.RobotCat]: robotCat,
+  // [MemeType.TaiKuLa]: taiKuLa,
+  // [MemeType.Wojak1]: wojak1,
+  // [MemeType.Wojak2]: wojak2,
+  // [MemeType.Wojak3]: wojak3,
+  // [MemeType.Wojak4]: wojak4,
+  // [MemeType.NyanCat]: NyanCat,
+  // [MemeType.Harold]: Harold,
+  // [MemeType.TheMerge]: TheMerge,
+  // [MemeType.Undream]: Undream,
+  // [MemeType.KakaiKiki]: KakaiKiki,
+  // [MemeType.SucessfulKid]: SuccessfulKid,
 };

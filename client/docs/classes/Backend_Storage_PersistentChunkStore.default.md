@@ -37,7 +37,9 @@
 - [getHomeLocations](Backend_Storage_PersistentChunkStore.default.md#gethomelocations)
 - [getKey](Backend_Storage_PersistentChunkStore.default.md#getkey)
 - [getMinedSubChunks](Backend_Storage_PersistentChunkStore.default.md#getminedsubchunks)
+- [getSavedBurnedCoords](Backend_Storage_PersistentChunkStore.default.md#getsavedburnedcoords)
 - [getSavedClaimedCoords](Backend_Storage_PersistentChunkStore.default.md#getsavedclaimedcoords)
+- [getSavedKardashevCoords](Backend_Storage_PersistentChunkStore.default.md#getsavedkardashevcoords)
 - [getSavedRevealedCoords](Backend_Storage_PersistentChunkStore.default.md#getsavedrevealedcoords)
 - [getSavedTouchedPlanetIds](Backend_Storage_PersistentChunkStore.default.md#getsavedtouchedplanetids)
 - [getUnconfirmedSubmittedEthTxs](Backend_Storage_PersistentChunkStore.default.md#getunconfirmedsubmittedethtxs)
@@ -314,6 +316,16 @@ the function named `addToChunkMap`.
 
 ---
 
+### getSavedBurnedCoords
+
+▸ **getSavedBurnedCoords**(): `Promise`<`BurnedCoords`[]\>
+
+#### Returns
+
+`Promise`<`BurnedCoords`[]\>
+
+---
+
 ### getSavedClaimedCoords
 
 ▸ **getSavedClaimedCoords**(): `Promise`<`ClaimedCoords`[]\>
@@ -321,6 +333,16 @@ the function named `addToChunkMap`.
 #### Returns
 
 `Promise`<`ClaimedCoords`[]\>
+
+---
+
+### getSavedKardashevCoords
+
+▸ **getSavedKardashevCoords**(): `Promise`<`KardashevCoords`[]\>
+
+#### Returns
+
+`Promise`<`KardashevCoords`[]\>
 
 ---
 

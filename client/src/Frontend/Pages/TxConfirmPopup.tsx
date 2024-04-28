@@ -194,8 +194,8 @@ export function TxConfirmPopup({
   const hatPlanet = localStorage.getItem(`${account}-hatPlanet`);
   const hatLevel = localStorage.getItem(`${account}-hatLevel`);
   const hatCostEth = localStorage.getItem(`${account}-hatCostEth`);
-  const hatCost: number = method === 'buyHat' && hatLevel && hatCostEth ? Number(hatCostEth) : 0;
-  // const hatCost: number = method === 'buyHat' && hatLevel ? 2 **
+  const hatCost: number = method === 'buySkin' && hatLevel && hatCostEth ? Number(hatCostEth) : 0;
+  // const hatCost: number = method === 'buySkin' && hatLevel ? 2 **
   // parseInt(hatLevel) : 0;
 
   const upPlanet = localStorage.getItem(`${account}-upPlanet`);
@@ -373,7 +373,7 @@ export function TxConfirmPopup({
           </Row>
         )}
 
-        {method === 'buyHat' && (
+        {method === 'buySkin' && (
           <>
             <Row>
               <b>On</b>
@@ -601,7 +601,7 @@ export function TxConfirmPopup({
             {txCost} ${TOKEN_NAME}
           </span>
         </Row>
-        {method === 'buyHat' && hatLevel && +hatLevel > 6 && (
+        {method === 'buySkinn' && hatLevel && +hatLevel > 6 && (
           <Row>
             <b
               style={{

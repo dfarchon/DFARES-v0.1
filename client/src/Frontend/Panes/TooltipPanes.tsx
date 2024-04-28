@@ -484,7 +484,7 @@ function CapturablePane() {
 
 const ModalWithdrawSilverTooltipPane = () => <>Withdraw silver to earn score.</>;
 
-const Hats = () => <>Buy hats for the selected planet.</>;
+const Hats = () => <>Buy skins for the selected planet.</>;
 
 const FindArtifact = () => (
   <>
@@ -541,7 +541,7 @@ const BlueButton = () => (
 );
 const BuyHat = () => (
   <>
-    Buy hat for this planet, <Green>circular picture will be displayed on this planet.</Green>
+    Buy skin for this planet, <Green>circular picture will be displayed on this planet.</Green>
   </>
 );
 

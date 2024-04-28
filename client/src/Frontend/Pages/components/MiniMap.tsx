@@ -545,6 +545,7 @@ function MiniMapImpl({}, ref: React.Ref<MiniMapHandle>) {
       // update mouse points
       mousePoints = makeMousePoints(spawnAreas);
 
+
       timeoutId = window.setTimeout(updateZones, oneMinuteInMs);
     };
 
@@ -581,6 +582,7 @@ function MiniMapImpl({}, ref: React.Ref<MiniMapHandle>) {
         }}
       />
       <DFARESLogo rimRadius={rimRadius} />
+
       <StyledCoords ref={infoOptionsRef}></StyledCoords>
       <div ref={overlayRef} style={{
           display: 'none',
@@ -591,6 +593,7 @@ function MiniMapImpl({}, ref: React.Ref<MiniMapHandle>) {
           height: `${canvasSize}px`,
           backgroundColor: 'rgb(0, 0, 0, 0)',
         }}
+
       />
     </StyledMiniMap>
   );

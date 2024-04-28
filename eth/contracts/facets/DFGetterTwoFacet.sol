@@ -417,8 +417,8 @@ contract DFGetterTwoFacet is WithStorage {
         ret[1] = ls().entryCost;
         ret[2] = ls().transferPlanetCnt;
         ret[3] = ls().hatEarnSum;
-        ret[4] = ls().buyHatCnt;
-        ret[5] = ls().takeOffHatCnt;
+        ret[4] = ls().buySkinCnt;
+        ret[5] = ls().takeOffSkinCnt;
         ret[6] = ls().setHatCnt;
         ret[7] = ls().setPlanetCanShowCnt;
         ret[8] = ls().withdrawSilverCnt;

@@ -17,6 +17,7 @@
 ### Properties
 
 - [account](Backend_GameLogic_GameManager.default.md#account)
+- [blueZoneInterval](Backend_GameLogic_GameManager.default.md#bluezoneinterval)
 - [captureZoneGenerator](Backend_GameLogic_GameManager.default.md#capturezonegenerator)
 - [contractConstants](Backend_GameLogic_GameManager.default.md#contractconstants)
 - [contractsAPI](Backend_GameLogic_GameManager.default.md#contractsapi)
@@ -25,6 +26,8 @@
 - [endTimeSeconds](Backend_GameLogic_GameManager.default.md#endtimeseconds)
 - [entityStore](Backend_GameLogic_GameManager.default.md#entitystore)
 - [ethConnection](Backend_GameLogic_GameManager.default.md#ethconnection)
+- [halfPrice](Backend_GameLogic_GameManager.default.md#halfprice)
+- [halfPrice$](Backend_GameLogic_GameManager.default.md#halfprice$)
 - [hashConfig](Backend_GameLogic_GameManager.default.md#hashconfig)
 - [hashRate](Backend_GameLogic_GameManager.default.md#hashrate)
 - [homeLocation](Backend_GameLogic_GameManager.default.md#homelocation)
@@ -34,6 +37,7 @@
 - [paused](Backend_GameLogic_GameManager.default.md#paused)
 - [paused$](Backend_GameLogic_GameManager.default.md#paused$)
 - [persistentChunkStore](Backend_GameLogic_GameManager.default.md#persistentchunkstore)
+- [pinkZoneInterval](Backend_GameLogic_GameManager.default.md#pinkzoneinterval)
 - [planetHashMimc](Backend_GameLogic_GameManager.default.md#planethashmimc)
 - [playerInterval](Backend_GameLogic_GameManager.default.md#playerinterval)
 - [players](Backend_GameLogic_GameManager.default.md#players)
@@ -57,18 +61,25 @@
 - [addAccount](Backend_GameLogic_GameManager.default.md#addaccount)
 - [addNewChunk](Backend_GameLogic_GameManager.default.md#addnewchunk)
 - [biomebasePerlin](Backend_GameLogic_GameManager.default.md#biomebaseperlin)
+- [blueLocation](Backend_GameLogic_GameManager.default.md#bluelocation)
 - [bulkAddNewChunks](Backend_GameLogic_GameManager.default.md#bulkaddnewchunks)
 - [bulkHardRefreshPlanets](Backend_GameLogic_GameManager.default.md#bulkhardrefreshplanets)
+- [burnLocation](Backend_GameLogic_GameManager.default.md#burnlocation)
 - [buyArtifact](Backend_GameLogic_GameManager.default.md#buyartifact)
-- [buyHat](Backend_GameLogic_GameManager.default.md#buyhat)
+- [buyPlanet](Backend_GameLogic_GameManager.default.md#buyplanet)
+- [buySkin](Backend_GameLogic_GameManager.default.md#buyskin)
+- [buySpaceship](Backend_GameLogic_GameManager.default.md#buyspaceship)
 - [capturePlanet](Backend_GameLogic_GameManager.default.md#captureplanet)
 - [changeArtifactImageType](Backend_GameLogic_GameManager.default.md#changeartifactimagetype)
 - [checkGameHasEnded](Backend_GameLogic_GameManager.default.md#checkgamehasended)
+- [checkPlanetCanBlue](Backend_GameLogic_GameManager.default.md#checkplanetcanblue)
+- [checkPlanetCanPink](Backend_GameLogic_GameManager.default.md#checkplanetcanpink)
 - [claimLocation](Backend_GameLogic_GameManager.default.md#claimlocation)
 - [clearEmoji](Backend_GameLogic_GameManager.default.md#clearemoji)
 - [deactivateArtifact](Backend_GameLogic_GameManager.default.md#deactivateartifact)
 - [depositArtifact](Backend_GameLogic_GameManager.default.md#depositartifact)
 - [destroy](Backend_GameLogic_GameManager.default.md#destroy)
+- [donate](Backend_GameLogic_GameManager.default.md#donate)
 - [findArtifact](Backend_GameLogic_GameManager.default.md#findartifact)
 - [findRandomHomePlanet](Backend_GameLogic_GameManager.default.md#findrandomhomeplanet)
 - [forceTick](Backend_GameLogic_GameManager.default.md#forcetick)
@@ -79,10 +90,15 @@
 - [getAllPlanets](Backend_GameLogic_GameManager.default.md#getallplanets)
 - [getAllPlayers](Backend_GameLogic_GameManager.default.md#getallplayers)
 - [getAllVoyages](Backend_GameLogic_GameManager.default.md#getallvoyages)
+- [getArrival](Backend_GameLogic_GameManager.default.md#getarrival)
+- [getArrivalsForPlanet](Backend_GameLogic_GameManager.default.md#getarrivalsforplanet)
 - [getArtifactMap](Backend_GameLogic_GameManager.default.md#getartifactmap)
 - [getArtifactUpdated$](Backend_GameLogic_GameManager.default.md#getartifactupdated$)
 - [getArtifactWithId](Backend_GameLogic_GameManager.default.md#getartifactwithid)
 - [getArtifactsWithIds](Backend_GameLogic_GameManager.default.md#getartifactswithids)
+- [getBlueZoneCenterPlanetId](Backend_GameLogic_GameManager.default.md#getbluezonecenterplanetid)
+- [getBlueZones](Backend_GameLogic_GameManager.default.md#getbluezones)
+- [getBurnedLocations](Backend_GameLogic_GameManager.default.md#getburnedlocations)
 - [getCaptureZoneGenerator](Backend_GameLogic_GameManager.default.md#getcapturezonegenerator)
 - [getCaptureZones](Backend_GameLogic_GameManager.default.md#getcapturezones)
 - [getChunk](Backend_GameLogic_GameManager.default.md#getchunk)
@@ -107,10 +123,13 @@
 - [getEthConnection](Backend_GameLogic_GameManager.default.md#getethconnection)
 - [getExploredChunks](Backend_GameLogic_GameManager.default.md#getexploredchunks)
 - [getGameObjects](Backend_GameLogic_GameManager.default.md#getgameobjects)
+- [getHalfPrice](Backend_GameLogic_GameManager.default.md#gethalfprice)
+- [getHalfPrice$](Backend_GameLogic_GameManager.default.md#gethalfprice$)
 - [getHashConfig](Backend_GameLogic_GameManager.default.md#gethashconfig)
 - [getHashesPerSec](Backend_GameLogic_GameManager.default.md#gethashespersec)
 - [getHomeCoords](Backend_GameLogic_GameManager.default.md#gethomecoords)
 - [getHomeHash](Backend_GameLogic_GameManager.default.md#gethomehash)
+- [getKardashevLocations](Backend_GameLogic_GameManager.default.md#getkardashevlocations)
 - [getLinks](Backend_GameLogic_GameManager.default.md#getlinks)
 - [getLocationOfPlanet](Backend_GameLogic_GameManager.default.md#getlocationofplanet)
 - [getMaxMoveDist](Backend_GameLogic_GameManager.default.md#getmaxmovedist)
@@ -121,18 +140,29 @@
 - [getMyBalance](Backend_GameLogic_GameManager.default.md#getmybalance)
 - [getMyBalance$](Backend_GameLogic_GameManager.default.md#getmybalance$)
 - [getMyBalanceEth](Backend_GameLogic_GameManager.default.md#getmybalanceeth)
+- [getMyBlueZones](Backend_GameLogic_GameManager.default.md#getmybluezones)
+- [getMyPinkZones](Backend_GameLogic_GameManager.default.md#getmypinkzones)
 - [getMyPlanetMap](Backend_GameLogic_GameManager.default.md#getmyplanetmap)
 - [getMyPlanets](Backend_GameLogic_GameManager.default.md#getmyplanets)
 - [getMyPlanetsUpdated$](Backend_GameLogic_GameManager.default.md#getmyplanetsupdated$)
 - [getMyScore](Backend_GameLogic_GameManager.default.md#getmyscore)
+- [getNextActivateArtifactAvailableTimestamp](Backend_GameLogic_GameManager.default.md#getnextactivateartifactavailabletimestamp)
+- [getNextBlueAvailableTimestamp](Backend_GameLogic_GameManager.default.md#getnextblueavailabletimestamp)
 - [getNextBroadcastAvailableTimestamp](Backend_GameLogic_GameManager.default.md#getnextbroadcastavailabletimestamp)
+- [getNextBurnAvailableTimestamp](Backend_GameLogic_GameManager.default.md#getnextburnavailabletimestamp)
+- [getNextBurnCountdownInfo](Backend_GameLogic_GameManager.default.md#getnextburncountdowninfo)
+- [getNextBuyArtifactAvailableTimestamp](Backend_GameLogic_GameManager.default.md#getnextbuyartifactavailabletimestamp)
 - [getNextClaimAvailableTimestamp](Backend_GameLogic_GameManager.default.md#getnextclaimavailabletimestamp)
 - [getNextClaimCountdownInfo](Backend_GameLogic_GameManager.default.md#getnextclaimcountdowninfo)
+- [getNextKardashevAvailableTimestamp](Backend_GameLogic_GameManager.default.md#getnextkardashevavailabletimestamp)
+- [getNextKardashevCountdownInfo](Backend_GameLogic_GameManager.default.md#getnextkardashevcountdowninfo)
+- [getNextPinkAvailableTimestamp](Backend_GameLogic_GameManager.default.md#getnextpinkavailabletimestamp)
 - [getNextRevealCountdownInfo](Backend_GameLogic_GameManager.default.md#getnextrevealcountdowninfo)
 - [getNotificationsManager](Backend_GameLogic_GameManager.default.md#getnotificationsmanager)
 - [getPaused](Backend_GameLogic_GameManager.default.md#getpaused)
 - [getPaused$](Backend_GameLogic_GameManager.default.md#getpaused$)
 - [getPerlinThresholds](Backend_GameLogic_GameManager.default.md#getperlinthresholds)
+- [getPinkZones](Backend_GameLogic_GameManager.default.md#getpinkzones)
 - [getPlanetLevel](Backend_GameLogic_GameManager.default.md#getplanetlevel)
 - [getPlanetMap](Backend_GameLogic_GameManager.default.md#getplanetmap)
 - [getPlanetRarity](Backend_GameLogic_GameManager.default.md#getplanetrarity)
@@ -146,6 +176,7 @@
 - [getPlayerActivateArtifactAmount](Backend_GameLogic_GameManager.default.md#getplayeractivateartifactamount)
 - [getPlayerBuyArtifactAmount](Backend_GameLogic_GameManager.default.md#getplayerbuyartifactamount)
 - [getPlayerScore](Backend_GameLogic_GameManager.default.md#getplayerscore)
+- [getPlayerSilver](Backend_GameLogic_GameManager.default.md#getplayersilver)
 - [getPlayerSpaceJunk](Backend_GameLogic_GameManager.default.md#getplayerspacejunk)
 - [getPlayerSpaceJunkLimit](Backend_GameLogic_GameManager.default.md#getplayerspacejunklimit)
 - [getPrivateKey](Backend_GameLogic_GameManager.default.md#getprivatekey)
@@ -166,6 +197,7 @@
 - [getUIEventEmitter](Backend_GameLogic_GameManager.default.md#getuieventemitter)
 - [getUnconfirmedLinkActivations](Backend_GameLogic_GameManager.default.md#getunconfirmedlinkactivations)
 - [getUnconfirmedMoves](Backend_GameLogic_GameManager.default.md#getunconfirmedmoves)
+- [getUnconfirmedRefreshPlanets](Backend_GameLogic_GameManager.default.md#getunconfirmedrefreshplanets)
 - [getUnconfirmedUpgrades](Backend_GameLogic_GameManager.default.md#getunconfirmedupgrades)
 - [getUniverseTotalEnergy](Backend_GameLogic_GameManager.default.md#getuniversetotalenergy)
 - [getUpgrade](Backend_GameLogic_GameManager.default.md#getupgrade)
@@ -173,17 +205,23 @@
 - [getWorldSilver](Backend_GameLogic_GameManager.default.md#getworldsilver)
 - [getWormholeFactors](Backend_GameLogic_GameManager.default.md#getwormholefactors)
 - [hardRefreshArtifact](Backend_GameLogic_GameManager.default.md#hardrefreshartifact)
+- [hardRefreshBlueZones](Backend_GameLogic_GameManager.default.md#hardrefreshbluezones)
+- [hardRefreshPinkZones](Backend_GameLogic_GameManager.default.md#hardrefreshpinkzones)
 - [hardRefreshPlanet](Backend_GameLogic_GameManager.default.md#hardrefreshplanet)
 - [hardRefreshPlayer](Backend_GameLogic_GameManager.default.md#hardrefreshplayer)
+- [hardRefreshPlayerSpaceships](Backend_GameLogic_GameManager.default.md#hardrefreshplayerspaceships)
 - [hasJoinedGame](Backend_GameLogic_GameManager.default.md#hasjoinedgame)
 - [hasMinedChunk](Backend_GameLogic_GameManager.default.md#hasminedchunk)
 - [initMiningManager](Backend_GameLogic_GameManager.default.md#initminingmanager)
 - [invadePlanet](Backend_GameLogic_GameManager.default.md#invadeplanet)
 - [isAdmin](Backend_GameLogic_GameManager.default.md#isadmin)
+- [isCurrentlyBlueing](Backend_GameLogic_GameManager.default.md#iscurrentlyblueing)
+- [isCurrentlyPinking](Backend_GameLogic_GameManager.default.md#iscurrentlypinking)
 - [isMining](Backend_GameLogic_GameManager.default.md#ismining)
 - [isPlanetMineable](Backend_GameLogic_GameManager.default.md#isplanetmineable)
 - [isRoundOver](Backend_GameLogic_GameManager.default.md#isroundover)
 - [joinGame](Backend_GameLogic_GameManager.default.md#joingame)
+- [kardashev](Backend_GameLogic_GameManager.default.md#kardashev)
 - [listenForNewBlock](Backend_GameLogic_GameManager.default.md#listenfornewblock)
 - [loadContract](Backend_GameLogic_GameManager.default.md#loadcontract)
 - [loadPlugins](Backend_GameLogic_GameManager.default.md#loadplugins)
@@ -194,8 +232,10 @@
 - [onTxConfirmed](Backend_GameLogic_GameManager.default.md#ontxconfirmed)
 - [onTxReverted](Backend_GameLogic_GameManager.default.md#ontxreverted)
 - [onTxSubmit](Backend_GameLogic_GameManager.default.md#ontxsubmit)
+- [pinkLocation](Backend_GameLogic_GameManager.default.md#pinklocation)
 - [prospectPlanet](Backend_GameLogic_GameManager.default.md#prospectplanet)
 - [refreshNetworkHealth](Backend_GameLogic_GameManager.default.md#refreshnetworkhealth)
+- [refreshPlanet](Backend_GameLogic_GameManager.default.md#refreshplanet)
 - [refreshScoreboard](Backend_GameLogic_GameManager.default.md#refreshscoreboard)
 - [refreshServerPlanetStates](Backend_GameLogic_GameManager.default.md#refreshserverplanetstates)
 - [refreshTwitters](Backend_GameLogic_GameManager.default.md#refreshtwitters)
@@ -218,7 +258,12 @@
 - [submitTransaction](Backend_GameLogic_GameManager.default.md#submittransaction)
 - [submitVerifyTwitter](Backend_GameLogic_GameManager.default.md#submitverifytwitter)
 - [testNotification](Backend_GameLogic_GameManager.default.md#testnotification)
+- [timeUntilNextActivateArtifactAvailable](Backend_GameLogic_GameManager.default.md#timeuntilnextactivateartifactavailable)
 - [timeUntilNextBroadcastAvailable](Backend_GameLogic_GameManager.default.md#timeuntilnextbroadcastavailable)
+- [timeUntilNextBurnAvailable](Backend_GameLogic_GameManager.default.md#timeuntilnextburnavailable)
+- [timeUntilNextBuyArtifactAvailable](Backend_GameLogic_GameManager.default.md#timeuntilnextbuyartifactavailable)
+- [timeUntilNextClaimAvailable](Backend_GameLogic_GameManager.default.md#timeuntilnextclaimavailable)
+- [timeUntilNextKardashevAvailable](Backend_GameLogic_GameManager.default.md#timeuntilnextkardashevavailable)
 - [transferOwnership](Backend_GameLogic_GameManager.default.md#transferownership)
 - [updateDiagnostics](Backend_GameLogic_GameManager.default.md#updatediagnostics)
 - [upgrade](Backend_GameLogic_GameManager.default.md#upgrade)
@@ -233,7 +278,7 @@
 
 ### constructor
 
-• `Private` **new default**(`terminal`, `account`, `players`, `touchedPlanets`, `allTouchedPlanetIds`, `revealedCoords`, `claimedCoords`, `worldRadius`, `unprocessedArrivals`, `unprocessedPlanetArrivalIds`, `contractsAPI`, `contractConstants`, `persistentChunkStore`, `snarkHelper`, `homeLocation`, `useMockHash`, `artifacts`, `ethConnection`, `paused`)
+• `Private` **new default**(`terminal`, `account`, `players`, `touchedPlanets`, `allTouchedPlanetIds`, `revealedCoords`, `claimedCoords`, `burnedCoords`, `kardashevCoords`, `worldRadius`, `unprocessedArrivals`, `unprocessedPlanetArrivalIds`, `contractsAPI`, `contractConstants`, `persistentChunkStore`, `snarkHelper`, `homeLocation`, `useMockHash`, `artifacts`, `ethConnection`, `paused`, `halfPrice`)
 
 #### Parameters
 
@@ -246,6 +291,8 @@
 | `allTouchedPlanetIds`         | `Set`<`LocationId`\>                                                                                            |
 | `revealedCoords`              | `Map`<`LocationId`, `RevealedCoords`\>                                                                          |
 | `claimedCoords`               | `Map`<`LocationId`, `ClaimedCoords`\>                                                                           |
+| `burnedCoords`                | `Map`<`LocationId`, `BurnedCoords`\>                                                                            |
+| `kardashevCoords`             | `Map`<`LocationId`, `KardashevCoords`\>                                                                         |
 | `worldRadius`                 | `number`                                                                                                        |
 | `unprocessedArrivals`         | `Map`<`VoyageId`, `QueuedArrival`\>                                                                             |
 | `unprocessedPlanetArrivalIds` | `Map`<`LocationId`, `VoyageId`[]\>                                                                              |
@@ -258,6 +305,7 @@
 | `artifacts`                   | `Map`<`ArtifactId`, `Artifact`\>                                                                                |
 | `ethConnection`               | `EthConnection`                                                                                                 |
 | `paused`                      | `boolean`                                                                                                       |
+| `halfPrice`                   | `boolean`                                                                                                       |
 
 #### Overrides
 
@@ -272,6 +320,14 @@ EventEmitter.constructor
 The ethereum address of the player who is currently logged in. We support 'no account',
 represented by `undefined` in the case when you want to simply load the game state from the
 contract and view it without be able to make any moves.
+
+---
+
+### blueZoneInterval
+
+• `Private` **blueZoneInterval**: `Timer`
+
+Handle to an interval that periodically refreshes blueZones.
 
 ---
 
@@ -352,6 +408,18 @@ This variable contains the internal state of objects that live in the game world
 An interface to the blockchain that is a little bit lower-level than [ContractsAPI](Backend_GameLogic_ContractsAPI.ContractsAPI.md). It
 allows us to do basic operations such as wait for a transaction to complete, check the player's
 address and balance, etc.
+
+---
+
+### halfPrice
+
+• `Private` **halfPrice**: `boolean`
+
+---
+
+### halfPrice$
+
+• **halfPrice$**: `Monomitter`<`boolean`\>
 
 ---
 
@@ -439,6 +507,14 @@ An object that syncs any newly added or deleted chunks to the player's IndexedDB
 
 **`todo`** it also persists other game data to IndexedDB. This class needs to be renamed `GameSaver`
 or something like that.
+
+---
+
+### pinkZoneInterval
+
+• `Private` **pinkZoneInterval**: `Timer`
+
+Handle to an interval that periodically refreshes pinkZones.
 
 ---
 
@@ -661,6 +737,24 @@ Gets the biome perlin valie at the given location in the world.
 
 ---
 
+### blueLocation
+
+▸ **blueLocation**(`planetId`): `Promise`<`Transaction`<`UnconfirmedBlue`\>\>
+
+blueLocation reveals a planet's location on-chain.
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
+
+#### Returns
+
+`Promise`<`Transaction`<`UnconfirmedBlue`\>\>
+
+---
+
 ### bulkAddNewChunks
 
 ▸ **bulkAddNewChunks**(`chunks`): `Promise`<`void`\>
@@ -696,6 +790,24 @@ to load all of the associated planet data in an efficient manner.
 
 ---
 
+### burnLocation
+
+▸ **burnLocation**(`planetId`): `Promise`<`Transaction`<`UnconfirmedBurn`\>\>
+
+burnLocation reveals a planet's location on-chain.
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
+
+#### Returns
+
+`Promise`<`Transaction`<`UnconfirmedBurn`\>\>
+
+---
+
 ### buyArtifact
 
 ▸ **buyArtifact**(`locationId`, `rarity`, `biome`, `type`, `bypassChecks?`): `Promise`<`Transaction`<`UnconfirmedBuyArtifact`\>\>
@@ -716,9 +828,28 @@ to load all of the associated planet data in an efficient manner.
 
 ---
 
-### buyHat
+### buyPlanet
 
-▸ **buyHat**(`planetId`, `hatType`, `_bypassChecks?`): `Promise`<`Transaction`<`UnconfirmedBuyHat`\>\>
+▸ **buyPlanet**(`planetId`): `Promise`<`Transaction`<`UnconfirmedBuyPlanet`\>\>
+
+Submits a transaction to the blockchain to buy a planet.
+Warning costs real token.
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
+
+#### Returns
+
+`Promise`<`Transaction`<`UnconfirmedBuyPlanet`\>\>
+
+---
+
+### buySkin
+
+▸ **buySkin**(`planetId`, `hatType`, `_bypassChecks?`): `Promise`<`Transaction`<`UnconfirmedBuyHat`\>\>
 
 Submits a transaction to the blockchain to buy a hat for the given planet. You must own the
 planet. Warning costs real token. Hats are permanently locked to a planet. They are purely
@@ -736,6 +867,22 @@ world, more money means more hat.
 #### Returns
 
 `Promise`<`Transaction`<`UnconfirmedBuyHat`\>\>
+
+---
+
+### buySpaceship
+
+▸ **buySpaceship**(`planetId`): `Promise`<`Transaction`<`UnconfirmedBuySpaceship`\>\>
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
+
+#### Returns
+
+`Promise`<`Transaction`<`UnconfirmedBuySpaceship`\>\>
 
 ---
 
@@ -784,11 +931,43 @@ world, more money means more hat.
 
 ---
 
+### checkPlanetCanBlue
+
+▸ **checkPlanetCanBlue**(`planetId`): `boolean`
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
+
+#### Returns
+
+`boolean`
+
+---
+
+### checkPlanetCanPink
+
+▸ **checkPlanetCanPink**(`planetId`): `boolean`
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
+
+#### Returns
+
+`boolean`
+
+---
+
 ### claimLocation
 
 ▸ **claimLocation**(`planetId`): `Promise`<`Transaction`<`UnconfirmedClaim`\>\>
 
-Reveals a planet's location on-chain.
+claimLocation reveals a planet's location on-chain.
 
 #### Parameters
 
@@ -870,6 +1049,22 @@ You must own the planet and you must own the artifact directly (can't be locked 
 
 ---
 
+### donate
+
+▸ **donate**(`amount`): `Promise`<`Transaction`<`UnconfirmedDonate`\>\>
+
+#### Parameters
+
+| Name     | Type     |
+| :------- | :------- |
+| `amount` | `number` |
+
+#### Returns
+
+`Promise`<`Transaction`<`UnconfirmedDonate`\>\>
+
+---
+
 ### findArtifact
 
 ▸ **findArtifact**(`planetId`, `bypassChecks?`): `Promise`<`Transaction`<`UnconfirmedFindArtifact`\>\>
@@ -891,7 +1086,15 @@ Calls the contract to find an artifact on the given planet.
 
 ### findRandomHomePlanet
 
-▸ `Private` **findRandomHomePlanet**(): `Promise`<`LocatablePlanet`\>
+▸ `Private` **findRandomHomePlanet**(`_selectedCoords`): `Promise`<`LocatablePlanet`\>
+
+#### Parameters
+
+| Name                | Type     |
+| :------------------ | :------- |
+| `_selectedCoords`   | `Object` |
+| `_selectedCoords.x` | `number` |
+| `_selectedCoords.y` | `number` |
 
 #### Returns
 
@@ -1006,6 +1209,38 @@ Gets all voyages that have not completed.
 
 ---
 
+### getArrival
+
+▸ `Private` **getArrival**(`arrivalId`): `Promise`<`void`\>
+
+#### Parameters
+
+| Name        | Type     |
+| :---------- | :------- |
+| `arrivalId` | `number` |
+
+#### Returns
+
+`Promise`<`void`\>
+
+---
+
+### getArrivalsForPlanet
+
+▸ `Private` **getArrivalsForPlanet**(`planetId`): `Promise`<`void`\>
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
+
+#### Returns
+
+`Promise`<`void`\>
+
+---
+
 ### getArtifactMap
 
 ▸ **getArtifactMap**(): `Map`<`ArtifactId`, `Artifact`\>
@@ -1062,6 +1297,46 @@ represented by `undefined`.
 #### Returns
 
 (`undefined` \| `Artifact`)[]
+
+---
+
+### getBlueZoneCenterPlanetId
+
+▸ **getBlueZoneCenterPlanetId**(`planetId`): `undefined` \| `LocationId`
+
+Gets the center planet for blueLocation
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
+
+#### Returns
+
+`undefined` \| `LocationId`
+
+---
+
+### getBlueZones
+
+▸ **getBlueZones**(): `Set`<`PinkZone`\>
+
+#### Returns
+
+`Set`<`PinkZone`\>
+
+---
+
+### getBurnedLocations
+
+▸ **getBurnedLocations**(): `Map`<`LocationId`, `BurnedLocation`\>
+
+Gets a map of all location IDs which have been claimed.
+
+#### Returns
+
+`Map`<`LocationId`, `BurnedLocation`\>
 
 ---
 
@@ -1264,7 +1539,9 @@ know the location of either planet. Takes into account links.
 
 ▸ **getDistCoords**(`fromCoords`, `toCoords`): `number`
 
-Gets the distance between two coordinates in space.
+Gets the distance between two coordinates in space using manhattan geometry
+
+**`see`** https://en.wikipedia.org/wiki/Taxicab_geometry
 
 #### Parameters
 
@@ -1412,6 +1689,26 @@ voyages, planets, artifacts, and active links,
 
 ---
 
+### getHalfPrice
+
+▸ **getHalfPrice**(): `boolean`
+
+#### Returns
+
+`boolean`
+
+---
+
+### getHalfPrice$
+
+▸ **getHalfPrice$**(): `Monomitter`<`boolean`\>
+
+#### Returns
+
+`Monomitter`<`boolean`\>
+
+---
+
 ### getHashConfig
 
 ▸ **getHashConfig**(): [`HashConfig`](../modules/types_global_GlobalTypes.md#hashconfig)
@@ -1457,6 +1754,16 @@ Gets the hash of the location of your home planet.
 #### Returns
 
 `undefined` \| `LocationId`
+
+---
+
+### getKardashevLocations
+
+▸ **getKardashevLocations**(): `Map`<`LocationId`, `BurnedLocation`\>
+
+#### Returns
+
+`Map`<`LocationId`, `BurnedLocation`\>
 
 ---
 
@@ -1593,6 +1900,26 @@ Gets the balance of the account measured in Eth (i.e. in full units of the chain
 
 ---
 
+### getMyBlueZones
+
+▸ **getMyBlueZones**(): `Set`<`PinkZone`\>
+
+#### Returns
+
+`Set`<`PinkZone`\>
+
+---
+
+### getMyPinkZones
+
+▸ **getMyPinkZones**(): `Set`<`PinkZone`\>
+
+#### Returns
+
+`Set`<`PinkZone`\>
+
+---
+
 ### getMyPlanetMap
 
 ▸ **getMyPlanetMap**(): `Map`<`LocationId`, `Planet`\>
@@ -1639,11 +1966,76 @@ Get the score of the currently logged-in account.
 
 ---
 
+### getNextActivateArtifactAvailableTimestamp
+
+▸ **getNextActivateArtifactAvailableTimestamp**(): `number`
+
+/\*\*
+Gets the timestamp (ms) of the next time that we can activate artifact.
+
+#### Returns
+
+`number`
+
+---
+
+### getNextBlueAvailableTimestamp
+
+▸ **getNextBlueAvailableTimestamp**(`planetId`): `number`
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
+
+#### Returns
+
+`number`
+
+---
+
 ### getNextBroadcastAvailableTimestamp
 
 ▸ **getNextBroadcastAvailableTimestamp**(): `number`
 
 Gets the timestamp (ms) of the next time that we can broadcast the coordinates of a planet.
+
+#### Returns
+
+`number`
+
+---
+
+### getNextBurnAvailableTimestamp
+
+▸ **getNextBurnAvailableTimestamp**(): `number`
+
+Gets the timestamp (ms) of the next time that we can burn a planet.
+
+#### Returns
+
+`number`
+
+---
+
+### getNextBurnCountdownInfo
+
+▸ **getNextBurnCountdownInfo**(): [`BurnCountdownInfo`](../interfaces/types_global_GlobalTypes.BurnCountdownInfo.md)
+
+Returns info about the next time you can burn a Planet
+
+#### Returns
+
+[`BurnCountdownInfo`](../interfaces/types_global_GlobalTypes.BurnCountdownInfo.md)
+
+---
+
+### getNextBuyArtifactAvailableTimestamp
+
+▸ **getNextBuyArtifactAvailableTimestamp**(): `number`
+
+Gets the timestamp (ms) of the next time that we can activate artifact.
 
 #### Returns
 
@@ -1672,6 +2064,46 @@ Returns info about the next time you can claim a Planet
 #### Returns
 
 [`ClaimCountdownInfo`](../interfaces/types_global_GlobalTypes.ClaimCountdownInfo.md)
+
+---
+
+### getNextKardashevAvailableTimestamp
+
+▸ **getNextKardashevAvailableTimestamp**(): `number`
+
+#### Returns
+
+`number`
+
+---
+
+### getNextKardashevCountdownInfo
+
+▸ **getNextKardashevCountdownInfo**(): [`KardashevCountdownInfo`](../interfaces/types_global_GlobalTypes.KardashevCountdownInfo.md)
+
+Returns info about the next time you can burn a Planet
+
+#### Returns
+
+[`KardashevCountdownInfo`](../interfaces/types_global_GlobalTypes.KardashevCountdownInfo.md)
+
+---
+
+### getNextPinkAvailableTimestamp
+
+▸ **getNextPinkAvailableTimestamp**(`planetId`): `number`
+
+Gets the timestamp (ms) of the next time that we can pink a planet.
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
+
+#### Returns
+
+`number`
 
 ---
 
@@ -1729,6 +2161,16 @@ four ranges: `PERLIN_THRESHOLD_1`, `PERLIN_THRESHOLD_2`, `PERLIN_THRESHOLD_3`.
 #### Returns
 
 [`number`, `number`, `number`]
+
+---
+
+### getPinkZones
+
+▸ **getPinkZones**(): `Set`<`PinkZone`\>
+
+#### Returns
+
+`Set`<`PinkZone`\>
 
 ---
 
@@ -1945,6 +2387,22 @@ this client.
 ### getPlayerScore
 
 ▸ **getPlayerScore**(`addr`): `undefined` \| `number`
+
+#### Parameters
+
+| Name   | Type         |
+| :----- | :----------- |
+| `addr` | `EthAddress` |
+
+#### Returns
+
+`undefined` \| `number`
+
+---
+
+### getPlayerSilver
+
+▸ **getPlayerSilver**(`addr`): `undefined` \| `number`
 
 #### Parameters
 
@@ -2261,6 +2719,16 @@ have not been successfully confirmed yet.
 
 ---
 
+### getUnconfirmedRefreshPlanets
+
+▸ **getUnconfirmedRefreshPlanets**(): `Transaction`<`UnconfirmedRefreshPlanet`\>[]
+
+#### Returns
+
+`Transaction`<`UnconfirmedRefreshPlanet`\>[]
+
+---
+
 ### getUnconfirmedUpgrades
 
 ▸ **getUnconfirmedUpgrades**(): `Transaction`<`UnconfirmedUpgrade`\>[]
@@ -2367,6 +2835,26 @@ represent a multiplier.
 
 ---
 
+### hardRefreshBlueZones
+
+▸ **hardRefreshBlueZones**(): `Promise`<`void`\>
+
+#### Returns
+
+`Promise`<`void`\>
+
+---
+
+### hardRefreshPinkZones
+
+▸ **hardRefreshPinkZones**(): `Promise`<`void`\>
+
+#### Returns
+
+`Promise`<`void`\>
+
+---
+
 ### hardRefreshPlanet
 
 ▸ **hardRefreshPlanet**(`planetId`): `Promise`<`void`\>
@@ -2392,6 +2880,23 @@ represent a multiplier.
 | Name       | Type         |
 | :--------- | :----------- |
 | `address?` | `EthAddress` |
+
+#### Returns
+
+`Promise`<`void`\>
+
+---
+
+### hardRefreshPlayerSpaceships
+
+▸ `Private` **hardRefreshPlayerSpaceships**(`address?`, `show?`): `Promise`<`void`\>
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `address?` | `EthAddress` |
+| `show?`    | `boolean`    |
 
 #### Returns
 
@@ -2472,6 +2977,30 @@ Whether or not the given rectangle has been mined.
 
 ---
 
+### isCurrentlyBlueing
+
+▸ **isCurrentlyBlueing**(): `boolean`
+
+return isCurrentlyBlueing
+
+#### Returns
+
+`boolean`
+
+---
+
+### isCurrentlyPinking
+
+▸ **isCurrentlyPinking**(): `boolean`
+
+return isCurrentlyPinking
+
+#### Returns
+
+`boolean`
+
+---
+
 ### isMining
 
 ▸ **isMining**(): `boolean`
@@ -2516,19 +3045,39 @@ Returns whether or not the current round has ended.
 
 ### joinGame
 
-▸ **joinGame**(`beforeRetry`): `Promise`<`void`\>
+▸ **joinGame**(`beforeRetry`, `_selectedCoords`, `spectate`): `Promise`<`void`\>
 
 Attempts to join the game. Should not be called once you've already joined.
 
 #### Parameters
 
-| Name          | Type                                    |
-| :------------ | :-------------------------------------- |
-| `beforeRetry` | (`e`: `Error`) => `Promise`<`boolean`\> |
+| Name                | Type                                    |
+| :------------------ | :-------------------------------------- |
+| `beforeRetry`       | (`e`: `Error`) => `Promise`<`boolean`\> |
+| `_selectedCoords`   | `Object`                                |
+| `_selectedCoords.x` | `number`                                |
+| `_selectedCoords.y` | `number`                                |
+| `spectate`          | `boolean`                               |
 
 #### Returns
 
 `Promise`<`void`\>
+
+---
+
+### kardashev
+
+▸ **kardashev**(`planetId`): `Promise`<`Transaction`<`UnconfirmedKardashev`\>\>
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
+
+#### Returns
+
+`Promise`<`Transaction`<`UnconfirmedKardashev`\>\>
 
 ---
 
@@ -2708,6 +3257,24 @@ the given planet to the given planet.
 
 ---
 
+### pinkLocation
+
+▸ **pinkLocation**(`planetId`): `Promise`<`Transaction`<`UnconfirmedPink`\>\>
+
+pinkLocation reveals a planet's location on-chain.
+
+#### Parameters
+
+| Name       | Type         |
+| :--------- | :----------- |
+| `planetId` | `LocationId` |
+
+#### Returns
+
+`Promise`<`Transaction`<`UnconfirmedPink`\>\>
+
+---
+
 ### prospectPlanet
 
 ▸ **prospectPlanet**(`planetId`, `bypassChecks?`): `Promise`<`Transaction`<`UnconfirmedProspectPlanet`\>\>
@@ -2732,6 +3299,25 @@ the given planet to the given planet.
 #### Returns
 
 `Promise`<`void`\>
+
+---
+
+### refreshPlanet
+
+▸ **refreshPlanet**(`planetId`, `_bypassChecks?`): `Promise`<`Transaction`<`UnconfirmedRefreshPlanet`\>\>
+
+Submits a transaction to the blockchain to refreshPlanet.
+
+#### Parameters
+
+| Name            | Type         | Default value |
+| :-------------- | :----------- | :------------ |
+| `planetId`      | `LocationId` | `undefined`   |
+| `_bypassChecks` | `boolean`    | `false`       |
+
+#### Returns
+
+`Promise`<`Transaction`<`UnconfirmedRefreshPlanet`\>\>
 
 ---
 
@@ -2959,16 +3545,17 @@ Changes the amount of move snark proofs that are cached.
 
 ### spaceTypeFromPerlin
 
-▸ **spaceTypeFromPerlin**(`perlin`): `SpaceType`
+▸ **spaceTypeFromPerlin**(`perlin`, `distFromOrigin`): `SpaceType`
 
 Each coordinate lives in a particular type of space, determined by a smooth random
 function called 'perlin noise.
 
 #### Parameters
 
-| Name     | Type     |
-| :------- | :------- |
-| `perlin` | `number` |
+| Name             | Type     |
+| :--------------- | :------- |
+| `perlin`         | `number` |
+| `distFromOrigin` | `number` |
 
 #### Returns
 
@@ -3110,11 +3697,71 @@ process by telling the Dark Forest webserver to look at that tweet.
 
 ---
 
+### timeUntilNextActivateArtifactAvailable
+
+▸ **timeUntilNextActivateArtifactAvailable**(): `number`
+
+Gets the amount of time (ms) until the next time the current player can activate artifact.
+
+#### Returns
+
+`number`
+
+---
+
 ### timeUntilNextBroadcastAvailable
 
 ▸ **timeUntilNextBroadcastAvailable**(): `number`
 
 Gets the amount of time (ms) until the next time the current player can broadcast a planet.
+
+#### Returns
+
+`number`
+
+---
+
+### timeUntilNextBurnAvailable
+
+▸ **timeUntilNextBurnAvailable**(): `number`
+
+Gets the amount of time (ms) until the next time the current player can burn a planet.
+
+#### Returns
+
+`number`
+
+---
+
+### timeUntilNextBuyArtifactAvailable
+
+▸ **timeUntilNextBuyArtifactAvailable**(): `number`
+
+Gets the amount of time (ms) until the next time the current player can activate artifact.
+
+#### Returns
+
+`number`
+
+---
+
+### timeUntilNextClaimAvailable
+
+▸ **timeUntilNextClaimAvailable**(): `number`
+
+Gets the amount of time (ms) until the next time the current player can claim a planet.
+
+#### Returns
+
+`number`
+
+---
+
+### timeUntilNextKardashevAvailable
+
+▸ **timeUntilNextKardashevAvailable**(): `number`
+
+Gets the amount of time (ms) until the next time the current player can kardashv a planet.
 
 #### Returns
 
@@ -3292,6 +3939,7 @@ Withdraws the artifact that is locked up on the given planet.
 | `__namedParameters`                 | `Object`                                                                                                        |
 | `__namedParameters.connection`      | `EthConnection`                                                                                                 |
 | `__namedParameters.contractAddress` | `EthAddress`                                                                                                    |
+| `__namedParameters.spectate`        | `boolean`                                                                                                       |
 | `__namedParameters.terminal`        | `MutableRefObject`<`undefined` \| [`TerminalHandle`](../interfaces/Frontend_Views_Terminal.TerminalHandle.md)\> |
 
 #### Returns

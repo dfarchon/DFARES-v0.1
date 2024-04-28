@@ -25,7 +25,7 @@ React api for creating tables.
 | Name                             | Type                                       |
 | :------------------------------- | :----------------------------------------- |
 | `__namedParameters`              | `Object`                                   |
-| `__namedParameters.alignments?`  | (`"r"` \| `"l"` \| `"c"`)[]                |
+| `__namedParameters.alignments?`  | (`"r"` \| `"c"` \| `"l"`)[]                |
 | `__namedParameters.columns`      | (`t`: `T`, `i`: `number`) => `ReactNode`[] |
 | `__namedParameters.headerStyle?` | `CSSProperties`                            |
 | `__namedParameters.headers`      | `ReactNode`[]                              |

@@ -13,7 +13,7 @@ export function OpenHatPaneButton({
   modal: ModalHandle;
   planetId: LocationId | undefined;
 }) {
-  const title = 'Buy Hat';
+  const title = 'Buy Skin';
   const shortcut = TOGGLE_HAT_PANE;
 
   const open = useCallback(() => {

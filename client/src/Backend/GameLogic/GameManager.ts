@@ -3532,7 +3532,9 @@ class GameManager extends EventEmitter {
           }
           if (lastChunkSize && lastChunkSize !== chunkSize) {
             this.terminal.current?.println(
-              `Hashed ${lastChunkSize * MIN_CHUNK_SIZE ** 2} potential home planets${values[index - 1]}`
+              `Hashed ${lastChunkSize * MIN_CHUNK_SIZE ** 2} potential home planets${
+                values[index - 1]
+              }`
             );
             index = 1;
           }
@@ -4531,7 +4533,7 @@ class GameManager extends EventEmitter {
    * cosmetic and a great way to BM your opponents or just look your best. Just like in the real
    * world, more money means more hat.
    */
-  public async buyHat(
+  public async buySkin(
     planetId: LocationId,
     hatType: number,
     _bypassChecks = false
@@ -4580,7 +4582,7 @@ class GameManager extends EventEmitter {
       localStorage.setItem(`${this.getAccount()?.toLowerCase()}-hatCostEth`, hatCostEth.toString());
 
       const txIntent: UnconfirmedBuyHat = {
-        methodName: 'buyHat',
+        methodName: 'buySkin',
         contract: this.contractsAPI.contract,
         args: Promise.resolve([locationIdToDecStr(planetId), hatType]),
         locationId: planetId,
@@ -4600,7 +4602,7 @@ class GameManager extends EventEmitter {
 
       return tx;
     } catch (e) {
-      this.getNotificationsManager().txInitError('buyHat', e.message);
+      this.getNotificationsManager().txInitError('buySkin', e.message);
       throw e;
     }
   }

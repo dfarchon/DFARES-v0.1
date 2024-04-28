@@ -65,6 +65,7 @@ export class PlanetRenderManager implements PlanetRenderManagerType {
       //set default image
       const img = new Image();
       img.src = logos[LogoType.DFARES].topLayer[0];
+
       img.onload = () => {
         this.HTMLImages[0] = img;
       };
