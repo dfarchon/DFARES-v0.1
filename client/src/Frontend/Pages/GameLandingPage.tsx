@@ -9,7 +9,6 @@ import { utils, Wallet } from 'ethers';
 import { reverse } from 'lodash';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { RouteComponentProps, useHistory } from 'react-router-dom';
-import styled from 'styled-components';
 import { makeContractsAPI } from '../../Backend/GameLogic/ContractsAPI';
 import GameManager, { GameManagerEvent } from '../../Backend/GameLogic/GameManager';
 import GameUIManager from '../../Backend/GameLogic/GameUIManager';
@@ -41,6 +40,7 @@ import UIEmitter, { UIEmitterEvent } from '../Utils/UIEmitter';
 import { GameWindowLayout } from '../Views/GameWindowLayout';
 import { Terminal, TerminalHandle } from '../Views/Terminal';
 import { MiniMap, MiniMapHandle } from './components/MiniMap';
+import { BrowserCompatibleState, BrowserIssues } from './components/BrowserIssues';
 
 const enum TerminalPromptStep {
   NONE,
@@ -65,49 +65,10 @@ const enum TerminalPromptStep {
   SPECTATING,
 }
 
-type BrowserCompatibleState = 'unknown' | 'unsupported' | 'supported';
 type TerminalStateOptions = {
   showHelp: boolean;
   depth?: number;
 };
-
-const BrowserIssue = styled.p`
-  color: red;
-  font-size: 24px;
-  line-height: 1.2em;
-  width: 1000%;
-  padding: 1em 0.5em;
-`;
-
-function BrowserIssues({
-  issues,
-  state,
-}: {
-  issues: Incompatibility[];
-  state: BrowserCompatibleState;
-}): JSX.Element {
-  if (state !== 'unsupported') {
-    return <></>;
-  }
-
-  if (issues.includes(Incompatibility.MobileOrTablet)) {
-    return (
-      <BrowserIssue>ERROR: Mobile or tablet device detected. Please use desktop.</BrowserIssue>
-    );
-  }
-
-  if (issues.includes(Incompatibility.NoIDB)) {
-    return <BrowserIssue>ERROR: IndexedDB not found. Try using a different browser</BrowserIssue>;
-  }
-
-  if (issues.includes(Incompatibility.UnsupportedBrowser)) {
-    return (
-      <BrowserIssue>ERROR: Unsupported browser. Try using Brave, Firefox, or Chrome.</BrowserIssue>
-    );
-  }
-
-  return <BrowserIssue>ERROR: Unknonwn error, please refresh browser.</BrowserIssue>;
-}
 
 export function GameLandingPage({ match, location }: RouteComponentProps<{ contract: string }>) {
   const history = useHistory();

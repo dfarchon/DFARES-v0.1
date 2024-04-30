@@ -12,6 +12,8 @@ import { TextPreview } from '../Components/TextPreview';
 import { TerminalTextStyle } from '../Utils/TerminalTypes';
 import { DarkForestTips } from '../Views/DarkForestTips';
 import { Terminal, TerminalHandle } from '../Views/Terminal';
+import { BrowserCompatibleState, BrowserIssues } from './components/BrowserIssues';
+import { Incompatibility, unsupportedFeatures } from '../Utils/BrowserChecks';
 
 class LobbyPageTerminal {
   private ethConnection: EthConnection;
@@ -208,6 +210,10 @@ export function LobbyLandingPage({ onReady }: { onReady: (connection: EthConnect
   const terminal = useRef<TerminalHandle>();
   const [connection, setConnection] = useState<EthConnection | undefined>();
   const [controller, setController] = useState<LobbyPageTerminal | undefined>();
+  const [browserCompatibleState, setBrowserCompatibleState] =
+    useState<BrowserCompatibleState>('unknown');
+  const [browserIssues, setBrowserIssues] = useState<Incompatibility[]>([]);
+  const [terminalVisible, setTerminalVisible] = useState<boolean>(false);
 
   useEffect(() => {
     getEthConnection()
@@ -237,9 +243,29 @@ export function LobbyLandingPage({ onReady }: { onReady: (connection: EthConnect
     }
   }, [terminal, connection, controller, onReady]);
 
+  useEffect(() => {
+    unsupportedFeatures().then((issues) => {
+      const supported = issues.length === 0;
+      setBrowserIssues(issues);
+      if (supported) {
+        setBrowserCompatibleState('supported');
+        setTerminalVisible(true);
+      } else {
+        setBrowserCompatibleState('unsupported');
+        setTerminalVisible(false);
+      }
+    });
+  }, []);
+
   return (
-    <TerminalWrapper initRender={InitRenderState.NONE} terminalEnabled={false}>
-      <Terminal ref={terminal} promptCharacter={'$'} />
+    <TerminalWrapper initRender={InitRenderState.NONE} terminalEnabled={terminalVisible}>
+      <BrowserIssues issues={browserIssues} state={browserCompatibleState} />
+      <Terminal
+        ref={terminal}
+        promptCharacter={'>'}
+        visible={terminalVisible}
+        useCaretElement={true}
+      />
     </TerminalWrapper>
   );
 }
