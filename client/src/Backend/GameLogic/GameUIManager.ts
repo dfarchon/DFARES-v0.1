@@ -376,18 +376,18 @@ class GameUIManager extends EventEmitter {
   }
 
   public findArtifact(planetId: LocationId) {
-    if (this.gameManager.isRoundOver()) {
-      alert('This round has ended, and you can no longer find artifacts!');
-      return;
-    }
+    // if (this.gameManager.isRoundOver()) {
+    //   alert('This round has ended, and you can no longer find artifacts!');
+    //   return;
+    // }
     this.gameManager.findArtifact(planetId);
   }
 
   public prospectPlanet(planetId: LocationId) {
-    if (this.gameManager.isRoundOver()) {
-      alert('This round has ended, and you can no longer find artifacts!');
-      return;
-    }
+    // if (this.gameManager.isRoundOver()) {
+    //   alert('This round has ended, and you can no longer find artifacts!');
+    //   return;
+    // }
     this.gameManager.prospectPlanet(planetId);
   }
 

@@ -688,8 +688,8 @@ class GameManager extends EventEmitter {
           });
         }
 
-        // console.log('knownScoringPlanets');
-        // console.log(knownScoringPlanets);
+        console.log('knownScoringPlanets');
+        console.log(knownScoringPlanets);
 
         const cntMap = new Map<string, number>();
         const haveScorePlayersMap = new Map<string, boolean>();
@@ -3280,9 +3280,9 @@ class GameManager extends EventEmitter {
       this.emit(GameManagerEvent.InitializedPlayer);
     }
     try {
-      if (this.checkGameHasEnded()) {
-        throw new Error('game has ended');
-      }
+      // if (this.checkGameHasEnded()) {
+      //   throw new Error('game has ended');
+      // }
 
       const planet = await this.findRandomHomePlanet(_selectedCoords);
       this.homeLocation = planet.location;
@@ -3661,7 +3661,7 @@ class GameManager extends EventEmitter {
       }
 
       if (!bypassChecks) {
-        if (this.checkGameHasEnded()) throw new Error('game ended');
+        // if (this.checkGameHasEnded()) throw new Error('game ended');
 
         if (!planet) {
           throw new Error("you can't prospect a planet you haven't discovered");
@@ -3729,9 +3729,9 @@ class GameManager extends EventEmitter {
       }
 
       if (!bypassChecks) {
-        if (this.checkGameHasEnded()) {
-          throw new Error('game has ended');
-        }
+        // if (this.checkGameHasEnded()) {
+        //   throw new Error('game has ended');
+        // }
 
         if (planet.owner !== this.getAccount()) {
           throw new Error("you can't find artifacts on planets you don't own");
@@ -3803,11 +3803,11 @@ class GameManager extends EventEmitter {
       localStorage.setItem(`${this.getAccount()?.toLowerCase()}-depositPlanet`, locationId);
       localStorage.setItem(`${this.getAccount()?.toLowerCase()}-depositArtifact`, artifactId);
 
-      if (this.checkGameHasEnded()) {
-        const error = new Error('game has ended');
-        this.getNotificationsManager().txInitError('depositArtifact', error.message);
-        throw error;
-      }
+      // if (this.checkGameHasEnded()) {
+      //   const error = new Error('game has ended');
+      //   this.getNotificationsManager().txInitError('depositArtifact', error.message);
+      //   throw error;
+      // }
 
       const txIntent: UnconfirmedDepositArtifact = {
         methodName: 'depositArtifact',
@@ -3840,9 +3840,9 @@ class GameManager extends EventEmitter {
   ): Promise<Transaction<UnconfirmedWithdrawArtifact>> {
     try {
       if (!bypassChecks) {
-        if (this.checkGameHasEnded()) {
-          throw new Error('game has ended');
-        }
+        // if (this.checkGameHasEnded()) {
+        //   throw new Error('game has ended');
+        // }
         const planet = this.entityStore.getPlanetWithId(locationId);
         if (!planet) {
           throw new Error('tried to withdraw from unknown planet');
@@ -3890,9 +3890,9 @@ class GameManager extends EventEmitter {
     bypassChecks = false
   ): Promise<Transaction<UnconfirmedActivateArtifact>> {
     try {
-      if (this.checkGameHasEnded()) {
-        throw new Error('game has ended');
-      }
+      // if (this.checkGameHasEnded()) {
+      //   throw new Error('game has ended');
+      // }
 
       if (!this.account) {
         throw new Error('no account set');
@@ -3900,9 +3900,9 @@ class GameManager extends EventEmitter {
 
       if (!bypassChecks) {
         const planet = this.entityStore.getPlanetWithId(locationId);
-        if (this.checkGameHasEnded()) {
-          throw new Error('game has ended');
-        }
+        // if (this.checkGameHasEnded()) {
+        //   throw new Error('game has ended');
+        // }
 
         if (!planet) {
           throw new Error('tried to activate on an unknown planet');
@@ -4382,9 +4382,9 @@ class GameManager extends EventEmitter {
     localStorage.setItem(`${this.getAccount()?.toLowerCase()}-toPlanet`, to);
 
     try {
-      if (!bypassChecks && this.checkGameHasEnded()) {
-        throw new Error('game has ended');
-      }
+      // if (!bypassChecks && this.checkGameHasEnded()) {
+      //   throw new Error('game has ended');
+      // }
 
       const arrivalsToOriginPlanet = this.entityStore.getArrivalIdsForLocation(from);
       const hasIncomingVoyage = arrivalsToOriginPlanet && arrivalsToOriginPlanet.length > 0;
@@ -4654,9 +4654,9 @@ class GameManager extends EventEmitter {
       if (!this.account) {
         throw new Error('no account set');
       }
-      if (this.checkGameHasEnded()) {
-        throw new Error('game has ended');
-      }
+      // if (this.checkGameHasEnded()) {
+      //   throw new Error('game has ended');
+      // }
 
       const planet = this.entityStore.getPlanetWithId(planetId);
 
@@ -4786,9 +4786,9 @@ class GameManager extends EventEmitter {
       if (!this.account) {
         throw new Error('no account set');
       }
-      if (this.checkGameHasEnded()) {
-        throw new Error('game has ended');
-      }
+      // if (this.checkGameHasEnded()) {
+      //   throw new Error('game has ended');
+      // }
 
       const planet = this.entityStore.getPlanetWithId(planetId);
 
@@ -4863,9 +4863,9 @@ class GameManager extends EventEmitter {
       if (!this.account) {
         throw new Error('no account set');
       }
-      if (this.checkGameHasEnded()) {
-        throw new Error('game has ended');
-      }
+      // if (this.checkGameHasEnded()) {
+      //   throw new Error('game has ended');
+      // }
 
       //player requirements
       const player = this.players.get(this.account);
