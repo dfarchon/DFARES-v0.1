@@ -1010,14 +1010,14 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         return;
       }
 
-      if (Date.now() / 1000 > gameUIManager.getEndTimeSeconds()) {
-        terminal.current?.println(
-          'ERROR: This game has ended. Terminating session.',
-          TerminalTextStyle.Red
-        );
-        setStep(TerminalPromptStep.TERMINATED);
-        return;
-      }
+      // if (Date.now() / 1000 > gameUIManager.getEndTimeSeconds()) {
+      //   terminal.current?.println(
+      //     'ERROR: This game has ended. Terminating session.',
+      //     TerminalTextStyle.Red
+      //   );
+      //   setStep(TerminalPromptStep.TERMINATED);
+      //   return;
+      // }
 
       let setX = undefined;
       let setY = undefined;
