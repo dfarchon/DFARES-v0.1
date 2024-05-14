@@ -3661,7 +3661,7 @@ class GameManager extends EventEmitter {
       }
 
       if (!bypassChecks) {
-        // if (this.checkGameHasEnded()) throw new Error('game ended');
+        if (this.checkGameHasEnded()) throw new Error('game ended');
 
         if (!planet) {
           throw new Error("you can't prospect a planet you haven't discovered");
@@ -3729,9 +3729,9 @@ class GameManager extends EventEmitter {
       }
 
       if (!bypassChecks) {
-        // if (this.checkGameHasEnded()) {
-        //   throw new Error('game has ended');
-        // }
+        if (this.checkGameHasEnded()) {
+          throw new Error('game has ended');
+        }
 
         if (planet.owner !== this.getAccount()) {
           throw new Error("you can't find artifacts on planets you don't own");
