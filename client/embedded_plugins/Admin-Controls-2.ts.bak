@@ -1,0 +1,1120 @@
+// organize-imports-ignore
+import {
+  EthAddress,
+  LocatablePlanet,
+  LocationId,
+  Planet,
+  LogoType,
+  LogoTypeNames,
+  ArtifactRarityNames,
+  ArtifactType,
+  ArtifactTypeNames,
+  BiomeNames,
+  Player,
+  PlanetType,
+  PlanetTypeNames,
+  WorldCoords,
+  //@ts-ignore
+} from 'https://cdn.skypack.dev/@dfares/types';
+
+import {
+  avatarTypeToNum,
+  logoTypeToNum,
+  memeTypeToNum,
+  getPlanetNameHash,
+  //@ts-ignore
+} from 'https://cdn.skypack.dev/@dfares/procedural';
+
+import {
+  MAX_ARTIFACT_RARITY,
+  MIN_ARTIFACT_RARITY,
+  MIN_SPACESHIP_TYPE,
+  MAX_SPACESHIP_TYPE,
+  MIN_BIOME,
+  MAX_BIOME,
+  MAX_MEME_TYPE,
+  MIN_ARTIFACT_TYPE,
+  MIN_LOGO_TYPE,
+  //@ts-ignore
+} from 'https://cdn.skypack.dev/@dfares/constants';
+
+import {
+  locationIdToDecStr,
+  artifactIdFromHexStr,
+  locationIdFromDecStr,
+  //@ts-ignore
+} from 'https://cdn.skypack.dev/@dfares/serde';
+
+import {
+  html,
+  render,
+  useEffect,
+  useState,
+  useCallback,
+  //@ts-ignore
+} from 'https://esm.sh/htm/preact/standalone';
+
+function random256Id() {
+  const alphabet = '0123456789ABCDEF'.split('');
+  let result = '0x';
+  for (let i = 0; i < 256 / 4; i++) {
+    result += alphabet[Math.floor(Math.random() * alphabet.length)];
+  }
+  return result;
+}
+
+async function createArtifact(
+  owner: EthAddress,
+  type: ArtifactType,
+  planet: Planet,
+  rarity: string,
+  biome: string
+) {
+  if (!owner) {
+    alert('no account');
+    return;
+  }
+
+  const tokenId = random256Id();
+  // see contracts/types/ActionTypes.sol - CreateArtifactArgs
+  const args = Promise.resolve([
+    {
+      tokenId,
+      discoverer: owner,
+      planetId: locationIdToDecStr(planet.locationId),
+      rarity,
+      biome,
+      artifactType: type,
+      owner: owner,
+      controller: '0x0000000000000000000000000000000000000000',
+      imageType: 0,
+    },
+  ]);
+
+  const tx = await df.submitTransaction({
+    args,
+    contract: df.getContract(),
+    methodName: 'adminGiveArtifact',
+  });
+  tx.confirmedPromise.then(() => {
+    df.hardRefreshArtifact(artifactIdFromHexStr(tokenId.slice(2)));
+    df.hardRefreshPlanet(planet.locationId);
+  });
+
+  return tx;
+}
+
+async function initPlanet(planet: LocatablePlanet) {
+  if (planet.isInContract) return;
+  const x = planet.location.coords.x;
+  const y = planet.location.coords.y;
+
+  const distFromOriginSquare = x * x + y * y;
+
+  const args = Promise.resolve([
+    locationIdToDecStr(planet.locationId),
+    planet.perlin,
+    distFromOriginSquare,
+  ]);
+
+  const tx = await df.submitTransaction({
+    args,
+    contract: df.getContract(),
+    methodName: 'adminInitializePlanet',
+  });
+
+  await tx.confirmedPromise;
+
+  return tx;
+}
+
+async function spawnSpaceship(
+  planet: LocatablePlanet | undefined,
+  owner: EthAddress | undefined,
+  shipType: ArtifactType
+) {
+  if (!owner) {
+    alert('no account');
+    return;
+  }
+
+  if (!planet) {
+    alert('no selected planet');
+    return;
+  }
+
+  await initPlanet(planet);
+
+  const args = Promise.resolve([locationIdToDecStr(planet.locationId), owner, shipType]);
+
+  const tx = await df.submitTransaction({
+    args,
+    contract: df.getContract(),
+    methodName: 'adminGiveSpaceShip',
+  });
+
+  tx.confirmedPromise.then(() => df.hardRefreshPlanet(planet.locationId));
+
+  return tx;
+}
+
+async function takeOwnership(
+  planet: LocatablePlanet | undefined,
+  newOwner: EthAddress | undefined
+) {
+  if (!newOwner) {
+    alert('no account');
+    return;
+  }
+
+  if (!planet) {
+    alert('no selected planet');
+    return;
+  }
+
+  const snarkArgs = await df.getSnarkHelper().getInitArgs(
+    planet.location.coords.x,
+    planet.location.coords.y,
+    Math.floor(Math.sqrt(planet.location.coords.x ** 2 + planet.location.coords.y ** 2)) + 1 // floor(sqrt(x^2 + y^2)) + 1
+  );
+
+  const args = Promise.resolve([newOwner, ...snarkArgs]);
+
+  const tx = await df.submitTransaction({
+    locationId: planet.locationId,
+    newOwner,
+    args,
+    contract: df.getContract(),
+    methodName: 'safeSetOwner',
+  });
+
+  tx.confirmedPromise.then(() => df.hardRefreshPlanet(planet.locationId));
+
+  return tx;
+}
+
+async function withdraw() {
+  const tx = await df.submitTransaction({
+    args: Promise.resolve([]),
+    contract: df.getContract(),
+    methodName: 'withdraw',
+  });
+
+  return tx;
+}
+
+async function adminSetRank() {
+  const playerAddress = [
+    '0xa0095b4972238f64583D538ab514A86eB2FF8eCc',
+    '0xfD9b9400B42Cd0cA43F2f0632a982DC5C258b6f5',
+    '0xB8e174988032D5f18d464d47E4284cf058fCf204',
+    '0x46Cac9e4595D82E421437e11E1145Da7Bb899999',
+    '0xD7eF519551eBFdF3f4859E6D06aeAE72438CDf6E',
+    '0xD1922d121043a33704FD2b71c99813Df86681495',
+    '0x36EBd29167DD766862C03C0015B0c1b9178562A5',
+    '0xd84aF231d46FA0175018f68B0Ef951698197bE4E',
+    '0xaDB585DbBb2A801Ca15a68B5e252da98FcFada0C',
+    '0x0EF3263bac5a34Fa5d410eF2d7253Fe695d5e8ba',
+    '0xC633E7Af82986C875285f8dea25dDB2528830A9F',
+    '0x4D543D6D0CeA1f92c9d78bc0f6fed2A45a8e24E5',
+    '0xAd39cF88bE58BC58A499643cc86BA636bf98da04',
+    '0x471Ba964aE8ef246AadD706C9bF382212F5dD3BD',
+    '0xfE8d7d18ce57cEFF5a883ED20c0B04C6579017D8',
+    '0x6084fACD12b2Ef43a2A54064694af060C6c45d16',
+    '0x1787B2E8f0327aFF332A1a6170E118d9De95f152',
+    '0x3af0B27051f73f23d34fd5b937705341b876443F',
+    '0x3dD1A23d323cB1729a95F114C55F26d792b7a316',
+    '0x363d2ce61137Be730f370A3EeCDfCbD8BE5f8bBe',
+    '0x4906504b624065BdaaB16D8Aa3A9054024344d7a',
+    '0x7045Ba1a3Dab1da17bdA91B46E121fbb4A5f054b',
+    '0x1208e7F7AED9d39Ed25ef582B8933e4a1D0DA6af',
+    '0x4D74205f48b1ebD22c9e7Bc16D44BBB4887B2247',
+    '0xDeF1D05e3161BAE2C6e7379Be9dc7440969d17F5',
+    '0x168F8B81629576edf415B0631152878319242EF3',
+    '0x234AF91778A2Dde77465184b828F1baff207a8f6',
+    '0xF06e7A5CD8d74d93A127930d5d0e24B2Ab00e5Df',
+    '0x8702756e38813bD001e62EF5BfA6ABA6cf50b3Ec',
+    '0x1bE2d56675af074754C7aDa4A81bF415Dc5ee8db',
+    '0xb87791e8CB9006C5EB0342284bbe4aa2c04e1A5d',
+    '0xB5d5F8Db0968908658668f06ba2296594f9bdDaF',
+    '0x464761b11eC81f21a40753F11f1f300300Db5158',
+    '0x78D81699d576D90E237A43fB6038D431CA5c15B3',
+    '0x6B148cdCE438c8d66D79C35eCec6Fdf67d4beA2D',
+    '0xc068DA86bBCbe5af2507850dDEf00dDed17dBcc1',
+    '0xaCB4873492A9085591363158304CDd9aC4d068a0',
+    '0x87Da68Fb7B36bbaaD603BF3fAEcf1a10Ff018085',
+    '0xf4C469bF50E26388778c9762d7B83E504e44Feea',
+    '0xB1D56433c2922CC8fF99E1Df201Eb5b6838e356a',
+    '0x6BAf8c512B09172e1ab951366Cc74c8fA943ae92',
+    '0xA7e6c98C38610011221Ce779877110645306aD61',
+    '0xD41FD9d81297dDDb5F84832b66C04D9fc07A1de4',
+    '0xA63820451A3f868aad0e466d50C0338677C48f83',
+    '0x9B0e34399695f5751be0F03A4105F8d967b86FF0',
+    '0xf21A135eE809a16107c3360F464Bc7A3C12d6ebF',
+    '0x02C4F2ad30020c5688829CAb3FE50f1b57DF7D4a',
+    '0x797CeB235b9EF537Db587e4F4C95ABd5926E09e7',
+    '0x66A70bf347841AbC34d1B7D7027E06A931cbA326',
+    '0x36BD377c9347579d8A2a2b821c6A896F7A2f72Ae',
+    '0x3252E70d3221ce360e1244d24c88F16f941Cf34d',
+    '0xbE31398757fB95491E7eC00d3FC20613C05b96Cd',
+    '0x676F48a39F5652871d1014Bf616db5e4Cb7ad038',
+    '0x7756708A82A2C11d5758dD4b26687e85CD87270e',
+    '0x0eC21BaF0A432695EB608772F4F219D9a71deAA2',
+    '0xab32F0229FbE473502B5622a1fbad87B3D10a3e6',
+    '0x8E8270A350e9F98b9ff12197E969d5D3D20CE26e',
+    '0x0E2047787bA15e2bfa0e81AeF6E973dfd8e31798',
+    '0xDCB96D288a437D5A12F05883d00280DEc1252e3b',
+    '0x7a677D124B355c5D1B9005481657048771dba2c2',
+    '0x29f5c2A63C2D0ed21bb49238A8CB519A553d827C',
+    '0xB0023745B228C1DA550E3526A15186A87ba240a4',
+    '0xDC173C08bF09e1EA73d7578769456bD5BB3239B0',
+    '0x8b830F03107e9FC5F688991F5eac64EDacc865A4',
+    '0xbD95C76F878EEaEc89ca50AA9836c653696F927D',
+    '0x811f50CB2C4A0EaCA373A9E43838c80012C63b48',
+    '0xd9934FE6A9b881F2E45d1c164A7c540f38bE015f',
+    '0xC2BD423f58b01b899A1194f6ee3F39aed74Be093',
+  ];
+
+  const playerScore = [
+    '0',
+    '2715',
+    '2747',
+    '2813',
+    '2957',
+    '3170',
+    '3579',
+    '4884',
+    '4931',
+    '5339',
+    '7683',
+    '7875',
+    '11645',
+    '11981',
+    '14450',
+    '15037',
+    '15707',
+    '43944',
+    '52306',
+    '58043',
+    '69276',
+    '84995',
+    '86331',
+    '87292',
+    '90575',
+    '90811',
+    '91172',
+    '93457',
+    '94280',
+    '94545',
+    '98062',
+    '100048',
+    '102821',
+    '109196',
+    '109385',
+    '110831',
+    '112025',
+    '113287',
+    '113560',
+    '115303',
+    '115665',
+    '116327',
+    '117624',
+    '118118',
+    '120674',
+    '120778',
+    '120938',
+    '122447',
+    '122528',
+    '123490',
+    '124419',
+    '125315',
+    '127240',
+    '127492',
+    '128251',
+    '128562',
+    '129188',
+    '129302',
+    '131189',
+    '131610',
+    '132000',
+    '137265',
+    '138585',
+    '138859',
+    '140543',
+    '140737',
+    '142828',
+    '149178',
+  ];
+  const playerRank = [
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+    '11',
+    '12',
+    '13',
+    '14',
+    '15',
+    '16',
+    '17',
+    '18',
+    '19',
+    '20',
+    '21',
+    '22',
+    '23',
+    '24',
+    '25',
+    '26',
+    '27',
+    '28',
+    '29',
+    '30',
+    '31',
+    '32',
+    '33',
+    '34',
+    '35',
+    '36',
+    '37',
+    '38',
+    '39',
+    '40',
+    '41',
+    '42',
+    '43',
+    '44',
+    '45',
+    '46',
+    '47',
+    '48',
+    '49',
+    '50',
+    '51',
+    '52',
+    '53',
+    '54',
+    '55',
+    '56',
+    '57',
+    '58',
+    '59',
+    '60',
+    '61',
+    '62',
+    '63',
+    '64',
+    '65',
+    '66',
+    '67',
+    '68',
+  ];
+
+  const tx = await df.submitTransaction({
+    args: Promise.resolve([playerAddress, playerScore, playerRank]),
+    contract: df.getContract(),
+    methodName: 'adminSetFinalScoreAndRank',
+  });
+
+  return tx;
+}
+
+async function pauseGame() {
+  const tx = await df.submitTransaction({
+    args: Promise.resolve([]),
+    contract: df.getContract(),
+    methodName: 'pause',
+  });
+
+  return tx;
+}
+
+async function unpauseGame() {
+  const tx = await df.submitTransaction({
+    args: Promise.resolve([]),
+    contract: df.getContract(),
+    methodName: 'unpause',
+  });
+
+  return tx;
+}
+
+async function setHalfPriceGame() {
+  const tx = await df.submitTransaction({
+    args: Promise.resolve([]),
+    contract: df.getContract(),
+    methodName: 'setHalfPrice',
+  });
+  return tx;
+}
+
+async function setUnHalfPriceGame() {
+  const tx = await df.submitTransaction({
+    args: Promise.resolve([]),
+    contract: df.getContract(),
+    methodName: 'setUnHalfPrice',
+  });
+  return tx;
+}
+
+async function addAddressToWhitelist(address: EthAddress) {
+  const args = Promise.resolve([address]);
+
+  const tx = await df.submitTransaction({
+    args,
+    contract: df.getContract(),
+    methodName: 'addToWhitelist',
+  });
+
+  return tx;
+}
+
+async function createPlanet(coords: WorldCoords, level: number, type: PlanetType) {
+  coords.x = Math.round(coords.x);
+  coords.y = Math.round(coords.y);
+
+  const location = df.locationBigIntFromCoords(coords).toString();
+  const perlinValue = df.biomebasePerlin(coords, true);
+
+  const args = Promise.resolve([
+    {
+      x: coords.x,
+      y: coords.y,
+      level,
+      planetType: type,
+      requireValidLocationId: false,
+      location: location,
+      perlin: perlinValue,
+    },
+  ]);
+
+  const tx = await df.submitTransaction({
+    args,
+    contract: df.getContract(),
+    methodName: 'createPlanet',
+  });
+
+  await tx.confirmedPromise;
+
+  const revealArgs = df.getSnarkHelper().getRevealArgs(coords.x, coords.y);
+  const revealTx = await df.submitTransaction({
+    args: revealArgs,
+    contract: df.getContract(),
+    methodName: 'revealLocation',
+  });
+
+  await revealTx.confirmedPromise;
+
+  await df.hardRefreshPlanet(locationIdFromDecStr(location));
+}
+
+async function revealPlanet(coords: WorldCoords, level: number, type: PlanetType) {
+  coords.x = Math.round(coords.x);
+  coords.y = Math.round(coords.y);
+
+  const location = df.locationBigIntFromCoords(coords).toString();
+  // const perlinValue = df.biomebasePerlin(coords, true);
+
+  // const args = Promise.resolve([
+  //   {
+  //     x: coords.x,
+  //     y: coords.y,
+  //     level,
+  //     planetType: type,
+  //     requireValidLocationId: false,
+  //     location: location,
+  //     perlin: perlinValue,
+  //   },
+  // ]);
+
+  // const tx = await df.submitTransaction({
+  //   args,
+  //   contract: df.getContract(),
+  //   methodName: 'createPlanet',
+  // });
+
+  // await tx.confirmedPromise;
+
+  const revealArgs = df.getSnarkHelper().getRevealArgs(coords.x, coords.y);
+  const revealTx = await df.submitTransaction({
+    args: revealArgs,
+    contract: df.getContract(),
+    methodName: 'revealLocation',
+  });
+
+  await revealTx.confirmedPromise;
+
+  await df.hardRefreshPlanet(locationIdFromDecStr(location));
+}
+
+async function setDynamicTimeFactor(timeFactor: number) {
+  const args = Promise.resolve([Number(timeFactor) * 100]);
+  const tx = await df.submitTransaction({
+    args,
+    contract: df.getContract(),
+    methodName: 'setDynamicTimeFactor',
+  });
+
+  return tx;
+}
+
+async function setPlanetHat(planet: LocatablePlanet | undefined, level: number, type: number) {
+  if (!planet) {
+    alert('no selected planet');
+    return;
+  }
+
+  await initPlanet(planet);
+
+  const args = Promise.resolve([locationIdToDecStr(planet.locationId), level, type]);
+
+  const tx = await df.submitTransaction({
+    locationId: planet.locationId,
+    hatLevel: level,
+    hatType: type,
+    args,
+    contract: df.getContract(),
+    methodName: 'setHat',
+  });
+
+  tx.confirmedPromise.then(() => df.hardRefreshPlanet(planet.locationId));
+
+  return tx;
+}
+
+async function setPlanetCanShow(planet: LocatablePlanet | undefined, canShow: boolean) {
+  if (!planet) {
+    alert('no selected planet');
+    return;
+  }
+
+  await initPlanet(planet);
+
+  const args = Promise.resolve([locationIdToDecStr(planet.locationId), canShow]);
+
+  const tx = await df.submitTransaction({
+    locationId: planet.locationId,
+    canShow: canShow,
+    args,
+    contract: df.getContract(),
+    methodName: 'setPlanetCanShow',
+  });
+
+  tx.confirmedPromise.then(() => df.hardRefreshPlanet(planet.locationId));
+
+  return tx;
+}
+
+function PlanetLink({ planetId }: { planetId?: LocationId }) {
+  if (planetId) {
+    return html`<a
+      style=${{ cursor: 'pointer', textDecoration: 'underline', color: '#00ADE1' }}
+      onClick=${() => ui.centerLocationId(planetId)}
+    >
+      ${getPlanetNameHash(planetId)}
+    </a>`;
+  } else {
+    return '(none selected)';
+  }
+}
+
+function Heading({ title }: { title: string }) {
+  return html`<h2 style=${{ fontSize: '14pt', textDecoration: 'underline' }}>${title}</h2>`;
+}
+
+function shipOptions() {
+  const options = [] as HTMLOptionElement[];
+  for (let i = MIN_SPACESHIP_TYPE; i <= MAX_SPACESHIP_TYPE; i++) {
+    options.push(html`<option value=${i}>${ArtifactTypeNames[i]}</option>`);
+  }
+  return options;
+}
+
+function artifactOptions() {
+  const options = [] as HTMLOptionElement[];
+  // console.log(ArtifactTypeNames);
+  for (let i = MIN_ARTIFACT_TYPE; i < MIN_SPACESHIP_TYPE; i++) {
+    options.push(html`<option value=${i}>${ArtifactTypeNames[i]}</option>`);
+  }
+  return options;
+}
+
+function artifactRarityOptions() {
+  const options = [] as HTMLOptionElement[];
+  for (let i = MIN_ARTIFACT_RARITY; i <= MAX_ARTIFACT_RARITY; i++) {
+    options.push(html`<option value=${i}>${ArtifactRarityNames[i]}</option>`);
+  }
+  return options;
+}
+
+function artifactBiomeOptions() {
+  const options = [] as HTMLOptionElement[];
+  for (let i = MIN_BIOME; i <= MAX_BIOME; i++) {
+    options.push(html`<option value=${i}>${BiomeNames[i]}</option>`);
+  }
+  return options;
+}
+
+function accountOptions(players: Player[]) {
+  const options = [] as HTMLOptionElement[];
+  for (const player of players) {
+    options.push(
+      html`<option value=${player.address}>${player.twitter || player.address}</option>`
+    );
+  }
+  return options;
+}
+function planetTypeOptions() {
+  const options = [] as HTMLOptionElement[];
+  for (let i = 0; i <= Object.values(PlanetType).length - 1; i++) {
+    options.push(html`<option value=${i}>${PlanetTypeNames[i]}</option>`);
+  }
+  return options;
+}
+
+function hatTypeOptions() {
+  const options = [] as HTMLOptionElement[];
+
+  for (let i = 1; i < Object.values(LogoType).length; i++) {
+    options.push(html`<option value=${logoTypeToNum(Number(i))}>${LogoTypeNames[i]}</option>`);
+  }
+  return options;
+}
+
+function hatLevelOptions() {
+  const options = [] as HTMLOptionElement[];
+  for (let i = 0; i <= 10; i++) {
+    options.push(html`<option value=${i}>${i.toString()}</option>`);
+  }
+  return options;
+}
+
+function planetCanShowOptions() {
+  const options = [] as HTMLOptionElement[];
+
+  options.push(html`<option value=${1}>${'true'}</option>`);
+  options.push(html`<option value=${0}>${'false'}</option>`);
+  return options;
+}
+
+function Select({
+  style,
+  value,
+  onChange,
+  items,
+}: {
+  style: Record<string, string>;
+  value: string;
+  onChange: (e: InputEvent) => void;
+  items: unknown[];
+}) {
+  return html`
+    <select
+      style=${{
+        ...style,
+        outline: 'none',
+        background: '#151515',
+        color: '#838383',
+        borderRadius: '4px',
+        border: '1px solid #777',
+        width: '100%',
+        padding: '2px 6px',
+        cursor: 'pointer',
+      }}
+      value=${value}
+      onChange=${onChange}
+    >
+      ${items}
+    </select>
+  `;
+}
+
+const wrapperStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '8px',
+};
+
+const rowStyle = {
+  display: 'flex',
+  gap: '8px',
+  alignItems: 'center',
+};
+
+function PlanetCreator() {
+  const uiEmitter = ui.getUIEmitter();
+
+  const [level, setLevel] = useState(0);
+  const [planetType, setPlanetType] = useState(PlanetType.PLANET);
+  const [choosingLocation, setChoosingLocation] = useState(false);
+  const [planetCoords, setPlanetCoords] = useState(null);
+
+  const placePlanet = useCallback(
+    (coords: WorldCoords) => {
+      createPlanet(coords, parseInt(level), planetType);
+      setChoosingLocation(false);
+    },
+    [level, planetType, setChoosingLocation]
+  );
+
+  const updatePlanetCoords = useCallback(
+    (coords: WorldCoords) => {
+      setPlanetCoords(coords);
+    },
+    [setPlanetCoords]
+  );
+
+  useEffect(() => {
+    if (choosingLocation) {
+      uiEmitter.on('WorldMouseClick', placePlanet);
+      uiEmitter.on('WorldMouseMove', updatePlanetCoords);
+
+      return () => {
+        uiEmitter.off('WorldMouseClick', placePlanet);
+        uiEmitter.off('WorldMouseMove', updatePlanetCoords);
+      };
+    }
+
+    return () => {};
+  }, [uiEmitter, choosingLocation, placePlanet, updatePlanetCoords]);
+
+  return html`
+    <div style=${{ width: '100%' }}>
+      <${Heading} title="Create Planet" />
+
+      <div style=${rowStyle}>
+        <df-slider
+          label="Planet Level"
+          value=${level}
+          onChange=${(e: InputEvent) => setLevel((e.target as HTMLInputElement).value)}
+          max=${9}
+        ></df-slider>
+        <div>
+          <label for="planet-type-selector">Planet Type</label>
+          <${Select}
+            id="planet-type-selector"
+            value=${planetType}
+            onChange=${(e: InputEvent) => setPlanetType((e.target as HTMLSelectElement).value)}
+            items=${planetTypeOptions()}
+          />
+        </div>
+      </div>
+      <div style=${{ ...rowStyle, justifyContent: 'space-between' }}>
+        ${!choosingLocation &&
+        html`
+          <df-button
+            onClick=${() => {
+              setChoosingLocation(true);
+            }}
+          >
+            Choose Planet Location
+          </df-button>
+        `}
+        ${choosingLocation &&
+        html` <p>
+          Creating planet on coords <br />
+          (${Math.round(planetCoords?.x)}, ${Math.round(planetCoords?.y)})
+        </p>`}
+        ${choosingLocation &&
+        html`<df-button onClick=${() => setChoosingLocation(false)}> Cancel Creation</df-button>`}
+      </div>
+      <div>
+        <df-button
+          onClick=${() => {
+            createPlanet({ x: 0, y: 0 }, parseInt('9'), PlanetType.PLANET);
+          }}
+          >Add Center Planet</df-button
+        >
+      </div>
+
+      <div>
+        <df-button
+          onClick=${() => {
+            revealPlanet({ x: 0, y: 0 }, parseInt('9'), PlanetType.PLANET);
+          }}
+          >Add Center Planet</df-button
+        >
+      </div>
+    </div>
+  `;
+}
+
+function ChangeTimeFactor() {
+  const [timeFactor, setTimeFactor] = useState(1);
+
+  return html`
+    <div style=${{ width: '100%' }}>
+      <${Heading} title="Change Time Factor" />
+      <div style=${rowStyle}>
+        <df-slider
+          label="Time Factor"
+          value=${timeFactor}
+          onChange=${(e: InputEvent) => setTimeFactor((e.target as HTMLInputElement).value)}
+          min=${1}
+          max=${40}
+        ></df-slider>
+      </div>
+      <div style=${{ ...rowStyle, justifyContent: 'space-between' }}>
+        ${html`
+          <df-button
+            onClick=${() => {
+              setDynamicTimeFactor(timeFactor);
+            }}
+          >
+            Set Time Factor
+          </df-button>
+        `}
+      </div>
+    </div>
+  `;
+}
+
+function App() {
+  const [selectedPlanet, setSelectedPlanet] = useState(null);
+  const [selectedShip, setSelectedShip] = useState(MIN_SPACESHIP_TYPE);
+  const [selectedArtifact, setSelectedArtifact] = useState(MIN_ARTIFACT_TYPE);
+  const [artifactRarity, setArtifactRarity] = useState('1');
+  const [artifactBiome, setArtifactBiome] = useState(MIN_BIOME.toString());
+  const [whitelistAddress, setWhitelistAddress] = useState(null);
+  const [account, setAccount] = useState(null);
+  const [targetAccount, setTargetAccount] = useState(null);
+  const [allPlayers, setAllPlayers] = useState([]);
+
+  const [hatLevel, setHatLevel] = useState(1);
+  const [hatType, setHatType] = useState(1);
+
+  const [canShow, setCanShow] = useState(0);
+
+  useEffect(() => {
+    const account = df.getAccount();
+    setAccount(account);
+    setTargetAccount(account);
+  }, []);
+
+  useEffect(() => {
+    const refreshPlayers = () => {
+      setAllPlayers(df.getAllPlayers());
+    };
+
+    const sub = df.playersUpdated$.subscribe(refreshPlayers);
+    refreshPlayers();
+
+    return () => sub.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const subscription = ui.selectedPlanetId$.subscribe((p: LocationId) => {
+      setSelectedPlanet(ui.getPlanetWithId(p));
+    });
+
+    return () => subscription.unsubscribe();
+  }, [setSelectedPlanet]);
+
+  return html`
+    <div style=${wrapperStyle}>
+      <div style=${rowStyle}>
+        <df-button onClick=${() => withdraw()}> withdraw ETH to admin account </df-button>
+      </div>
+
+      <div style=${rowStyle}>
+        <df-button onClick=${() => adminSetRank()}> Admin Set Rank </df-button>
+      </div>
+
+      <p>Logged in as account: ${account}</p>
+
+      <${Heading} title="Game state" />
+
+      <div style=${rowStyle}>
+        <span>Change game state:</span>
+        <df-button onClick=${() => pauseGame()}> Pause </df-button>
+        <df-button onClick=${() => unpauseGame()}> Unpause </df-button>
+      </div>
+
+      <div style=${rowStyle}>
+        <span>Change game tate:</span>
+        <df-button onClick=${() => setHalfPriceGame()}> setHalfPrice </df-button>
+        <df-button onClick=${() => setUnHalfPriceGame()}> setUnHalfPrice </df-button>
+      </div>
+
+      <${Heading} title="Whitelist players" />
+
+      <div style=${rowStyle}>
+        <df-text-input
+          style=${{ flex: '1' }}
+          value=${whitelistAddress}
+          onInput=${(e: InputEvent) => setWhitelistAddress((e.target as HTMLInputElement).value)}
+          placeholder="Address to whitelist"
+        ></df-text-input>
+        <df-button onClick=${() => addAddressToWhitelist(whitelistAddress)}>
+          Whitelist Address
+        </df-button>
+      </div>
+
+      <${Heading} title="Give Planets" />
+
+      <div style=${rowStyle}>
+        <span> Planet: <${PlanetLink} planetId=${(selectedPlanet as Planet)?.locationId} /> </span>
+        <span> to </span>
+        <${Select}
+          style=${{ flex: '1' }}
+          value=${targetAccount}
+          onChange=${(e: InputEvent) => setTargetAccount((e.target as HTMLSelectElement).value)}
+          items=${accountOptions(allPlayers)}
+        />
+        <df-button onClick=${() => takeOwnership(selectedPlanet, targetAccount)}>
+          Give Planet
+        </df-button>
+      </div>
+
+      <${Heading} title="Give Spaceships" />
+
+      <div style=${rowStyle}>
+        <${Select}
+          style=${{ flex: '1' }}
+          value=${selectedShip}
+          onChange=${(e: InputEvent) => setSelectedShip((e.target as HTMLSelectElement).value)}
+          items=${shipOptions()}
+        />
+
+        <span> to </span>
+
+        <${Select}
+          style=${{ flex: '1' }}
+          value=${targetAccount}
+          onChange=${(e: InputEvent) => setTargetAccount((e.target as HTMLSelectElement).value)}
+          items=${accountOptions(allPlayers)}
+        />
+      </div>
+
+      <div style=${{ ...rowStyle, justifyContent: 'space-between' }}>
+        <span>
+          ${'On planet: '}
+          <${PlanetLink} planetId=${(selectedPlanet as Planet)?.locationId} />
+        </span>
+
+        <df-button onClick=${() => spawnSpaceship(selectedPlanet, targetAccount, selectedShip)}>
+          Spawn Spaceship
+        </df-button>
+      </div>
+
+      <${Heading} title="Give Artifacts" />
+
+      <div style=${rowStyle}>
+        <${Select}
+          style=${{ flex: '1' }}
+          value=${artifactRarity}
+          onChange=${(e: InputEvent) => setArtifactRarity((e.target as HTMLSelectElement).value)}
+          items=${artifactRarityOptions()}
+        />
+
+        <${Select}
+          style=${{ flex: '1' }}
+          value=${artifactBiome}
+          onChange=${(e: InputEvent) => setArtifactBiome((e.target as HTMLSelectElement).value)}
+          items=${artifactBiomeOptions()}
+        />
+
+        <${Select}
+          style=${{ flex: '1' }}
+          value=${selectedArtifact}
+          onChange=${(e: InputEvent) => setSelectedArtifact((e.target as HTMLSelectElement).value)}
+          items=${artifactOptions()}
+        />
+
+        <span> to </span>
+
+        <${Select}
+          style=${{ flex: '1' }}
+          value=${targetAccount}
+          onChange=${(e: InputEvent) => setTargetAccount((e.target as HTMLSelectElement).value)}
+          items=${accountOptions(allPlayers)}
+        />
+      </div>
+
+      <div style=${{ ...rowStyle, justifyContent: 'space-between' }}>
+        <span>
+          ${'On planet: '}
+          <${PlanetLink} planetId=${(selectedPlanet as Planet)?.locationId} />
+        </span>
+
+        <df-button
+          onClick=${() =>
+            createArtifact(
+              targetAccount,
+              selectedArtifact,
+              selectedPlanet,
+              artifactRarity,
+              artifactBiome
+            )}
+        >
+          Give Artifact
+        </df-button>
+      </div>
+
+      <div style=${rowStyle}>
+        <${PlanetCreator} />
+      </div>
+      <div style=${rowStyle}>
+        <${ChangeTimeFactor} />
+      </div>
+
+      <${Heading} title="Set Planet Hat State" />
+
+      <div style=${rowStyle}>
+        <span> Planet: <${PlanetLink} planetId=${(selectedPlanet as Planet)?.locationId} /> </span>
+
+        <${Select}
+          style=${{ flex: '1' }}
+          value=${hatLevel}
+          onChange=${(e: InputEvent) => setHatLevel((e.target as HTMLSelectElement).value)}
+          items=${hatLevelOptions()}
+        />
+
+        <${Select}
+          style=${{ flex: '1' }}
+          value=${hatType}
+          onChange=${(e: InputEvent) => setHatType((e.target as HTMLSelectElement).value)}
+          items=${hatTypeOptions()}
+        />
+
+        <df-button onClick=${() => setPlanetHat(selectedPlanet, hatLevel, hatType)}>
+          Set Hat
+        </df-button>
+      </div>
+
+      <${Heading} title="Set Planet Can Show" />
+
+      <div style=${rowStyle}>
+        <span> Planet: <${PlanetLink} planetId=${(selectedPlanet as Planet)?.locationId} /> </span>
+
+        <${Select}
+          style=${{ flex: '1' }}
+          value=${canShow}
+          onChange=${(e: InputEvent) => setCanShow((e.target as HTMLSelectElement).value)}
+          items=${planetCanShowOptions()}
+        />
+
+        <df-button onClick=${() => setPlanetCanShow(selectedPlanet, canShow)}>
+          Set Planet Can Show
+        </df-button>
+      </div>
+    </div>
+  `;
+}
+
+class Plugin implements DFPlugin {
+  async render(container: HTMLDivElement) {
+    container.style.width = '525px';
+    container.style.height = '1500px';
+
+    render(html`<${App} />`, container);
+  }
+}
+
+export default Plugin;

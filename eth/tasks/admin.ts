@@ -1,4 +1,4 @@
-import { CONTRACT_PRECISION, GAS_ADJUST_DELTA } from '@dfares/constants';
+import { CONTRACT_PRECISION } from '@dfares/constants';
 import { fakeHash, mimcHash, modPBigInt, perlin } from '@dfares/hashing';
 import {
   buildContractCallArgs,
@@ -23,7 +23,9 @@ async function gamePause({}, hre: HardhatRuntimeEnvironment) {
   const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
 
   const pauseReceipt = await contract.pause();
+  console.log(pauseReceipt);
   await pauseReceipt.wait();
+  console.log('admin:pause success');
 }
 
 task('admin:resume', 'resume the game').setAction(gameResume);
@@ -34,6 +36,7 @@ async function gameResume({}, hre: HardhatRuntimeEnvironment) {
   const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
 
   const unpauseReceipt = await contract.unpause();
+  console.log(unpauseReceipt);
   await unpauseReceipt.wait();
 }
 
@@ -479,6 +482,9 @@ async function adminSetFinalScoreAndRank(
     playerRank.push(rank);
   }
 
+  for (let i = 0; i < playerAddress.length; i++) console.log(playerAddress[i]);
+  return;
+
   console.log(playerAddress);
   console.log(playerScore);
   console.log(playerRank);
@@ -486,12 +492,14 @@ async function adminSetFinalScoreAndRank(
     const receipt = await contract.adminSetFinalScoreAndRank(
       playerAddress,
       playerScore,
-      playerRank,
-      {
-        gasPrice: Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('5000000000')).toString(),
-      }
+      playerRank
+      // {
+      //   gasPrice: Number(parseFloat(GAS_ADJUST_DELTA) * parseInt('5000000000')).toString(),
+      // }
     ); // 5gwei
+    console.log(receipt);
     await receipt.wait();
+    console.log('successful');
   } catch (e) {
     console.log(e);
   }
