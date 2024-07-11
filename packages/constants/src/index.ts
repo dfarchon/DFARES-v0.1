@@ -155,13 +155,13 @@ export const MAX_AUTO_GAS_PRICE_GWEI = 15 as const;
  * The URL to the block explorer for the chain being used. Prepended to transaction links, etc
  */
 // Careful, don't add a slash to the end of this.
-export const BLOCK_EXPLORER_URL = 'https://explorer.redstone.xyz' as const;
+export const BLOCK_EXPLORER_URL = 'https://explorer.garnetchain.com' as const;
 
 /**
  * The URL to the bridge for the chain being used. Prepended to transaction links, etc
  */
 
-export const BLOCKCHAIN_BRIDGE = 'https://relay.link/bridge/redstone/' as const;
+export const BLOCKCHAIN_BRIDGE = 'https://garnetchain.com/deposit' as const;
 /**
  * The amount of time between gas price refreshes when fetching prices from the oracle.
  */
@@ -214,7 +214,7 @@ export const MIN_HAT_TYPE = 1;
 export const MAX_HAT_TYPE = 10;
 
 // export const PICTURE_URL = 'http://localhost:8081';
-export const PICTURE_URL = 'https://dfares.xyz/public';
+export const PICTURE_URL = 'https://dfares-round3-daily.netlify.app/public';
 
 export const MIN_MEME_TYPE = 1;
 export const MAX_MEME_TYPE = 10;

@@ -114,7 +114,7 @@ export default function LandingPage() {
                     </span>
                     <br />
                     <span style={{ fontSize: '40px' }}>
-                      <Round3Title>Round 3 : Kardashev</Round3Title>
+                      <Round3Title>Round 3 : Kardashev </Round3Title>
                     </span>
                   </div>
 
@@ -137,7 +137,7 @@ export default function LandingPage() {
               </div>
 
               <div style={{ fontSize: '30px', color: 'red' }}>
-                <Round3Title> Redstone Mainnet</Round3Title>
+                <Round3Title> Redstone Garnet Testnet</Round3Title>
               </div>
 
               <Spacer height={48} />
