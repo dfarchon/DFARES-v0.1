@@ -137,7 +137,7 @@ export default function LandingPage() {
               </div>
 
               <div style={{ fontSize: '30px', color: 'red' }}>
-                <Round3Title> Redstone Garnet Testnet</Round3Title>
+                <Round3Title> INCO Testnet</Round3Title>
               </div>
 
               <Spacer height={48} />
