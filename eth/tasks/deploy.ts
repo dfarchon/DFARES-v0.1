@@ -42,7 +42,7 @@ async function deploy(
   // Is deployer of all contracts, but ownership is transferred to ADMIN_PUBLIC_ADDRESS if set
   const [deployer] = await hre.ethers.getSigners();
 
-  const requires = hre.ethers.utils.parseEther('2.1');
+  const requires = hre.ethers.utils.parseEther('0.3');
   const balance = await deployer.getBalance();
 
   // Only when deploying to production, give the deployer wallet money,

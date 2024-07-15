@@ -231,13 +231,12 @@ export function ArtifactDetailsBody({
 
   // about activate artifact block limit pane
 
-  //myTodo: 10 min 1 artifact
-  const deltaTime = 10;
+  //myTodo: 5 s  1 artifact
+  const deltaTime = 5;
 
   const maxAmount = currentBlockNumber
     ? Math.floor(
-        ((currentBlockNumber - uiManager.contractConstants.GAME_START_BLOCK) * 2.0) /
-          (60 * deltaTime)
+        ((currentBlockNumber - uiManager.contractConstants.GAME_START_BLOCK) * 2.0) / deltaTime
       )
     : 0;
 

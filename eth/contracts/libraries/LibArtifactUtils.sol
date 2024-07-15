@@ -220,10 +220,10 @@ library LibArtifactUtils {
             //require(totalGameBlocks * 2 >= amount * 60 * 60, "block number
             //limit");
 
-            // 10 min 1 artifact
-            uint256 deltaTime = 10;
+            // 5s  1 artifact
+            uint256 deltaTime = 5;
 
-            require(totalGameBlocks * 2 >= totalAmount * 60 * deltaTime, "block number limit");
+            require(totalGameBlocks * 2 >= totalAmount *  deltaTime, "block number limit");
             gs().players[msg.sender].activateArtifactAmount++;
         }
 

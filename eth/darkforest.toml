@@ -2,27 +2,28 @@
 # Defined in TOML as per https://toml.io/en/v0.5.0
 
 [initializers]
-START_PAUSED = true #false
+START_PAUSED = false
 ADMIN_CAN_ADD_PLANETS = true
 PLANET_TRANSFER_ENABLED = false
 WORLD_RADIUS_LOCKED = false
-WORLD_RADIUS_MIN = 53000 # 1024 #215688 #103000 #53000
+WORLD_RADIUS_MIN = 24000 #215688 #103000
+
 
 ##################################
 # SNARK keys & Perlin parameters #
 ##################################
 DISABLE_ZK_CHECKS = false
-PLANETHASH_KEY =2344 # 6279
-SPACETYPE_KEY =1233423 #6280
-BIOMEBASE_KEY = 2424 #  6271
+PLANETHASH_KEY = 2354
+SPACETYPE_KEY = 136
+BIOMEBASE_KEY = 6119
 PERLIN_MIRROR_X = false
 PERLIN_MIRROR_Y = false
-PERLIN_LENGTH_SCALE = 16384 # must be a power of two no greater than 16384
+PERLIN_LENGTH_SCALE = 8192 #16384 # must be a power of two no greater than 16384
 
 #############
 # Artifacts #
 #############
-TOKEN_MINT_END_TIMESTAMP = 2023-10-05T04:00:00.000Z # Mon Oct 04 2022 21:00:00 GMT-0700 (Pacific Daylight Time)
+TOKEN_MINT_END_TIMESTAMP = 2025-10-05T04:00:00.000Z # Mon Oct 04 2022 21:00:00 GMT-0700 (Pacific Daylight Time)
 ARTIFACT_POINT_VALUES = [
   0,
   2000,
@@ -40,12 +41,12 @@ ARTIFACT_POINT_VALUES = [
 #   0,
 #   0
 # ]
-PHOTOID_ACTIVATION_DELAY = 7200 #600 # seconds
+PHOTOID_ACTIVATION_DELAY = 60 # seconds
 STELLAR_ACTIVATION_DELAY = 0 # seconds
 ##############
 # Space junk #
 ##############
-SPACE_JUNK_ENABLED = true #false
+SPACE_JUNK_ENABLED = false
 # Total amount of space junk a player can take on. This can be overridden at runtime by updating this value for a specific player in storage.
 SPACE_JUNK_LIMIT = 3000
 # The amount of junk that each level of planet gives the player when moving to it for the first time.
@@ -244,9 +245,9 @@ ROUND_END_REWARDS_BY_RANK=[
 
 [initializers.SPACESHIPS]
 GEAR = true
-MOTHERSHIP = true
-TITAN = true
-CRESCENT = true
+MOTHERSHIP = false
+TITAN = false
+CRESCENT = false
 WHALE = false
 
 ##########################
