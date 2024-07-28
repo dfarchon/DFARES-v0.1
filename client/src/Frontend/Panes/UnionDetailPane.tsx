@@ -254,7 +254,7 @@ export function UnionDetailPane({
               </p>
             )}
 
-            <Btn disabled={leaveUnionCooldownPassed || isProcessing} onClick={handleAcceptInvite}>
+            <Btn disabled={!leaveUnionCooldownPassed || isProcessing} onClick={handleAcceptInvite}>
               Accept Invition
             </Btn>
           </UnionDetailContent>
