@@ -60,8 +60,8 @@ contract DFInitialize is WithStorage {
 
         // Setup the ERC721 metadata
         // TODO(#1925): Add name and symbol for the artifact tokens
-        ERC721MetadataStorage.layout().name = unicode"🔷";
-        ERC721MetadataStorage.layout().symbol = unicode"🔷";
+        ERC721MetadataStorage.layout().name = unicode"🌸";
+        ERC721MetadataStorage.layout().symbol = unicode"🌸";
         ERC721MetadataStorage.layout().baseURI = artifactBaseURI;
 
         gs().diamondAddress = address(this);
