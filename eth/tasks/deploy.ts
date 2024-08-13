@@ -710,8 +710,11 @@ export async function deployLobbyFacet({}, {}: Libraries, hre: HardhatRuntimeEnv
   return contract;
 }
 
-
-async function deployDiamondInitSec({}, { LibGameUtils }: Libraries, hre: HardhatRuntimeEnvironment) {
+async function deployDiamondInitSec(
+  {},
+  { LibGameUtils }: Libraries,
+  hre: HardhatRuntimeEnvironment
+) {
   // DFInitialize provides a function that is called when the diamond is upgraded to initialize state variables
   // Read about how the diamondCut function works here: https://eips.ethereum.org/EIPS/eip-2535#addingreplacingremoving-functions
   const factory = await hre.ethers.getContractFactory('DFInitializeSec', {
@@ -724,14 +727,9 @@ async function deployDiamondInitSec({}, { LibGameUtils }: Libraries, hre: Hardha
   return contract;
 }
 
-task('diamondCut', 'diamondCut')
-  .setAction(diamondCut);
+task('diamondCut', 'diamondCut').setAction(diamondCut);
 
-  async function diamondCut(
-    args: {},
-    hre: HardhatRuntimeEnvironment
-  ){
-
+async function diamondCut(args: {}, hre: HardhatRuntimeEnvironment) {
   const [deployer] = await hre.ethers.getSigners();
   const beginBalance = await deployer.getBalance();
   console.log('begin balance:', beginBalance.toString());
@@ -752,6 +750,3 @@ task('diamondCut', 'diamondCut')
   }
   console.log('Completed diamond cut');
 }
-
-
-

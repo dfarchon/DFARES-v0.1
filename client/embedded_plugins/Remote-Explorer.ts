@@ -28,6 +28,7 @@ const {
 } = df.getConstructors();
 
 const NEW_CHUNK = 'DiscoveredNewChunk';
+const CHUNK_SIZES = [16, 32, 64, 128, 256, 512, 1024];
 
 function getPattern(coords: WorldCoords, patternType: string, chunkSize: number) {
   if (patternType === 'swiss') {
@@ -262,6 +263,7 @@ function App({
   };
   const [miners, setMiners] = useState(initialMiners);
   const [nextUrl, setNextUrl] = useState<string | null>(null);
+  const [chunkSize, setChunkSize] = useState(256);
   const [patternType, setPatternType] = useState('spiral');
 
   const onChange = (evt: InputEvent) => {
@@ -279,6 +281,13 @@ function App({
   const remove = (miner: ExtendedMinerManager) => {
     const miners = removeMiner(miner);
     setMiners(miners);
+  };
+
+  const changeChunkSize = (evt: InputEvent) => {
+    const newChunkSize = parseInt((evt.target as HTMLSelectElement).value);
+    if (newChunkSize) {
+      setChunkSize(newChunkSize);
+    }
   };
 
   const changePattern = (evt: InputEvent) => {
@@ -299,6 +308,15 @@ function App({
           onInput=${onChange}
           placeholder="URL for explore server"
         ></df-text-input>
+
+        <select style=${select} value=${chunkSize} onChange=${changeChunkSize}>
+          <optgroup label="Tile size">
+            ${CHUNK_SIZES.map((size) => html`
+              <option value="${size}">${size}</option>
+            `)}
+          </optgroup>
+        </select>
+
         <select style=${select} value=${patternType} onChange=${changePattern}>
           <option value="spiral">Spiral</option>
           <option value="swiss">Swiss</option>

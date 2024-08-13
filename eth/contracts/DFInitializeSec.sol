@@ -42,7 +42,7 @@ contract DFInitializeSec is WithStorage {
 
     // You can add parameters to this function in order to pass in
     // data to set initialize state variables
-    function init() external{
+    function init() external {
         // Setup the ERC721 metadata
         // TODO(#1925): Add name and symbol for the artifact tokens
         ERC721MetadataStorage.layout().name = unicode"🌸";
