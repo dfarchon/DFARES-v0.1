@@ -1385,6 +1385,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
               <GameWindowLayout
                 terminalVisible={terminalVisible}
                 setTerminalVisible={setTerminalVisible}
+                spectate={spectate}
               />
             </UIManagerProvider>
           </TopLevelDivProvider>
