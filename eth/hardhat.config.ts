@@ -88,14 +88,6 @@ const mainnet = {
   chainId: 1,
 };
 
-const altlayer = {
-  url: process.env.ALTLAYER_RPC_URL,
-  accounts: {
-    mnemonic: process.env.DEPLOYER_MNEMONIC,
-  },
-  chainId: Number(process.env.ALTLAYER_CHAINID),
-};
-
 const redstoneTestnet = {
   url: process.env.REDSTONE_TESTNET_RPC_URL,
   accounts: {
@@ -122,7 +114,6 @@ const config: HardhatUserConfig = {
     // > Error HH100: Network xdai doesn't exist
     ...(DEPLOYER_MNEMONIC ? { xdai } : undefined),
     ...(DEPLOYER_MNEMONIC ? { mainnet } : undefined),
-    ...(DEPLOYER_MNEMONIC ? { altlayer } : undefined),
     ...(DEPLOYER_MNEMONIC ? { redstoneTestnet } : undefined),
     ...(DEPLOYER_MNEMONIC ? { redstone } : undefined),
     localhost: {
