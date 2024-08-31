@@ -42,6 +42,16 @@ export function HoverPlanetPane() {
     [hovering, selected, sending, uiManager]
   );
 
+  const union = useMemo(() => {
+    const planet = hovering;
+    const owner = planet?.owner;
+    if (owner === undefined) return undefined;
+    const unionId = uiManager.getPlayerUnionId(owner);
+    if (!unionId || unionId === '0') return undefined;
+    const union = uiManager.getUnion(unionId);
+    return union;
+  }, [hovering, uiManager]);
+
   return (
     <HoverPane
       style={
@@ -52,7 +62,7 @@ export function HoverPlanetPane() {
           : undefined
       }
       visible={visible}
-      element={<PlanetCard standalone planetWrapper={hoverWrapper} />}
+      element={<PlanetCard standalone planetWrapper={hoverWrapper} union={union} />}
     />
   );
 }

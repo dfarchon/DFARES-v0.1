@@ -10,7 +10,7 @@ import {
   MIN_MEME_TYPE,
 } from '@dfares/constants';
 // import { logoTypeToNum } from '@dfares/procedural';
-import { LogoType, LogoTypeNames } from '@dfares/types';
+import { LogoType, LogoTypeNames, Union } from '@dfares/types';
 import { task, types } from 'hardhat/config';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 
@@ -125,6 +125,13 @@ async function getFirstHat({}, hre: HardhatRuntimeEnvironment) {
 task('game:rank', 'get the final rank').setAction(getRank);
 
 async function getRank({}, hre: HardhatRuntimeEnvironment) {
+  // Handle the players
+  interface PlayerInfo {
+    address: string;
+    score: number | undefined;
+    rank: number;
+  }
+
   const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
 
   const rawPlayerAmount = await contract.getNPlayers();
@@ -151,9 +158,10 @@ async function getRank({}, hre: HardhatRuntimeEnvironment) {
       scoreResult = undefined;
     } else scoreResult = score.toNumber();
 
-    const item = {
+    const item: PlayerInfo = {
       address: address,
       score: scoreResult,
+      rank: 0,
     };
     playerRecords.push(item);
 
@@ -170,9 +178,202 @@ async function getRank({}, hre: HardhatRuntimeEnvironment) {
 
   console.log('have score player amount:', haveScorePlayers.length);
 
+  const playerMap: Map<string, PlayerInfo> = new Map();
+
   for (let i = 0; i < haveScorePlayers.length; i++) {
     const player = haveScorePlayers[i];
-    console.log(i + 1, player.address, player.score);
+    haveScorePlayers[i].rank = i + 1;
+    playerMap.set(player.address, haveScorePlayers[i]);
+    console.log(i + 1, player.address.toLowerCase(), player.score);
+  }
+}
+
+task('game:unions', 'get the unions').setAction(getUnions);
+
+async function getUnions({}, hre: HardhatRuntimeEnvironment) {
+  interface PlayerInfo {
+    address: string;
+    score: number | undefined;
+    rank: number;
+  }
+
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  const rawPlayerAmount = await contract.getNPlayers();
+  const playerAmount = rawPlayerAmount.toNumber();
+  console.log('total player amount:', playerAmount);
+
+  const rawPlayers = await contract.bulkGetPlayers(0, playerAmount);
+
+  console.log('players amount:', rawPlayers.length);
+
+  const playerRecords = [];
+
+  for (let i = 0; i < playerAmount; i++) {
+    const rawPlayer = rawPlayers[i];
+    const address = rawPlayer.player;
+    const score = await contract.getScore(address);
+    const scoreStr = score.toString();
+
+    let scoreResult = undefined;
+
+    if (
+      scoreStr === '115792089237316195423570985008687907853269984665640564039457584007913129639935'
+    ) {
+      scoreResult = undefined;
+    } else scoreResult = score.toNumber();
+
+    const item: PlayerInfo = {
+      address: address,
+      score: scoreResult,
+      rank: 0,
+    };
+    playerRecords.push(item);
+
+    console.log(i, address, scoreResult);
+  }
+
+  const haveScorePlayers = playerRecords
+    .filter((p) => p.score !== undefined)
+    .sort((a, b) => {
+      if (a.score === undefined) return -1;
+      else if (b.score === undefined) return -1;
+      return a.score - b.score;
+    });
+
+  console.log('have score player amount:', haveScorePlayers.length);
+
+  const playerMap: Map<string, PlayerInfo> = new Map();
+
+  for (let i = 0; i < haveScorePlayers.length; i++) {
+    const player = haveScorePlayers[i];
+    haveScorePlayers[i].rank = i + 1;
+    playerMap.set(player.address.toLowerCase(), haveScorePlayers[i]);
+    console.log(i + 1, player.address.toLowerCase(), player.score);
+  }
+
+  // Handle the Union
+
+  const rawUnionAmount = await contract.getNUnions();
+
+  const rawUnions = await contract.bulkGetUnions(0, rawUnionAmount);
+
+  // console.log(rawUnions);
+
+  const decodeUnion = (rawUnion: any): Union => {
+    const union: Union = {
+      unionId: rawUnion.unionId.toNumber(),
+      name: rawUnion.name.toString(),
+      leader: rawUnion.leader.toLowerCase(),
+      level: rawUnion.level.toString(),
+      members: rawUnion.members.map((addr: string) => addr.toLowerCase()),
+      invitees: rawUnion.invitees.map((addr: string) => addr.toLowerCase()),
+      applicants: rawUnion.applicants.map((addr: string) => addr.toLowerCase()),
+      score: rawUnion.score,
+      highestRank: rawUnion.score,
+    };
+    return union;
+  };
+
+  const playerRankToPointConversion = (rank: number | undefined): number => {
+    if (rank === undefined) return 0;
+    if (rank === 1) return 200;
+    else if (rank === 2) return 160;
+    else if (rank === 3) return 140;
+    else if (rank === 4) return 120;
+    else if (rank === 5) return 100;
+    else if (rank >= 6 && rank <= 10) return 90;
+    else if (rank >= 11 && rank <= 20) return 80;
+    else if (rank >= 21 && rank <= 30) return 70;
+    else if (rank >= 31 && rank <= 50) return 60;
+    else if (rank >= 51 && rank <= 100) return 50;
+    else if (rank >= 101 && rank <= 200) return 40;
+    else if (rank >= 201 && rank <= 300) return 30;
+    else if (rank >= 301 && rank <= 500) return 20;
+    else if (rank >= 501 && rank <= 1000) return 10;
+    else if (rank > 1000) return 5;
+    else return 0;
+  };
+
+  const calculateUnionScore = (union: Union): number => {
+    let result = 0;
+    for (const member of union.members) {
+      const player = playerMap.get(member.toLowerCase());
+      console.log(member);
+      console.log(player);
+      if (!player) continue;
+      if (!player.rank) continue;
+      const memberPoint = playerRankToPointConversion(player.rank);
+      result += memberPoint;
+    }
+    return result;
+  };
+
+  const getHighestRank = (union: Union): number | undefined => {
+    const MAX_RANK = 100000;
+    let result = MAX_RANK;
+
+    for (const member of union.members) {
+      const player = playerMap.get(member.toLowerCase());
+      if (!player) continue;
+      if (!player.rank) continue;
+      result = Math.min(result, player.rank);
+    }
+    if (result === MAX_RANK) return undefined;
+    else return result;
+  };
+
+  let unions: Union[] = [];
+
+  for (let i = 0; i < rawUnions.length; i++) {
+    const union = decodeUnion(rawUnions[i]);
+    console.log('------------------------------');
+    console.log(i);
+    const score = calculateUnionScore(union);
+    union.score = score;
+    const highestRank = getHighestRank(union);
+    union.highestRank = highestRank;
+    console.log(union);
+    unions.push(union);
+  }
+
+  unions = unions.sort((_a: Union, _b: Union): number => {
+    if (_a.score !== _b.score) return _b.score - _a.score;
+    else {
+      if (_a.highestRank === undefined) return 1;
+      if (_b.highestRank === undefined) return -1;
+      return _a.highestRank - _b.highestRank;
+    }
+  });
+
+  for (let i = 0; i < unions.length; i++) {
+    const union = unions[i];
+    console.log(i + 1, union.name, union.score);
+  }
+
+  console.log(' Unions Detail ');
+
+  for (let i = 0; i < unions.length; i++) {
+    const union = unions[i];
+    console.log('=== ' + union.name + '(' + union.unionId + ') ===');
+    console.log('level: ', union.level);
+    console.log('leader: ', union.leader);
+    console.log('unionScore:', union.score);
+    for (let j = 0; j < union.members.length; j++) {
+      const address = union.members[j];
+      const player = playerMap.get(address.toLowerCase());
+      console.log(
+        'address #',
+        address.toLowerCase(),
+        ' => Score: ',
+        player?.score,
+        ' => Rank:',
+        player?.rank,
+        ' => Contri: ',
+        playerRankToPointConversion(player?.rank)
+      );
+    }
+    console.log('==================================================');
   }
 }
 

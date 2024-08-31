@@ -3909,7 +3909,7 @@ class BaseGameManager extends EventEmitter {
         throw new Error('attempted to move out of bounds');
       }
 
-      if (newX ** 2 + newY ** 2 <= this.innerRadius ** 2) {
+      if (newX ** 2 + newY ** 2 < this.innerRadius ** 2) {
         throw new Error('attempted to move out of bounds');
       }
 

@@ -9,6 +9,8 @@ import {
   Player,
   Transaction,
   TransactionId,
+  Union,
+  UnionId,
 } from '@dfares/types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import GameUIManager from '../../Backend/GameLogic/GameUIManager';
@@ -60,6 +62,41 @@ export function usePlayer(
   );
 
   return player;
+}
+
+/**
+ * Hook which gets you the unions
+ */
+export function useUnions(uiManager: GameUIManager): Wrapper<Union[]> {
+  const [unions, setUnions] = useState<Wrapper<Union[]>>(
+    () => new Wrapper(uiManager.getAllUnions())
+  );
+  useEmitterSubscribe(
+    uiManager.getGameManager().unionsUpdated$,
+    () => {
+      setUnions(new Wrapper(uiManager.getAllUnions()));
+    },
+    [uiManager, setUnions]
+  );
+  return unions;
+}
+
+/**
+ * Hook which gets you the union
+ */
+export function useUnion(uiManager: GameUIManager, unionId: UnionId): Wrapper<Union | undefined> {
+  console.log(unionId);
+  const [union, setUnion] = useState<Wrapper<Union | undefined>>(
+    () => new Wrapper(uiManager.getUnion(unionId))
+  );
+  useEmitterSubscribe(
+    uiManager.getGameManager().unionsUpdated$,
+    () => {
+      setUnion(new Wrapper(uiManager.getUnion(unionId)));
+    },
+    [uiManager, setUnion]
+  );
+  return union;
 }
 
 /**

@@ -7,6 +7,9 @@ task('artifact:read', 'Read Artifact data from Tokens contract').setAction(artif
 async function artifactsRead({}, hre: HardhatRuntimeEnvironment) {
   const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
 
+  const name = await contract.name();
+  console.log(name);
+
   const id = await contract.tokenByIndex(1);
   console.log(id.toString());
 

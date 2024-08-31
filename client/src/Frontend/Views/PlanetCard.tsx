@@ -8,7 +8,7 @@ import {
   numToLogoType,
 } from '@dfares/procedural';
 import { avatarFromType, logoFromType } from '@dfares/renderer';
-import { Planet, TooltipName } from '@dfares/types';
+import { Planet, TooltipName, Union } from '@dfares/types';
 import React from 'react';
 import styled from 'styled-components';
 import { Wrapper } from '../../Backend/Utils/Wrapper';
@@ -37,6 +37,13 @@ import { useActiveArtifact, usePlanetArtifacts, useUIManager } from '../Utils/Ap
 import { useEmitterValue } from '../Utils/EmitterHooks';
 import { SelectArtifactRow } from './ArtifactRow';
 import { Halved, PlanetActiveArtifact, RowTip, TimesTwo, TitleBar } from './PlanetCardComponents';
+
+const InfoHead = styled.div`
+  text-align: center;
+  font-size: 120%;
+  font-weight: bold;
+  color: yellow;
+`;
 
 export function PlanetCardTitle({
   planet,
@@ -99,9 +106,11 @@ const DescContainer = styled.div`
 export function PlanetCard({
   planetWrapper: p,
   standalone,
+  union,
 }: {
   planetWrapper: Wrapper<Planet | undefined>;
   standalone?: boolean;
+  union?: Union;
 }) {
   const uiManager = useUIManager();
   const active = useActiveArtifact(p, uiManager);
@@ -382,6 +391,15 @@ export function PlanetCard({
                 <AccountLabel ethAddress={planet.owner} includeAddressIfHasTwitter={true} />
               </Sub>
             </SpreadApart>
+
+            {union && (
+              <InfoHead>
+                {union.name && union.name.length !== 0
+                  ? union.name.toUpperCase() + ' UNION (ID:' + union.unionId + ')'
+                  : 'ANONYMOUS UNION (ID:' + union.unionId + ')'}
+              </InfoHead>
+            )}
+
             <SelectArtifactRow artifacts={artifacts} />
           </>
         )}

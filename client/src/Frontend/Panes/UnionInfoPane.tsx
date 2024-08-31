@@ -87,7 +87,6 @@ export const UnionInfoPane: React.FC<{ union: Union; uiManager: GameUIManager }>
     let isMounted = true;
 
     const refreshData = async () => {
-      await gameManager.refreshScoreboard();
       const infoArrays: UnionMemberInfo[] = [];
       for (let i = 0; i < union.members.length; i++) {
         const address = union.members[i];
@@ -122,7 +121,6 @@ export const UnionInfoPane: React.FC<{ union: Union; uiManager: GameUIManager }>
     if (!uiManager || !gameManager) return;
 
     const refreshData = async () => {
-      await gameManager.refreshScoreboard();
       const infoArrays: UnionMemberInfo[] = [];
       for (let i = 0; i < union.members.length; i++) {
         const address = union.members[i];

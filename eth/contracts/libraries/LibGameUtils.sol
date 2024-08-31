@@ -218,16 +218,12 @@ library LibGameUtils {
         uint256 initialRadius = gameConstants().MAX_LEVEL_DIST[1] - 1000;
         uint256 endTimestamp = gameConstants().CLAIM_END_TIMESTAMP - 24 hours;
         uint256 gameDuration = 5 days; // 6 days - 24 hours
-        uint256 duration = endTimestamp - block.timestamp;
 
-        // Round 4 test
-        // endTimestamp = gameConstants().CLAIM_END_TIMESTAMP - 6 days  - 12 hours;
-        // gameDuration = 8 hours;
-        // duration = endTimestamp - block.timestamp;
-
-        if (block.timestamp >= endTimestamp) return 0;
-        else if (block.timestamp <= endTimestamp - gameDuration) return initialRadius;
-        else return (initialRadius * duration) / gameDuration;
+        if (block.timestamp <= endTimestamp - gameDuration) return initialRadius;
+        else if (block.timestamp < endTimestamp) {
+            uint256 duration = endTimestamp - block.timestamp;
+            return (initialRadius * duration) / gameDuration;
+        } else return 0;
     }
 
     function _randomArtifactTypeAndLevelBonus(
@@ -785,7 +781,7 @@ library LibGameUtils {
     }
 
     function updateInnerRadius() public {
-        if (gs().adminSetInnerRadius != 0) gs().innerRadius = gs().adminSetInnerRadius;
+        if (gs().adminSetInnerRadius != 0) gs().innerRadius = gs().adminSetInnerRadius - 1;
         else gs().innerRadius = _getInnerRadius();
     }
 

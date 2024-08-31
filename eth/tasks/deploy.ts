@@ -709,3 +709,44 @@ export async function deployLobbyFacet({}, {}: Libraries, hre: HardhatRuntimeEnv
   console.log(`DFLobbyFacet deployed to: ${contract.address}`);
   return contract;
 }
+
+async function deployDiamondInitSec(
+  {},
+  { LibGameUtils }: Libraries,
+  hre: HardhatRuntimeEnvironment
+) {
+  // DFInitialize provides a function that is called when the diamond is upgraded to initialize state variables
+  // Read about how the diamondCut function works here: https://eips.ethereum.org/EIPS/eip-2535#addingreplacingremoving-functions
+  const factory = await hre.ethers.getContractFactory('DFInitializeSec', {
+    libraries: {},
+  });
+  const contract = await factory.deploy();
+  console.log('------ tx:', contract.address, ' ------');
+  await contract.deployTransaction.wait();
+  console.log(`DFInitializeSec deployed to: ${contract.address}`);
+  return contract;
+}
+
+task('diamondCut', 'diamondCut').setAction(diamondCut);
+
+async function diamondCut(args: {}, hre: HardhatRuntimeEnvironment) {
+  const [deployer] = await hre.ethers.getSigners();
+  const beginBalance = await deployer.getBalance();
+  console.log('begin balance:', beginBalance.toString());
+
+  const ownerAddress = deployer.address;
+
+  const diamond = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  const diamondInitSec = await deployDiamondInitSec({}, {}, hre);
+
+  const initAddress = diamondInitSec.address;
+  const initFunctionCall = diamondInitSec.interface.encodeFunctionData('init');
+
+  const upgradeTx = await diamond.diamondCut([], initAddress, initFunctionCall);
+  const upgradeReceipt = await upgradeTx.wait();
+  if (!upgradeReceipt.status) {
+    throw Error(`Diamond cut failed: ${upgradeTx.hash}`);
+  }
+  console.log('Completed diamond cut');
+}

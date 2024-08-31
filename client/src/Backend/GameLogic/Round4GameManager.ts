@@ -654,7 +654,8 @@ class Round4GameManager extends BaseGameManager {
         gameManager.onTxCancelled(tx);
       })
       .on(ContractsAPIEvent.RadiusUpdated, async () => {
-        gameManager.hardRefreshRadius();
+        // round 4 hotfix
+        // gameManager.hardRefreshRadius();
       });
 
     const unconfirmedTxs = await persistentChunkStore.getUnconfirmedSubmittedEthTxs();
@@ -749,11 +750,11 @@ class Round4GameManager extends BaseGameManager {
 
   public async hardRefreshUnions(): Promise<void> {
     try {
-      const unions = await this.getAllUnions(); // Implement getAllUnionIds based on your contract interface
+      const unions = this.getAllUnions(); // Implement getAllUnionIds based on your contract interface
       const updatedUnions: Union[] = [];
 
       for (const union of unions) {
-        const uniontemp = await this.contractsAPI.getUnionById(union.unionId); // Implement getUnionById based on your contract interface
+        const uniontemp = this.getUnion(union.unionId); // Implement getUnionById based on your contract interface
         if (!uniontemp) continue;
 
         const unionId = union.unionId;
@@ -772,6 +773,14 @@ class Round4GameManager extends BaseGameManager {
       updatedUnions.forEach((union) => {
         this.unions.set(union.unionId, union);
       });
+
+      for (let i = 0; i < updatedUnions.length; i++) {
+        const newUnion = updatedUnions[i];
+        const union = this.unions.get(newUnion.unionId);
+        if (!union) continue;
+        union.score = newUnion.score;
+        union.highestRank = newUnion.highestRank;
+      }
 
       this.unionsUpdated$.publish(); // Assuming this triggers an update in your UI or state management
     } catch (error) {
@@ -875,13 +884,14 @@ class Round4GameManager extends BaseGameManager {
         const scoredPlayers = df
           .getAllPlayers()
           .filter((player) => player.score !== undefined && player.score !== null)
-          .sort((a, b) => (b.score as number) - (a.score as number));
+          .sort((a, b) => (a.score as number) - (b.score as number));
 
         for (let i = 0; i < scoredPlayers.length; i++) {
           const rank = i + 1;
           const player = this.players.get(scoredPlayers[i].address);
           if (!player) continue;
           player.rank = rank;
+          console.log(player.address, player.score, rank);
         }
 
         this.playersUpdated$.publish();
