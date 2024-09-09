@@ -123,6 +123,7 @@ const config: HardhatUserConfig = {
         mnemonic: 'change typical hire slam amateur loan grid fix drama electric seed label',
       },
       chainId: 31337,
+      timeout: 300000,
     },
     // Used when you dont specify a network on command line, like in tests
     hardhat: {
