@@ -338,9 +338,7 @@ export function GameWindowLayout({
         <CanvasContainer>
           <UpperLeft>
             <AmbiencePane />
-            {paneVisible && (
-              <ZoomPane />
-            )}
+            {paneVisible && <ZoomPane />}
           </UpperLeft>
 
           {paneVisible && (

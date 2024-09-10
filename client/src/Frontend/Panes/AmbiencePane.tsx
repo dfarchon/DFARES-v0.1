@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import styled, { keyframes } from 'styled-components';
 import ReactHowler from 'react-howler';
+import styled, { keyframes } from 'styled-components';
 import { Slider } from '../Components/Slider';
 import dfstyles from '../Styles/dfstyles';
 import { DFZIndex } from '../Utils/constants';
@@ -65,39 +65,39 @@ const IconMusicNote = styled.div`
   min-height: 1rem;
 
   &::before {
-    content: "\\266A";
+    content: '\\266A';
   }
 `;
 
 const IconLoading = styled(IconMusicNote)`
   &::after {
-    content: "\\21BB";
+    content: '\\21BB';
     position: absolute;
     font-size: 1rem;
-    left: .6rem;
-    top: .6rem;
+    left: 0.6rem;
+    top: 0.6rem;
     animation: ${spin} 2s linear infinite;
   }
 `;
 
 const IconPlaying = styled(IconMusicNote)`
   &::after {
-    content: "\\25B6";
+    content: '\\25B6';
     position: absolute;
     font-size: 1rem;
-    left: .6rem;
-    top: .6rem;
+    left: 0.6rem;
+    top: 0.6rem;
     animation: ${scale} 1s ease-in-out infinite;
   }
 `;
 
 const IconMuted = styled(IconMusicNote)`
   &::after {
-    content: "\\23F8";
+    content: '\\23F8';
     position: absolute;
     font-size: 1rem;
-    left: .6rem;
-    top: .6rem;
+    left: 0.6rem;
+    top: 0.6rem;
   }
 `;
 
@@ -106,26 +106,29 @@ export function AmbiencePane() {
   const [loaded, setLoaded] = useState<boolean>(false);
   const [hovering, setHovering] = useState<boolean>(false);
 
-  const [volume, setVolume] = useState<number>(1.0)
+  const [volume, setVolume] = useState<number>(1.0);
   const onScrollVolumeChange = (e: Event & React.ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(e.target.value);
     if (!isNaN(value)) setVolume(value);
-  }
+  };
 
   return (
     <StyledAmbiencePane
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
     >
-      {loaded
-      ? <a
+      {loaded ? (
+        <a
           onClick={() => {
             setPlaying((b) => !b);
           }}
-        >{playing ? (<IconPlaying/>) : (<IconMuted/>)}</a>
-      : <IconLoading/>
-      }
-      {hovering &&
+        >
+          {playing ? <IconPlaying /> : <IconMuted />}
+        </a>
+      ) : (
+        <IconLoading />
+      )}
+      {hovering && (
         <Slider
           hideStepper
           labelVisibility='none'
@@ -135,7 +138,7 @@ export function AmbiencePane() {
           step={0.1}
           onChange={onScrollVolumeChange}
         />
-      }
+      )}
       <ReactHowler
         src='/sound.ogg'
         playing={playing}
