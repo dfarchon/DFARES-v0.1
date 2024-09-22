@@ -282,6 +282,39 @@ const WorldExplorers = {
   website: 'https://twitter.com/awexplorers',
 };
 
+//23
+const Bohem = {
+  legacy: false,
+  topLayer: [URL + '/img/logo/Bohem.png'],
+  name: 'BOHEM',
+  desc: 'Dark Forest Ares v0.1 Round 4 Rank 4 Union',
+  color: '#fff',
+  bottomLayer: [],
+  website: '',
+};
+
+//24
+const PowerChicken = {
+  legacy: false,
+  topLayer: [URL + '/img/logo/Power_Chicken.png'],
+  name: 'Power Chicken',
+  desc: 'Dark Forest Ares v0.1 Round 4 Rank 6 Union',
+  color: '#fff',
+  bottomLayer: [],
+  website: '',
+};
+
+//25
+const Zhangxiang = {
+  legacy: false,
+  topLayer: [URL + '/img/logo/zhangxiang.png'],
+  name: 'ZhangXiang_BIM',
+  desc: 'Dark Forest Ares v0.1 Round 4 Rank 5 Union',
+  color: '#fff',
+  bottomLayer: [],
+  website: '',
+};
+
 export const logoFromType = (type: LogoType): Logo => logos[type];
 
 export const logos: Record<LogoType, Logo> = {
@@ -307,6 +340,9 @@ export const logos: Record<LogoType, Logo> = {
   [LogoType.ComposableLabs]: ComposableLabs,
   [LogoType.MetaCat]: MetaCat,
   [LogoType.WorldExplorers]: WorldExplorers,
+  [LogoType.Bohem]: Bohem,
+  [LogoType.PowerChicken]: PowerChicken,
+  [LogoType.Zhangxiang]: Zhangxiang,
 };
 
 // export const avatarFromArtifactIdAndImageType = (

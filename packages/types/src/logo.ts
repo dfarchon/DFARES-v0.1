@@ -29,6 +29,9 @@ export const LogoType = {
   ComposableLabs: 20 as LogoType,
   MetaCat: 21 as LogoType,
   WorldExplorers: 22 as LogoType,
+  Bohem: 23 as LogoType,
+  PowerChicken: 24 as LogoType,
+  Zhangxiang: 25 as LogoType,
   // Don't forget to update MIN_LOGO_TYPE and/or MAX_LOGO_TYPE in the `constants` package
 };
 
@@ -59,4 +62,7 @@ export const LogoTypeNames = {
   [LogoType.ComposableLabs]: 'Composablelabs',
   [LogoType.MetaCat]: 'MetaCat',
   [LogoType.WorldExplorers]: 'World Explorers',
+  [LogoType.Bohem]: 'BOHEM',
+  [LogoType.PowerChicken]: 'Power Chicken',
+  [LogoType.Zhangxiang]: 'ZhangXiang_BIM',
 } as const;
