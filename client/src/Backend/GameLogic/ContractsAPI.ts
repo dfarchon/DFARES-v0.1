@@ -40,6 +40,7 @@ import {
   LocationId,
   Planet,
   Player,
+  PlayerProfile,
   QueuedArrival,
   RevealedCoords,
   Setting,
@@ -265,6 +266,7 @@ export class ContractsAPI extends EventEmitter {
           contract.filters.UnionDisbanded(null).topics,
           contract.filters.UnionLeveledUp(null, null).topics,
           contract.filters.MemberAddedByAdmin(null, null).topics,
+          contract.filters.PlayerDisplayNameUpdated(null, null).topics,
         ].map((topicsOrUndefined) => (topicsOrUndefined || [])[0]),
       ] as Array<string | Array<string>>,
     };
@@ -583,6 +585,13 @@ export class ContractsAPI extends EventEmitter {
         this.emit(ContractsAPIEvent.UnionUpdate, unionId.toString() as UnionId);
         this.emit(ContractsAPIEvent.PlayerUpdate, address(member));
       },
+
+      [ContractEvent.PlayerDisplayNameUpdated]: async (player: string, newDisplayName: string, _: Event) => {
+        const profile: PlayerProfile = {
+          playerAddress: address(player), displayName: newDisplayName,
+        };
+        this.emit(ContractsAPIEvent.PlayerProfileUpdate, address(player), profile);
+      },
     };
 
     this.ethConnection.subscribeToContractEvents(contract, eventHandlers, filter);
@@ -620,6 +629,7 @@ export class ContractsAPI extends EventEmitter {
     contract.removeAllListeners(ContractEvent.UnionDisbanded);
     contract.removeAllListeners(ContractEvent.UnionLeveledUp);
     contract.removeAllListeners(ContractEvent.MemberAddedByAdmin);
+    contract.removeAllListeners(ContractEvent.PlayerDisplayNameUpdated);
   }
 
   public getContractAddress(): EthAddress {
@@ -1154,6 +1164,76 @@ export class ContractsAPI extends EventEmitter {
     player.score = scoreFromBlockchain;
     return player;
   }
+
+  // PlayerProfile Functions
+
+  public async getAllPlayerProfiles(
+    onProgress?: (fractionCompleted: number) => void,
+  ): Promise<Map<string, PlayerProfile>> {
+    const nPlayers: number = (await this.makeCall<EthersBN>(this.contract.getNPlayers)).toNumber();
+
+    const profiles = await aggregateBulkGetter<{playerAddress:string, displayName:string}>(
+      nPlayers,
+      200,
+      async (start:number, end:number) => (await this.makeCall<{playerAddress:string, displayName:string}[]>(this.contract.bulkGetDisplayNames, [start, end])),
+      onProgress
+    );
+
+    const playerProfileMap: Map<EthAddress, PlayerProfile> = new Map();
+
+    for (const profile of profiles) {
+      playerProfileMap.set(
+        address(profile.playerAddress),
+        {
+          playerAddress: address(profile.playerAddress),
+          displayName: profile.displayName,
+        },
+      );
+    }
+
+    return playerProfileMap;
+  }
+
+  /**
+   * Get the display name for a plyaer by their address.
+   * @param playerAddress - The address of the player.
+   * @returns The display name of the player.
+   */
+  public async getDisplayName(playerAddress: EthAddress): Promise<string|undefined> {
+    try {
+      const displayName = await this.makeCall<string>(this.contract.getDisplayName, [playerAddress]);
+    } catch (error) {
+      console.error('Error fetching display name:', error);
+      return undefined;
+    }
+  }
+
+  /**
+   * Set the display name for a player.
+   * Only that player or the admin can call this method.
+   * @param playerAddress - The address of the player.
+   * @param newDisplayName - The new display name to set.
+   * @returns A transaction object for setting the display name.
+   */
+  public async setDisplayName(
+    playerAddress: EthAddress,
+    newDisplayName: string
+  ): Promise<Transaction<TxIntent>> {
+    try {
+      const txIntent: TxIntent = {
+        contract: this.contract,
+        methodName: 'setDisplayName',
+        args: Promise.resolve([playerAddress, newDisplayName]),
+      };
+
+      const tx = await this.submitTransaction(txIntent);
+      return tx;
+    } catch(error) {
+      console.error('Error setting display name:', error);
+      throw error;
+    }
+  }
+
 
   // Union Getter Functions
 

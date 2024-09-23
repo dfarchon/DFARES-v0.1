@@ -106,6 +106,10 @@ struct GameStorage {
     uint256 unionRejoinCooldown;
 }
 
+struct PlayerProfileStorage {
+    mapping(address => string) displayNames;
+}
+
 struct LogStorage {
     address firstMythicArtifactOwner;
     address firstBurnLocationOperator;
@@ -292,6 +296,7 @@ library LibStorage {
     bytes32 constant ANALYSIS_STORAGE_POSITION = keccak256("darkforest.storage.analysis");
     bytes32 constant WHITELIST_STORAGE_POSITION = keccak256("darkforest.storage.whitelist");
     bytes32 constant UNION_STORAGE_POSITION = keccak256("darkforest.storage.union");
+    bytes32 constant PLAYER_PROFILE_STORAGE_POSITION = keccak256("darkforest.storage.playerprofile");
 
     // Constants are structs where the data gets configured on game initialization
     bytes32 constant GAME_CONSTANTS_POSITION = keccak256("darkforest.constants.game");
@@ -318,6 +323,13 @@ library LibStorage {
         bytes32 position = WHITELIST_STORAGE_POSITION;
         assembly {
             ws.slot := position
+        }
+    }
+
+    function playerProfileStorage() internal pure returns (PlayerProfileStorage storage pps) {
+        bytes32 position = PLAYER_PROFILE_STORAGE_POSITION;
+        assembly {
+            pps.slot := position
         }
     }
 
@@ -362,6 +374,10 @@ library LibStorage {
 contract WithStorage {
     function gs() internal pure returns (GameStorage storage) {
         return LibStorage.gameStorage();
+    }
+
+    function pps() internal pure returns (PlayerProfileStorage storage) {
+        return LibStorage.playerProfileStorage();
     }
 
     function ls() internal pure returns (LogStorage storage) {
