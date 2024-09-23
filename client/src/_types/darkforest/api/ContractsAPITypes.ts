@@ -82,10 +82,12 @@ export const enum ContractEvent {
   UnionDisbanded = 'UnionDisbanded',
   UnionLeveledUp = 'UnionLeveledUp',
   MemberAddedByAdmin = 'MemberAddedByAdmin',
+  PlayerDisplayNameUpdated = 'PlayerDisplayNameUpdated',
 }
 
 export const enum ContractsAPIEvent {
   PlayerUpdate = 'PlayerUpdate',
+  PlayerProfileUpdate = 'PlayerProfileUpdate',
   PlanetUpdate = 'PlanetUpdate',
   PauseStateChanged = 'PauseStateChanged',
   ArrivalQueued = 'ArrivalQueued',

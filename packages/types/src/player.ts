@@ -1,5 +1,10 @@
 import type { EthAddress, LocationId, UnionId } from './identifier';
 
+export type PlayerProfile = {
+  playerAddress: EthAddress;
+  displayName: string;
+}
+
 /**
  * Represents a player; corresponds fairly closely with the analogous contract
  * struct

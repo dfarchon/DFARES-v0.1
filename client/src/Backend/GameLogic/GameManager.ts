@@ -1,5 +1,5 @@
-import Round4GameManager from './Round4GameManager';
+import Round5GameManager from './Round5GameManager';
 
-class GameManager extends Round4GameManager {}
+class GameManager extends Round5GameManager {}
 
 export default GameManager;

@@ -277,6 +277,8 @@ export async function deployAndCut(
   const getterOneFacet = await deployGetterOneFacet({}, libraries, hre);
   const getterTwoFacet = await deployGetterTwoFacet({}, libraries, hre);
 
+  const playerProfileFacet = await deployPlayerProfileFacet({}, libraries, hre);
+
   const whitelistFacet = await deployWhitelistFacet({}, libraries, hre);
   const verifierFacet = await deployVerifierFacet({}, libraries, hre);
   const adminFacet = await deployAdminFacet({}, libraries, hre);
@@ -297,6 +299,7 @@ export async function deployAndCut(
     ...changes.getFacetCuts('DFArtifactFacet', artifactFacet),
     ...changes.getFacetCuts('DFGetterOneFacet', getterOneFacet),
     ...changes.getFacetCuts('DFGetterTwoFacet', getterTwoFacet),
+    ...changes.getFacetCuts('DFPlayerProfileFacet', playerProfileFacet),
     ...changes.getFacetCuts('DFWhitelistFacet', whitelistFacet),
     ...changes.getFacetCuts('DFVerifierFacet', verifierFacet),
     ...changes.getFacetCuts('DFAdminFacet', adminFacet),
@@ -383,6 +386,15 @@ export async function deployGetterTwoFacet(
   console.log('------ tx:', contract.address, ' ------');
   await contract.deployTransaction.wait();
   console.log('DFGetterTwoFacet deployed to:', contract.address);
+  return contract;
+}
+
+export async function deployPlayerProfileFacet({}, {}: Libraries, hre: HardhatRuntimeEnvironment) {
+  const factory = await hre.ethers.getContractFactory('DFPlayerProfileFacet');
+  const contract = await factory.deploy();
+  console.log('------ tx:', contract.address, ' ------');
+  await contract.deployTransaction.wait();
+  console.log('DFPlayerProfileFacet deployed to:', contract.address);
   return contract;
 }
 
