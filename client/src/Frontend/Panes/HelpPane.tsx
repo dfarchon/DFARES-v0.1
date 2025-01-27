@@ -142,7 +142,7 @@ export function HelpPane({ visible, onClose }: { visible: boolean; onClose: () =
             </Link>{' '}
             host <Pink>Dark Forest Ares</Pink> Round 4 on{' '}
             <Link to={BLOCK_EXPLORER_URL} color={'rgb(243,66,66)'}>
-              Redstone
+              Monad Devnet
             </Link>
             .
           </div>

@@ -62,7 +62,7 @@ export function TradePane({ visible, onClose }: { visible: boolean; onClose: () 
             'https://dfares.notion.site/How-to-transfer-ETH-from-L2-to-Redstone-Mainnet-89198e3016a444779c121efa2590bddd?pvs=74'
           }
         >
-          Guide: How to Get More ETH on Redstone
+          Guide: How to Get More ETH on Monad
         </Link>
         <DonationPane />
         <BuyPlanetPane />

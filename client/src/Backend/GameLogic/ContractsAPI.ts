@@ -139,12 +139,17 @@ export class ContractsAPI extends EventEmitter {
     ) {
       const settingValue = getSetting(config, Setting.GasFeeGwei);
 
-      return Number(parseFloat(settingValue) * parseInt('20'))
+      const res = Number(parseFloat(settingValue) * parseInt('5'))
         .toFixed(16)
         .toString();
+
+      console.log('gas', res);
+      return res;
     }
 
-    return getSetting(config, Setting.GasFeeGwei);
+    const res = getSetting(config, Setting.GasFeeGwei);
+    console.log('gas', res);
+    return res;
   }
 
   /**

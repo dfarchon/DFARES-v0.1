@@ -113,11 +113,11 @@ export default function LandingPage() {
                 <a className={'link'} href={DFArchonLinks.guide} target='_blank' rel='noreferrer'>
                   <div>
                     <span style={{ fontSize: '50px' }}>
-                      <Round3Title>DFAres v0.1</Round3Title>
+                      <Round3Title>Forge Unions 🌸</Round3Title>
                     </span>
                     <br />
                     <span style={{ fontSize: '40px' }}>
-                      <Round3Title>Round 4 : Union 🌸 </Round3Title>
+                      <Round3Title> DFAres v0.1 R4  </Round3Title>
                     </span>
                   </div>
 
@@ -139,8 +139,8 @@ export default function LandingPage() {
                 <Round3Title> Dark Forest Community Round</Round3Title>
               </div>
 
-              <div style={{ fontSize: '30px', color: 'red' }}>
-                <Round3Title> Redstone Mainnet</Round3Title>
+              <div style={{ fontSize: '30px', color: '#9B59B6' }}>
+                <Round3Title>💜 Monad Devnet 💜</Round3Title>
               </div>
 
               <Spacer height={48} />

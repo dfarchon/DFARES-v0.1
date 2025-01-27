@@ -264,6 +264,7 @@ export class TxExecutor {
       );
 
       const t2 = t1.toFixed(FIXED_DIGIT_NUMBER);
+      console.log('[NOTE] tx executor t2:', t2);
 
       tx.overrides.gasPrice = utils.parseUnits(t2, 'gwei');
     }
@@ -348,6 +349,12 @@ export class TxExecutor {
 
     try {
       tx.state = 'Processing';
+      console.log(`[TX ${tx.id}] Processing transaction:`, {
+        method: tx.intent.methodName,
+        contract: tx.intent.contract.address,
+        state: tx.state,
+        gasPrice: tx.overrides?.gasPrice?.toString(),
+      });
 
       if (this.beforeTransaction) {
         await this.beforeTransaction(tx);
@@ -365,6 +372,8 @@ export class TxExecutor {
       time_called = Date.now();
 
       const args = await tx.intent.args;
+
+      console.log(`[TX ${tx.id}] Submitting with args:`, args);
       const submitted = await timeout<providers.TransactionResponse>(
         tx.intent.contract[tx.intent.methodName](...args, {
           ...requestWithDefaults,
@@ -377,6 +386,11 @@ export class TxExecutor {
       releaseMutex();
 
       tx.state = 'Submit';
+      console.log(`[TX ${tx.id}] Submitted:`, {
+        hash: submitted.hash,
+        nonce,
+        gasPrice: submitted.gasPrice?.toString(),
+      });
       tx.hash = submitted.hash;
 
       time_submitted = Date.now();
@@ -387,19 +401,30 @@ export class TxExecutor {
 
       const confirmed = await this.ethConnection.waitForTransaction(submitted.hash);
       if (confirmed.status !== 1) {
+        console.error(`[TX ${tx.id}] Failed:`, {
+          hash: submitted.hash,
+          error: 'Transaction reverted'
+        });
         time_errored = Date.now();
         tx.lastUpdatedAt = time_errored;
         tx.state = 'Fail';
         await this.resetNonce();
         throw new Error('transaction reverted');
       } else {
+        console.log(`[TX ${tx.id}] Confirmed:`, {
+          gasUsed: confirmed.gasUsed.toString(),
+          blockNumber: confirmed.blockNumber,
+        });
         tx.state = 'Confirm';
         time_confirmed = Date.now();
         tx.lastUpdatedAt = time_confirmed;
         tx.onTransactionReceipt(confirmed);
       }
     } catch (e) {
-      console.error(e);
+      console.error(`[TX ${tx.id}] Error:`, {
+        error: e,
+        state: tx.state,
+      });
       tx.state = 'Fail';
       error = e as Error;
 
@@ -447,7 +472,7 @@ export class TxExecutor {
           /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
           logEvent.parsed_error = String.fromCharCode.apply(null, (error as any).body || []);
         }
-      } catch (e) {}
+      } catch (e) { }
     }
 
     logEvent.rpc_endpoint = this.ethConnection.getRpcEndpoint();

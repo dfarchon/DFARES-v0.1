@@ -292,7 +292,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           terminal.current?.print(`(${i + 1}): ${accounts[i].address}  `, TerminalTextStyle.Sub);
           if (balance < 0.0001) {
             terminal.current?.print(balance.toFixed(9) + ' ' + TOKEN_NAME, TerminalTextStyle.Red);
-            terminal.current?.println(' => select this account to know how to get enough ETH');
+            terminal.current?.println(' => select this account to know how to get enough DMON');
           } else {
             terminal.current?.println(
               balance.toFixed(9) + ' ' + TOKEN_NAME,
@@ -500,31 +500,34 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           terminal.current?.print(`   Your balance: `);
           terminal.current?.print(`${balance.toFixed(9)} ${TOKEN_NAME}`, TerminalTextStyle.Red);
 
-          terminal.current?.println(' <= recommend depositing 0.003 ETH');
+          terminal.current?.println(' <= recommend depositing 1 DOMN');
 
           terminal.current?.print(`           NOTE: `, TerminalTextStyle.Pink);
 
-          terminal.current?.println(
-            'You can use bridge to transfer ETH to Redstone Mainnet',
-            TerminalTextStyle.Pink
-          );
+          //DEV_TODO
 
-          terminal.current?.print('   L2-L2 bridge: ');
+          // terminal.current?.println(
+          //   'You can use bridge to transfer ETH to Monad Devnet',
+          //   TerminalTextStyle.Pink
+          // );
 
-          terminal.current?.printLink(
-            BLOCKCHAIN_BRIDGE,
-            () => {
-              window.open(BLOCKCHAIN_BRIDGE);
-            },
-            TerminalTextStyle.Green
-          );
 
-          terminal.current?.println(' <= transfer ETH from L2 (e.g. optimism) to Redstone Mainnet');
+          // terminal.current?.print('   L2-L2 bridge: ');
+
+          // terminal.current?.printLink(
+          //   BLOCKCHAIN_BRIDGE,
+          //   () => {
+          //     window.open(BLOCKCHAIN_BRIDGE);
+          //   },
+          //   TerminalTextStyle.Green
+          // );
+
+          // terminal.current?.println(' <= transfer ETH from L2 (e.g. optimism) to Monad Devnet');
 
           terminal.current?.print('   Player guide: ');
 
           terminal.current?.printLink(
-            'How to get ETH on the Redstone mainnet for your account',
+            'How to get DMON on the Monad Devnet for your account',
             () => {
               window.open(HOW_TO_TRANSFER_ETH_FROM_L2_TO_REDSTONE);
             },
@@ -538,7 +541,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           terminal.current?.println('');
 
           terminal.current?.println(
-            'After your account get ETH on Redstone Mainet, press [enter] to continue.',
+            'After your account get DMON on Monad Devnet, press [enter] to continue.',
             TerminalTextStyle.Pink
           );
 
