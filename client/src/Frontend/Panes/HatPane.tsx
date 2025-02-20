@@ -112,15 +112,15 @@ export function HatPane({
     labels.push(MemeTypeNames[i]);
   }
 
-  for (let i = MIN_LOGO_TYPE; i <= MAX_LOGO_TYPE; i++) {
-    values.push(logoTypeToNum(Number(i) as LogoType).toString());
-    labels.push(LogoTypeNames[i]);
-  }
+  // for (let i = MIN_LOGO_TYPE; i <= MAX_LOGO_TYPE; i++) {
+  //   values.push(logoTypeToNum(Number(i) as LogoType).toString());
+  //   labels.push(LogoTypeNames[i]);
+  // }
 
-  for (let i = MIN_AVATAR_TYPE; i <= MAX_AVATAR_TYPE; i++) {
-    values.push(avatarTypeToNum(Number(i) as AvatarType).toString());
-    labels.push(AvatarTypeNames[i]);
-  }
+  // for (let i = MIN_AVATAR_TYPE; i <= MAX_AVATAR_TYPE; i++) {
+  //   values.push(avatarTypeToNum(Number(i) as AvatarType).toString());
+  //   labels.push(AvatarTypeNames[i]);
+  // }
 
   const getSkinTypeName = (hatType: number): string => {
     if (isHat(hatType)) return HatTypeNames[numToHatType(hatType)];

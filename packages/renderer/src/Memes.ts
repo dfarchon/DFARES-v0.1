@@ -141,19 +141,61 @@ const Slerf = {
   bottomLayer: [],
 };
 
+const Astronaut = {
+  legacy: false,
+  topLayer: [URL + '/img/meme/astronaut.png'],
+  bottomLayer: [],
+};
+
+const GameBoy = {
+  legacy: false,
+  topLayer: [URL + '/img/meme/gameboy.png'],
+  bottomLayer: [],
+};
+
+const Gnad = {
+  legacy: false,
+  topLayer: [URL + '/img/meme/gnad.png'],
+  bottomLayer: [],
+};
+
+const Playgame = {
+  legacy: false,
+  topLayer: [URL + '/img/meme/playgame.png'],
+  bottomLayer: [],
+};
+
+const Spongebob = {
+  legacy: false,
+  topLayer: [URL + '/img/meme/spongebob.png'],
+  bottomLayer: [],
+};
+
+const Visionary = {
+  legacy: false,
+  topLayer: [URL + '/img/meme/visionary.png'],
+  bottomLayer: [],
+};
+
+
+
 export const memeFromType = (type: MemeType): Meme => memes[type];
 
 export const memes: Record<MemeType, Meme> = {
-  [MemeType.Doge]: doge,
-  [MemeType.Cat]: cat,
-  [MemeType.Pepe]: pepe,
-  [MemeType.RobotCat]: robotCat,
-  [MemeType.Wojak]: wojak3,
-  [MemeType.NyanCat]: NyanCat,
-  [MemeType.Harold]: Harold,
-  [MemeType.Undream]: Undream,
-  [MemeType.Slerf]: Slerf,
-  [MemeType.ChunZhen]: chunZhen,
+  [MemeType.Astronaut]: Astronaut,
+  [MemeType.GameBoy]: GameBoy,
+  [MemeType.Gnad]: Gnad,
+  [MemeType.Playgame]: Playgame,
+  [MemeType.Spongebob]: Spongebob,
+  [MemeType.Visionary]: Visionary,
+  // [MemeType.Pepe]: pepe,
+  // [MemeType.RobotCat]: robotCat,
+  // [MemeType.Wojak]: wojak3,
+  // [MemeType.NyanCat]: NyanCat,
+  // [MemeType.Harold]: Harold,
+  // [MemeType.Undream]: Undream,
+  // [MemeType.Slerf]: Slerf,
+  // [MemeType.ChunZhen]: chunZhen,
   // ==================================================
   // [MemeType.Doge]: doge,
   // [MemeType.Cat]: cat,

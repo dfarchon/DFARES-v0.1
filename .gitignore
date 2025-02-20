@@ -22,6 +22,8 @@ node_modules
 !/.yarn/sdks
 !/.yarn/versions
 /.pnp.*
+yarn-error.log
+
 
 # Local Netlify folder
 .netlify

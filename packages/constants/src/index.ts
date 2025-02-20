@@ -155,7 +155,7 @@ export const MAX_AUTO_GAS_PRICE_GWEI = 15 as const;
  * The URL to the block explorer for the chain being used. Prepended to transaction links, etc
  */
 // Careful, don't add a slash to the end of this.
-export const BLOCK_EXPLORER_URL = 'https://explorer.monad-devnet.devnet101.com' as const;
+export const BLOCK_EXPLORER_URL = 'https://monad-testnet.socialscan.io' as const;
 
 /**
  * The URL to the bridge for the chain being used. Prepended to transaction links, etc
@@ -219,10 +219,10 @@ export const MIN_HAT_TYPE = 1;
 export const MAX_HAT_TYPE = 10;
 
 // export const PICTURE_URL = 'http://localhost:8081';
-export const PICTURE_URL = 'https://dfares.xyz/public';
+export const PICTURE_URL = 'https://dfares-monad-testnet.netlify.app/public';
 
 export const MIN_MEME_TYPE = 1;
-export const MAX_MEME_TYPE = 10;
+export const MAX_MEME_TYPE = 6;
 
 export const MIN_LOGO_TYPE = 1;
 export const MAX_LOGO_TYPE = 22;
@@ -237,13 +237,13 @@ export const THEGRAPH_API_URL =
   'https://api.thegraph.com/subgraphs/name/darkforest-eth/dark-forest-v06-round-5';
 
 export const PLAYER_GUIDE =
-  'https://dfares.notion.site/DFAres-Round-4-Guide-c52181824f21461f9fa50a9f7989555c?pvs=74';
+  'https://dfares.notion.site/DFAres-Monad-Edition-Player-Guide-1a0a4dc2343380ecac14c71c82bb830b';
 
 export const HOW_TO_TRANSFER_ETH_FROM_L2_TO_REDSTONE =
-  'https://dfares.notion.site/How-to-transfer-ETH-from-L2-to-Redstone-Mainnet-f0be2d7a3d274e8a88f8e83d0ef4e212?pvs=74';
+  'https://dfares.notion.site/How-to-get-Monad-test-token-1a0a4dc23433814a8c88e4381c341a15';
 
 export const HOW_TO_ENABLE_POPUPS =
   'https://dfares.notion.site/How-to-enable-popups-d0f939dd9a114ae38ea5fbc7ed401828?pvs=74';
 
 export const WIN_CONDITION_AND_PRIZES =
-  'https://dfares.notion.site/1-1-Win-Conditions-Prizes-a284690f35b44a29b0d1100bbaa3e8e0?pvs=74';
+  'https://dfares.notion.site/1-1-Win-Conditions-Prizes-TBD-1a0a4dc2343381a994efdcff3f7a905a';

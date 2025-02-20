@@ -507,7 +507,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           //DEV_TODO
 
           // terminal.current?.println(
-          //   'You can use bridge to transfer ETH to Monad Devnet',
+          //   'You can use bridge to transfer ETH to Monad Testnet',
           //   TerminalTextStyle.Pink
           // );
 
@@ -522,12 +522,12 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           //   TerminalTextStyle.Green
           // );
 
-          // terminal.current?.println(' <= transfer ETH from L2 (e.g. optimism) to Monad Devnet');
+          // terminal.current?.println(' <= transfer ETH from L2 (e.g. optimism) to Monad Testnet');
 
           terminal.current?.print('   Player guide: ');
 
           terminal.current?.printLink(
-            'How to get DMON on the Monad Devnet for your account',
+            'How to get DMON on the Monad Testnet for your account',
             () => {
               window.open(HOW_TO_TRANSFER_ETH_FROM_L2_TO_REDSTONE);
             },
@@ -541,7 +541,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           terminal.current?.println('');
 
           terminal.current?.println(
-            'After your account get DMON on Monad Devnet, press [enter] to continue.',
+            'After your account get DMON on Monad Testnet, press [enter] to continue.',
             TerminalTextStyle.Pink
           );
 

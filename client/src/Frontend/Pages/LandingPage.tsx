@@ -140,7 +140,7 @@ export default function LandingPage() {
               </div>
 
               <div style={{ fontSize: '30px', color: '#9B59B6' }}>
-                <Round3Title>💜 Monad Devnet 💜</Round3Title>
+                <Round3Title>💜 Monad Testnet 💜</Round3Title>
               </div>
 
               <Spacer height={48} />

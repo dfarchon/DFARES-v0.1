@@ -16,9 +16,9 @@ task('deploy', 'deploy all contracts')
     undefined,
     types.string
   )
-  .setAction(deployMonand);
+  .setAction(deploy);
 
-async function deployMonand(
+async function sendMonad(
   args: { whitelist?: boolean; fund: number; subgraph?: string },
   hre: HardhatRuntimeEnvironment
 ) {
@@ -164,35 +164,37 @@ async function deploy(
   const beginBalance = await deployer.getBalance();
   console.log('begin balance:', beginBalance.toString());
 
-  const requires = hre.ethers.utils.parseEther('0.01');
-  const balance = await deployer.getBalance();
+  // const requires = hre.ethers.utils.parseEther('0.01');
+  // const balance = await deployer.getBalance();
 
-  // Only when deploying to production, give the deployer wallet money,
-  // in order for it to be able to deploy the contracts
-  if (!isDev && balance.lt(requires)) {
-    throw new Error(
-      `${deployer.address} requires ~$${hre.ethers.utils.formatEther(
-        requires
-      )} but has ${hre.ethers.utils.formatEther(balance)} top up and rerun`
-    );
-  }
+  // // Only when deploying to production, give the deployer wallet money,
+  // // in order for it to be able to deploy the contracts
+  // if (!isDev && balance.lt(requires)) {
+  //   throw new Error(
+  //     `${deployer.address} requires ~$${hre.ethers.utils.formatEther(
+  //       requires
+  //     )} but has ${hre.ethers.utils.formatEther(balance)} top up and rerun`
+  //   );
+  // }
 
-  const [diamond, diamondInit, initReceipt] = await deployAndCut(
-    { ownerAddress: deployer.address, whitelistEnabled, initializers: hre.initializers },
-    hre
-  );
+  // const [diamond, diamondInit, initReceipt] = await deployAndCut(
+  //   { ownerAddress: deployer.address, whitelistEnabled, initializers: hre.initializers },
+  //   hre
+  // );
 
-  await saveDeploy(
-    {
-      coreBlockNumber: initReceipt.blockNumber,
-      diamondAddress: diamond.address,
-      initAddress: diamondInit.address,
-    },
-    hre
-  );
+  // await saveDeploy(
+  //   {
+  //     coreBlockNumber: initReceipt.blockNumber,
+  //     diamondAddress: diamond.address,
+  //     initAddress: diamondInit.address,
+  //   },
+  //   hre
+  // );
 
   // Note Ive seen `ProviderError: Internal error` when not enough money...
   console.log(`funding whitelist with ${args.fund}`);
+
+  const diamond = { address: '0x9948167432e01efb2e8ffE3dd0737Fbe064b29B5' };
 
   const tx = await deployer.sendTransaction({
     to: diamond.address,
