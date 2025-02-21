@@ -139,9 +139,12 @@ export class ContractsAPI extends EventEmitter {
     ) {
       const settingValue = getSetting(config, Setting.GasFeeGwei);
 
-      const res = Number(parseFloat(settingValue) * parseInt('5'))
-        .toFixed(16)
-        .toString();
+      // NOTE: for monad testnet gas price is always 50 gwei
+      // const res = Number(parseFloat(settingValue) * parseInt('5'))
+      //   .toFixed(16)
+      //   .toString();
+
+      const res = Number(parseFloat(settingValue)).toFixed(16).toString();
 
       console.log('gas', res);
       return res;

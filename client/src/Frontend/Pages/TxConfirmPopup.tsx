@@ -176,6 +176,14 @@ export function TxConfirmPopup({
   const wrapGasFee = () => {
     if (method === 'initializePlayer' || method === 'giveSpaceShips') {
       const settingValue = getSetting(config, Setting.GasFeeGwei);
+
+      // NOTE: monad testnet
+
+      return Number(parseFloat(settingValue))
+        .toFixed(FIXED_DIGIT_NUMBER)
+        .toString();
+
+
       return Number(parseFloat(settingValue) * parseInt('10'))
         .toFixed(FIXED_DIGIT_NUMBER)
         .toString();
