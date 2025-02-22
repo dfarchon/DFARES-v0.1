@@ -292,7 +292,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           terminal.current?.print(`(${i + 1}): ${accounts[i].address}  `, TerminalTextStyle.Sub);
           if (balance < 0.0001) {
             terminal.current?.print(balance.toFixed(9) + ' ' + TOKEN_NAME, TerminalTextStyle.Red);
-            terminal.current?.println(' => select this account to know how to get enough DMON');
+            terminal.current?.println(' => select this account to know how to get enough MON');
           } else {
             terminal.current?.println(
               balance.toFixed(9) + ' ' + TOKEN_NAME,
@@ -527,7 +527,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           terminal.current?.print('   Player guide: ');
 
           terminal.current?.printLink(
-            'How to get DMON on the Monad Testnet for your account',
+            'How to get MON on the Monad Testnet for your account',
             () => {
               window.open(HOW_TO_TRANSFER_ETH_FROM_L2_TO_REDSTONE);
             },
@@ -541,7 +541,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           terminal.current?.println('');
 
           terminal.current?.println(
-            'After your account get DMON on Monad Testnet, press [enter] to continue.',
+            'After your account get MON on Monad Testnet, press [enter] to continue.',
             TerminalTextStyle.Pink
           );
 

@@ -34,7 +34,7 @@ import {
 } from '@dfares/types';
 import bigInt, { BigInteger } from 'big-integer';
 
-export const TOKEN_NAME = 'DMON';
+export const TOKEN_NAME = 'MON';
 export const BLOCKCHAIN_NAME = 'MONAD';
 export const HOST_TEAM_NAME = 'DF Archon';
 
