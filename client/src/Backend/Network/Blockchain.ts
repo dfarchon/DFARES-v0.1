@@ -19,6 +19,7 @@ export async function loadDiamondContract<T extends Contract>(
 export function getEthConnection(): Promise<EthConnection> {
   const isProd = process.env.NODE_ENV === 'production';
   const defaultUrl = process.env.DEFAULT_RPC as string;
+  const faucetServiceUrl = process.env.FAUCET_SERVICE_URL as string;
 
   let url: string;
 

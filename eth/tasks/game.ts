@@ -18,7 +18,7 @@ task('game:findCheaters', 'finds planets that have been captured more than once'
   findCheaters
 );
 
-async function findCheaters({}, hre: HardhatRuntimeEnvironment) {
+async function findCheaters({ }, hre: HardhatRuntimeEnvironment) {
   await hre.run('utils:assertChainId');
 
   const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
@@ -84,7 +84,7 @@ async function findCheaters({}, hre: HardhatRuntimeEnvironment) {
 
 task('game:getEntryFee', 'get entry fee').setAction(getEntryFee);
 
-async function getEntryFee({}, hre: HardhatRuntimeEnvironment) {
+async function getEntryFee({ }, hre: HardhatRuntimeEnvironment) {
   await hre.run('utils:assertChainId');
   const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
   const amount = await contract.getEntryFee();
@@ -95,7 +95,7 @@ task('game:getFirstMythicArtifactOwner', 'get first mythic artifact owner').setA
   getFirstMythicArtifactOwner
 );
 
-async function getFirstMythicArtifactOwner({}, hre: HardhatRuntimeEnvironment) {
+async function getFirstMythicArtifactOwner({ }, hre: HardhatRuntimeEnvironment) {
   await hre.run('utils:assertChainId');
   const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
   const amount = await contract.getFirstMythicArtifactOwner();
@@ -106,7 +106,7 @@ task('game:getFirstBurnLocationOperator', 'get first burnLocation operator').set
   getFirstBurnLocationOperator
 );
 
-async function getFirstBurnLocationOperator({}, hre: HardhatRuntimeEnvironment) {
+async function getFirstBurnLocationOperator({ }, hre: HardhatRuntimeEnvironment) {
   await hre.run('utils:assertChainId');
   const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
   const amount = await contract.getFirstBurnLocationOperator();
@@ -115,7 +115,7 @@ async function getFirstBurnLocationOperator({}, hre: HardhatRuntimeEnvironment) 
 
 task('game:getFirstHat', 'getFirstHat').setAction(getFirstHat);
 
-async function getFirstHat({}, hre: HardhatRuntimeEnvironment) {
+async function getFirstHat({ }, hre: HardhatRuntimeEnvironment) {
   await hre.run('utils:assertChainId');
   const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
   const amount = await contract.getFirstHat();
@@ -124,7 +124,7 @@ async function getFirstHat({}, hre: HardhatRuntimeEnvironment) {
 
 task('game:rank', 'get the final rank').setAction(getRank);
 
-async function getRank({}, hre: HardhatRuntimeEnvironment) {
+async function getRank({ }, hre: HardhatRuntimeEnvironment) {
   // Handle the players
   interface PlayerInfo {
     address: string;
@@ -190,7 +190,7 @@ async function getRank({}, hre: HardhatRuntimeEnvironment) {
 
 task('game:unions', 'get the unions').setAction(getUnions);
 
-async function getUnions({}, hre: HardhatRuntimeEnvironment) {
+async function getUnions({ }, hre: HardhatRuntimeEnvironment) {
   interface PlayerInfo {
     address: string;
     score: number | undefined;
@@ -519,7 +519,7 @@ async function getPlayerLog(
 
 task('game:analysisHatEarn', 'analysis hat earn').setAction(analysisHatEarn);
 
-async function analysisHatEarn({}, hre: HardhatRuntimeEnvironment) {
+async function analysisHatEarn({ }, hre: HardhatRuntimeEnvironment) {
   await hre.run('utils:assertChainId');
   const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
 
@@ -561,7 +561,7 @@ async function analysisHatEarn({}, hre: HardhatRuntimeEnvironment) {
 
 task('game:analysisGameLog', 'analysis game log').setAction(analysisGameLog);
 
-async function analysisGameLog({}, hre: HardhatRuntimeEnvironment) {
+async function analysisGameLog({ }, hre: HardhatRuntimeEnvironment) {
   await hre.run('utils:assertChainId');
   const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
 
@@ -731,3 +731,74 @@ async function bulkGetHatPlayerSpent(
     console.log(accounts[i], ':', hre.ethers.utils.formatUnits(rawData[i].toNumber()), 'ether');
   }
 }
+
+task('game:printAllPlayers', 'prints all player addresses').setAction(printAllPlayers);
+
+async function printAllPlayers({ }, hre: HardhatRuntimeEnvironment) {
+  await hre.run('utils:assertChainId');
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  const rawPlayerAmount = await contract.getNPlayers();
+  const playerAmount = rawPlayerAmount.toNumber();
+  console.log('Total player amount:', playerAmount);
+
+  const rawPlayers = await contract.bulkGetPlayers(0, playerAmount);
+  console.log('\nPlayer details:');
+
+  for (let i = 0; i < rawPlayers.length; i++) {
+    const address = rawPlayers[i].player.toLowerCase();
+
+    // Get player's move count from their log
+    const playerLog = await contract.getPlayerLog(address);
+    const moveCnt = playerLog.moveCnt.toNumber();
+
+    // Get player's wallet balance
+    const balance = await hre.ethers.provider.getBalance(address);
+    const balanceInEth = hre.ethers.utils.formatEther(balance);
+
+    console.log(`${i + 1}. ${address} | Moves: ${moveCnt} | Balance: ${balanceInEth} ETH`);
+  }
+}
+
+// NOTE: after install dfares/serde
+
+// task('game:rank', 'get the final rank').setAction(getRank);
+
+// async function getRank({}, hre: HardhatRuntimeEnvironment) {
+//   const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+//   const rawPlayerAmount = await contract.getNPlayers();
+//   const playerAmount = rawPlayerAmount.toNumber();
+//   console.log('total player amount:', playerAmount);
+
+//   const rawPlayers = await contract.bulkGetPlayers(0, playerAmount);
+//   const players = rawPlayers.map((p) => decodePlayer(p));
+//   console.log('players amount:', players.length);
+//   for (let i = 0; i < players.length; i++) {
+//     const address = players[i].address;
+//     const score = await contract.getScore(address);
+//     const scoreStr = score.toString();
+//     if (
+//       scoreStr === '115792089237316195423570985008687907853269984665640564039457584007913129639935'
+//     ) {
+//       players[i].score = undefined;
+//     } else players[i].score = score.toNumber();
+
+//     console.log(i, address, score.toString());
+//   }
+
+//   const haveScorePlayers = players
+//     .filter((p) => p.score !== undefined)
+//     .sort((a, b) => {
+//       if (a.score === undefined) return -1;
+//       else if (b.score === undefined) return -1;
+//       return a.score - b.score;
+//     });
+
+//   console.log('have score player amount:', haveScorePlayers.length);
+
+//   for (let i = 0; i < haveScorePlayers.length; i++) {
+//     const player = haveScorePlayers[i];
+//     console.log(i + 1, player.address, player.score);
+//   }
+// }

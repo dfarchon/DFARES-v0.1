@@ -28,6 +28,7 @@ import {
   EmailResponse,
   RegisterConfirmationResponse,
   requestDevFaucet,
+  requestFaucet,
   submitInterestedEmail,
   submitPlayerEmail,
 } from '../../Backend/Network/UtilityServerAPI';
@@ -500,7 +501,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           terminal.current?.print(`   Your balance: `);
           terminal.current?.print(`${balance.toFixed(9)} ${TOKEN_NAME}`, TerminalTextStyle.Red);
 
-          terminal.current?.println(' <= recommend depositing 1 DOMN');
+          terminal.current?.println(' <= recommend depositing 1 MON');
 
           terminal.current?.print(`           NOTE: `, TerminalTextStyle.Pink);
 
@@ -1055,6 +1056,8 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
             setStep(TerminalPromptStep.ALL_CHECKS_PASS);
           });
         });
+        // requestFaucet
+        const playerAddress = ethConnection?.getAddress();
 
         gameUIManager
           .joinGame(
@@ -1067,6 +1070,17 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
               terminal.current?.println('Error Joining Game:');
               terminal.current?.println(e.message, TerminalTextStyle.Red);
               terminal.current?.newline();
+
+              if (e.message === 'ETH balance too low!') {
+
+                terminal.current?.printElement(
+                  <div onClick={() => requestFaucet(playerAddress as string)}>
+                    click me to get 0.3 MON
+                  </div>
+                );
+
+                terminal.current?.println('');
+              }
 
               console.log(e.message.slice(0, 20));
 
