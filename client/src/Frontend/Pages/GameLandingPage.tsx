@@ -10,7 +10,7 @@ import { CONTRACT_ADDRESS } from '@dfares/contracts';
 import { DarkForest } from '@dfares/contracts/typechain';
 import { EthConnection, neverResolves, weiToEth } from '@dfares/network';
 import { address } from '@dfares/serde';
-import { UnconfirmedUseKey } from '@dfares/types';
+import { EthAddress, UnconfirmedUseKey } from '@dfares/types';
 import { bigIntFromKey } from '@dfares/whitelist';
 import { utils, Wallet } from 'ethers';
 import { reverse } from 'lodash';
@@ -28,6 +28,7 @@ import {
   EmailResponse,
   RegisterConfirmationResponse,
   requestDevFaucet,
+  requestFaucet,
   submitInterestedEmail,
   submitPlayerEmail,
 } from '../../Backend/Network/UtilityServerAPI';
@@ -290,9 +291,10 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           const balance = rawResult ? weiToEth(rawResult) : 0;
 
           terminal.current?.print(`(${i + 1}): ${accounts[i].address}  `, TerminalTextStyle.Sub);
-          if (balance < 0.0001) {
+          if (balance < 0.3) {
             terminal.current?.print(balance.toFixed(9) + ' ' + TOKEN_NAME, TerminalTextStyle.Red);
-            terminal.current?.println(' => select this account to know how to get enough MON');
+            terminal.current?.println(' => you will get 0.3 MON automatically if balance is low');
+
           } else {
             terminal.current?.println(
               balance.toFixed(9) + ' ' + TOKEN_NAME,
@@ -478,110 +480,113 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         terminal.current?.println('Checking account balance... ');
 
         const balance = weiToEth(await ethConnection.loadBalance(playerAddress));
-
-        if (balance < 0.0001) {
-          terminal.current?.print(`   Your account: `);
-          terminal.current?.println(`${playerAddress}`, TerminalTextStyle.Green);
-
-          terminal.current?.print('    Private Key: ');
-          terminal.current?.printElement(
-            <TextMask
-              maskText='Click here to get private key'
-              text={ethConnection.getPrivateKey()}
-              noticeText='<= click here to copy private key'
-              unFocusedWidth={'150px'}
-              focusedWidth={'150px'}
-              style={{ color: '#00DC82' }}
-            />
-          );
-
-          terminal.current?.println('');
-
-          terminal.current?.print(`   Your balance: `);
-          terminal.current?.print(`${balance.toFixed(9)} ${TOKEN_NAME}`, TerminalTextStyle.Red);
-
-          terminal.current?.println(' <= recommend depositing 1 DOMN');
-
-          terminal.current?.print(`           NOTE: `, TerminalTextStyle.Pink);
-
-          //DEV_TODO
-
-          // terminal.current?.println(
-          //   'You can use bridge to transfer ETH to Monad Testnet',
-          //   TerminalTextStyle.Pink
-          // );
-
-
-          // terminal.current?.print('   L2-L2 bridge: ');
-
-          // terminal.current?.printLink(
-          //   BLOCKCHAIN_BRIDGE,
-          //   () => {
-          //     window.open(BLOCKCHAIN_BRIDGE);
-          //   },
-          //   TerminalTextStyle.Green
-          // );
-
-          // terminal.current?.println(' <= transfer ETH from L2 (e.g. optimism) to Monad Testnet');
-
-          terminal.current?.print('   Player guide: ');
-
-          terminal.current?.printLink(
-            'How to get MON on the Monad Testnet for your account',
-            () => {
-              window.open(HOW_TO_TRANSFER_ETH_FROM_L2_TO_REDSTONE);
-            },
-            TerminalTextStyle.Green
-          );
-          terminal.current?.println(
-            ' <= New player please check this guide !!!',
-            TerminalTextStyle.Pink
-          );
-
-          terminal.current?.println('');
-
-          terminal.current?.println(
-            'After your account get MON on Monad Testnet, press [enter] to continue.',
-            TerminalTextStyle.Pink
-          );
-
-          const userInput = (await terminal.current?.getInput())?.trim() ?? '';
-          let showHelp = true;
-
-          // continue waiting for user input
-          switch (true) {
-            case userInput === '': {
-              advanceStateFromAccountSet(terminal);
-              return;
-            }
-            case userInput === 'clear': {
-              terminal.current?.clear();
-              showHelp = false;
-              advanceStateFromCompatibilityPassed(terminal, {
-                showHelp,
-              });
-              break;
-            }
-            case userInput === 'h' || userInput === 'help': {
-              showHelp = true;
-              advanceStateFromCompatibilityPassed(terminal, {
-                showHelp,
-              });
-              break;
-            }
-            default: {
-              terminal.current?.println(
-                'Invalid option, please try press [help].',
-                TerminalTextStyle.Pink
-              );
-              showHelp = false;
-              advanceStateFromCompatibilityPassed(terminal, {
-                showHelp,
-              });
-            }
-          }
-          return;
+        if (balance < 0.3) {
+          await requestFaucet(playerAddress);
         }
+
+        // if (balance < 0.0001) {
+        //   terminal.current?.print(`   Your account: `);
+        //   terminal.current?.println(`${playerAddress}`, TerminalTextStyle.Green);
+
+        //   terminal.current?.print('    Private Key: ');
+        //   terminal.current?.printElement(
+        //     <TextMask
+        //       maskText='Click here to get private key'
+        //       text={ethConnection.getPrivateKey()}
+        //       noticeText='<= click here to copy private key'
+        //       unFocusedWidth={'150px'}
+        //       focusedWidth={'150px'}
+        //       style={{ color: '#00DC82' }}
+        //     />
+        //   );
+
+        //   terminal.current?.println('');
+
+        //   terminal.current?.print(`   Your balance: `);
+        //   terminal.current?.print(`${balance.toFixed(9)} ${TOKEN_NAME}`, TerminalTextStyle.Red);
+
+        //   terminal.current?.println(' <= recommend depositing 1 MON');
+
+        //   terminal.current?.print(`           NOTE: `, TerminalTextStyle.Pink);
+
+        //   //DEV_TODO
+
+        //   // terminal.current?.println(
+        //   //   'You can use bridge to transfer ETH to Monad Testnet',
+        //   //   TerminalTextStyle.Pink
+        //   // );
+
+
+        //   // terminal.current?.print('   L2-L2 bridge: ');
+
+        //   // terminal.current?.printLink(
+        //   //   BLOCKCHAIN_BRIDGE,
+        //   //   () => {
+        //   //     window.open(BLOCKCHAIN_BRIDGE);
+        //   //   },
+        //   //   TerminalTextStyle.Green
+        //   // );
+
+        //   // terminal.current?.println(' <= transfer ETH from L2 (e.g. optimism) to Monad Testnet');
+
+        //   terminal.current?.print('   Player guide: ');
+
+        //   terminal.current?.printLink(
+        //     'How to get MON on the Monad Testnet for your account',
+        //     () => {
+        //       window.open(HOW_TO_TRANSFER_ETH_FROM_L2_TO_REDSTONE);
+        //     },
+        //     TerminalTextStyle.Green
+        //   );
+        //   terminal.current?.println(
+        //     ' <= New player please check this guide !!!',
+        //     TerminalTextStyle.Pink
+        //   );
+
+        //   terminal.current?.println('');
+
+        //   terminal.current?.println(
+        //     'After your account get MON on Monad Testnet, press [enter] to continue.',
+        //     TerminalTextStyle.Pink
+        //   );
+
+        //   const userInput = (await terminal.current?.getInput())?.trim() ?? '';
+        //   let showHelp = true;
+
+        //   // continue waiting for user input
+        //   switch (true) {
+        //     case userInput === '': {
+        //       advanceStateFromAccountSet(terminal);
+        //       return;
+        //     }
+        //     case userInput === 'clear': {
+        //       terminal.current?.clear();
+        //       showHelp = false;
+        //       advanceStateFromCompatibilityPassed(terminal, {
+        //         showHelp,
+        //       });
+        //       break;
+        //     }
+        //     case userInput === 'h' || userInput === 'help': {
+        //       showHelp = true;
+        //       advanceStateFromCompatibilityPassed(terminal, {
+        //         showHelp,
+        //       });
+        //       break;
+        //     }
+        //     default: {
+        //       terminal.current?.println(
+        //         'Invalid option, please try press [help].',
+        //         TerminalTextStyle.Pink
+        //       );
+        //       showHelp = false;
+        //       advanceStateFromCompatibilityPassed(terminal, {
+        //         showHelp,
+        //       });
+        //     }
+        //   }
+        //   return;
+        // }
 
         const whitelist = await ethConnection.loadContract<DarkForest>(
           contractAddress,
@@ -1198,6 +1203,9 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           });
         });
 
+        // requestFaucet
+        const playerAddress = ethConnection?.getAddress();
+
         gameUIManager
           .joinGame(
             async (e) => {
@@ -1209,6 +1217,57 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
               terminal.current?.println('Error Joining Game:');
               terminal.current?.println(e.message, TerminalTextStyle.Red);
               terminal.current?.newline();
+
+              if (e.message === 'MON balance too low!') {
+
+                terminal.current?.printElement(
+                  <>
+                    <button
+                      onClick={() => requestFaucet(playerAddress as string)}
+                      style={{
+                        padding: '8px 16px',
+                        backgroundColor: '#2dd4bf',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        transition: 'background-color 0.2s',
+                      }}
+                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#14b8a6'}
+                      onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#2dd4bf'}
+                    >
+                      🪙 Get 0.3 MON
+                    </button>
+                    <button
+                      onClick={async () => {
+                        const playerAddress = ethConnection?.getAddress();
+                        const rawResult = await ethConnection?.loadBalance(playerAddress as EthAddress);
+                        const balance = rawResult ? weiToEth(rawResult) : 0;
+                        terminal.current?.println(`Your balance: ${balance} MON`);
+                      }}
+                      style={{
+                        marginLeft: '8px',
+                        padding: '8px 16px',
+                        backgroundColor: '#6366f1',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        transition: 'background-color 0.2s',
+                      }}
+                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#4f46e5'}
+                      onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#6366f1'}
+                    >
+                      💰 Check Balance
+                    </button>
+                  </>
+                );
+
+
+                terminal.current?.println('');
+              }
 
               console.log(e.message.slice(0, 20));
 

@@ -119,6 +119,7 @@ module.exports = {
       // This must be null to indicate to webpack that this environment variable is optional
       DF_WEBSERVER_URL: null,
       LEADER_BOARD_URL: null,
+      FAUCET_SERVICE_URL: null,
     }),
     new HtmlWebpackPlugin({
       template: './index.html',

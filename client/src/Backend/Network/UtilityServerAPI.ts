@@ -222,7 +222,7 @@ export const requestDevFaucet = async (address: EthAddress): Promise<boolean> =>
 export const tryGetAllTwitters = async (): Promise<AddressTwitterMap> => {
   try {
     return await timeout(getAllTwitters(), 1000 * 5, "couldn't get twitter map");
-  } catch (e) {}
+  } catch (e) { }
   return {};
 };
 
@@ -275,6 +275,30 @@ export const disconnectTwitter = async (
     return res.success;
   } catch (e) {
     console.error(`error when disconnecting twitter handle: ${e}`);
+    return false;
+  }
+};
+
+// only redstone faucet
+export const requestFaucet = async (address: string): Promise<boolean> => {
+  if (!process.env.FAUCET_SERVICE_URL) {
+    return false;
+  }
+
+  try {
+
+    console.log('request 0.3 MON');
+    const faucetServiceUrl = process.env.FAUCET_SERVICE_URL as string;
+    const queryUrl = faucetServiceUrl + address;
+    // console.log(queryUrl);
+
+    const data = await fetch(queryUrl).then((res) => res.json());
+
+    console.log(data);
+
+    return data;
+  } catch (e) {
+    console.error(`Error request faucet: ${e}`);
     return false;
   }
 };
