@@ -1630,6 +1630,32 @@ class Round4GameManager extends BaseGameManager {
       throw e;
     }
   }
+
+  public async getNadProfile(address: string, chainId: string = '10143') {
+    try {
+      const baseUrl = 'https://api.nad.domains';
+      const url = `${baseUrl}/v1/protocol/profile/${address}?chainId=${chainId}`;
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+      throw error;
+    }
+
+
+  }
 }
 
 export default Round4GameManager;

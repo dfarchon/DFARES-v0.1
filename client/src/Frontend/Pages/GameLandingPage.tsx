@@ -129,6 +129,32 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
 
   const isProd = process.env.NODE_ENV === 'production';
 
+  const getNadProfile = async (address: string, chainId: string = '10143') => {
+    try {
+      const baseUrl = 'https://api.nad.domains';
+      const url = `${baseUrl}/v1/protocol/profile/${address}?chainId=${chainId}`;
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+      throw error;
+    }
+
+
+  }
+
   const advanceStateFromCompatibilityPassed = useCallback(
     async (
       terminal: React.MutableRefObject<TerminalHandle | undefined>,
@@ -279,6 +305,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         showHelp: true,
       }
     ) => {
+
       const accounts = getAccounts();
       const totalAccounts = accounts.length;
       if (showHelp) {
@@ -289,8 +316,22 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         for (let i = 0; i < accounts.length; i += 1) {
           const rawResult = await ethConnection?.loadBalance(accounts[i].address);
           const balance = rawResult ? weiToEth(rawResult) : 0;
+          const account = accounts[i].address;
 
-          terminal.current?.print(`(${i + 1}): ${accounts[i].address}  `, TerminalTextStyle.Sub);
+          const NadRawResult = await getNadProfile(account);
+
+          const primaryName = NadRawResult.profile.primaryName;
+
+          terminal.current?.print(`(${i + 1}): `);
+
+          if (primaryName !== undefined) {
+            terminal.current?.print(`${primaryName}  `, TerminalTextStyle.Blue);
+
+          } else {
+            terminal.current?.print(`${account}  `, TerminalTextStyle.Sub);
+
+
+          }
           if (balance < 0.3) {
             terminal.current?.print(balance.toFixed(9) + ' ' + TOKEN_NAME, TerminalTextStyle.Red);
             terminal.current?.println(' => you will get 0.3 MON automatically if balance is low');
@@ -611,7 +652,33 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         if (isWhitelisted || playerAddress === adminAddress) {
           terminal.current?.println('Player whitelisted.');
           terminal.current?.println('');
+
+          const NadRawResult = await getNadProfile(playerAddress);
+          const primaryName = NadRawResult.profile.primaryName;
+
           terminal.current?.println(`Welcome, player ${playerAddress}.`);
+
+          terminal.current?.println('');
+          terminal.current?.printElement(
+            <>
+              <span style={{
+                fontSize: '2em',
+                fontWeight: 'bold',
+                color: '#3b82f6',
+                textShadow: '0 0 10px rgba(59, 130, 246, 0.5)',
+                display: 'block',
+                margin: '10px 0'
+              }}>
+                🌸 Legendary Explorer: {primaryName} 🌸
+              </span>
+
+              <span style={{ fontSize: '1.5em', color: '#9ca3af' }}>
+                Your journey to conquer the universe begins now...
+              </span>
+              <br />
+            </>);
+
+
           // TODO: Provide own env variable for this feature
           if (!isProd) {
             // in development, automatically get some ether from faucet

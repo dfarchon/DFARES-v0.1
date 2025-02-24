@@ -178,7 +178,7 @@ function CaptureZones({
   const [nextGenerationBlock, setNextGenerationBlock] = useState(
     Math.max(
       uiManager.contractConstants.GAME_START_BLOCK +
-        uiManager.contractConstants.CAPTURE_ZONE_CHANGE_BLOCK_INTERVAL,
+      uiManager.contractConstants.CAPTURE_ZONE_CHANGE_BLOCK_INTERVAL,
       nextChangeBlock
     )
   );
@@ -199,6 +199,53 @@ function CaptureZones({
     </Numbers>
   );
 }
+
+
+function NadProfileLabel({ account }: { account: EthAddress | undefined }) {
+  const uiManager = useUIManager();
+  const [nadName, setNadName] = useState<string | undefined>();
+
+  useEffect(() => {
+    const loadNadProfile = async () => {
+      if (account && uiManager) {
+        try {
+          console.log(account);
+
+          const rawResult = await uiManager.getNadProfile(account);
+
+          console.log(rawResult);
+          console.log(rawResult?.profile?.primaryName);
+          const primaryName = rawResult.profile?.primaryName;
+
+          setNadName(primaryName);
+        } catch (error) {
+          console.error('Error loading NAD profile:', error);
+        }
+      }
+    };
+
+    loadNadProfile();
+  }, [account, uiManager]);
+
+  if (!nadName) return null;
+
+  return (
+    <TooltipTrigger
+      name={TooltipName.Empty}
+      extraContent={<Text>Your NAD domain name</Text>}
+    >
+      <Sub style={{
+        // fontSize: '2em',
+        fontWeight: 'bold',
+        color: '#3b82f6',
+        textShadow: '0 0 10px rgba(59, 130, 246, 0.5)',
+        display: 'block',
+        margin: '10px 0'
+      }}>{nadName}</Sub>
+    </TooltipTrigger>
+  );
+}
+
 
 export function TopBar({ twitterVerifyHook }: { twitterVerifyHook: Hook<boolean> }) {
   const uiManager = useUIManager();
@@ -226,6 +273,9 @@ export function TopBar({ twitterVerifyHook }: { twitterVerifyHook: Hook<boolean>
         >
           <AccountLabel includeAddressIfHasTwitter={true} width={'50px'} />
         </TooltipTrigger>
+
+        <NadProfileLabel account={account} />
+
         <TooltipTrigger
           name={TooltipName.Empty}
           extraContent={<Text>Your burner wallet balance.</Text>}
