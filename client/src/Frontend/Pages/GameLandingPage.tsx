@@ -656,27 +656,81 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           const NadRawResult = await getNadProfile(playerAddress);
           const primaryName = NadRawResult.profile.primaryName;
 
-          terminal.current?.println(`Welcome, player ${playerAddress}.`);
+          if (primaryName !== undefined) {
+            terminal.current?.println(`Welcome, player ${playerAddress}.`);
 
-          terminal.current?.println('');
-          terminal.current?.printElement(
-            <>
-              <span style={{
-                fontSize: '2em',
-                fontWeight: 'bold',
-                color: '#3b82f6',
-                textShadow: '0 0 10px rgba(59, 130, 246, 0.5)',
-                display: 'block',
-                margin: '10px 0'
-              }}>
-                🌸 Legendary Explorer: {primaryName} 🌸
-              </span>
+            terminal.current?.println('');
+            terminal.current?.printElement(
+              <>
+                <span style={{
+                  fontSize: '2em',
+                  fontWeight: 'bold',
+                  color: '#3b82f6',
+                  textShadow: '0 0 10px rgba(59, 130, 246, 0.5)',
+                  display: 'block',
+                  margin: '10px 0'
+                }}>
+                  🌸 Legendary Explorer: {primaryName} 🌸
+                </span>
 
-              <span style={{ fontSize: '1.5em', color: '#9ca3af' }}>
-                Your journey to conquer the universe begins now...
-              </span>
-              <br />
-            </>);
+                <span style={{ fontSize: '1.5em', color: '#9ca3af' }}>
+                  Your journey to conquer the universe begins now...
+                </span>
+                <br />
+              </>);
+
+
+          } else {
+            terminal.current?.println('');
+            terminal.current?.println('🚀 Mint Your NAD Name Service 🚀', TerminalTextStyle.Pink);
+            terminal.current?.println('');
+
+            terminal.current?.print('Step 1: Visit ');
+            terminal.current?.printLink(
+              '🔗 NAD Website',
+              () => {
+                window.open('https://app.nad.domains');
+              },
+              TerminalTextStyle.Blue
+            );
+            terminal.current?.println('');
+
+            terminal.current?.print('Step 2: Copy your account\'s private key ');
+
+            // Add copy buttons
+            terminal.current?.print('[ ', TerminalTextStyle.Sub);
+            terminal.current?.printLink(
+              'Copy Public Key',
+              () => {
+                navigator.clipboard.writeText(playerAddress);
+                terminal.current?.println(
+                  '\nPublic key copied to clipboard!',
+                  TerminalTextStyle.Green
+                );
+              },
+              TerminalTextStyle.Blue
+            );
+            terminal.current?.print(' | ', TerminalTextStyle.Sub);
+            terminal.current?.printLink(
+              'Copy Private Key',
+              () => {
+                const privateKey = ethConnection.getPrivateKey();
+                navigator.clipboard.writeText(privateKey as string);
+                terminal.current?.println(
+                  '\nPrivate key copied to clipboard!',
+                  TerminalTextStyle.Green
+                );
+              },
+              TerminalTextStyle.Blue
+            );
+            terminal.current?.println(' ]', TerminalTextStyle.Sub);
+
+            terminal.current?.println('Step 3: Import the private key into metamask to mint your NAD name.');
+            terminal.current?.println('Step 4: Refresh the page to see your NAD name.');
+            terminal.current?.println('');
+
+          }
+
 
 
           // TODO: Provide own env variable for this feature
@@ -960,6 +1014,72 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       terminal.current?.newline();
       terminal.current?.println('Welcome to DARK FOREST ARES.');
       terminal.current?.newline();
+
+
+      const playerAddress = ethConnection?.getAddress();
+
+
+      if (playerAddress) {
+
+        const NadRawResult = await getNadProfile(playerAddress);
+        const primaryName = NadRawResult.profile.primaryName;
+
+        if (primaryName === undefined) {
+
+
+          terminal.current?.println('');
+          terminal.current?.println('🚀 Mint Your NAD Name Service 🚀', TerminalTextStyle.Pink);
+          terminal.current?.println('');
+
+          terminal.current?.print('Step 1: Visit ');
+          terminal.current?.printLink(
+            '🔗 NAD Website',
+            () => {
+              window.open('https://app.nad.domains');
+            },
+            TerminalTextStyle.Blue
+          );
+          terminal.current?.println('');
+
+          terminal.current?.print('Step 2: Copy your account\'s private key ');
+
+          // Add copy buttons
+          terminal.current?.print('[ ', TerminalTextStyle.Sub);
+          terminal.current?.printLink(
+            'Copy Public Key',
+            () => {
+              navigator.clipboard.writeText(playerAddress);
+              terminal.current?.println(
+                '\nPublic key copied to clipboard!',
+                TerminalTextStyle.Green
+              );
+            },
+            TerminalTextStyle.Blue
+          );
+          terminal.current?.print(' | ', TerminalTextStyle.Sub);
+          terminal.current?.printLink(
+            'Copy Private Key',
+            () => {
+              const privateKey = ethConnection.getPrivateKey();
+              navigator.clipboard.writeText(privateKey as string);
+              terminal.current?.println(
+                '\nPrivate key copied to clipboard!',
+                TerminalTextStyle.Green
+              );
+            },
+            TerminalTextStyle.Blue
+          );
+          terminal.current?.println(' ]', TerminalTextStyle.Sub);
+
+          terminal.current?.println('Step 3: Import the private key into metamask to mint your NAD name.');
+          terminal.current?.println('Step 4: Refresh the page to see your NAD name.');
+          terminal.current?.println('');
+        }
+      }
+
+
+
+
       //NOTE: round 4 don't collect those information
       // terminal.current?.println('We collect a minimal set of statistics such as SNARK proving');
       // terminal.current?.println('times and average transaction times across browsers, to help ');
