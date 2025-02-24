@@ -9,7 +9,7 @@ import {
 } from '@dfares/procedural';
 import { avatarFromType, logoFromType } from '@dfares/renderer';
 import { Planet, TooltipName, Union } from '@dfares/types';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Wrapper } from '../../Backend/Utils/Wrapper';
 import { StatIdx } from '../../_types/global/GlobalTypes';
@@ -37,6 +37,17 @@ import { useActiveArtifact, usePlanetArtifacts, useUIManager } from '../Utils/Ap
 import { useEmitterValue } from '../Utils/EmitterHooks';
 import { SelectArtifactRow } from './ArtifactRow';
 import { Halved, PlanetActiveArtifact, RowTip, TimesTwo, TitleBar } from './PlanetCardComponents';
+import { EthAddress } from '@dfares/types';
+
+const NadNameHead = styled.div`
+  text-align: center;
+  font-size: 120%;
+  font-weight: bold;
+  color: #3b82f6;
+  text-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
+  margin: 4px 0;
+  padding: 2px 0;
+`;
 
 const InfoHead = styled.div`
   text-align: center;
@@ -101,6 +112,33 @@ const DescContainer = styled.div`
     text-decoration: underline;
   }
 `;
+
+function PlanetNadName({ owner }: { owner: EthAddress }) {
+  const uiManager = useUIManager();
+  const [nadName, setNadName] = useState<string | undefined>();
+
+  useEffect(() => {
+    const loadNadProfile = async () => {
+      try {
+        const rawResult = await uiManager.getNadProfile(owner);
+        const primaryName = rawResult.profile?.primaryName;
+        setNadName(primaryName);
+      } catch (error) {
+        console.error('Error loading NAD profile:', error);
+      }
+    };
+
+    loadNadProfile();
+  }, [owner, uiManager]);
+
+  if (!nadName) return null;
+
+  return (
+    <NadNameHead>
+      {nadName}
+    </NadNameHead>
+  );
+}
 
 /** Preview basic planet information - used in `PlanetContextPane` and `HoverPlanetPane` */
 export function PlanetCard({
@@ -391,6 +429,8 @@ export function PlanetCard({
                 <AccountLabel ethAddress={planet.owner} includeAddressIfHasTwitter={true} />
               </Sub>
             </SpreadApart>
+
+            <PlanetNadName owner={planet.owner} />
 
             {union && (
               <InfoHead>
