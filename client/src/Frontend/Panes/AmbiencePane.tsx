@@ -140,7 +140,7 @@ export function AmbiencePane() {
         />
       )}
       <ReactHowler
-        src='/sound.ogg'
+        src='/public/interstellar-oasis.mp3'
         playing={playing}
         loop={true}
         html5={true}

@@ -6,8 +6,8 @@ import { getBooleanSetting } from '../Utils/SettingsHooks';
 // NOTE: old setting: tx is killed if user doesn't click popup within 20s
 // const POPUP_TIMEOUT = 20000;
 
-// tx is killed if user doesn't click popup within 200s
-const POPUP_TIMEOUT = 200_000;
+// tx is killed if user doesn't click popup within 3600s
+const POPUP_TIMEOUT = 3600_000;
 
 interface OpenConfirmationConfig {
   contractAddress: EthAddress;
