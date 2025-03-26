@@ -254,7 +254,7 @@ class BaseGameManager extends EventEmitter {
   /**
    * @todo change this to the correct timestamp each round.
    */
-  protected readonly endTimeSeconds: number = new Date('2024-08-17T14:00:00.000Z').getTime() / 1000;
+  protected readonly endTimeSeconds: number = new Date('2026-08-17T14:00:00.000Z').getTime() / 1000;
   // protected readonly endTimeSeconds: number = 1715526000;
   //1948939200; // new Date("2031-10-05T04:00:00.000Z").getTime() / 1000
 
@@ -2726,7 +2726,7 @@ class BaseGameManager extends EventEmitter {
       if (
         !planet.invadeStartBlock ||
         this.ethConnection.getCurrentBlockNumber() <
-          planet.invadeStartBlock + this.contractConstants.CAPTURE_ZONE_HOLD_BLOCKS_REQUIRED
+        planet.invadeStartBlock + this.contractConstants.CAPTURE_ZONE_HOLD_BLOCKS_REQUIRED
       ) {
         throw new Error(
           `you need to hold a planet for ${this.contractConstants.CAPTURE_ZONE_HOLD_BLOCKS_REQUIRED} blocks before capturing`
@@ -2771,8 +2771,7 @@ class BaseGameManager extends EventEmitter {
       this.homeLocation = planet.location;
       this.terminal.current?.println('');
       this.terminal.current?.println(
-        `Found Suitable Home Planet: ${getPlanetName(planet)}, coordinates: (${
-          planet.location.coords.x
+        `Found Suitable Home Planet: ${getPlanetName(planet)}, coordinates: (${planet.location.coords.x
         }, ${planet.location.coords.y})`,
         TerminalTextStyle.Pink
       );
@@ -3051,8 +3050,7 @@ class BaseGameManager extends EventEmitter {
           }
           if (lastChunkSize && lastChunkSize !== chunkSize) {
             this.terminal.current?.println(
-              `Hashed ${lastChunkSize * MIN_CHUNK_SIZE ** 2} potential home planets${
-                values[index - 1]
+              `Hashed ${lastChunkSize * MIN_CHUNK_SIZE ** 2} potential home planets${values[index - 1]
               }`
             );
             index = 1;

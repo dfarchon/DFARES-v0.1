@@ -139,8 +139,8 @@ export default function LandingPage() {
                 <Round3Title> Dark Forest Community Round</Round3Title>
               </div>
 
-              <div style={{ fontSize: '30px', color: 'red' }}>
-                <Round3Title> Redstone Mainnet</Round3Title>
+              <div style={{ fontSize: '30px', color: 'green' }}>
+                <Round3Title> MegaETH Testnet</Round3Title>
               </div>
 
               <Spacer height={48} />

@@ -94,6 +94,7 @@ const redstoneTestnet = {
     mnemonic: process.env.DEPLOYER_MNEMONIC,
   },
   chainId: Number(process.env.REDSTONE_TESTNET_CHAINID),
+  timeout: 360_000,
 };
 
 const redstone = {

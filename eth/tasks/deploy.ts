@@ -6,9 +6,28 @@ import { dedent } from 'ts-dedent';
 import * as settings from '../settings';
 import { DiamondChanges } from '../utils/diamond';
 import { tscompile } from '../utils/tscompile';
+import { ethers } from 'ethers';
+
+// Global gas configuration for all transactions
+const gasConfig = {
+  gasLimit: 1_00_000_000,
+  gasPrice: ethers.utils.parseUnits("0.002", "gwei"),
+};
+const hugeGasConfig = {
+  gasLimit: 1_000_000_000,
+  gasPrice: ethers.utils.parseUnits("0.005", "gwei"),
+};
+
+// Delay configuration (in milliseconds)
+export const DELAY_BETWEEN_TRANSACTIONS = 0; // 60 seconds delay
+
+// Helper function to delay execution
+export const delay = () => new Promise(resolve => setTimeout(resolve, DELAY_BETWEEN_TRANSACTIONS));
+
+
 
 task('deploy', 'deploy all contracts')
-  .addOptionalParam('whitelist', 'override the whitelist', undefined, types.boolean)
+  .addOptionalParam('whitelist', 'override the whitelist', false, types.boolean)
   .addOptionalParam('fund', 'amount of eth to fund whitelist contract for fund', 0, types.float)
   .addOptionalParam(
     'subgraph',
@@ -77,6 +96,7 @@ async function deploy(
   const tx = await deployer.sendTransaction({
     to: diamond.address,
     value: hre.ethers.utils.parseEther(args.fund.toString()),
+    ...gasConfig
   });
   console.log('------ tx:', tx.hash, ' ------');
   await tx.wait();
@@ -84,6 +104,7 @@ async function deploy(
   console.log(
     `Sent ${args.fund} to diamond contract (${diamond.address}) to fund drips in whitelist facet`
   );
+  await delay();
 
   // give all contract administration over to an admin adress if was provided
   if (hre.ADMIN_PUBLIC_ADDRESS) {
@@ -92,6 +113,7 @@ async function deploy(
     console.log('------ tx:', tx.hash, ' ------');
     await tx.wait();
     console.log(`transfered diamond ownership to ${hre.ADMIN_PUBLIC_ADDRESS}`);
+    await delay();
   }
 
   if (args.subgraph) {
@@ -111,6 +133,7 @@ async function deploy(
     console.log('------ tx:', txReceipt.hash, ' ------');
     await txReceipt.wait();
     console.log(`changed drip to ${value}`);
+    await delay();
   }
 
   // TODO: Upstream change to update task name from `hardhat-4byte-uploader`
@@ -275,6 +298,7 @@ export async function deployAndCut(
   );
 
   const getterOneFacet = await deployGetterOneFacet({}, libraries, hre);
+
   const getterTwoFacet = await deployGetterTwoFacet({}, libraries, hre);
 
   const whitelistFacet = await deployWhitelistFacet({}, libraries, hre);
@@ -321,11 +345,10 @@ export async function deployAndCut(
   //     : 'https://nft.zkga.me/token-uri/artifact/'
   // }${hre.network.config?.chainId || 'unknown'}-${diamond.address}/`;
 
-  const tokenBaseUri = `${
-    isDev
-      ? 'https://nft-test.dfares.xyz/token-uri/artifact/'
-      : 'https://nft.dfares.xyz/token-uri/artifact/'
-  }${hre.network.config?.chainId || 'unknown'}-${diamond.address}/`;
+  const tokenBaseUri = `${isDev
+    ? 'https://nft-test.dfares.xyz/token-uri/artifact/'
+    : 'https://nft.dfares.xyz/token-uri/artifact/'
+    }${hre.network.config?.chainId || 'unknown'}-${diamond.address}/`;
 
   console.log('tokenBaseUri:', tokenBaseUri);
 
@@ -341,19 +364,22 @@ export async function deployAndCut(
     initializers,
   ]);
 
-  const initTx = await diamondCut.diamondCut(toCut, initAddress, initFunctionCall);
-  console.log('------ tx:', initTx.hash, ' ------');
-  const initReceipt = await initTx.wait();
-  if (!initReceipt.status) {
-    throw Error(`Diamond cut failed: ${initTx.hash}`);
-  }
-  console.log('Completed diamond cut');
+  const upgradeTx = await diamondCut.diamondCut(
+    toCut,
+    initAddress,
+    initFunctionCall,
+    hugeGasConfig
+  );
+  console.log('Transaction sent:', upgradeTx.hash);
+  const receipt = await upgradeTx.wait();
+  console.log('Transaction receipt:', receipt);
+  await delay();
 
-  return [diamond, diamondInit, initReceipt] as const;
+  return [diamond, diamondInit, receipt] as const;
 }
 
 export async function deployGetterOneFacet(
-  {},
+  { },
   { LibGameUtils }: Libraries,
   hre: HardhatRuntimeEnvironment
 ) {
@@ -362,15 +388,17 @@ export async function deployGetterOneFacet(
       LibGameUtils,
     },
   });
-  const contract = await factory.deploy();
-  console.log('------ tx:', contract.address, ' ------');
+  // Apply gas configuration to deployment
+  const contract = await factory.deploy(gasConfig);
+  console.log('------ tx:', contract.deployTransaction.hash, ' ------');
   await contract.deployTransaction.wait();
   console.log('DFGetterOneFacet deployed to:', contract.address);
+  await delay();
   return contract;
 }
 
 export async function deployGetterTwoFacet(
-  {},
+  { },
   { LibGameUtils }: Libraries,
   hre: HardhatRuntimeEnvironment
 ) {
@@ -379,15 +407,16 @@ export async function deployGetterTwoFacet(
       LibGameUtils,
     },
   });
-  const contract = await factory.deploy();
-  console.log('------ tx:', contract.address, ' ------');
+  const contract = await factory.deploy(gasConfig);
+  console.log('------ tx:', contract.deployTransaction.hash, ' ------');
   await contract.deployTransaction.wait();
   console.log('DFGetterTwoFacet deployed to:', contract.address);
+  await delay();
   return contract;
 }
 
 export async function deployAdminFacet(
-  {},
+  { },
   { LibGameUtils, LibPlanet, LibArtifactUtils }: Libraries,
   hre: HardhatRuntimeEnvironment
 ) {
@@ -398,51 +427,56 @@ export async function deployAdminFacet(
       LibPlanet,
     },
   });
-  const contract = await factory.deploy();
-  console.log('------ tx:', contract.address, ' ------');
+  const contract = await factory.deploy(gasConfig);
+  console.log('------ tx:', contract.deployTransaction.hash, ' ------');
   await contract.deployTransaction.wait();
   console.log(`DFAdminFacet deployed to: ${contract.address}`);
+  await delay();
   return contract;
 }
 
-export async function deployDebugFacet({}, {}: Libraries, hre: HardhatRuntimeEnvironment) {
+export async function deployDebugFacet({ }, { }: Libraries, hre: HardhatRuntimeEnvironment) {
   const factory = await hre.ethers.getContractFactory('DFDebugFacet');
-  const contract = await factory.deploy();
-  console.log('------ tx:', contract.address, ' ------');
+  const contract = await factory.deploy(gasConfig);
+  console.log('------ tx:', contract.deployTransaction.hash, ' ------');
   await contract.deployTransaction.wait();
   console.log(`DFDebugFacet deployed to: ${contract.address}`);
+  await delay();
   return contract;
 }
 
-export async function deployWhitelistFacet({}, {}: Libraries, hre: HardhatRuntimeEnvironment) {
+export async function deployWhitelistFacet({ }, { }: Libraries, hre: HardhatRuntimeEnvironment) {
   const factory = await hre.ethers.getContractFactory('DFWhitelistFacet');
-  const contract = await factory.deploy();
-  console.log('------ tx:', contract.address, ' ------');
+  const contract = await factory.deploy(gasConfig);
+  console.log('------ tx:', contract.deployTransaction.hash, ' ------');
   await contract.deployTransaction.wait();
   console.log(`DFWhitelistFacet deployed to: ${contract.address}`);
+  await delay();
   return contract;
 }
 
-export async function deployRewardFacet({}, {}: Libraries, hre: HardhatRuntimeEnvironment) {
+export async function deployRewardFacet({ }, { }: Libraries, hre: HardhatRuntimeEnvironment) {
   const factory = await hre.ethers.getContractFactory('DFRewardFacet');
-  const contract = await factory.deploy();
-  console.log('------ tx:', contract.address, ' ------');
+  const contract = await factory.deploy(gasConfig);
+  console.log('------ tx:', contract.deployTransaction.hash, ' ------');
   await contract.deployTransaction.wait();
   console.log(`DFRewardFacet deployed to: ${contract.address}`);
+  await delay();
   return contract;
 }
 
-export async function deployVerifierFacet({}, {}: Libraries, hre: HardhatRuntimeEnvironment) {
+export async function deployVerifierFacet({ }, { }: Libraries, hre: HardhatRuntimeEnvironment) {
   const factory = await hre.ethers.getContractFactory('DFVerifierFacet');
-  const contract = await factory.deploy();
-  console.log('------ tx:', contract.address, ' ------');
+  const contract = await factory.deploy(gasConfig);
+  console.log('------ tx:', contract.deployTransaction.hash, ' ------');
   await contract.deployTransaction.wait();
   console.log(`DFVerifierFacet deployed to: ${contract.address}`);
+  await delay();
   return contract;
 }
 
 export async function deployArtifactFacet(
-  {},
+  { },
   { LibGameUtils, LibPlanet, LibArtifactUtils, LibArtifactExtendUtils }: Libraries,
   hre: HardhatRuntimeEnvironment
 ) {
@@ -454,62 +488,65 @@ export async function deployArtifactFacet(
       LibPlanet,
     },
   });
-  const contract = await factory.deploy();
-  console.log('------ tx:', contract.address, ' ------');
+  const contract = await factory.deploy(gasConfig);
+  console.log('------ tx:', contract.deployTransaction.hash, ' ------');
   await contract.deployTransaction.wait();
   console.log(`DFArtifactFacet deployed to: ${contract.address}`);
+  await delay();
   return contract;
 }
 
-export async function deployLibraries({}, hre: HardhatRuntimeEnvironment) {
+export async function deployLibraries({ }, hre: HardhatRuntimeEnvironment) {
   const LibGameUtilsFactory = await hre.ethers.getContractFactory('LibGameUtils');
-  const LibGameUtils = await LibGameUtilsFactory.deploy();
-  console.log('------ tx:', LibGameUtils.address, ' ------');
-  console.log(LibGameUtils.deployTransaction);
+  const LibGameUtils = await LibGameUtilsFactory.deploy(gasConfig);
+  console.log('------ tx:', LibGameUtils.deployTransaction.hash, ' ------');
   await LibGameUtils.deployTransaction.wait();
   console.log(`LibGameUtils deployed to: ${LibGameUtils.address}`);
+  await delay();
 
   const LibLazyUpdateFactory = await hre.ethers.getContractFactory('LibLazyUpdate', {
     libraries: {
       LibGameUtils: LibGameUtils.address,
     },
   });
-  const LibLazyUpdate = await LibLazyUpdateFactory.deploy();
-  console.log('------ tx:', LibGameUtils.address, ' ------');
+  const LibLazyUpdate = await LibLazyUpdateFactory.deploy(gasConfig);
+  console.log('------ tx:', LibLazyUpdate.deployTransaction.hash, ' ------');
   await LibLazyUpdate.deployTransaction.wait();
   console.log(`LibLazyUpdate deployed to: ${LibLazyUpdate.address}`);
-
+  await delay();
   const LibArtifactUtilsFactory = await hre.ethers.getContractFactory('LibArtifactUtils', {
     libraries: {
       LibGameUtils: LibGameUtils.address,
     },
   });
 
-  const LibArtifactUtils = await LibArtifactUtilsFactory.deploy();
-  console.log('------ tx:', LibArtifactUtils.address, ' ------');
+  const LibArtifactUtils = await LibArtifactUtilsFactory.deploy(gasConfig);
+  console.log('------ tx:', LibArtifactUtils.deployTransaction.hash, ' ------');
   await LibArtifactUtils.deployTransaction.wait();
   console.log(`LibArtifactUtils deployed to: ${LibArtifactUtils.address}`);
+  await delay();
 
   const LibArtifactExtendUtilsFactory = await hre.ethers.getContractFactory(
     'LibArtifactExtendUtils',
     {}
   );
 
-  const LibArtifactExtendUtils = await LibArtifactExtendUtilsFactory.deploy();
-  console.log('------ tx:', LibArtifactExtendUtils.address, ' ------');
+  const LibArtifactExtendUtils = await LibArtifactExtendUtilsFactory.deploy(gasConfig);
+  console.log('------ tx:', LibArtifactExtendUtils.deployTransaction.hash, ' ------');
   await LibArtifactExtendUtils.deployTransaction.wait();
   console.log(`LibArtifactExtendUtils deployed to: ${LibArtifactExtendUtils.address}`);
-
+  await delay();
   const LibPlanetFactory = await hre.ethers.getContractFactory('LibPlanet', {
     libraries: {
       LibGameUtils: LibGameUtils.address,
       LibLazyUpdate: LibLazyUpdate.address,
     },
   });
-  const LibPlanet = await LibPlanetFactory.deploy();
-  console.log('------ tx:', LibPlanet.address, ' ------');
+  const LibPlanet = await LibPlanetFactory.deploy(gasConfig);
+  console.log('------ tx:', LibPlanet.deployTransaction.hash, ' ------');
   await LibPlanet.deployTransaction.wait();
   console.log(`LibPlanet deployed to: ${LibPlanet.address}`);
+  await delay();
 
   return {
     LibGameUtils: LibGameUtils.address,
@@ -520,7 +557,7 @@ export async function deployLibraries({}, hre: HardhatRuntimeEnvironment) {
 }
 
 export async function deployCoreFacet(
-  {},
+  { },
   { LibGameUtils, LibPlanet, LibArtifactUtils }: Libraries,
   hre: HardhatRuntimeEnvironment
 ) {
@@ -531,15 +568,16 @@ export async function deployCoreFacet(
       LibArtifactUtils,
     },
   });
-  const contract = await factory.deploy();
-  console.log('------ tx:', contract.address, ' ------');
+  const contract = await factory.deploy(gasConfig);
+  console.log('------ tx:', contract.deployTransaction.hash, ' ------');
   await contract.deployTransaction.wait();
   console.log(`DFCoreFacet deployed to: ${contract.address}`);
+  await delay();
   return contract;
 }
 
 export async function deployMoveFacet(
-  {},
+  { },
   { LibGameUtils, LibArtifactUtils, LibPlanet }: Libraries,
   hre: HardhatRuntimeEnvironment
 ) {
@@ -550,15 +588,16 @@ export async function deployMoveFacet(
       LibPlanet,
     },
   });
-  const contract = await factory.deploy();
-  console.log('------ tx:', contract.address, ' ------');
+  const contract = await factory.deploy(gasConfig);
+  console.log('------ tx:', contract.deployTransaction.hash, ' ------');
   await contract.deployTransaction.wait();
   console.log(`DFMoveFacet deployed to: ${contract.address}`);
+  await delay();
   return contract;
 }
 
 export async function deployCaptureFacet(
-  {},
+  { },
   { LibPlanet }: Libraries,
   hre: HardhatRuntimeEnvironment
 ) {
@@ -567,15 +606,16 @@ export async function deployCaptureFacet(
       LibPlanet,
     },
   });
-  const contract = await factory.deploy();
-  console.log('------ tx:', contract.address, ' ------');
+  const contract = await factory.deploy(gasConfig);
+  console.log('------ tx:', contract.deployTransaction.hash, ' ------');
   await contract.deployTransaction.wait();
   console.log(`DFCaptureFacet deployed to: ${contract.address}`);
+  await delay();
   return contract;
 }
 
 export async function deployPinkBombFacet(
-  {},
+  { },
   { LibPlanet, LibGameUtils, LibArtifactUtils }: Libraries,
   hre: HardhatRuntimeEnvironment
 ) {
@@ -586,15 +626,16 @@ export async function deployPinkBombFacet(
       LibArtifactUtils,
     },
   });
-  const contract = await factory.deploy();
-  console.log('------ tx:', contract.address, ' ------');
+  const contract = await factory.deploy(gasConfig);
+  console.log('------ tx:', contract.deployTransaction.hash, ' ------');
   await contract.deployTransaction.wait();
   console.log(`DFPinkBombFacet deployed to: ${contract.address}`);
+  await delay();
   return contract;
 }
 
 export async function deployKardashevFacet(
-  {},
+  { },
   { LibPlanet, LibGameUtils, LibArtifactUtils }: Libraries,
   hre: HardhatRuntimeEnvironment
 ) {
@@ -605,15 +646,16 @@ export async function deployKardashevFacet(
       LibArtifactUtils,
     },
   });
-  const contract = await factory.deploy();
-  console.log('------ tx:', contract.address, ' ------');
+  const contract = await factory.deploy(gasConfig);
+  console.log('------ tx:', contract.deployTransaction.hash, ' ------');
   await contract.deployTransaction.wait();
   console.log(`DFKardashevFacet deployed to: ${contract.address}`);
+  await delay();
   return contract;
 }
 
 export async function deployTradeFacet(
-  {},
+  { },
   { LibPlanet, LibGameUtils, LibArtifactUtils }: Libraries,
   hre: HardhatRuntimeEnvironment
 ) {
@@ -624,30 +666,33 @@ export async function deployTradeFacet(
       LibArtifactUtils,
     },
   });
-  const contract = await factory.deploy();
-  console.log('------ tx:', contract.address, ' ------');
+  const contract = await factory.deploy(gasConfig);
+  console.log('------ tx:', contract.deployTransaction.hash, ' ------');
   await contract.deployTransaction.wait();
   console.log(`DFTradeFacet deployed to: ${contract.address}`);
+  await delay();
   return contract;
 }
 
-export async function deployUnionFacet({}, {}: Libraries, hre: HardhatRuntimeEnvironment) {
+export async function deployUnionFacet({ }, { }: Libraries, hre: HardhatRuntimeEnvironment) {
   const factory = await hre.ethers.getContractFactory('DFUnionFacet', {
     libraries: {},
   });
-  const contract = await factory.deploy();
-  console.log('------ tx:', contract.address, ' ------');
+  const contract = await factory.deploy(gasConfig);
+  console.log('------ tx:', contract.deployTransaction.hash, ' ------');
   await contract.deployTransaction.wait();
   console.log(`DFUnionFacet deployed to: ${contract.address}`);
+  await delay();
   return contract;
 }
 
-async function deployDiamondCutFacet({}, libraries: Libraries, hre: HardhatRuntimeEnvironment) {
+async function deployDiamondCutFacet({ }, libraries: Libraries, hre: HardhatRuntimeEnvironment) {
   const factory = await hre.ethers.getContractFactory('DiamondCutFacet');
-  const contract = await factory.deploy();
-  console.log('------ tx:', contract.address, ' ------');
+  const contract = await factory.deploy(gasConfig);
+  console.log('------ tx:', contract.deployTransaction.hash, ' ------');
   await contract.deployTransaction.wait();
   console.log(`DiamondCutFacet deployed to: ${contract.address}`);
+  await delay();
   return contract;
 }
 
@@ -659,59 +704,64 @@ async function deployDiamond(
     ownerAddress: string;
     diamondCutAddress: string;
   },
-  {}: Libraries,
+  { }: Libraries,
   hre: HardhatRuntimeEnvironment
 ) {
   const factory = await hre.ethers.getContractFactory('Diamond');
   const contract = await factory.deploy(ownerAddress, diamondCutAddress);
-  console.log('------ tx:', contract.address, ' ------');
+  console.log('------ tx:', contract.deployTransaction.hash, ' ------');
   await contract.deployTransaction.wait();
   console.log(`Diamond deployed to: ${contract.address}`);
+  await delay();
   return contract;
 }
 
-async function deployDiamondInit({}, { LibGameUtils }: Libraries, hre: HardhatRuntimeEnvironment) {
+async function deployDiamondInit({ }, { LibGameUtils }: Libraries, hre: HardhatRuntimeEnvironment) {
   // DFInitialize provides a function that is called when the diamond is upgraded to initialize state variables
   // Read about how the diamondCut function works here: https://eips.ethereum.org/EIPS/eip-2535#addingreplacingremoving-functions
   const factory = await hre.ethers.getContractFactory('DFInitialize', {
     libraries: { LibGameUtils },
   });
-  const contract = await factory.deploy();
-  console.log('------ tx:', contract.address, ' ------');
+  const contract = await factory.deploy(gasConfig);
+  console.log('------ tx:', contract.deployTransaction.hash, ' ------');
   await contract.deployTransaction.wait();
   console.log(`DFInitialize deployed to: ${contract.address}`);
+  await delay();
   return contract;
 }
 
-async function deployDiamondLoupeFacet({}, {}: Libraries, hre: HardhatRuntimeEnvironment) {
+async function deployDiamondLoupeFacet({ }, { }: Libraries, hre: HardhatRuntimeEnvironment) {
   const factory = await hre.ethers.getContractFactory('DiamondLoupeFacet');
-  const contract = await factory.deploy();
-  console.log('------ tx:', contract.address, ' ------');
+  const contract = await factory.deploy(gasConfig);
+  console.log('------ tx:', contract.deployTransaction.hash, ' ------');
   await contract.deployTransaction.wait();
   console.log(`DiamondLoupeFacet deployed to: ${contract.address}`);
+  await delay();
   return contract;
 }
 
-async function deployOwnershipFacet({}, {}: Libraries, hre: HardhatRuntimeEnvironment) {
+async function deployOwnershipFacet({ }, { }: Libraries, hre: HardhatRuntimeEnvironment) {
   const factory = await hre.ethers.getContractFactory('OwnershipFacet');
-  const contract = await factory.deploy();
-  console.log('------ tx:', contract.address, ' ------');
+  const contract = await factory.deploy(gasConfig);
+  console.log('------ tx:', contract.deployTransaction.hash, ' ------');
   await contract.deployTransaction.wait();
   console.log(`OwnershipFacet deployed to: ${contract.address}`);
+  await delay();
   return contract;
 }
 
-export async function deployLobbyFacet({}, {}: Libraries, hre: HardhatRuntimeEnvironment) {
+export async function deployLobbyFacet({ }, { }: Libraries, hre: HardhatRuntimeEnvironment) {
   const factory = await hre.ethers.getContractFactory('DFLobbyFacet');
-  const contract = await factory.deploy();
-  console.log('------ tx:', contract.address, ' ------');
+  const contract = await factory.deploy(gasConfig);
+  console.log('------ tx:', contract.deployTransaction.hash, ' ------');
   await contract.deployTransaction.wait();
   console.log(`DFLobbyFacet deployed to: ${contract.address}`);
+  await delay();
   return contract;
 }
 
 async function deployDiamondInitSec(
-  {},
+  { },
   { LibGameUtils }: Libraries,
   hre: HardhatRuntimeEnvironment
 ) {
@@ -720,10 +770,11 @@ async function deployDiamondInitSec(
   const factory = await hre.ethers.getContractFactory('DFInitializeSec', {
     libraries: {},
   });
-  const contract = await factory.deploy();
-  console.log('------ tx:', contract.address, ' ------');
+  const contract = await factory.deploy(gasConfig);
+  console.log('------ tx:', contract.deployTransaction.hash, ' ------');
   await contract.deployTransaction.wait();
   console.log(`DFInitializeSec deployed to: ${contract.address}`);
+  await delay();
   return contract;
 }
 
@@ -739,14 +790,23 @@ async function diamondCut(args: {}, hre: HardhatRuntimeEnvironment) {
   const diamond = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
 
   const diamondInitSec = await deployDiamondInitSec({}, {}, hre);
+  await delay();
 
   const initAddress = diamondInitSec.address;
   const initFunctionCall = diamondInitSec.interface.encodeFunctionData('init');
 
-  const upgradeTx = await diamond.diamondCut([], initAddress, initFunctionCall);
-  const upgradeReceipt = await upgradeTx.wait();
-  if (!upgradeReceipt.status) {
+  // Apply gas configuration to diamond cut transaction
+  const upgradeTx = await diamond.diamondCut(
+    [],
+    initAddress,
+    initFunctionCall,
+    gasConfig
+  );
+
+  const receipt = await upgradeTx.wait();
+  if (!receipt.status) {
     throw Error(`Diamond cut failed: ${upgradeTx.hash}`);
   }
   console.log('Completed diamond cut');
+  await delay();
 }
