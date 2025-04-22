@@ -1,5 +1,6 @@
 import {
   BLOCKCHAIN_BRIDGE,
+  BLOCKCHAIN_NAME,
   BLOCK_EXPLORER_URL,
   HOW_TO_ENABLE_POPUPS,
   HOW_TO_TRANSFER_ETH_FROM_L2_TO_REDSTONE,
@@ -502,43 +503,62 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
 
           terminal.current?.println(' <= recommend depositing 0.003 ETH');
 
+          // terminal.current?.print(`           NOTE: `, TerminalTextStyle.Pink);
+
+          // terminal.current?.println(
+          //   'You can use bridge to transfer ETH to Redstone Mainnet',
+          //   TerminalTextStyle.Pink
+          // );
+
+          // terminal.current?.print('   L2-L2 bridge: ');
+
+          // terminal.current?.printLink(
+          //   BLOCKCHAIN_BRIDGE,
+          //   () => {
+          //     window.open(BLOCKCHAIN_BRIDGE);
+          //   },
+          //   TerminalTextStyle.Green
+          // );
+
+          // terminal.current?.println(' <= transfer ETH from L2 (e.g. optimism) to Redstone Mainnet');
+
+          // terminal.current?.print('   Player guide: ');
+
+          // terminal.current?.printLink(
+          //   'How to get ETH on the Redstone mainnet for your account',
+          //   () => {
+          //     window.open(HOW_TO_TRANSFER_ETH_FROM_L2_TO_REDSTONE);
+          //   },
+          //   TerminalTextStyle.Green
+          // );
+          // terminal.current?.println(
+          //   ' <= New player please check this guide !!!',
+          //   TerminalTextStyle.Pink
+          // );
+
+          // terminal.current?.println('');
+
           terminal.current?.print(`           NOTE: `, TerminalTextStyle.Pink);
 
           terminal.current?.println(
-            'You can use bridge to transfer ETH to Redstone Mainnet',
+            'You can use get test ETH using faucet',
             TerminalTextStyle.Pink
           );
 
-          terminal.current?.print('   L2-L2 bridge: ');
+          terminal.current?.print('         facuet: ');
 
           terminal.current?.printLink(
-            BLOCKCHAIN_BRIDGE,
+            'https://testnet.megaeth.com/?faucet=true',
             () => {
-              window.open(BLOCKCHAIN_BRIDGE);
+              window.open('https://testnet.megaeth.com/?faucet=true');
             },
             TerminalTextStyle.Green
-          );
-
-          terminal.current?.println(' <= transfer ETH from L2 (e.g. optimism) to Redstone Mainnet');
-
-          terminal.current?.print('   Player guide: ');
-
-          terminal.current?.printLink(
-            'How to get ETH on the Redstone mainnet for your account',
-            () => {
-              window.open(HOW_TO_TRANSFER_ETH_FROM_L2_TO_REDSTONE);
-            },
-            TerminalTextStyle.Green
-          );
-          terminal.current?.println(
-            ' <= New player please check this guide !!!',
-            TerminalTextStyle.Pink
           );
 
           terminal.current?.println('');
 
           terminal.current?.println(
-            'After your account get ETH on Redstone Mainet, press [enter] to continue.',
+            'After your account get ETH on ' + BLOCKCHAIN_NAME + ', press [enter] to continue.',
             TerminalTextStyle.Pink
           );
 
