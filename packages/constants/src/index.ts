@@ -35,7 +35,7 @@ import {
 import bigInt, { BigInteger } from 'big-integer';
 
 export const TOKEN_NAME = 'ETH';
-export const BLOCKCHAIN_NAME = 'Redstone';
+export const BLOCKCHAIN_NAME = 'Status Tesetnet';
 export const HOST_TEAM_NAME = 'DF Archon';
 
 export const GAS_ADJUST_DELTA = '0.00000001'; // '0.000000001'; //'1'; //'0.00000005';
@@ -155,13 +155,13 @@ export const MAX_AUTO_GAS_PRICE_GWEI = 15 as const;
  * The URL to the block explorer for the chain being used. Prepended to transaction links, etc
  */
 // Careful, don't add a slash to the end of this.
-export const BLOCK_EXPLORER_URL = 'https://explorer.redstone.xyz' as const;
+export const BLOCK_EXPLORER_URL = 'https://sepoliascan.status.network' as const;
 
 /**
  * The URL to the bridge for the chain being used. Prepended to transaction links, etc
  */
 
-export const BLOCKCHAIN_BRIDGE = 'https://relay.link/bridge/redstone/' as const;
+export const BLOCKCHAIN_BRIDGE = 'https://bridge.status.network' as const;
 /**
  * The amount of time between gas price refreshes when fetching prices from the oracle.
  */
