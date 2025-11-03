@@ -27,3 +27,5 @@ tsconfig.ref.tsbuildinfo
 
 # Environment variables
 .env
+
+public/sounds/
