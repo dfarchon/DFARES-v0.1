@@ -326,9 +326,9 @@ export async function deployAndCut(
       facetCuts,
       hre.ethers.constants.AddressZero,
       '0x',
-      {
-        gasLimit: 20000000, // Set explicit gas limit to 15M (well below block limit of 2B)
-      }
+      // {
+      //   gasLimit: 20000000, // Set explicit gas limit to 15M (well below block limit of 2B)
+      // }
     );
     console.log(`  tx: ${tx.hash}`);
     const receipt = await tx.wait();
@@ -370,7 +370,7 @@ export async function deployAndCut(
   console.log('========================================');
   console.log('Initializing contract state...');
   const initTx = await diamondCut.diamondCut([], initAddress, initFunctionCall, {
-    gasLimit: 15000000, // Set explicit gas limit for initialization
+    // gasLimit: 15000000, // Set explicit gas limit for initialization
   });
   console.log(`  tx: ${initTx.hash}`);
   const initReceipt = await initTx.wait();
