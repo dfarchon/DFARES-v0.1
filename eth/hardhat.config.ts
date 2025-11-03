@@ -106,6 +106,16 @@ const redstone = {
   gasPrice: 100,
 };
 
+const statusTestnet = {
+  url: process.env.STATUS_NETWORK_TESTNET_RPC_URL,
+  accounts: {
+    mnemonic: process.env.DEPLOYER_MNEMONIC,
+  },
+  chainId: Number(process.env.STATUS_NETWORK_TESTNET_CHAINID),
+  // Remove gas limit - let the network decide
+  // gasMultiplier: 5,
+};
+
 const config: HardhatUserConfig = {
   defaultNetwork: 'hardhat',
   networks: {
@@ -116,6 +126,7 @@ const config: HardhatUserConfig = {
     ...(DEPLOYER_MNEMONIC ? { mainnet } : undefined),
     ...(DEPLOYER_MNEMONIC ? { redstoneTestnet } : undefined),
     ...(DEPLOYER_MNEMONIC ? { redstone } : undefined),
+    ...(DEPLOYER_MNEMONIC ? { statusTestnet } : undefined),
     localhost: {
       url: 'http://localhost:8545/',
       accounts: {
