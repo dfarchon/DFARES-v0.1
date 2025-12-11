@@ -44,7 +44,7 @@ async function deploy(
   const beginBalance = await deployer.getBalance();
   console.log('begin balance:', beginBalance.toString());
 
-  const requires = hre.ethers.utils.parseEther('0.01');
+  const requires = hre.ethers.utils.parseEther('0');
   const balance = await deployer.getBalance();
 
   // Only when deploying to production, give the deployer wallet money,

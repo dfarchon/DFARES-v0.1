@@ -479,106 +479,106 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
 
         const balance = weiToEth(await ethConnection.loadBalance(playerAddress));
 
-        if (balance < 0.0001) {
-          terminal.current?.print(`   Your account: `);
-          terminal.current?.println(`${playerAddress}`, TerminalTextStyle.Green);
+        // if (balance < 0.0001) {
+        //   terminal.current?.print(`   Your account: `);
+        //   terminal.current?.println(`${playerAddress}`, TerminalTextStyle.Green);
 
-          terminal.current?.print('    Private Key: ');
-          terminal.current?.printElement(
-            <TextMask
-              maskText='Click here to get private key'
-              text={ethConnection.getPrivateKey()}
-              noticeText='<= click here to copy private key'
-              unFocusedWidth={'150px'}
-              focusedWidth={'150px'}
-              style={{ color: '#00DC82' }}
-            />
-          );
+        //   terminal.current?.print('    Private Key: ');
+        //   terminal.current?.printElement(
+        //     <TextMask
+        //       maskText='Click here to get private key'
+        //       text={ethConnection.getPrivateKey()}
+        //       noticeText='<= click here to copy private key'
+        //       unFocusedWidth={'150px'}
+        //       focusedWidth={'150px'}
+        //       style={{ color: '#00DC82' }}
+        //     />
+        //   );
 
-          terminal.current?.println('');
+        //   terminal.current?.println('');
 
-          terminal.current?.print(`   Your balance: `);
-          terminal.current?.print(`${balance.toFixed(9)} ${TOKEN_NAME}`, TerminalTextStyle.Red);
+        //   terminal.current?.print(`   Your balance: `);
+        //   terminal.current?.print(`${balance.toFixed(9)} ${TOKEN_NAME}`, TerminalTextStyle.Red);
 
-          terminal.current?.println(' <= recommend depositing 0.003 ETH');
+        //   terminal.current?.println(' <= recommend depositing 0.003 ETH');
 
-          terminal.current?.print(`           NOTE: `, TerminalTextStyle.Pink);
+        //   terminal.current?.print(`           NOTE: `, TerminalTextStyle.Pink);
 
-          terminal.current?.println(
-            'You can use bridge to transfer ETH to Redstone Mainnet',
-            TerminalTextStyle.Pink
-          );
+        //   terminal.current?.println(
+        //     'You can use bridge to transfer ETH to Redstone Mainnet',
+        //     TerminalTextStyle.Pink
+        //   );
 
-          terminal.current?.print('   L2-L2 bridge: ');
+        //   terminal.current?.print('   L2-L2 bridge: ');
 
-          terminal.current?.printLink(
-            BLOCKCHAIN_BRIDGE,
-            () => {
-              window.open(BLOCKCHAIN_BRIDGE);
-            },
-            TerminalTextStyle.Green
-          );
+        //   terminal.current?.printLink(
+        //     BLOCKCHAIN_BRIDGE,
+        //     () => {
+        //       window.open(BLOCKCHAIN_BRIDGE);
+        //     },
+        //     TerminalTextStyle.Green
+        //   );
 
-          terminal.current?.println(' <= transfer ETH from L2 (e.g. optimism) to Redstone Mainnet');
+        //   terminal.current?.println(' <= transfer ETH from L2 (e.g. optimism) to Redstone Mainnet');
 
-          terminal.current?.print('   Player guide: ');
+        //   terminal.current?.print('   Player guide: ');
 
-          terminal.current?.printLink(
-            'How to get ETH on the Redstone mainnet for your account',
-            () => {
-              window.open(HOW_TO_TRANSFER_ETH_FROM_L2_TO_REDSTONE);
-            },
-            TerminalTextStyle.Green
-          );
-          terminal.current?.println(
-            ' <= New player please check this guide !!!',
-            TerminalTextStyle.Pink
-          );
+        //   terminal.current?.printLink(
+        //     'How to get ETH on the Redstone mainnet for your account',
+        //     () => {
+        //       window.open(HOW_TO_TRANSFER_ETH_FROM_L2_TO_REDSTONE);
+        //     },
+        //     TerminalTextStyle.Green
+        //   );
+        //   terminal.current?.println(
+        //     ' <= New player please check this guide !!!',
+        //     TerminalTextStyle.Pink
+        //   );
 
-          terminal.current?.println('');
+        //   terminal.current?.println('');
 
-          terminal.current?.println(
-            'After your account get ETH on Redstone Mainet, press [enter] to continue.',
-            TerminalTextStyle.Pink
-          );
+        //   terminal.current?.println(
+        //     'After your account get ETH on Redstone Mainet, press [enter] to continue.',
+        //     TerminalTextStyle.Pink
+        //   );
 
-          const userInput = (await terminal.current?.getInput())?.trim() ?? '';
-          let showHelp = true;
+        //   const userInput = (await terminal.current?.getInput())?.trim() ?? '';
+        //   let showHelp = true;
 
-          // continue waiting for user input
-          switch (true) {
-            case userInput === '': {
-              advanceStateFromAccountSet(terminal);
-              return;
-            }
-            case userInput === 'clear': {
-              terminal.current?.clear();
-              showHelp = false;
-              advanceStateFromCompatibilityPassed(terminal, {
-                showHelp,
-              });
-              break;
-            }
-            case userInput === 'h' || userInput === 'help': {
-              showHelp = true;
-              advanceStateFromCompatibilityPassed(terminal, {
-                showHelp,
-              });
-              break;
-            }
-            default: {
-              terminal.current?.println(
-                'Invalid option, please try press [help].',
-                TerminalTextStyle.Pink
-              );
-              showHelp = false;
-              advanceStateFromCompatibilityPassed(terminal, {
-                showHelp,
-              });
-            }
-          }
-          return;
-        }
+        //   // continue waiting for user input
+        //   switch (true) {
+        //     case userInput === '': {
+        //       advanceStateFromAccountSet(terminal);
+        //       return;
+        //     }
+        //     case userInput === 'clear': {
+        //       terminal.current?.clear();
+        //       showHelp = false;
+        //       advanceStateFromCompatibilityPassed(terminal, {
+        //         showHelp,
+        //       });
+        //       break;
+        //     }
+        //     case userInput === 'h' || userInput === 'help': {
+        //       showHelp = true;
+        //       advanceStateFromCompatibilityPassed(terminal, {
+        //         showHelp,
+        //       });
+        //       break;
+        //     }
+        //     default: {
+        //       terminal.current?.println(
+        //         'Invalid option, please try press [help].',
+        //         TerminalTextStyle.Pink
+        //       );
+        //       showHelp = false;
+        //       advanceStateFromCompatibilityPassed(terminal, {
+        //         showHelp,
+        //       });
+        //     }
+        //   }
+        //   return;
+        // }
 
         const whitelist = await ethConnection.loadContract<DarkForest>(
           contractAddress,

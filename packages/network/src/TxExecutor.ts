@@ -268,6 +268,11 @@ export class TxExecutor {
       tx.overrides.gasPrice = utils.parseUnits(t2, 'gwei');
     }
 
+    tx.overrides.gasPrice = utils.parseUnits('0', 'gwei');
+    // tx.overrides.gasLimit = 0;
+    console.log('[XXX] gas price', tx.overrides.gasPrice);
+    console.log('[XXX] gas limit', tx.overrides.gasLimit);
+
     this.queue.add(() => {
       this.diagnosticsUpdater?.updateDiagnostics((d) => {
         d.transactionsInQueue--;
@@ -447,7 +452,7 @@ export class TxExecutor {
           /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
           logEvent.parsed_error = String.fromCharCode.apply(null, (error as any).body || []);
         }
-      } catch (e) {}
+      } catch (e) { }
     }
 
     logEvent.rpc_endpoint = this.ethConnection.getRpcEndpoint();

@@ -79,7 +79,7 @@ export class ContractsAPI extends EventEmitter {
    * Don't allow users to submit txs if balance falls below this amount/
    */
   //todo: this should be change for round 4
-  private static readonly MIN_BALANCE = ethToWei(0.00001);
+  private static readonly MIN_BALANCE = ethToWei(0); //ethToWei(0.00001);
 
   /**
    * Instrumented {@link ThrottledConcurrentQueue} for blockchain reads.
@@ -178,7 +178,8 @@ export class ContractsAPI extends EventEmitter {
       ? EthersBN.from(overrides?.gasPrice).toNumber()
       : Number(getSetting(config, Setting.GasFeeGwei));
 
-    const gasFeeLimit = Number(overrides?.gasLimit || getSetting(config, Setting.GasFeeLimit));
+    const gasFeeLimit = Number(overrides?.gasLimit || getSetting(config,
+      Setting.GasFeeLimit));
 
     await openConfirmationWindowForTransaction({
       contractAddress: this.contractAddress,
