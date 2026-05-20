@@ -88,6 +88,8 @@ const mainnet = {
   chainId: 1,
 };
 
+const hasAltLayerConfig =
+  DEPLOYER_MNEMONIC && process.env.ALTLAYER_RPC_URL && process.env.ALTLAYER_CHAINID;
 const altlayer = {
   url: process.env.ALTLAYER_RPC_URL,
   accounts: {
@@ -96,6 +98,20 @@ const altlayer = {
   chainId: Number(process.env.ALTLAYER_CHAINID),
 };
 
+const hasMegaETHConfig =
+  DEPLOYER_MNEMONIC && process.env.MEGAETH_RPC_URL && process.env.MEGAETH_CHAINID;
+const megaETH = {
+  url: process.env.MEGAETH_RPC_URL,
+  accounts: {
+    mnemonic: process.env.DEPLOYER_MNEMONIC,
+  },
+  chainId: Number(process.env.MEGAETH_CHAINID),
+};
+
+const hasRedstoneTestnetConfig =
+  DEPLOYER_MNEMONIC &&
+  process.env.REDSTONE_TESTNET_RPC_URL &&
+  process.env.REDSTONE_TESTNET_CHAINID;
 const redstoneTestnet = {
   url: process.env.REDSTONE_TESTNET_RPC_URL,
   accounts: {
@@ -104,6 +120,8 @@ const redstoneTestnet = {
   chainId: Number(process.env.REDSTONE_TESTNET_CHAINID),
 };
 
+const hasRedstoneConfig =
+  DEPLOYER_MNEMONIC && process.env.REDSTONE_RPC_URL && process.env.REDSTONE_CHAINID;
 const redstone = {
   url: process.env.REDSTONE_RPC_URL,
   accounts: {
@@ -122,9 +140,10 @@ const config: HardhatUserConfig = {
     // > Error HH100: Network xdai doesn't exist
     ...(DEPLOYER_MNEMONIC ? { xdai } : undefined),
     ...(DEPLOYER_MNEMONIC ? { mainnet } : undefined),
-    ...(DEPLOYER_MNEMONIC ? { altlayer } : undefined),
-    ...(DEPLOYER_MNEMONIC ? { redstoneTestnet } : undefined),
-    ...(DEPLOYER_MNEMONIC ? { redstone } : undefined),
+    ...(hasAltLayerConfig ? { altlayer } : undefined),
+    ...(hasMegaETHConfig ? { megaETH } : undefined),
+    ...(hasRedstoneTestnetConfig ? { redstoneTestnet } : undefined),
+    ...(hasRedstoneConfig ? { redstone } : undefined),
     localhost: {
       url: 'http://localhost:8545/',
       accounts: {

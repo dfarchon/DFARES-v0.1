@@ -77,6 +77,7 @@
     "hardhat:prod": "hardhat --network xdai",
     "hardhat:mainnet": "hardhat --network mainnet",
     "hardhat:altlayer": "hardhat --network altlayer",
+    "hardhat:megaETH": "hardhat --network megaETH",
     "hardhat:redstoneTestnet": "hardhat --network redstoneTestnet",
     "hardhat:redstone": "hardhat --network redstone",
     "compile": "hardhat compile",
