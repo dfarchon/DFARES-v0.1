@@ -1,12 +1,10 @@
-import { PLAYER_GUIDE } from '@dfares/constants';
+import { BLOCKCHAIN_NAME, PLAYER_GUIDE } from '@dfares/constants';
 import { CONTRACT_ADDRESS } from '@dfares/contracts';
 import { address } from '@dfares/serde';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import { Link, Spacer, Title } from '../Components/CoreUI';
-import { Modal } from '../Components/Modal';
-import { Pink } from '../Components/Text';
+import { Spacer } from '../Components/CoreUI';
 import dfstyles from '../Styles/dfstyles';
 import { LandingPageRoundArt } from '../Views/LandingPageRoundArt';
 
@@ -42,18 +40,42 @@ const defaultAddress = address(CONTRACT_ADDRESS);
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
-  gap: 8px;
+  align-items: center;
+  gap: 14px;
   flex-direction: row;
+  margin-bottom: 24px;
 
   @media only screen and (max-device-width: 1000px) {
     grid-template-columns: auto;
     flex-direction: column;
   }
+`;
 
-  --df-button-color: ${dfstyles.colors.dfgreen};
-  --df-button-border: 1px solid ${dfstyles.colors.dfgreen};
-  --df-button-hover-background: ${dfstyles.colors.dfgreen};
-  --df-button-hover-border: 1px solid ${dfstyles.colors.dfgreen};
+const EnterButton = styled.button`
+  min-height: 42px;
+  padding: 0 32px;
+  border: 1px solid rgba(255, 195, 205, 0.42);
+  border-radius: 4px;
+  color: #ffc3cd;
+  background: rgba(255, 195, 205, 0.08);
+  font-family: inherit;
+  font-size: 16pt;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    color 0.2s,
+    background 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
+
+  &:hover,
+  &:focus {
+    color: white;
+    background: rgba(255, 180, 193, 0.14);
+    border-color: #ffb4c1;
+    box-shadow: 0 0 18px rgba(255, 180, 193, 0.4);
+    transform: translateY(-1px);
+  }
 `;
 
 export default function LandingPage() {
@@ -62,17 +84,8 @@ export default function LandingPage() {
   return (
     <>
       {/* <PrettyOverlayGradient /> */}
-      {/* <Hiring /> */}
-      <Fundraising />
 
       <Page>
-        <OnlyMobile>
-          <Spacer height={8} />
-        </OnlyMobile>
-        <HideOnMobile>
-          <Spacer height={100} />
-        </HideOnMobile>
-
         <MainContentContainer>
           <Header>
             {/* <LinkContainer>
@@ -99,66 +112,53 @@ export default function LandingPage() {
               <Link to={DFArchonLinks.wiki}>wiki</Link>
             </LinkContainer> */}
 
-            <OnlyMobile>
-              <Spacer height={4} />
-            </OnlyMobile>
-            <HideOnMobile>
-              <Spacer height={12} />
-            </HideOnMobile>
+            <HeroPanel>
 
-            {/* <Spacer height={6} /> */}
+              <HeroArt>
+                <LandingPageRoundArt />
+              </HeroArt>
 
-            <PreTitle>
-              <LinkContainer>
-                <a className={'link'} href={DFArchonLinks.guide} target='_blank' rel='noreferrer'>
-                  <div>
-                    <span style={{ fontSize: '50px' }}>
-                      <Round3Title>DFAres v0.1</Round3Title>
-                    </span>
-                    <br />
-                    <span style={{ fontSize: '40px' }}>
-                      <Round3Title>Round 4 : Union 🌸 </Round3Title>
-                    </span>
-                  </div>
+              <HeroTitle>Dark Forest Ares v0.1 R5</HeroTitle>
+              <RoundLine>
+                <RoundNetworkBadge>Live on {BLOCKCHAIN_NAME}</RoundNetworkBadge>
+              </RoundLine>
 
-                  <div style={{ fontSize: '40px' }}></div>
-                </a>
-              </LinkContainer>
-            </PreTitle>
+              <IntroText>
+                <p>
+                  Dark Forest is a fully onchain ZK warfare of exploration, strategy, and conquest.
+                </p>
+                <p>
+                  The original project was developed by the Dark Forest official team from 2019 to
+                  Q1 2022.
+                </p>
+                <p>
+                  Dark Forest Ares is a community-maintained branch by DFArchon team.
+                </p>
 
-            {/* <div style={{ fontSize: '30px' }}>
-              <Round3Title>NOW I AM BECOME DEATH</Round3Title>
-            </div>
+                <p>
+                  Dark Forest Ares was actively developed from Q1 2023 to Q2 2024.
+                </p>
+                <p>
+                  After that, the DFArchon team ported Dark Forest to the MUD engine.
+                </p>
+                <p>
+                  Follow the latest updates at{' '}
+                  <InlineLink href='https://x.com/darkforest_punk' target='_blank' rel='noreferrer'>
+                    x.com/darkforest_punk
+                  </InlineLink>
+                  .
+                </p>
+              </IntroText>
 
-            <div style={{ fontSize: '50px' }}> THE DESTROYER OF WORLDS</div> */}
-
-            <LandingPageRoundArt />
-
-            <SubTitle>
-              <div style={{ fontSize: '30px', color: '#05fe1a' }}>
-                <Round3Title> Dark Forest Community Round</Round3Title>
-              </div>
-
-              <div style={{ fontSize: '30px', color: 'red' }}>
-                <Round3Title> Redstone Mainnet</Round3Title>
-              </div>
-
-              <Spacer height={48} />
-
-              <LinkContainer>
-                <a className={'link'} href={DFArchonLinks.twitter} target='_blank' rel='noreferrer'>
-                  Twitter
-                </a>
-                <Spacer width={6} />
-                <a className={'link'} href={DFArchonLinks.discord} target='_blank' rel='noreferrer'>
-                  Discord
-                </a>
-                <Spacer width={6} />
-                <a className={'link'} href={DFArchonLinks.guide} target='_blank' rel='noreferrer'>
-                  Guide
-                </a>
-              </LinkContainer>
-            </SubTitle>
+              <ButtonWrapper>
+                <EnterButton onClick={() => history.push(`/play/${defaultAddress}`)}>
+                  Enter Universe
+                </EnterButton>
+                <GuideLink href={DFArchonLinks.guide} target='_blank' rel='noreferrer'>
+                  Player Guide
+                </GuideLink>
+              </ButtonWrapper>
+            </HeroPanel>
 
             {/*
             <p>
@@ -370,29 +370,125 @@ export default function LandingPage() {
         <LeadboardDisplay />
 
         <Spacer height={256} /> */}
-      </Page>
+      </Page >
     </>
   );
 }
 
-const Round3Title = styled.span`
-  font-family: 'Start Press 2P', sans-serif;
+const HeroPanel = styled.div`
+  --chain-primary: #ff3b3b;
+  --chain-secondary: #ffb4c1;
+  --chain-quiet: #ffc3cd;
+
+  position: relative;
+  width: min(960px, calc(100vw - 32px));
+  padding: 42px 38px 32px;
+  overflow: visible;
 `;
 
-const PreTitle = styled.div`
-  width: 1000px;
-  position: absolute;
-  top: 25%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+const HeroTitle = styled.h1`
+  display: block;
+  margin: 0;
+  color: ${dfstyles.colors.dfpink};
+  font-family: inherit;
+  font-size: clamp(38px, 5vw, 58px);
+  font-weight: 700;
+  line-height: 1.08;
+  white-space: nowrap;
+  text-shadow:
+    0 0 8px rgba(255, 180, 193, 0.5),
+    0 0 20px rgba(255, 59, 59, 0.25);
 `;
 
-const SubTitle = styled.div`
-  width: 1000px;
-  position: absolute;
-  top: 80%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+const RoundLine = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  margin: 8px 0 26px;
+  color: ${dfstyles.colors.dfpink};
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 600;
+  line-height: 1.2;
+
+  @media only screen and (max-device-width: 1000px) {
+    flex-direction: column;
+    gap: 10px;
+  }
+`;
+
+const RoundNetworkBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0;
+  color: var(--chain-secondary);
+  background: transparent;
+  box-shadow: none;
+  font-size: 0.55em;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+`;
+
+const HeroArt = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 10px 0 22px;
+  filter: drop-shadow(0 0 14px rgba(255, 59, 59, 0.28));
+`;
+
+const IntroText = styled.div`
+  max-width: 820px;
+  margin: 0 auto 28px;
+  color: ${dfstyles.colors.textLight};
+  font-size: 18px;
+  line-height: 1.55;
+  text-align: center;
+
+  p {
+    margin: 0 0 14px;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+const InlineLink = styled.a`
+  color: var(--chain-secondary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+
+  &:hover {
+    color: white;
+  }
+`;
+
+const GuideLink = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 195, 205, 0.42);
+  border-radius: 4px;
+  color: var(--chain-quiet);
+  background: rgba(255, 195, 205, 0.08);
+  font-family: inherit;
+  font-size: ${dfstyles.fontSizeS};
+  letter-spacing: 0.02em;
+  transition:
+    border-color 0.2s,
+    color 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
+
+  &:hover {
+    color: white;
+    border-color: var(--chain-secondary);
+    box-shadow: 0 0 18px rgba(255, 180, 193, 0.28);
+    transform: translateY(-1px);
+  }
 `;
 
 const PrettyOverlayGradient = styled.div`
@@ -408,6 +504,7 @@ const PrettyOverlayGradient = styled.div`
 `;
 
 const Header = styled.div`
+  width: 100%;
   text-align: center;
 `;
 
@@ -430,11 +527,15 @@ const TRow = styled.tr`
 `;
 
 const MainContentContainer = styled.div`
+  position: relative;
   max-width: 100%;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  padding: 24px;
+  z-index: 1;
 `;
 
 const Page = styled.div`
@@ -443,18 +544,31 @@ const Page = styled.div`
   max-width: 100vw;
   height: 100%;
   color: white;
-  /* background-color: #ffb4c1; */
-  background-color: 'black';
+  background:
+    radial-gradient(circle at 50% 34%, rgba(255, 59, 59, 0.16), transparent 28%),
+    radial-gradient(circle at 78% 18%, rgba(255, 180, 193, 0.1), transparent 24%),
+    radial-gradient(circle at 20% 82%, rgba(0, 220, 130, 0.08), transparent 22%),
+    linear-gradient(180deg, #09070d 0%, #030306 58%, #08050a 100%);
   font-size: ${dfstyles.fontSize};
   display: flex;
   flex-direction: column;
   align-items: center;
   z-index: ${LandingPageZIndex.BasePage};
-  background-image: url('/public/background.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  /* background-position: 1%; */
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at center, black, transparent 72%);
+    opacity: 0.45;
+    z-index: 0;
+  }
+
 `;
 
 const HallOfFameTitle = styled.div`
@@ -469,7 +583,7 @@ export const LinkContainer = styled.div`
   justify-content: center;
   align-items: center;
   /* margin-top: 130pt; */
-  font-family: 'Start Press 2P', sans-serif;
+  font-family: inherit;
 
   a {
     margin: 0 6pt;
@@ -478,7 +592,7 @@ export const LinkContainer = styled.div`
     justify-content: center;
     align-items: center;
     color:  ${'#ffc3cd'};
-    font-family: 'Start Press 2P', sans-serif;
+    font-family: inherit;
 
     &:hover {
       cursor: pointer;
@@ -507,62 +621,6 @@ export const LinkContainer = styled.div`
     }
   }
 `;
-
-function Fundraising() {
-  return (
-    <HideOnMobile>
-      <Modal contain={['top', 'left', 'right']} initialX={50} initialY={50}>
-        <Title slot='title'>How to Support DFArchon </Title>
-        <div style={{ maxWidth: '300px' }}>
-          As a community team, we need to raise funds to support our future development plans.{' '}
-          <Pink>Donations are welcome.</Pink>
-          <br />
-          <br />
-          In return, we offer:
-          <br />
-          <Pink>Onchain Gaming Insights:</Pink> Expertise in fully onchain games and consulting
-          services.
-          <br />
-          <Pink>Custom Dark Forest Services:</Pink> Fast development of customized Dark Forest
-          versions.
-          <br />
-          <br />
-          Interested in supporting us? Contact{' '}
-          <Link to='https://t.me/cherryblue1024'>cherryblue1024</Link>. We'll respond ASAP.
-        </div>
-      </Modal>
-    </HideOnMobile>
-  );
-}
-
-function Hiring() {
-  return (
-    <HideOnMobile>
-      <Modal contain={['top', 'left', 'right']} initialX={50} initialY={50}>
-        <Title slot='title'>Dark Forest is Hiring!</Title>
-        <div style={{ maxWidth: '300px', textAlign: 'justify' }}>
-          We are looking for experienced full stack and solidity developers to join our team! If you
-          like what you see,{' '}
-          <Link to='https://docs.google.com/forms/d/e/1FAIpQLSdaWvjxX4TrDDLidPXtgk6UW3rC082rpvi3AIPkCPxAahg_rg/viewform?usp=sf_link'>
-            consider applying
-          </Link>
-          . If you know someone who you think would be a great fit for our team,{' '}
-          <Link to='https://docs.google.com/forms/d/e/1FAIpQLScku_bQDbkPqpHrwBzOBfQ4SV6Nw6Tgxi6zWQL8Bb0olyBE3w/viewform?usp=sf_link'>
-            please refer them here
-          </Link>
-          .
-          <br />
-          <br />
-          Learn more about the role{' '}
-          <Link to='https://ivanchub.notion.site/Dark-Forest-is-Hiring-ad1f0cbe816640fb9b4c663dacaaca04'>
-            here
-          </Link>
-          .
-        </div>
-      </Modal>
-    </HideOnMobile>
-  );
-}
 
 const HideOnMobile = styled.div`
   @media only screen and (max-device-width: 1000px) {

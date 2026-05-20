@@ -30,11 +30,11 @@ export class DarkForestButton extends LitElement {
       .button:not(.disabled):active,
       .button:not(.disabled).forceActive {
         filter: brightness(80%);
-        color: ${unsafeCSS(dfstyles.colors.background)};
+        color: var(--df-button-hover-color, ${unsafeCSS(dfstyles.colors.background)});
         background: var(--df-button-hover-background, ${unsafeCSS(dfstyles.colors.text)});
 
         /* Set the Icon color to a darker value on hover */
-        --df-icon-color: ${unsafeCSS(dfstyles.colors.background)};
+        --df-icon-color: var(--df-button-hover-color, ${unsafeCSS(dfstyles.colors.background)});
       }
 
       .small {
