@@ -1,5 +1,5 @@
 import {
-  HOW_TO_TRANSFER_ETH_FROM_L2_TO_REDSTONE,
+  HOW_TO_GET_ETH,
   MAX_AVATAR_TYPE,
   MAX_LOGO_TYPE,
   MAX_MEME_TYPE,
@@ -161,7 +161,7 @@ export function HatPane({
         <EmSpacer height={1} />
 
         <div>
-          <Link to={HOW_TO_TRANSFER_ETH_FROM_L2_TO_REDSTONE}>
+          <Link to={HOW_TO_GET_ETH}>
             Guide: How to Get More ETH on Redstone
           </Link>
         </div>

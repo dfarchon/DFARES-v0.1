@@ -37,7 +37,7 @@ import bigInt, { BigInteger } from 'big-integer';
 export const TOKEN_NAME = 'ETH';
 export const BLOCKCHAIN_NAME = 'MegaETH';
 export const HOST_TEAM_NAME = 'DFArchon';
-export const GAME_VERSION_INTRO = 'Welcome To Dark Forest Ares v0.1 R5';
+export const GAME_VERSION_INTRO = 'v0.1 R5';
 
 export const GAS_ADJUST_DELTA = '0.001'; // '0.000000001'; //'1'; //'0.00000005';
 
@@ -156,13 +156,13 @@ export const MAX_AUTO_GAS_PRICE_GWEI = 15 as const;
  * The URL to the block explorer for the chain being used. Prepended to transaction links, etc
  */
 // Careful, don't add a slash to the end of this.
-export const BLOCK_EXPLORER_URL = 'https://explorer.redstone.xyz' as const;
+export const BLOCK_EXPLORER_URL = 'https://mega.etherscan.io' as const;
 
 /**
  * The URL to the bridge for the chain being used. Prepended to transaction links, etc
  */
 
-export const BLOCKCHAIN_BRIDGE = 'https://relay.link/bridge/redstone/' as const;
+export const BLOCKCHAIN_BRIDGE = 'https://relay.link/bridge/megaeth/' as const;
 /**
  * The amount of time between gas price refreshes when fetching prices from the oracle.
  */
@@ -240,7 +240,7 @@ export const THEGRAPH_API_URL =
 export const PLAYER_GUIDE =
   'https://dfares.notion.site/DFAres-Round-4-Guide-c52181824f21461f9fa50a9f7989555c?pvs=74';
 
-export const HOW_TO_TRANSFER_ETH_FROM_L2_TO_REDSTONE =
+export const HOW_TO_GET_ETH =
   'https://dfares.notion.site/How-to-transfer-ETH-from-L2-to-Redstone-Mainnet-f0be2d7a3d274e8a88f8e83d0ef4e212?pvs=74';
 
 export const HOW_TO_ENABLE_POPUPS =

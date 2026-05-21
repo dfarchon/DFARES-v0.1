@@ -13,6 +13,15 @@ import { TerminalTextStyle } from '../Utils/TerminalTypes';
 const ENTER_KEY_CODE = 13;
 const UP_ARROW_KEY_CODE = 38;
 const ON_INPUT = 'ON_INPUT';
+const ON_DISABLE_OPTIONS = 'ON_DISABLE_OPTIONS';
+
+export type TerminalOptionMode = 'classic' | 'buttons';
+
+export type PrintOptionOpts = {
+  tailAfterKey?: string;
+  newline?: boolean;
+  hideKey?: boolean;
+};
 
 export interface TerminalHandle {
   printElement: (element: React.ReactElement) => void;
@@ -22,9 +31,11 @@ export interface TerminalHandle {
   println: (str: string, style?: TerminalTextStyle) => void;
   printShellLn: (str: string) => void;
   printLink: (str: string, onClick: () => void, style: TerminalTextStyle) => void;
+  printOption: (key: string, label: string, opts?: PrintOptionOpts) => void;
   focus: () => void;
   removeLast: (n: number) => void;
   getInput: () => Promise<string>;
+  submitInput: (text: string) => void;
   newline: () => void;
   setUserInputEnabled: (enabled: boolean) => void;
   setInput: (input: string) => void;
@@ -35,6 +46,7 @@ export interface TerminalProps {
   promptCharacter: string;
   visible?: boolean;
   useCaretElement?: boolean;
+  optionMode?: TerminalOptionMode;
 }
 
 export const Terminal = React.forwardRef<TerminalHandle | undefined, TerminalProps>(TerminalImpl);
@@ -42,7 +54,7 @@ export const Terminal = React.forwardRef<TerminalHandle | undefined, TerminalPro
 let terminalLineKey = 0;
 
 function TerminalImpl(
-  { promptCharacter, visible, useCaretElement }: TerminalProps,
+  { promptCharacter, visible, useCaretElement, optionMode = 'classic' }: TerminalProps,
   ref: React.Ref<TerminalHandle>
 ) {
   const containerRef = useRef(document.createElement('div'));
@@ -55,6 +67,7 @@ function TerminalImpl(
   const [inputText, setInputText] = useState<string>('');
   const [inputHeight, setInputHeight] = useState<number>(1);
   const [previousInput, setPreviousInput] = useState<string>('');
+  const inputWaitingRef = useRef(false);
 
   const append = useCallback(
     (node: React.ReactNode) => {
@@ -152,6 +165,7 @@ function TerminalImpl(
       print(inputText, TerminalTextStyle.Text);
       newline();
       onInputEmitter.emit(ON_INPUT, inputText);
+      onInputEmitter.emit(ON_DISABLE_OPTIONS);
       setPreviousInput(inputText);
       setInputHeight(1);
       setInputText('');
@@ -186,6 +200,59 @@ function TerminalImpl(
     setInputHeight(heightMeasureRef.current.scrollHeight);
   }, [inputText]);
 
+  const emitSubmittedInput = useCallback(
+    (trimmed: string): boolean => {
+      if (!inputWaitingRef.current) return false;
+      print(promptCharacter + ' ', TerminalTextStyle.Green);
+      print(trimmed, TerminalTextStyle.Text);
+      newline();
+      onInputEmitter.emit(ON_INPUT, trimmed);
+      onInputEmitter.emit(ON_DISABLE_OPTIONS);
+      setPreviousInput(trimmed);
+      setInputHeight(1);
+      setInputText('');
+      return true;
+    },
+    [newline, onInputEmitter, print, promptCharacter]
+  );
+
+  const printOption = useCallback(
+    (key: string, label: string, opts?: PrintOptionOpts) => {
+      const tailAfterKey = opts?.tailAfterKey ?? ' ';
+      const endWithNewline = opts?.newline !== false;
+
+      const body = (
+        <>
+          {!opts?.hideKey && (
+            <Sub>
+              ({key}){tailAfterKey}
+            </Sub>
+          )}
+          <Sub>{label}</Sub>
+        </>
+      );
+
+      if (optionMode === 'classic') {
+        append(<span key={terminalLineKey++}>{body}</span>);
+      } else {
+        append(
+          <TerminalOptionButton
+            key={terminalLineKey++}
+            optionEvents={onInputEmitter}
+            onActivate={() => emitSubmittedInput(key.trim())}
+          >
+            {body}
+          </TerminalOptionButton>
+        );
+      }
+
+      if (endWithNewline) {
+        newline();
+      }
+    },
+    [append, emitSubmittedInput, newline, onInputEmitter, optionMode]
+  );
+
   useImperativeHandle(
     ref,
     () => ({
@@ -205,13 +272,23 @@ function TerminalImpl(
       printLink: (str: string, onClick: () => void, style: TerminalTextStyle) => {
         print(str, style, onClick);
       },
+      printOption,
       getInput: async () => {
+        inputWaitingRef.current = true;
         setUserInputEnabled(true);
-        const text = await new Promise<string>((resolve) => {
-          onInputEmitter.once(ON_INPUT, (text: string) => resolve(text.trim()));
-        });
-        setUserInputEnabled(false);
-        return text;
+        try {
+          const text = await new Promise<string>((resolve) => {
+            onInputEmitter.once(ON_INPUT, (text: string) => resolve(text.trim()));
+          });
+          return text;
+        } finally {
+          inputWaitingRef.current = false;
+          setUserInputEnabled(false);
+        }
+      },
+      submitInput: (text: string) => {
+        if (!inputWaitingRef.current) return;
+        emitSubmittedInput(text.trim());
       },
       printShellLn: (text: string) => {
         print(promptCharacter + ' ', TerminalTextStyle.Green);
@@ -237,7 +314,17 @@ function TerminalImpl(
         setFragments([]);
       },
     }),
-    [onInputEmitter, promptCharacter, newline, print, append, removeLast, setFragments]
+    [
+      onInputEmitter,
+      promptCharacter,
+      newline,
+      print,
+      append,
+      removeLast,
+      setFragments,
+      printOption,
+      emitSubmittedInput,
+    ]
   );
 
   const containerStyle = visible ? undefined : ({ display: 'none' } as React.CSSProperties);
@@ -286,6 +373,97 @@ function TerminalImpl(
     </TerminalContainer>
   );
 }
+
+function TerminalOptionButton({
+  children,
+  optionEvents,
+  onActivate,
+}: {
+  children: React.ReactNode;
+  optionEvents: EventEmitter;
+  onActivate: () => boolean;
+}) {
+  const [disabled, setDisabled] = useState(false);
+  const [selected, setSelected] = useState(false);
+
+  useEffect(() => {
+    const disable = () => setDisabled(true);
+    optionEvents.on(ON_DISABLE_OPTIONS, disable);
+    return () => {
+      optionEvents.off(ON_DISABLE_OPTIONS, disable);
+    };
+  }, [optionEvents]);
+
+  const activate = () => {
+    if (disabled) return;
+    if (!onActivate()) return;
+    setSelected(true);
+  };
+
+  return (
+    <OptionRowButton
+      type="button"
+      disabled={disabled}
+      data-selected={selected}
+      onClick={activate}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          activate();
+        }
+      }}
+    >
+      {children}
+    </OptionRowButton>
+  );
+}
+
+const OptionRowButton = styled.button`
+  display: inline-flex;
+  width: 100%;
+  margin: 0;
+  padding: 3px 8px;
+  text-align: left;
+  font: inherit;
+  line-height: 1.25;
+  color: inherit;
+  cursor: pointer;
+  background: ${dfstyles.colors.backgrounddark};
+  border: 1px solid ${dfstyles.colors.borderDark};
+  border-radius: ${dfstyles.borderRadius};
+  box-sizing: border-box;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+
+  &:hover {
+    border-color: ${dfstyles.colors.dfpink};
+    background: ${dfstyles.colors.backgroundlight};
+  }
+
+  &:focus,
+  &:active {
+    outline: none;
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.45;
+    background: transparent;
+    border-color: ${dfstyles.colors.borderDarkest};
+  }
+
+  &[data-selected='true'] {
+    opacity: 0.9;
+    color: ${dfstyles.colors.dfpink};
+    border-color: ${dfstyles.colors.dfpink};
+    background: rgba(255, 180, 193, 0.1);
+  }
+`;
 
 const Prompt = styled.span`
   ${({ userInputEnabled }: { userInputEnabled: boolean }) => css`

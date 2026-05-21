@@ -4,6 +4,7 @@ import {
   EMPTY_ADDRESS,
   MIN_PLANET_LEVEL,
   PLANET_CLAIM_MIN_LEVEL,
+  TOKEN_NAME,
 } from '@dfares/constants';
 import type { DarkForest } from '@dfares/contracts/typechain';
 import { monomitter, Monomitter, Subscription } from '@dfares/events';
@@ -2812,18 +2813,48 @@ class BaseGameManager extends EventEmitter {
 
       this.initMiningManager(planet.location.coords); // get an early start
 
+      const baseEntryFee = await this.contractsAPI.getEntryFee();
+      const halfPrice = this.getHalfPrice();
+      const effectiveEntryFee = halfPrice ? baseEntryFee.div(2) : baseEntryFee;
+      const effectiveEntryFeeEth = weiToEth(effectiveEntryFee);
+
+      if (!this.hasJoinedGame()) {
+        this.terminal.current?.println('Join universe — entry fee:', TerminalTextStyle.Green);
+        if (halfPrice) {
+          this.terminal.current?.print('  Regular: ', TerminalTextStyle.Sub);
+          this.terminal.current?.println(
+            `${weiToEth(baseEntryFee).toFixed(6)} ${TOKEN_NAME}`,
+            TerminalTextStyle.Sub
+          );
+          this.terminal.current?.print('  Half-price active — you pay: ', TerminalTextStyle.Pink);
+        } else {
+          this.terminal.current?.print('  Amount: ', TerminalTextStyle.Sub);
+        }
+        this.terminal.current?.println(
+          `${effectiveEntryFeeEth.toFixed(6)} ${TOKEN_NAME}`,
+          TerminalTextStyle.Green
+        );
+        this.terminal.current?.newline();
+      }
+
       // if player initialization causes an error, give the caller an opportunity
       // to resolve that error. if the asynchronous `beforeRetry` function returns
       // true, retry initializing the player. if it returns false, or if the
       // `beforeRetry` is undefined, then don't retry and throw an exception.
       while (true) {
         try {
-          const entryFee = await this.contractsAPI.getEntryFee();
-          console.log('entry fee: ', entryFee.toString());
-          localStorage.setItem(`${this.getAccount()?.toLowerCase()}-entryFee`, entryFee.toString());
+          console.log('entry fee: ', effectiveEntryFee.toString());
+          localStorage.setItem(
+            `${this.getAccount()?.toLowerCase()}-entryFee`,
+            effectiveEntryFee.toString()
+          );
+          localStorage.setItem(
+            `${this.getAccount()?.toLowerCase()}-halfPrice`,
+            halfPrice.toString()
+          );
 
           const tx = await this.contractsAPI.submitTransaction(txIntent, {
-            value: entryFee.toString(),
+            value: effectiveEntryFee.toString(),
           });
           await tx.confirmedPromise;
           break;
