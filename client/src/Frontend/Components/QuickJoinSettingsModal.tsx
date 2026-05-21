@@ -32,7 +32,9 @@ const Backdrop = styled.div`
 const Card = styled.div`
   width: min(520px, calc(100vw - 48px));
   max-height: min(80vh, 560px);
-  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   padding: 24px 22px 28px;
   border-radius: ${dfstyles.borderRadius};
   border: 1px solid ${dfstyles.colors.borderDarkest};
@@ -46,6 +48,7 @@ const Header = styled.div`
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 12px;
+  flex-shrink: 0;
 `;
 
 const Intro = styled.p`
@@ -53,12 +56,60 @@ const Intro = styled.p`
   color: ${dfstyles.colors.subtext};
   font-size: ${dfstyles.fontSizeS};
   line-height: 1.45;
+  flex-shrink: 0;
 `;
 
-const AccountList = styled.div`
+const accountBoxBorder = `1px solid ${dfstyles.colors.borderDarker}`;
+const accountBoxRadius = dfstyles.borderRadius;
+const accountBoxBg = 'rgba(255, 255, 255, 0.025)';
+const accountBoxThumbBg = 'rgba(255, 255, 255, 0.045)';
+
+const AccountListWrap = styled.div`
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+`;
+
+const AccountListScroll = styled.div`
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  overflow-y: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+const ScrollRail = styled.div`
+  flex-shrink: 0;
+  align-self: stretch;
+  width: 16px;
+  min-height: 0;
+  box-sizing: border-box;
+  border: ${accountBoxBorder};
+  border-radius: ${accountBoxRadius};
+  background: ${accountBoxBg};
+  position: relative;
+  overflow: hidden;
+`;
+
+const ScrollThumb = styled.div<{ $top: number; $height: number }>`
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: ${({ $top }) => $top}px;
+  height: ${({ $height }) => $height}px;
+  box-sizing: border-box;
+  border: ${accountBoxBorder};
+  border-radius: ${accountBoxRadius};
+  background: ${accountBoxThumbBg};
 `;
 
 const AccountRow = styled.label<{ $selected?: boolean }>`
@@ -160,8 +211,23 @@ export function QuickJoinSettingsModal({
   onPreferenceSaved?: () => void;
 }) {
   const cardRef = useRef<HTMLDivElement | null>(null);
+  const listRef = useRef<HTMLDivElement | null>(null);
   const [accounts, setAccounts] = useState<ReturnType<typeof getAccounts>>([]);
   const [selection, setSelection] = useState<'auto' | string>('auto');
+  const [listScrollable, setListScrollable] = useState(false);
+  const [scrollMetrics, setScrollMetrics] = useState({
+    scrollTop: 0,
+    scrollHeight: 0,
+    clientHeight: 0,
+  });
+
+  const updateScrollMetrics = useCallback(() => {
+    const list = listRef.current;
+    if (!list) return;
+    const { scrollTop, scrollHeight, clientHeight } = list;
+    setListScrollable(scrollHeight > clientHeight + 1);
+    setScrollMetrics({ scrollTop, scrollHeight, clientHeight });
+  }, []);
 
   const reload = useCallback(() => {
     const list = getAccounts();
@@ -179,6 +245,23 @@ export function QuickJoinSettingsModal({
       reload();
     }
   }, [open, reload]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const frame = window.requestAnimationFrame(updateScrollMetrics);
+    const list = listRef.current;
+    if (!list) {
+      return () => window.cancelAnimationFrame(frame);
+    }
+
+    const observer = new ResizeObserver(updateScrollMetrics);
+    observer.observe(list);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      observer.disconnect();
+    };
+  }, [open, accounts, updateScrollMetrics]);
 
   useEffect(() => {
     if (!open) return;
@@ -215,6 +298,12 @@ export function QuickJoinSettingsModal({
 
   const newest = accounts.length > 0 ? accounts[accounts.length - 1] : undefined;
   const onlyAccount = accounts.length === 1 ? accounts[0] : undefined;
+  const { scrollTop, scrollHeight, clientHeight } = scrollMetrics;
+  const scrollRange = scrollHeight - clientHeight;
+  const thumbHeight =
+    scrollRange > 0 ? Math.max(20, (clientHeight / scrollHeight) * clientHeight) : 0;
+  const thumbTravel = Math.max(0, clientHeight - thumbHeight);
+  const thumbTop = scrollRange > 0 ? (scrollTop / scrollRange) * thumbTravel : 0;
 
   return (
     <Backdrop>
@@ -241,36 +330,46 @@ export function QuickJoinSettingsModal({
             <AddressMono>{onlyAccount.address}</AddressMono>
           </SingleAccountCard>
         ) : (
-          <AccountList>
-            <AccountRow $selected={selection === 'auto'}>
-              <A11yRadio
-                name="quick-join-account"
-                checked={selection === 'auto'}
-                onChange={() => chooseSelection('auto')}
-              />
-              <RadioIndicator $selected={selection === 'auto'} />
-              <RowBody>
-                <RowTitle>Auto, newest account</RowTitle>
-                {newest ? (
-                  <AddressMono>Currently {shortAddress(newest.address)}</AddressMono>
-                ) : null}
-              </RowBody>
-            </AccountRow>
-            {accounts.map((a) => (
-              <AccountRow key={a.address} $selected={selection === a.address}>
+          <AccountListWrap>
+            <AccountListScroll ref={listRef} onScroll={updateScrollMetrics}>
+              <AccountRow $selected={selection === 'auto'}>
                 <A11yRadio
                   name="quick-join-account"
-                  checked={selection === a.address}
-                  onChange={() => chooseSelection(a.address)}
+                  checked={selection === 'auto'}
+                  onChange={() => chooseSelection('auto')}
                 />
-                <RadioIndicator $selected={selection === a.address} />
+                <RadioIndicator $selected={selection === 'auto'} />
                 <RowBody>
-                  <RowTitle>{shortAddress(a.address)}</RowTitle>
-                  <AddressMono>{a.address}</AddressMono>
+                  <RowTitle>Auto, newest account</RowTitle>
+                  {newest ? (
+                    <AddressMono>Currently {shortAddress(newest.address)}</AddressMono>
+                  ) : null}
                 </RowBody>
               </AccountRow>
-            ))}
-          </AccountList>
+              {accounts.map((a) => (
+                <AccountRow key={a.address} $selected={selection === a.address}>
+                  <A11yRadio
+                    name="quick-join-account"
+                    checked={selection === a.address}
+                    onChange={() => chooseSelection(a.address)}
+                  />
+                  <RadioIndicator $selected={selection === a.address} />
+                  <RowBody>
+                    <RowTitle>{shortAddress(a.address)}</RowTitle>
+                    <AddressMono>{a.address}</AddressMono>
+                  </RowBody>
+                </AccountRow>
+              ))}
+            </AccountListScroll>
+            {listScrollable ? (
+              <ScrollRail
+                aria-hidden
+                style={clientHeight > 0 ? { height: clientHeight } : undefined}
+              >
+                <ScrollThumb $top={thumbTop} $height={thumbHeight} />
+              </ScrollRail>
+            ) : null}
+          </AccountListWrap>
         )}
       </Card>
     </Backdrop>

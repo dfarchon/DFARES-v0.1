@@ -34,9 +34,15 @@ export async function openConfirmationWindowForTransaction({
     contractAddress,
     account: connection.getAddress(),
   };
-  const autoApprove = getBooleanSetting(config, Setting.AutoApproveNonPurchaseTransactions);
+  const autoApproveNonPurchase = getBooleanSetting(
+    config,
+    Setting.AutoApproveNonPurchaseTransactions
+  );
+  const autoApprovePurchase = getBooleanSetting(config, Setting.AutoApprovePurchaseTransactions);
+  const purchase = isPurchase(overrides);
+  const shouldSkipPopup = purchase ? autoApprovePurchase : autoApproveNonPurchase;
 
-  if (!autoApprove || isPurchase(overrides)) {
+  if (!shouldSkipPopup) {
     localStorage.setItem(`${from}-gasFeeGwei`, gasFeeGwei.toString());
     localStorage.setItem(`${from}-gasFeeLimit`, gasFeeLimit.toString());
     const account = connection.getAddress();

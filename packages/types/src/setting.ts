@@ -25,6 +25,7 @@ export type Setting = Abstract<string, 'Setting'>;
 export const Setting = {
   OptOutMetrics: 'OptOutMetrics' as Setting,
   AutoApproveNonPurchaseTransactions: 'AutoApproveNonPurchaseTransactions' as Setting,
+  AutoApprovePurchaseTransactions: 'AutoApprovePurchaseTransactions' as Setting,
   DrawChunkBorders: 'DrawChunkBorders' as Setting,
   HighPerformanceRendering: 'HighPerformanceRendering' as Setting,
   MoveNotifications: 'MoveNotifications' as Setting,

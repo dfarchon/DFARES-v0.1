@@ -321,6 +321,7 @@ class Round4GameManager extends BaseGameManager {
       account: gameManager.getAccount(),
     };
     pollSetting(config, Setting.AutoApproveNonPurchaseTransactions);
+    pollSetting(config, Setting.AutoApprovePurchaseTransactions);
 
     persistentChunkStore.setDiagnosticUpdater(gameManager);
     contractsAPI.setDiagnosticUpdater(gameManager);

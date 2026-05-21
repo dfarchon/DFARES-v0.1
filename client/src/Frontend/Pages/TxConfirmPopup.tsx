@@ -142,22 +142,6 @@ export function TxConfirmPopup({
     window.close();
   };
 
-  const setAutoApproveSetting = () => {
-    localStorage.setItem(`tx-approved-${account}-${actionId}`, 'true');
-    localStorage.setItem(`wallet-enabled-${account}`, (Date.now() + ONE_DAY).toString());
-    const config = {
-      contractAddress,
-      account,
-    };
-    setBooleanSetting(config, Setting.AutoApproveNonPurchaseTransactions, true);
-    window.close();
-  };
-
-  const doApprove = () => {
-    if (autoApproveChecked) setAutoApproveSetting();
-    else approve();
-  };
-
   // public getGasFeeForTransaction(tx: Transaction): AutoGasSetting | string {
   //   if (
   //     (tx.intent.methodName === 'initializePlayer' || tx.intent.methodName === 'giveSpaceShips') &&
@@ -301,6 +285,37 @@ export function TxConfirmPopup({
   const levelUpUnionFee = localStorage.getItem(`${account}-levelUpUnion-fee`);
   const levelUpUnionCost: number =
     method === 'levelUpUnion' && levelUpUnionFee ? weiToEth(BigNumber.from(levelUpUnionFee)) : 0;
+
+  const ethTransferCost =
+    hatCost +
+    buyArtifactCost +
+    joinGameCost +
+    buyPlanetCost +
+    buySpaceshipCost +
+    donationAmount +
+    createUnionCost +
+    levelUpUnionCost;
+  const isPurchaseTx = ethTransferCost > 0;
+
+  const setAutoApproveSetting = () => {
+    localStorage.setItem(`tx-approved-${account}-${actionId}`, 'true');
+    localStorage.setItem(`wallet-enabled-${account}`, (Date.now() + ONE_DAY).toString());
+    const config = {
+      contractAddress,
+      account,
+    };
+    if (isPurchaseTx) {
+      setBooleanSetting(config, Setting.AutoApprovePurchaseTransactions, true);
+    } else {
+      setBooleanSetting(config, Setting.AutoApproveNonPurchaseTransactions, true);
+    }
+    window.close();
+  };
+
+  const doApprove = () => {
+    if (autoApproveChecked) setAutoApproveSetting();
+    else approve();
+  };
 
   const getTxCost = () => {
     if (!isNaN(Number(gasFeeGwei))) {
@@ -674,7 +689,11 @@ export function TxConfirmPopup({
         </Row>
         <Row className='mtop'>
           <Checkbox
-            label='Auto-confirm all transactions except purchases. Currently, you can only purchase Hats, or anything 3rd party plugins offer.'
+            label={
+              isPurchaseTx
+                ? 'Auto-confirm purchase transactions that send ETH from your wallet.'
+                : 'Auto-confirm non-purchase transactions (moves, upgrades, etc.).'
+            }
             checked={autoApproveChecked}
             onChange={(e: Event & React.ChangeEvent<DarkForestCheckbox>) =>
               setAutoApprovedChecked(e.target.checked)

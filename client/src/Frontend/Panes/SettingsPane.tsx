@@ -394,15 +394,20 @@ export function SettingsPane({
 
         <Section>
           <SectionHeader>Auto Confirm Transactions</SectionHeader>
-          Whether or not to auto-confirm all transactions, except purchases. This will allow you to
-          make moves, spend silver on upgrades, etc. without requiring you to confirm each
-          transaction. However, the client WILL ask for confirmation before sending transactions
-          that spend wallet funds.
+          By default, non-purchase transactions (moves, silver upgrades, etc.) are auto-confirmed
+          without a popup. Purchase transactions that send ETH from your wallet still require
+          confirmation unless enabled below.
           <Spacer height={16} />
           <BooleanSetting
             uiManager={uiManager}
             setting={Setting.AutoApproveNonPurchaseTransactions}
-            settingDescription={'auto confirm non-purchase transactions'}
+            settingDescription={'auto confirm non-purchase transactions (no ETH sent from wallet)'}
+          />
+          <Spacer height={8} />
+          <BooleanSetting
+            uiManager={uiManager}
+            setting={Setting.AutoApprovePurchaseTransactions}
+            settingDescription={'auto confirm purchase transactions (sends ETH from wallet)'}
           />
         </Section>
 
