@@ -1,20 +1,18 @@
-import { CONTRACT_ADDRESS } from '@dfares/contracts';
-import { address } from '@dfares/serde';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-export function LandingPageRoundArt() {
-  const history = useHistory();
-  const defaultAddress = address(CONTRACT_ADDRESS);
+type LandingPageRoundArtProps = {
+  onEnter: () => void;
+};
 
+export function LandingPageRoundArt({ onEnter }: LandingPageRoundArtProps) {
   return (
     <Container>
       <ImgContainer>
         <LandingPageRoundArtImg
           // src={'/public/DFARESLogo-v3.svg'}
           src={'/public/favicon.ico'}
-          onClick={() => history.push(`/play/${defaultAddress}`)}
+          onClick={onEnter}
         />
         {/* <Smaller>
           <Text>Art by</Text> <TwitterLink twitter='JannehMoe' />{' '}

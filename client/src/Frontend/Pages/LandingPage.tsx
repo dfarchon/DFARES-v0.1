@@ -2,16 +2,18 @@ import { BLOCKCHAIN_NAME, PLAYER_GUIDE } from '@dfares/constants';
 import { CONTRACT_ADDRESS } from '@dfares/contracts';
 import { address } from '@dfares/serde';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Spacer } from '../Components/CoreUI';
+import { useEnterUniverse } from '../hooks/useEnterUniverse';
 import dfstyles from '../Styles/dfstyles';
 import { LandingPageRoundArt } from '../Views/LandingPageRoundArt';
+import { UniverseEnterTransition } from '../Views/UniverseEnterTransition';
 
 export const enum LandingPageZIndex {
   Background = 0,
   Canvas = 1,
   BasePage = 2,
+  Transition = 3,
 }
 
 const DFOfficeLinks = {
@@ -68,24 +70,30 @@ const EnterButton = styled.button`
     box-shadow 0.2s,
     transform 0.2s;
 
-  &:hover,
-  &:focus {
+  &:hover:not(:disabled),
+  &:focus:not(:disabled) {
     color: white;
     background: rgba(255, 180, 193, 0.14);
     border-color: #ffb4c1;
     box-shadow: 0 0 18px rgba(255, 180, 193, 0.4);
     transform: translateY(-1px);
   }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.65;
+  }
 `;
 
 export default function LandingPage() {
-  const history = useHistory();
+  const playPath = `/play/${defaultAddress}`;
+  const { isEntering, enterUniverse } = useEnterUniverse(playPath);
 
   return (
     <>
       {/* <PrettyOverlayGradient /> */}
 
-      <Page>
+      <Page $entering={isEntering}>
         <MainContentContainer>
           <Header>
             {/* <LinkContainer>
@@ -115,7 +123,7 @@ export default function LandingPage() {
             <HeroPanel>
 
               <HeroArt>
-                <LandingPageRoundArt />
+                <LandingPageRoundArt onEnter={enterUniverse} />
               </HeroArt>
 
               <HeroTitle>Dark Forest Ares v0.1 R5</HeroTitle>
@@ -151,7 +159,7 @@ export default function LandingPage() {
               </IntroText>
 
               <ButtonWrapper>
-                <EnterButton onClick={() => history.push(`/play/${defaultAddress}`)}>
+                <EnterButton onClick={enterUniverse} disabled={isEntering}>
                   Enter Universe
                 </EnterButton>
                 <GuideLink href={DFArchonLinks.guide} target='_blank' rel='noreferrer'>
@@ -370,7 +378,8 @@ export default function LandingPage() {
         <LeadboardDisplay />
 
         <Spacer height={256} /> */}
-      </Page >
+      </Page>
+      <UniverseEnterTransition active={isEntering} />
     </>
   );
 }
@@ -538,7 +547,7 @@ const MainContentContainer = styled.div`
   z-index: 1;
 `;
 
-const Page = styled.div`
+const Page = styled.div<{ $entering?: boolean }>`
   position: absolute;
   width: 100vw;
   max-width: 100vw;
@@ -555,6 +564,18 @@ const Page = styled.div`
   align-items: center;
   z-index: ${LandingPageZIndex.BasePage};
   overflow: hidden;
+
+  transition:
+    opacity 0.3s ease-out,
+    filter 0.3s ease-out,
+    transform 0.8s ease-in;
+  ${({ $entering }) =>
+    $entering &&
+    css`
+      opacity: 0;
+      filter: blur(12px);
+      transform: scale(0.92);
+    `}
 
   &::before {
     content: '';

@@ -3,7 +3,6 @@ import {
   BLOCK_EXPLORER_URL,
   HOW_TO_ENABLE_POPUPS,
   HOW_TO_TRANSFER_ETH_FROM_L2_TO_REDSTONE,
-  PLAYER_GUIDE,
   TOKEN_NAME,
 } from '@dfares/constants';
 import { CONTRACT_ADDRESS } from '@dfares/contracts';
@@ -139,24 +138,6 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
       const totalAccounts = accounts.length;
 
       if (showHelp) {
-        terminal.current?.newline();
-        terminal.current?.newline();
-
-        terminal.current?.print('Player guide: ', TerminalTextStyle.Pink);
-
-        terminal.current?.printLink(
-          'Please Click Here',
-          () => {
-            window.open(PLAYER_GUIDE);
-          },
-          TerminalTextStyle.Blue
-        );
-
-        terminal.current?.println(
-          ' <= New player please check this guide !!!',
-          TerminalTextStyle.Pink
-        );
-
         terminal.current?.newline();
 
         if (isLobby) {

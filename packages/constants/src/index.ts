@@ -37,6 +37,7 @@ import bigInt, { BigInteger } from 'big-integer';
 export const TOKEN_NAME = 'ETH';
 export const BLOCKCHAIN_NAME = 'MegaETH';
 export const HOST_TEAM_NAME = 'DFArchon';
+export const GAME_VERSION_INTRO = 'Welcome To Dark Forest Ares v0.1 R5';
 
 export const GAS_ADJUST_DELTA = '0.001'; // '0.000000001'; //'1'; //'0.00000005';
 
