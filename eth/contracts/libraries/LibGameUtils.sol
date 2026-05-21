@@ -214,16 +214,22 @@ library LibGameUtils {
         }
     }
 
+    /// Inner radius schedule for a 7-day round (set CLAIM_END to round start + 7 days):
+    /// - Days 0–5: shrink linearly from MAX_LEVEL_DIST[1]-1000 down to 0 (starts at round open)
+    /// - Days 5–7: inner radius 0 (center open for endgame)
     function _getInnerRadius() public view returns (uint256) {
         uint256 initialRadius = gameConstants().MAX_LEVEL_DIST[1] - 1000;
-        uint256 endTimestamp = gameConstants().CLAIM_END_TIMESTAMP - 24 hours;
-        uint256 gameDuration = 5 days; // 6 days - 24 hours
+        uint256 shrinkDuration = 5 days;
+        uint256 freePlayDuration = 2 days;
+        uint256 shrinkEndTimestamp = gameConstants().CLAIM_END_TIMESTAMP - freePlayDuration;
+        uint256 shrinkStartTimestamp = shrinkEndTimestamp - shrinkDuration;
 
-        if (block.timestamp <= endTimestamp - gameDuration) return initialRadius;
-        else if (block.timestamp < endTimestamp) {
-            uint256 duration = endTimestamp - block.timestamp;
-            return (initialRadius * duration) / gameDuration;
-        } else return 0;
+        if (block.timestamp < shrinkStartTimestamp) return initialRadius;
+        if (block.timestamp < shrinkEndTimestamp) {
+            uint256 remaining = shrinkEndTimestamp - block.timestamp;
+            return (initialRadius * remaining) / shrinkDuration;
+        }
+        return 0;
     }
 
     function _randomArtifactTypeAndLevelBonus(
