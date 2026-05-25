@@ -1,4 +1,5 @@
 import {
+  BLOCKCHAIN_NAME,
   HOW_TO_GET_ETH,
   MAX_AVATAR_TYPE,
   MAX_LOGO_TYPE,
@@ -161,7 +162,9 @@ export function HatPane({
         <EmSpacer height={1} />
 
         <div>
-          <Link to={HOW_TO_GET_ETH}>Guide: How to Get More ETH on Redstone</Link>
+          <Link to={HOW_TO_GET_ETH}>
+            Guide: How to Get More {TOKEN_NAME} on {BLOCKCHAIN_NAME}
+          </Link>
         </div>
 
         {/* <Link to={'https://blog.zkga.me/df-04-faq'}>Get More ${TOKEN_NAME}</Link> */}
