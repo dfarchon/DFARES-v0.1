@@ -3,10 +3,12 @@ import { ModalName, Planet, PlanetType } from '@dfares/types';
 import React, { useCallback, useEffect, useMemo } from 'react';
 import GameUIManager from '../../Backend/GameLogic/GameUIManager';
 import { Wrapper } from '../../Backend/Utils/Wrapper';
+import { planetCanBuyEnergy } from '../../Backend/GameLogic/BuyEnergyUtils';
 import { CapturePlanetButton } from '../Components/CapturePlanetButton';
 import { VerticalSplit } from '../Components/CoreUI';
 import { MineArtifactButton } from '../Components/MineArtifactButton';
 import { OpenBlueButton } from '../Components/OpenBlueButton';
+import { OpenBuyEnergyButton } from '../Components/OpenBuyEnergyButton';
 import { OpenDropBombButton } from '../Components/OpenDropBombButton';
 import { OpenHatPaneButton } from '../Components/OpenHatPaneButton';
 import { OpenKardashevButton } from '../Components/OpenKardashevButton';
@@ -41,6 +43,7 @@ export const PlanetPaneName = {
   Kardashev: 'Kardashev',
   Blue: 'Blue',
   Hat: 'Hat',
+  BuyEnergy: 'BuyEnergy',
 };
 
 function PlanetContextPaneContent({
@@ -107,6 +110,13 @@ function PlanetContextPaneContent({
     <OpenPlanetInfoButton modal={modal} planetId={p?.locationId} key={PlanetPaneName.Info} />
   );
 
+  let buyEnergyRow = null;
+  if (!p?.destroyed && !p?.frozen && owned && planetCanBuyEnergy(p, account)) {
+    buyEnergyRow = (
+      <OpenBuyEnergyButton modal={modal} planetId={p?.locationId} key={PlanetPaneName.BuyEnergy} />
+    );
+  }
+
   let hatRow = null;
   if (!p?.destroyed && !p?.frozen && owned) {
     hatRow = <OpenHatPaneButton modal={modal} planetId={p?.locationId} key={PlanetPaneName.Hat} />;
@@ -161,6 +171,7 @@ function PlanetContextPaneContent({
 
   const rows = [];
   if (upgradeRow) rows.push(upgradeRow);
+  if (buyEnergyRow) rows.push(buyEnergyRow);
   if (boardcastRow) rows.push(boardcastRow);
   if (infoRow) rows.push(infoRow);
   // if (buyArtifactRow) rows.push(buyArtifactRow);

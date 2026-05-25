@@ -1,6 +1,23 @@
+import { isLocatable } from '@dfares/gamelogic';
+import { EthAddress, Planet } from '@dfares/types';
 import bigInt from 'big-integer';
 import { utils } from 'ethers';
 import { ContractConstants } from '../../_types/darkforest/api/ContractsAPITypes';
+
+export function planetCanBuyEnergy(
+  planet: Planet | undefined,
+  account: EthAddress | undefined
+): boolean {
+  return !!(
+    planet &&
+    account &&
+    isLocatable(planet) &&
+    planet.owner === account &&
+    planet.energyGrowth > 0 &&
+    planet.energy > 0 &&
+    planet.energy < planet.energyCap
+  );
+}
 
 const GWEI = bigInt(1_000_000_000);
 

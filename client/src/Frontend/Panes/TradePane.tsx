@@ -4,14 +4,13 @@ import styled from 'styled-components';
 import { Link, Spacer } from '../Components/CoreUI';
 import { useAccount, usePlayer, useUIManager } from '../Utils/AppHooks';
 import { ModalPane } from '../Views/ModalPane';
-import { BuyEnergyPane } from './BuyEnergyPane';
 import { BuyPlanetPane } from './BuyPlanetPane';
 import { BuySpaceshipPane } from './BuySpaceshipPane';
 import { DonationPane } from './DonationPane';
 
 const TradeContent = styled.div`
-  width: clamp(480px, 90vw, 640px);
-  height: 650px;
+  width: 550px;
+  height: 600px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -61,7 +60,6 @@ export function TradePane({ visible, onClose }: { visible: boolean; onClose: () 
         <DonationPane />
         <BuyPlanetPane />
         <BuySpaceshipPane />
-        <BuyEnergyPane />
       </TradeContent>
     </ModalPane>
   );

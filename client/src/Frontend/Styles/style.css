@@ -24,3 +24,31 @@ body {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+/* Visible scrollbars for specific containers */
+.df-scrollbar-visible {
+  -ms-overflow-style: auto !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #888 #252525 !important;
+}
+
+.df-scrollbar-visible::-webkit-scrollbar {
+  display: block !important;
+  width: 10px !important;
+  height: 10px !important;
+}
+
+.df-scrollbar-visible::-webkit-scrollbar-track {
+  background: #252525;
+  border-left: 1px solid #555;
+}
+
+.df-scrollbar-visible::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+  border: 2px solid #252525;
+}
+
+.df-scrollbar-visible::-webkit-scrollbar-thumb:hover {
+  background: #bbb;
+}

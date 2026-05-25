@@ -57,6 +57,7 @@ export interface ModalFrame {
   title: string;
   element: () => React.ReactElement;
   helpContent?: React.ReactElement;
+  width?: string;
 }
 
 /**
@@ -199,13 +200,16 @@ export function ModalPane({
     allSubModalTitleElements.push(getFrameTitle(frames[frames.length - 1]));
   }
 
+  const topFrame = frames.length > 0 ? frames[frames.length - 1] : undefined;
+  const activeWidth = topFrame?.width ?? width;
+
   if (!visible) {
     return null;
   } else {
     return (
       <Modal
         style={style}
-        width={width}
+        width={activeWidth}
         minimized={minimized}
         index={modalIndex}
         initialX={initialPos?.x}

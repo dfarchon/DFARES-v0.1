@@ -15,6 +15,7 @@ export const TOGGLE_PINK_PANE = 'x';
 export const TOGGLE_KARDASHEV_PANE = 'c';
 export const TOGGLE_BLUE_PANE = 'v';
 export const TOGGLE_HAT_PANE = 'b';
+export const TOGGLE_BUY_ENERGY_PANE = 'p';
 export const INVADE = 'y';
 
 // modal shortcuts

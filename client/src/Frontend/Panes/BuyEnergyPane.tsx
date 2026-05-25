@@ -1,33 +1,79 @@
 import { isLocatable } from '@dfares/gamelogic';
 import { weiToEth } from '@dfares/network';
 import { getPlanetName } from '@dfares/procedural';
+import { LocationId } from '@dfares/types';
 import { BigNumber } from 'ethers';
 import React, { useState } from 'react';
-import { getBuyEnergyFeeWei } from '../../Backend/GameLogic/BuyEnergyUtils';
+import styled from 'styled-components';
+import {
+  getBuyEnergyFeeWei,
+  planetCanBuyEnergy,
+} from '../../Backend/GameLogic/BuyEnergyUtils';
 import { Btn } from '../Components/Btn';
-import { EmSpacer, Section, SectionHeader } from '../Components/CoreUI';
+import { EmSpacer, Spacer } from '../Components/CoreUI';
 import { MythicLabelText } from '../Components/Labels/MythicLabel';
 import { LoadingSpinner } from '../Components/LoadingSpinner';
 import { Blue } from '../Components/Text';
 import { TimeUntil } from '../Components/TimeUntil';
-import {
-  useAccount,
-  useHalfPrice,
-  usePlayer,
-  useSelectedPlanet,
-  useUIManager,
-} from '../Utils/AppHooks';
+import { useAccount, useHalfPrice, usePlanet, usePlayer, useUIManager } from '../Utils/AppHooks';
 import { useEmitterValue } from '../Utils/EmitterHooks';
+import { ModalHandle } from '../Views/ModalPane';
 import { PlanetLink } from '../Views/PlanetLink';
 import BuyEnergyBar from './BuyEnergyBar';
 import { PlanetThumb } from './PlanetDexPane';
-import { TradeRow, TradeSectionContent } from './TradePaneStyles';
+import { TradeRow } from './TradePaneStyles';
 
-export function BuyEnergyPane(): React.ReactElement {
+const StyledBuyEnergyPane = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+const BuyEnergyContent = styled.div`
+  padding-top: 4px;
+`;
+
+const BuyEnergyActions = styled.div`
+  flex-shrink: 0;
+  width: 100%;
+  margin-top: 5px;
+
+  df-button {
+    display: block;
+    width: 100%;
+  }
+`;
+
+const CooldownSlot = styled.div<{ $active: boolean }>`
+  min-height: ${({ $active }) => ($active ? '2.6em' : '0')};
+`;
+
+export function BuyEnergyPaneHelpContent() {
+  return (
+    <div>
+      <p>
+        Spend ETH to accelerate energy growth on a planet you own. Select a duration with the slider;
+        the fee depends on planet level and duration. A cooldown applies between purchases.
+      </p>
+      <Spacer height={8} />
+      <p>Energy must be above zero and below the cap for a purchase to be available.</p>
+    </div>
+  );
+}
+
+export function BuyEnergyPane({
+  initialPlanetId,
+  modal: _modal,
+}: {
+  modal: ModalHandle;
+  initialPlanetId?: LocationId;
+}): React.ReactElement {
   const uiManager = useUIManager();
   const account = useAccount(uiManager);
   const player = usePlayer(uiManager).value;
-  const selectedPlanet = useSelectedPlanet(uiManager).value;
+  const planetId = useEmitterValue(uiManager.selectedPlanetId$, initialPlanetId);
+  const planet = usePlanet(uiManager, planetId).value;
   const balanceEth = weiToEth(
     useEmitterValue(uiManager.getEthConnection().myBalance$, BigNumber.from('0'))
   );
@@ -37,12 +83,9 @@ export function BuyEnergyPane(): React.ReactElement {
 
   if (!account || !player) return <></>;
 
-  // planet checks
-  const planet = selectedPlanet;
   const planetLocatable = planet && isLocatable(planet);
   const planetOwnerCheckPassed = planet && planet.owner === account;
-  const planetCanBuyEnergy =
-    planet && planet.energyGrowth > 0 && planet.energy > 0 && planet.energy < planet.energyCap;
+  const canBuyEnergy = planetCanBuyEnergy(planet, account);
 
   const contractConstants = uiManager.contractConstants;
   const baseFeePerSecondGwei =
@@ -58,34 +101,31 @@ export function BuyEnergyPane(): React.ReactElement {
   const buyEnergyCooldownPassed = uiManager.getNextBuyEnergyAvailableTimestamp() <= Date.now();
   const currentlyBuyingEnergy = uiManager.isCurrentlyBuyingEnergy();
 
-  // disable button if any check fails
   const disableBuyButton =
     !planetLocatable ||
     !planetOwnerCheckPassed ||
-    !planetCanBuyEnergy ||
+    !canBuyEnergy ||
     !balanceCheckPassed ||
     !buyEnergyCooldownPassed ||
-    currentlyBuyingEnergy;
+    currentlyBuyingEnergy ||
+    durationToBuy <= 0;
 
-  // Callback to handle block period updates from BuyEnergyBar
   const handleDurationChange = (newDuration: number) => {
     setDurationToBuy(newDuration);
   };
 
-  // function to handle energy purchase
   const buyEnergy = async () => {
-    if (disableBuyButton || !planet || !durationToBuy) return;
-    uiManager.buyEnergy(planet, durationToBuy); // Assume `buyEnergy` method exists in uiManager
+    if (disableBuyButton || !planet) return;
+    uiManager.buyEnergy(planet, durationToBuy);
   };
 
-  // UI content for button
   let buttonContent = <></>;
 
   if (!planetLocatable) {
     buttonContent = <>No Planet Selected</>;
   } else if (!planetOwnerCheckPassed) {
     buttonContent = <>You should choose a planet that belongs to you</>;
-  } else if (!planetCanBuyEnergy) {
+  } else if (!canBuyEnergy) {
     buttonContent = <>This planet cannot buy energy</>;
   } else if (!balanceCheckPassed) {
     buttonContent = <>Your balance is too low</>;
@@ -109,18 +149,17 @@ export function BuyEnergyPane(): React.ReactElement {
   }
 
   return (
-    <TradeSectionContent>
-      <Section>
-        <SectionHeader>Buy Energy</SectionHeader>
+    <StyledBuyEnergyPane>
+      <BuyEnergyContent>
         {halfPrice && <MythicLabelText text={'Energy is currently half price!'} />}
 
         <TradeRow>
           <span>Selected Planet</span>
           <span>
-            {selectedPlanet ? (
+            {planet ? (
               <span style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                <PlanetThumb planet={selectedPlanet} />
-                <PlanetLink planet={selectedPlanet}>{getPlanetName(selectedPlanet)}</PlanetLink>
+                <PlanetThumb planet={planet} />
+                <PlanetLink planet={planet}>{getPlanetName(planet)}</PlanetLink>
               </span>
             ) : (
               <span>{'(none)'}</span>
@@ -128,7 +167,7 @@ export function BuyEnergyPane(): React.ReactElement {
           </span>
         </TradeRow>
 
-        {planet && planetCanBuyEnergy && (
+        {planet && canBuyEnergy && (
           <BuyEnergyBar
             planet={planet}
             halfPrice={halfPrice}
@@ -136,12 +175,16 @@ export function BuyEnergyPane(): React.ReactElement {
             onDurationChange={handleDurationChange}
           />
         )}
+      </BuyEnergyContent>
 
-        {cooldownContent}
-        <Btn disabled={disableBuyButton} onClick={buyEnergy}>
+      <BuyEnergyActions>
+        <CooldownSlot $active={!buyEnergyCooldownPassed}>
+          {cooldownContent}
+        </CooldownSlot>
+        <Btn size='stretch' disabled={disableBuyButton} onClick={buyEnergy}>
           {buttonContent}
         </Btn>
-      </Section>
-    </TradeSectionContent>
+      </BuyEnergyActions>
+    </StyledBuyEnergyPane>
   );
 }
