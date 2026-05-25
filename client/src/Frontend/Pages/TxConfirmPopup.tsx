@@ -216,6 +216,12 @@ export function TxConfirmPopup({
   const planetCostEth = localStorage.getItem(`${account}-planetCostEth`);
   const buyPlanetCost = method === 'buyPlanet' && planetCostEth ? Number(planetCostEth) : 0; //0.001 eth
 
+  //buyEnergy
+  const buyEnergyPlanetId = localStorage.getItem(`${account}-buyEnergyPlanetId`);
+  const buyEnergyDuration = localStorage.getItem(`${account}-buyEnergyDuration`);
+  const buyEnergyCostEth = localStorage.getItem(`${account}-buyEnergyCostEth`);
+  const buyEnergyCost = method === 'buyEnergy' && buyEnergyCostEth ? Number(buyEnergyCostEth) : 0;
+
   //buySpaceship
   const buySpaceshipOnPlanetId = localStorage.getItem(`${account}-buySpaceshipOnPlanetId`);
   const buySpaceshipCost =
@@ -330,6 +336,7 @@ export function TxConfirmPopup({
         buyArtifactCost +
         joinGameCost +
         buyPlanetCost +
+        buyEnergyCost +
         buySpaceshipCost +
         donationAmount +
         createUnionCost +
@@ -422,6 +429,32 @@ export function TxConfirmPopup({
               <b>Hat Fee </b>
               <span>
                 {hatCost} ${TOKEN_NAME}
+              </span>
+            </Row>
+          </>
+        )}
+
+        {method === 'buyEnergy' && (
+          <>
+            <Row>
+              <b>On</b>
+              <span className='mono'>{buyEnergyPlanetId}</span>
+            </Row>
+
+            <Row>
+              <b>During</b>
+              <span className='mono'>{buyEnergyDuration}</span>
+            </Row>
+
+            <Row>
+              <b>Half Price</b>
+              <span>{halfPrice ? halfPrice : 'false'}</span>
+            </Row>
+
+            <Row>
+              <b>Buy Energy Fee </b>
+              <span>
+                {buyEnergyCost} ${TOKEN_NAME}
               </span>
             </Row>
           </>

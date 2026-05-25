@@ -132,6 +132,27 @@ CLAIM_END_TIMESTAMP = 2024-08-17T14:00:00.000Z
 ACTIVATE_ARTIFACT_COOLDOWN = 600
 BUY_ARTIFACT_COOLDOWN  = 43200
 
+#################
+# Buy Energy    #
+#################
+# Seconds to wait between buyEnergy calls (per player)
+BUY_ENERGY_COOLDOWN = 60 # seconds
+# Per-second fee by planet level (gwei). Index = planet level (0-9).
+# Total fee = BUY_ENERGY_LEVEL_FEES[level] * durationSeconds * 1 gwei.
+# Buys `durationSeconds` of natural population growth, not a fill-to-cap.
+BUY_ENERGY_LEVEL_FEES = [
+  10,
+  20,
+  40,
+  80,
+  160,
+  320,
+  640,
+  1280,
+  2560,
+  5120
+]
+
 
 BURN_END_TIMESTAMP = 2024-08-17T14:00:00.000Z
 BURN_PLANET_COOLDOWN = 7200 # seconds

@@ -4244,9 +4244,7 @@ class BaseGameManager extends EventEmitter {
       // price requirements
       const balanceEth = this.getMyBalanceEth();
       const halfPrice = this.getHalfPrice();
-      const planetCostEth = halfPrice
-        ? 0.5 * 0.003 * 2 ** player.buyPlanetAmount
-        : 0.003 * 2 ** player.buyPlanetAmount;
+      const planetCostEth = 0.003 * 2 ** player.buyPlanetAmount * (halfPrice ? 0.5 : 1);
       if (balanceEth < planetCostEth) {
         throw new Error("you don't have enough ETH");
       }

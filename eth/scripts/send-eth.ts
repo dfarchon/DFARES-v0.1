@@ -17,8 +17,8 @@
  *   yarn send-eth --to 0xRecipient... --value 0.05 --rpc https://rpc.example.com --dry false
  */
 
-import { ethers } from 'ethers';
 import * as dotenv from 'dotenv';
+import { ethers } from 'ethers';
 import * as path from 'path';
 
 dotenv.config({ path: path.join(__dirname, '..', '.env') });
@@ -70,10 +70,7 @@ function resolveRpcUrl(network?: string): string {
   );
 }
 
-function loadWallet(
-  provider: ethers.providers.Provider,
-  accountIndex: number
-): ethers.Wallet {
+function loadWallet(provider: ethers.providers.Provider, accountIndex: number): ethers.Wallet {
   const privateKey = process.env.ADMIN_PRIVATE_KEY;
   if (privateKey) {
     return new ethers.Wallet(privateKey, provider);
@@ -81,9 +78,7 @@ function loadWallet(
 
   const mnemonic = process.env.ADMIN_MNEMONIC ?? process.env.DEPLOYER_MNEMONIC;
   if (!mnemonic) {
-    throw new Error(
-      'Set ADMIN_PRIVATE_KEY, ADMIN_MNEMONIC, or DEPLOYER_MNEMONIC in eth/.env'
-    );
+    throw new Error('Set ADMIN_PRIVATE_KEY, ADMIN_MNEMONIC, or DEPLOYER_MNEMONIC in eth/.env');
   }
 
   const hdNode = ethers.utils.HDNode.fromMnemonic(mnemonic);
@@ -137,7 +132,9 @@ async function main() {
 
   if (balance.lt(parsedValue)) {
     throw new Error(
-      `${wallet.address} trying to send ${ethers.utils.formatEther(parsedValue)} but has ${ethers.utils.formatEther(balance)}`
+      `${wallet.address} trying to send ${ethers.utils.formatEther(
+        parsedValue
+      )} but has ${ethers.utils.formatEther(balance)}`
     );
   }
 

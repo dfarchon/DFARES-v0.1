@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-
 import dfstyles from '../Styles/dfstyles';
 
 const MESSAGE_DURATION_MS = 8000;
@@ -41,11 +40,11 @@ export function CopyToClipboardButton({
 
   return (
     <Wrap>
-      <Btn type="button" onClick={onClick}>
+      <Btn type='button' onClick={onClick}>
         {label}
       </Btn>
-      {status === 'success' ? <Hint $tone="success">{successMessage}</Hint> : null}
-      {status === 'failure' ? <Hint $tone="failure">{failureMessage}</Hint> : null}
+      {status === 'success' ? <Hint $tone='success'>{successMessage}</Hint> : null}
+      {status === 'failure' ? <Hint $tone='failure'>{failureMessage}</Hint> : null}
     </Wrap>
   );
 }
@@ -87,6 +86,5 @@ const Btn = styled.button`
 `;
 
 const Hint = styled.span<{ $tone: 'success' | 'failure' }>`
-  color: ${({ $tone }) =>
-    $tone === 'success' ? dfstyles.colors.dfpink : dfstyles.colors.dfred};
+  color: ${({ $tone }) => ($tone === 'success' ? dfstyles.colors.dfpink : dfstyles.colors.dfred)};
 `;

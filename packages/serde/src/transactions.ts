@@ -8,6 +8,7 @@ import {
   UnconfirmedBlue,
   UnconfirmedBurn,
   UnconfirmedBuyArtifact,
+  UnconfirmedBuyEnergy,
   UnconfirmedBuyHat,
   UnconfirmedBuyPlanet,
   UnconfirmedBuySpaceship,
@@ -171,6 +172,10 @@ export function isUnconfirmedBuyPlanet(txIntent: TxIntent): txIntent is Unconfir
 
 export function isUnconfirmedBuySpaceship(txIntent: TxIntent): txIntent is UnconfirmedBuySpaceship {
   return txIntent.methodName === 'buySpaceship';
+}
+
+export function isUnconfirmedBuyEnergy(txIntent: TxIntent): txIntent is UnconfirmedBuyEnergy {
+  return txIntent.methodName === 'buyEnergy';
 }
 
 export function isUnconfirmedDonate(txIntent: TxIntent): txIntent is UnconfirmedDonate {
@@ -397,6 +402,10 @@ export function isUnconfirmedBuySpaceshipTx(
   tx: Transaction
 ): tx is Transaction<UnconfirmedBuySpaceship> {
   return isUnconfirmedBuySpaceship(tx.intent);
+}
+
+export function isUnconfirmedBuyEnergyTx(tx: Transaction): tx is Transaction<UnconfirmedBuyEnergy> {
+  return isUnconfirmedBuyEnergy(tx.intent);
 }
 
 export function isUnconfirmedDonateTx(tx: Transaction): tx is Transaction<UnconfirmedDonate> {

@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-
 import { getAccounts } from '../../Backend/Network/AccountManager';
 import {
   clearQuickJoinDefaultAccount,
@@ -118,8 +117,7 @@ const AccountRow = styled.label<{ $selected?: boolean }>`
   gap: 12px;
   padding: 10px 12px;
   border: 1px solid
-    ${({ $selected }) =>
-      $selected ? dfstyles.colors.dfpink : dfstyles.colors.borderDarker};
+    ${({ $selected }) => ($selected ? dfstyles.colors.dfpink : dfstyles.colors.borderDarker)};
   border-radius: ${dfstyles.borderRadius};
   background: ${({ $selected }) =>
     $selected ? 'rgba(255, 180, 193, 0.1)' : 'rgba(255, 255, 255, 0.025)'};
@@ -153,22 +151,19 @@ const RadioIndicator = styled.span<{ $selected: boolean }>`
   height: 16px;
   border-radius: 50%;
   border: 2px solid
-    ${({ $selected }) =>
-      $selected ? dfstyles.colors.dfpink : dfstyles.colors.subtext};
+    ${({ $selected }) => ($selected ? dfstyles.colors.dfpink : dfstyles.colors.subtext)};
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: ${({ $selected }) =>
-    $selected ? 'rgba(255, 180, 193, 0.15)' : 'transparent'};
+  background: ${({ $selected }) => ($selected ? 'rgba(255, 180, 193, 0.15)' : 'transparent')};
 
   &::after {
     content: '';
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: ${({ $selected }) =>
-      $selected ? dfstyles.colors.dfpink : 'transparent'};
+    background: ${({ $selected }) => ($selected ? dfstyles.colors.dfpink : 'transparent')};
   }
 `;
 
@@ -334,7 +329,7 @@ export function QuickJoinSettingsModal({
             <AccountListScroll ref={listRef} onScroll={updateScrollMetrics}>
               <AccountRow $selected={selection === 'auto'}>
                 <A11yRadio
-                  name="quick-join-account"
+                  name='quick-join-account'
                   checked={selection === 'auto'}
                   onChange={() => chooseSelection('auto')}
                 />
@@ -349,7 +344,7 @@ export function QuickJoinSettingsModal({
               {accounts.map((a) => (
                 <AccountRow key={a.address} $selected={selection === a.address}>
                   <A11yRadio
-                    name="quick-join-account"
+                    name='quick-join-account'
                     checked={selection === a.address}
                     onChange={() => chooseSelection(a.address)}
                   />

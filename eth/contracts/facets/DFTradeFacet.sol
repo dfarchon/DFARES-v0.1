@@ -6,6 +6,7 @@ import {LibDiamond} from "../vendor/libraries/LibDiamond.sol";
 import {LibGameUtils} from "../libraries/LibGameUtils.sol";
 import {LibPlanet} from "../libraries/LibPlanet.sol";
 import {LibArtifactUtils} from "../libraries/LibArtifactUtils.sol";
+import {LibLazyUpdate} from "../libraries/LibLazyUpdate.sol";
 
 // Storage imports
 import {WithStorage} from "../libraries/LibStorage.sol";
@@ -19,6 +20,7 @@ contract DFTradeFacet is WithStorage {
     event PlayerDonate(address player, uint256 amount);
     event PlanetBought(address player, uint256 loc);
     event SpaceshipBought(uint256 locationId, address owner, ArtifactType artifactType);
+    event PlanetEnergyBought(address indexed player, uint256 indexed locationId, uint256 fee);
 
     event WorldRadiusUpdated(uint256 radius);
     event InnerRadiusUpdated(uint256 radius);
@@ -109,8 +111,8 @@ contract DFTradeFacet is WithStorage {
         //     "Init not allowed in perlin value greater than or equal to the INIT_PERLIN_MAX"
         // );
 
-        // price
-        uint256 fee = 0.003 ether; // 0.003 eth
+        // price: fixed base fee, doubled for each prior purchase
+        uint256 fee = 0.003 ether;
         fee = fee * (2**player.buyPlanetAmount);
         if (gs().halfPrice) fee = fee / 2;
 
@@ -130,6 +132,69 @@ contract DFTradeFacet is WithStorage {
         ls().playerLog[msg.sender].buyPlanetCnt++;
         ls().buyPlanetEarn += fee;
         ls().playerLog[msg.sender].buyPlanetCost += fee;
+    }
+
+    /**
+     * Pay to instantly apply `duration` seconds of natural population growth.
+     * Fee = BUY_ENERGY_LEVEL_FEES[planetLevel] * duration * 1 gwei.
+     * Population is set to the value natural growth would produce after `duration`
+     * seconds from the refreshed state; lastUpdated stays at block.timestamp.
+     * Pending arrivals/events within the duration window are not simulated.
+     */
+    function buyEnergy(uint256 locationId, uint256 duration)
+        public
+        payable
+        onlyWhitelisted
+        notPaused
+    {
+        require(gs().planets[locationId].isInitialized, "planet is not initialized");
+        LibPlanet.refreshPlanet(locationId);
+        require(
+            gs().planets[locationId].owner == msg.sender,
+            "Only planet owner can perform this operation"
+        );
+
+        Player storage player = gs().players[msg.sender];
+        require(player.isInitialized, "player need to be initialized before");
+        require(
+            player.lastBuyEnergyTimestamp == 0 ||
+                block.timestamp - player.lastBuyEnergyTimestamp >
+                gameConstants().BUY_ENERGY_COOLDOWN,
+            "wait for cooldown before buying energy again"
+        );
+
+        Planet storage planet = gs().planets[locationId];
+        require(planet.population > 0, "planet has no energy to grow from");
+        require(planet.population < planet.populationCap, "already at cap");
+        require(planet.pausers == 0, "planet is paused");
+        require(planet.populationGrowth > 0, "no energy growth");
+        require(duration > 0, "duration must be greater than 0");
+
+        uint256 baseFeePerSecond = gameConstants().BUY_ENERGY_LEVEL_FEES[planet.planetLevel];
+        uint256 fee = baseFeePerSecond * duration;
+        fee = fee * 1 gwei;
+        if (gs().halfPrice) fee = fee / 2;
+        require(msg.value == fee, "Wrong value sent");
+
+        Planet memory futurePlanetState = LibLazyUpdate.updatePlanet(
+            block.timestamp + duration,
+            planet
+        );
+
+        planet.population = futurePlanetState.population;
+        planet.lastUpdated = block.timestamp;
+
+        if (planet.population > planet.populationCap) {
+            planet.population = planet.populationCap;
+        }
+
+        player.lastBuyEnergyTimestamp = block.timestamp;
+
+        emit PlanetEnergyBought(msg.sender, locationId, fee);
+        ls().buyEnergyCnt++;
+        ls().playerLog[msg.sender].buyEnergyCnt++;
+        ls().buyEnergyEarn += fee;
+        ls().playerLog[msg.sender].buyEnergyCost += fee;
     }
 
     function buySpaceship(uint256 locationId, ArtifactType artifactType) public payable notPaused {

@@ -142,6 +142,8 @@ struct LogStorage {
     uint256 buySpaceshipCost;
     uint256 donateCnt;
     uint256 donateSum;
+    uint256 buyEnergyCnt;
+    uint256 buyEnergyEarn;
     mapping(address => mapping(uint256 => uint256)) playerHatSpent; // address => hatType => ETH amount
     mapping(uint256 => mapping(address => bool)) hatPlayerInList; // hatType => address => bool
     mapping(uint256 => address[]) hatPlayerAccounts; // hatType => address []
@@ -217,6 +219,14 @@ struct GameConstants {
     uint256 PINK_PLANET_COOLDOWN;
     uint256 ACTIVATE_ARTIFACT_COOLDOWN;
     uint256 BUY_ARTIFACT_COOLDOWN;
+    // Buy Energy
+    uint256 BUY_ENERGY_COOLDOWN;
+    /**
+      Per-second buy-energy fee by planet level, in gwei.
+      Total fee = BUY_ENERGY_LEVEL_FEES[level] * durationSeconds * 1 gwei.
+      Buys `durationSeconds` of natural population growth, not a fill-to-cap.
+    */
+    uint256[10] BUY_ENERGY_LEVEL_FEES;
     uint256[10] BURN_PLANET_LEVEL_EFFECT_RADIUS;
     uint256[10] BURN_PLANET_REQUIRE_SILVER_AMOUNTS;
     // planet adjust

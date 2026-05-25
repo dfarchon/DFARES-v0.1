@@ -58,7 +58,7 @@ const getSilverOverTime = (
   return Math.min(timeElapsed * planet.silverGrowth + planet.silver, planet.silverCap);
 };
 
-const getEnergyAtTime = (planet: Planet, atTimeMillis: number): number => {
+export const getEnergyAtTime = (planet: Planet, atTimeMillis: number): number => {
   if (planet.energy === 0) {
     return 0;
   }

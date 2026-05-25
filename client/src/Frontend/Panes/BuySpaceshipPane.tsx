@@ -5,7 +5,6 @@ import { getPlanetName } from '@dfares/procedural';
 import { isUnconfirmedBuySpaceshipTx } from '@dfares/serde';
 import { BigNumber } from 'ethers';
 import React from 'react';
-import styled from 'styled-components';
 import { Btn } from '../Components/Btn';
 import { EmSpacer, Section, SectionHeader } from '../Components/CoreUI';
 import { MythicLabelText } from '../Components/Labels/MythicLabel';
@@ -20,26 +19,7 @@ import {
 import { useEmitterValue } from '../Utils/EmitterHooks';
 import { PlanetLink } from '../Views/PlanetLink';
 import { PlanetThumb } from './PlanetDexPane';
-
-const BuySpaceshipContent = styled.div`
-  width: 500px;
-  overflow-y: scroll;
-  display: flex;
-  flex-direction: column;
-  /* text-align: justify; */
-`;
-
-const Row = styled.div`
-  display: flex;
-  flex-direction: row;
-
-  justify-content: space-between;
-  align-items: center;
-
-  & > span:first-child {
-    flex-grow: 1;
-  }
-`;
+import { TradeRow, TradeSectionContent } from './TradePaneStyles';
 
 export function BuySpaceshipPane(): React.ReactElement {
   const uiManager = useUIManager();
@@ -110,12 +90,12 @@ export function BuySpaceshipPane(): React.ReactElement {
     buttonContent = <>Buy One Whale Spaceship</>;
   }
   return (
-    <BuySpaceshipContent>
+    <TradeSectionContent>
       <Section>
         <SectionHeader>Buy Whale Spaceship</SectionHeader>
         {halfPrice && <MythicLabelText text={'Everything is half price !!!'} />}
 
-        <Row>
+        <TradeRow>
           <span> Selected Planet</span>
           <span>
             {selectedPlanet ? (
@@ -133,25 +113,25 @@ export function BuySpaceshipPane(): React.ReactElement {
               <span>{'(none)'}</span>
             )}
           </span>
-        </Row>
+        </TradeRow>
 
-        <Row>
+        <TradeRow>
           <span>Cost / My Balance </span>
           <span>
             {buySpaceshipFee} ${TOKEN_NAME} / {balanceEth} ${TOKEN_NAME}
           </span>
-        </Row>
+        </TradeRow>
 
-        <Row>
+        <TradeRow>
           <span>My Amount / Max Amount </span>
           <span>{currentBuySpaceshipAmount} / 3</span>
-        </Row>
+        </TradeRow>
       </Section>
 
       <Btn disabled={disableBuyButton} onClick={buySpaceship}>
         {buttonContent}
       </Btn>
       <EmSpacer height={1} />
-    </BuySpaceshipContent>
+    </TradeSectionContent>
   );
 }

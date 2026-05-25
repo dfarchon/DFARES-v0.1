@@ -1,7 +1,7 @@
 import { EMPTY_ADDRESS } from '@dfares/constants';
 import { monomitter, Monomitter } from '@dfares/events';
-import { isLocatable } from '@dfares/gamelogic';
-import { EthConnection, ThrottledConcurrentQueue } from '@dfares/network';
+import { isLocatable, timeUntilNextBroadcastAvailable } from '@dfares/gamelogic';
+import { EthConnection, ThrottledConcurrentQueue, weiToEth } from '@dfares/network';
 import {
   isUnconfirmedAcceptApplicationTx,
   isUnconfirmedAcceptInviteTx,
@@ -9,6 +9,7 @@ import {
   isUnconfirmedBlueTx,
   isUnconfirmedBurnTx,
   isUnconfirmedBuyArtifactTx,
+  isUnconfirmedBuyEnergyTx,
   isUnconfirmedBuyHatTx,
   isUnconfirmedBuyPlanetTx,
   isUnconfirmedBuySpaceshipTx,
@@ -41,6 +42,7 @@ import {
   isUnconfirmedUpgradeTx,
   isUnconfirmedWithdrawArtifactTx,
   isUnconfirmedWithdrawSilverTx,
+  locationIdToDecStr,
 } from '@dfares/serde';
 import {
   Artifact,
@@ -60,6 +62,7 @@ import {
   UnconfirmedAcceptApplication,
   UnconfirmedAcceptInvite,
   UnconfirmedAddMemberByAdmin,
+  UnconfirmedBuyEnergy,
   UnconfirmedCancelApplication,
   UnconfirmedCancelInvite,
   UnconfirmedChangeUnionName,
@@ -78,6 +81,7 @@ import {
   WorldLocation,
 } from '@dfares/types';
 import delay from 'delay';
+import { BigNumber } from 'ethers';
 import NotificationManager from '../../Frontend/Game/NotificationManager';
 import { pollSetting } from '../../Frontend/Utils/SettingsHooks';
 import { TerminalHandle } from '../../Frontend/Views/Terminal';
@@ -85,11 +89,12 @@ import {
   ContractConstants,
   ContractsAPIEvent,
 } from '../../_types/darkforest/api/ContractsAPITypes';
-import { HashConfig } from '../../_types/global/GlobalTypes';
+import { BuyEnergyCooldownInfo, HashConfig } from '../../_types/global/GlobalTypes';
 import { loadLeaderboard } from '../Network/LeaderboardApi';
 import PersistentChunkStore from '../Storage/PersistentChunkStore';
 import SnarkArgsHelper from '../Utils/SnarkArgsHelper';
 import BaseGameManager, { GameManagerEvent } from './BaseGameManager';
+import { getBuyEnergyFeeWei } from './BuyEnergyUtils';
 import { ContractsAPI, makeContractsAPI } from './ContractsAPI';
 import { InitialGameStateDownloader } from './InitialGameStateDownloader';
 
@@ -470,6 +475,8 @@ class Round4GameManager extends BaseGameManager {
           //todo
           await gameManager.hardRefreshPlanet(tx.intent.locationId);
         } else if (isUnconfirmedBuySpaceshipTx(tx)) {
+          await gameManager.hardRefreshPlanet(tx.intent.locationId);
+        } else if (isUnconfirmedBuyEnergyTx(tx)) {
           await gameManager.hardRefreshPlanet(tx.intent.locationId);
         } else if (isUnconfirmedFindArtifactTx(tx)) {
           await gameManager.hardRefreshPlanet(tx.intent.planetId);
@@ -1628,6 +1635,122 @@ class Round4GameManager extends BaseGameManager {
       return tx;
     } catch (e) {
       this.getNotificationsManager().txInitError('levelUpUnion', e.message);
+      throw e;
+    }
+  }
+
+  public timeUntilNextBuyEnergyAvailable() {
+    if (!this.account) {
+      throw new Error('no account set');
+    }
+    const myLastBuyEnergyTimestamp = this.players.get(this.account)?.lastBuyEnergyTimestamp;
+
+    return timeUntilNextBroadcastAvailable(
+      myLastBuyEnergyTimestamp,
+      this.contractConstants.BUY_ENERGY_COOLDOWN
+    );
+  }
+
+  public getNextBuyEnergyAvailableTimestamp() {
+    return Date.now() + this.timeUntilNextBuyEnergyAvailable();
+  }
+
+  public getNextBuyEnergyCountdownInfo(): BuyEnergyCooldownInfo {
+    if (!this.account) {
+      throw new Error('no account set');
+    }
+
+    const myLastBuyEnergyTimestamp = this.players.get(this.account)?.lastBuyEnergyTimestamp;
+
+    return {
+      myLastBuyEnergyTimestamp: myLastBuyEnergyTimestamp || undefined,
+      currentlyBuyingEnergy:
+        !!this.entityStore.transactions.hasTransaction(isUnconfirmedBuyEnergyTx),
+      buyEnergyCooldownTime: this.contractConstants.BUY_ENERGY_COOLDOWN,
+    };
+  }
+
+  public async buyEnergy(
+    planetId: LocationId,
+    duration: number
+  ): Promise<Transaction<UnconfirmedBuyEnergy>> {
+    try {
+      if (!this.account) {
+        throw new Error('no account set');
+      }
+
+      const planet = this.entityStore.getPlanetWithId(planetId);
+
+      if (!planet) {
+        throw new Error('you should know this planet');
+      }
+
+      if (!isLocatable(planet)) {
+        throw new Error('planet is not Locatable');
+      }
+
+      if (planet.destroyed || planet.frozen) {
+        throw new Error('planet destroyed or frozen');
+      }
+
+      const player = this.players.get(this.account);
+      if (!player) {
+        throw new Error('no player');
+      }
+
+      const myLastBuyEnergyTimestamp = player.lastBuyEnergyTimestamp;
+
+      if (myLastBuyEnergyTimestamp && Date.now() < this.getNextBuyEnergyAvailableTimestamp()) {
+        throw new Error('still on cooldown time for buying energy');
+      }
+
+      if (planet.transactions?.hasTransaction(isUnconfirmedBuyEnergyTx)) {
+        throw new Error('Energy purchase for this planet is already in progress');
+      }
+      if (this.entityStore.transactions.hasTransaction(isUnconfirmedBuyEnergyTx)) {
+        throw new Error('Energy purchase in progress');
+      }
+
+      const halfPrice = this.getHalfPrice();
+      const balanceEth = this.getMyBalanceEth();
+      const fee = getBuyEnergyFeeWei(
+        planet.planetLevel,
+        duration,
+        this.contractConstants,
+        halfPrice
+      );
+      const energyCostEth = weiToEth(BigNumber.from(fee));
+
+      if (balanceEth < energyCostEth) {
+        throw new Error('Insufficient ETH balance');
+      }
+
+      localStorage.setItem(`${this.getAccount()?.toLowerCase()}-buyEnergyPlanetId`, planetId);
+      localStorage.setItem(
+        `${this.getAccount()?.toLowerCase()}-buyEnergyDuration`,
+        duration.toString()
+      );
+      localStorage.setItem(
+        `${this.getAccount()?.toLowerCase()}-buyEnergyCostEth`,
+        energyCostEth.toString()
+      );
+
+      const txIntent: UnconfirmedBuyEnergy = {
+        methodName: 'buyEnergy',
+        contract: this.contractsAPI.contract,
+        locationId: planet.location.hash,
+        location: planet.location,
+        duration: duration,
+        args: Promise.resolve([locationIdToDecStr(planetId), duration]),
+      };
+
+      const tx = await this.contractsAPI.submitTransaction(txIntent, {
+        value: fee,
+      });
+
+      return tx;
+    } catch (e) {
+      this.getNotificationsManager().txInitError('buyEnergy', e.message);
       throw e;
     }
   }

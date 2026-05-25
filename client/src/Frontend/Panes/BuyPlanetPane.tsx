@@ -5,7 +5,6 @@ import { getPlanetName } from '@dfares/procedural';
 import { isUnconfirmedBuyPlanetTx } from '@dfares/serde';
 import { BigNumber } from 'ethers';
 import React from 'react';
-import styled from 'styled-components';
 import { Btn } from '../Components/Btn';
 import { EmSpacer, Section, SectionHeader } from '../Components/CoreUI';
 import { MythicLabelText } from '../Components/Labels/MythicLabel';
@@ -20,26 +19,7 @@ import {
 import { useEmitterValue } from '../Utils/EmitterHooks';
 import { PlanetLink } from '../Views/PlanetLink';
 import { PlanetThumb } from './PlanetDexPane';
-
-const BuyPlanetContent = styled.div`
-  width: 500px;
-  overflow-y: scroll;
-  display: flex;
-  flex-direction: column;
-  /* text-align: justify; */
-`;
-
-const Row = styled.div`
-  display: flex;
-  flex-direction: row;
-
-  justify-content: space-between;
-  align-items: center;
-
-  & > span:first-child {
-    flex-grow: 1;
-  }
-`;
+import { TradeRow, TradeSectionContent } from './TradePaneStyles';
 
 export function BuyPlanetPane(): React.ReactElement {
   const uiManager = useUIManager();
@@ -120,6 +100,8 @@ export function BuyPlanetPane(): React.ReactElement {
     buttonContent = <>No Planet Selected</>;
   } else if (!isLocatable(selectedPlanet)) {
     buttonContent = <>Planet need to be Locatable</>;
+  } else if (selectedPlanet.owner.toLowerCase() === player.address.toLowerCase()) {
+    buttonContent = <>You already own this Planet</>;
   } else if (!planetLevelCheckPassed) {
     buttonContent = <>Planet level should be 0</>;
   } else if (selectedPlanet.owner !== EMPTY_ADDRESS) {
@@ -136,12 +118,12 @@ export function BuyPlanetPane(): React.ReactElement {
     buttonContent = <>Buy this planet</>;
   }
   return (
-    <BuyPlanetContent>
+    <TradeSectionContent>
       <Section>
         <SectionHeader>Buy Planet</SectionHeader>
         {halfPrice && <MythicLabelText text={'Everything is half price !!!'} />}
 
-        <Row>
+        <TradeRow>
           <span> Selected Planet</span>
           <span>
             {selectedPlanet ? (
@@ -159,35 +141,35 @@ export function BuyPlanetPane(): React.ReactElement {
               <span>{'(none)'}</span>
             )}
           </span>
-        </Row>
+        </TradeRow>
 
-        <Row>
+        <TradeRow>
           <span>Planet Level </span>
           <span> {currentPlanetLevel}</span>
-        </Row>
+        </TradeRow>
 
-        <Row>
+        <TradeRow>
           <span>Planet Owner </span>
           <span> {currentPlanetOwner}</span>
-        </Row>
+        </TradeRow>
 
-        <Row>
+        <TradeRow>
           <span>Cost / My Balance </span>
           <span>
             {getPlanetCostEth()} ${TOKEN_NAME} / {balanceEth} ${TOKEN_NAME}
           </span>
-        </Row>
+        </TradeRow>
 
-        <Row>
+        <TradeRow>
           <span>My Amount / Max Amount </span>
           <span>{player.buyPlanetAmount} / 6</span>
-        </Row>
+        </TradeRow>
       </Section>
 
       <Btn disabled={disableBuyButton} onClick={buyPlanet}>
         {buttonContent}
       </Btn>
       <EmSpacer height={1} />
-    </BuyPlanetContent>
+    </TradeSectionContent>
   );
 }

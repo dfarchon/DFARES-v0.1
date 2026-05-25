@@ -25,6 +25,7 @@ export function decodePlayer(rawPlayer: RawPlayer): Player {
     lastKardashevTimestamp: rawPlayer.lastRevealTimestamp.toNumber(),
     lastActivateArtifactTimestamp: rawPlayer.lastRevealTimestamp.toNumber(),
     lastBuyArtifactTimestamp: rawPlayer.lastRevealTimestamp.toNumber(),
+    lastBuyEnergyTimestamp: rawPlayer.lastBuyEnergyTimestamp.toNumber(),
     score: rawPlayer.score.toNumber(),
     rank: undefined,
     spaceJunk: rawPlayer.spaceJunk.toNumber(),

@@ -87,8 +87,12 @@ task('game:getEntryFee', 'get entry fee').setAction(getEntryFee);
 async function getEntryFee({}, hre: HardhatRuntimeEnvironment) {
   await hre.run('utils:assertChainId');
   const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
-  const amount = await contract.getEntryFee();
-  console.log('entry fee: ', amount.toString());
+  const baseFee = await contract.getEntryFee();
+  const isHalfPrice = await contract.halfPrice();
+  const effectiveFee = isHalfPrice ? baseFee.div(2) : baseFee;
+  console.log('base entry fee: ', baseFee.toString());
+  console.log('half price enabled: ', isHalfPrice);
+  console.log('effective entry fee: ', effectiveFee.toString());
 }
 
 task('game:getFirstMythicArtifactOwner', 'get first mythic artifact owner').setAction(
@@ -111,6 +115,17 @@ async function getFirstBurnLocationOperator({}, hre: HardhatRuntimeEnvironment) 
   const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
   const amount = await contract.getFirstBurnLocationOperator();
   console.log('first burnLocation operator: ', amount.toString());
+}
+
+task('game:getFirstKardashevOperator', 'get first kardashev operator').setAction(
+  getFirstKardashevOperator
+);
+
+async function getFirstKardashevOperator({}, hre: HardhatRuntimeEnvironment) {
+  await hre.run('utils:assertChainId');
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+  const operator = await contract.getFirstKardashevOperator();
+  console.log('first kardashev operator: ', operator.toString());
 }
 
 task('game:getFirstHat', 'getFirstHat').setAction(getFirstHat);
@@ -486,6 +501,8 @@ async function getPlayerLog(
   const pinkLocationCnt = rawPlayerLog.pinkLocationCnt.toNumber();
   const buyPlanetCnt = rawPlayerLog.buyPlanetCnt.toNumber();
   const buyPlanetCost = hre.ethers.utils.formatUnits(rawPlayerLog.buyPlanetCost);
+  const buyEnergyCnt = rawPlayerLog.buyEnergyCnt.toNumber();
+  const buyEnergyCost = hre.ethers.utils.formatUnits(rawPlayerLog.buyEnergyCost);
   const buySpaceshipCnt = rawPlayerLog.buySpaceshipCnt.toNumber();
   const buySpaceshipCost = hre.ethers.utils.formatUnits(rawPlayerLog.buySpaceshipCost);
   const donateCnt = rawPlayerLog.donateCnt.toNumber();
@@ -494,6 +511,7 @@ async function getPlayerLog(
   console.log('account:', playerAddress.toLocaleLowerCase());
   console.log('       Hat Cost:', buySkinCost, 'ether');
   console.log('    Planet Cost:', buyPlanetCost, 'ether');
+  console.log('    Energy Cost:', buyEnergyCost, 'ether');
   console.log(' Spaceship Cost:', buySpaceshipCost, 'ether');
   console.log('     Donate Sum:', donateSum, 'ether');
   console.log('                buySkin Cnt:', buySkinCnt);
@@ -513,6 +531,7 @@ async function getPlayerLog(
   console.log('           burnLocation Cnt:', burnLocationCnt);
   console.log('           pinkLocation Cnt:', pinkLocationCnt);
   console.log('              buyPlanet Cnt:', buyPlanetCnt);
+  console.log('              buyEnergy Cnt:', buyEnergyCnt);
   console.log('           buySpaceship Cnt:', buySpaceshipCnt);
   console.log('                 donate Cnt:', donateCnt);
 }
@@ -595,9 +614,12 @@ async function analysisGameLog({}, hre: HardhatRuntimeEnvironment) {
   const buySpaceshipCost = hre.ethers.utils.formatUnits(rawResult[26]);
   const donateCnt = rawResult[27].toNumber();
   const donateSum = hre.ethers.utils.formatUnits(rawResult[28]);
+  const buyEnergyCnt = rawResult[29].toNumber();
+  const buyEnergyEarn = hre.ethers.utils.formatUnits(rawResult[30]);
 
   console.log('       Hat Earn:', hatEarnSum, 'ether');
   console.log('    Planet Earn:', buyPlanetEarn, 'ether');
+  console.log('    Energy Earn:', buyEnergyEarn, 'ether');
   console.log(' Spaceship Earn:', buySpaceshipCost, 'ether');
   console.log('     Donate Sum:', donateSum, 'ether');
   console.log('     Entry Cost:', entryCost, 'ether');
@@ -623,6 +645,7 @@ async function analysisGameLog({}, hre: HardhatRuntimeEnvironment) {
   console.log('           burnLocation Cnt:', burnLocationCnt);
   console.log('           pinkLocation Cnt:', pinkLocationCnt);
   console.log('              buyPlanet Cnt:', buyPlanetCnt);
+  console.log('              buyEnergy Cnt:', buyEnergyCnt);
   console.log('           buySpaceship Cnt:', buySpaceshipCnt);
   console.log('                 donate Cnt:', donateCnt);
 }

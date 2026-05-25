@@ -20,6 +20,7 @@ export type Player = {
   lastBurnTimestamp: number;
   lastActivateArtifactTimestamp: number;
   lastBuyArtifactTimestamp: number;
+  lastBuyEnergyTimestamp: number;
   lastKardashevTimestamp: number;
 
   score?: number;

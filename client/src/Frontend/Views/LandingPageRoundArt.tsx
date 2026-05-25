@@ -52,38 +52,26 @@ const ImgContainer = styled.div`
 
   @keyframes logoFlame {
     0% {
-      box-shadow:
-        0 -10px 12px rgba(255, 180, 193, 0.78),
-        7px -7px 14px rgba(255, 100, 146, 0.5),
-        -6px -5px 11px rgba(255, 195, 205, 0.42),
-        2px 0 10px rgba(255, 180, 193, 0.28);
+      box-shadow: 0 -10px 12px rgba(255, 180, 193, 0.78), 7px -7px 14px rgba(255, 100, 146, 0.5),
+        -6px -5px 11px rgba(255, 195, 205, 0.42), 2px 0 10px rgba(255, 180, 193, 0.28);
       opacity: 0.72;
       transform: skewX(-3deg);
     }
     33% {
-      box-shadow:
-        -4px -13px 14px rgba(255, 180, 193, 0.82),
-        9px -4px 12px rgba(255, 100, 146, 0.46),
-        -9px -7px 16px rgba(255, 195, 205, 0.5),
-        0 1px 8px rgba(255, 180, 193, 0.24);
+      box-shadow: -4px -13px 14px rgba(255, 180, 193, 0.82), 9px -4px 12px rgba(255, 100, 146, 0.46),
+        -9px -7px 16px rgba(255, 195, 205, 0.5), 0 1px 8px rgba(255, 180, 193, 0.24);
       opacity: 0.9;
       transform: skewX(2deg);
     }
     66% {
-      box-shadow:
-        5px -12px 13px rgba(255, 180, 193, 0.75),
-        -8px -8px 13px rgba(255, 100, 146, 0.48),
-        8px -2px 11px rgba(255, 195, 205, 0.36),
-        0 0 9px rgba(255, 180, 193, 0.26);
+      box-shadow: 5px -12px 13px rgba(255, 180, 193, 0.75), -8px -8px 13px rgba(255, 100, 146, 0.48),
+        8px -2px 11px rgba(255, 195, 205, 0.36), 0 0 9px rgba(255, 180, 193, 0.26);
       opacity: 0.8;
       transform: skewX(-2deg);
     }
     100% {
-      box-shadow:
-        2px -15px 16px rgba(255, 180, 193, 0.86),
-        10px -8px 15px rgba(255, 100, 146, 0.45),
-        -4px -3px 10px rgba(255, 195, 205, 0.46),
-        0 1px 8px rgba(255, 180, 193, 0.22);
+      box-shadow: 2px -15px 16px rgba(255, 180, 193, 0.86), 10px -8px 15px rgba(255, 100, 146, 0.45),
+        -4px -3px 10px rgba(255, 195, 205, 0.46), 0 1px 8px rgba(255, 180, 193, 0.22);
       opacity: 1;
       transform: skewX(3deg);
     }

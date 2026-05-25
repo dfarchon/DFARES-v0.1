@@ -402,7 +402,7 @@ function TerminalOptionButton({
 
   return (
     <OptionRowButton
-      type="button"
+      type='button'
       disabled={disabled}
       data-selected={selected}
       onClick={activate}

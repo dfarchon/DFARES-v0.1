@@ -109,9 +109,7 @@ const megaETH = {
 };
 
 const hasRedstoneTestnetConfig =
-  DEPLOYER_MNEMONIC &&
-  process.env.REDSTONE_TESTNET_RPC_URL &&
-  process.env.REDSTONE_TESTNET_CHAINID;
+  DEPLOYER_MNEMONIC && process.env.REDSTONE_TESTNET_RPC_URL && process.env.REDSTONE_TESTNET_CHAINID;
 const redstoneTestnet = {
   url: process.env.REDSTONE_TESTNET_RPC_URL,
   accounts: {

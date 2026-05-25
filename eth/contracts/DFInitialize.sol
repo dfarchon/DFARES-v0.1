@@ -142,6 +142,8 @@ contract DFInitialize is WithStorage {
         gameConstants().PINK_PLANET_COOLDOWN = initArgs.PINK_PLANET_COOLDOWN;
         gameConstants().ACTIVATE_ARTIFACT_COOLDOWN = initArgs.ACTIVATE_ARTIFACT_COOLDOWN;
         gameConstants().BUY_ARTIFACT_COOLDOWN = initArgs.BUY_ARTIFACT_COOLDOWN;
+        gameConstants().BUY_ENERGY_COOLDOWN = initArgs.BUY_ENERGY_COOLDOWN;
+        gameConstants().BUY_ENERGY_LEVEL_FEES = initArgs.BUY_ENERGY_LEVEL_FEES;
         gameConstants().BURN_PLANET_LEVEL_EFFECT_RADIUS = initArgs.BURN_PLANET_LEVEL_EFFECT_RADIUS;
         gameConstants().BURN_PLANET_REQUIRE_SILVER_AMOUNTS = initArgs
             .BURN_PLANET_REQUIRE_SILVER_AMOUNTS;

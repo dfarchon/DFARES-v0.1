@@ -79,3 +79,9 @@ export interface KardashevCountdownInfo {
   currentlyKardasheving: boolean; // true iff player has an unconfirmedReveal currently being processed
   kardashevCooldownTime: number; // in seconds
 }
+
+export interface BuyEnergyCooldownInfo {
+  myLastBuyEnergyTimestamp?: number; // if undefined, never revealed before
+  currentlyBuyingEnergy: boolean; // true iff player has an unconfirmedBuyEnergy currently being processed
+  buyEnergyCooldownTime: number; // in seconds
+}

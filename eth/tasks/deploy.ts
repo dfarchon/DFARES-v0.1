@@ -33,7 +33,13 @@ async function deploy(
   }
 
   // Ensure we have required keys in our initializers
-  settings.required(hre.initializers, ['PLANETHASH_KEY', 'SPACETYPE_KEY', 'BIOMEBASE_KEY']);
+  settings.required(hre.initializers, [
+    'PLANETHASH_KEY',
+    'SPACETYPE_KEY',
+    'BIOMEBASE_KEY',
+    'BUY_ENERGY_COOLDOWN',
+    'BUY_ENERGY_LEVEL_FEES',
+  ]);
 
   // need to force a compile for tasks
   await hre.run('compile');
@@ -513,6 +519,7 @@ export async function deployLibraries({}, hre: HardhatRuntimeEnvironment) {
 
   return {
     LibGameUtils: LibGameUtils.address,
+    LibLazyUpdate: LibLazyUpdate.address,
     LibPlanet: LibPlanet.address,
     LibArtifactUtils: LibArtifactUtils.address,
     LibArtifactExtendUtils: LibArtifactExtendUtils.address,
@@ -614,7 +621,7 @@ export async function deployKardashevFacet(
 
 export async function deployTradeFacet(
   {},
-  { LibPlanet, LibGameUtils, LibArtifactUtils }: Libraries,
+  { LibPlanet, LibGameUtils, LibArtifactUtils, LibLazyUpdate }: Libraries,
   hre: HardhatRuntimeEnvironment
 ) {
   const factory = await hre.ethers.getContractFactory('DFTradeFacet', {
@@ -622,6 +629,7 @@ export async function deployTradeFacet(
       LibPlanet,
       LibGameUtils,
       LibArtifactUtils,
+      LibLazyUpdate,
     },
   });
   const contract = await factory.deploy();

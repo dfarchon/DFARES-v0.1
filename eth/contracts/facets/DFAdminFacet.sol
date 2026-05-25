@@ -172,6 +172,14 @@ contract DFAdminFacet is WithStorage {
         gameConstants().BUY_ARTIFACT_COOLDOWN = newCooldown;
     }
 
+    function changeBuyEnergyCooldown(uint256 newCooldown) public onlyAdmin {
+        gameConstants().BUY_ENERGY_COOLDOWN = newCooldown;
+    }
+
+    function changeBuyEnergyLevelFees(uint256 level, uint256 _newFee) public onlyAdmin {
+        gameConstants().BUY_ENERGY_LEVEL_FEES[level] = _newFee;
+    }
+
     function withdraw() public onlyAdmin {
         // TODO: Don't send to msg.sender, instead send to contract admin
         payable(msg.sender).transfer(address(this).balance);

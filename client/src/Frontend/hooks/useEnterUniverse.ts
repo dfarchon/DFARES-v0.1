@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-
 import { ENTER_TRANSITION_DURATION_MS } from '../Views/UniverseEnterTransition';
 
 /** Starts the universe entry transition, then navigates to the play route. */

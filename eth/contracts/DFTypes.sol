@@ -49,6 +49,7 @@ struct Player {
     uint256 donationAmount; // amount (ether) * CONTRACT_PERCISION
     uint256 unionId;
     uint256 leaveUnionTimestamp;
+    uint256 lastBuyEnergyTimestamp;
 }
 
 struct PlayerLog {
@@ -71,6 +72,8 @@ struct PlayerLog {
     uint256 pinkLocationCnt;
     uint256 buyPlanetCnt;
     uint256 buyPlanetCost;
+    uint256 buyEnergyCnt;
+    uint256 buyEnergyCost;
     uint256 buySpaceshipCnt;
     uint256 buySpaceshipCost;
     uint256 donateCnt;
@@ -482,6 +485,14 @@ struct InitArgs {
     uint256 PINK_PLANET_COOLDOWN;
     uint256 ACTIVATE_ARTIFACT_COOLDOWN;
     uint256 BUY_ARTIFACT_COOLDOWN;
+    // Buy Energy
+    uint256 BUY_ENERGY_COOLDOWN;
+    /**
+        Per-second buy-energy fee by planet level, in gwei.
+        Total fee = BUY_ENERGY_LEVEL_FEES[level] * durationSeconds * 1 gwei.
+        Buys `durationSeconds` of natural population growth, not a fill-to-cap.
+    */
+    uint256[10] BUY_ENERGY_LEVEL_FEES;
     uint256[10] BURN_PLANET_LEVEL_EFFECT_RADIUS;
     uint256[10] BURN_PLANET_REQUIRE_SILVER_AMOUNTS;
     // planet adjust

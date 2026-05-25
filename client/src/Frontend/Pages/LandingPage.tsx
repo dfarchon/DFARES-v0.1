@@ -63,12 +63,7 @@ const EnterButton = styled.button`
   font-family: inherit;
   font-size: 16pt;
   cursor: pointer;
-  transition:
-    border-color 0.2s,
-    color 0.2s,
-    background 0.2s,
-    box-shadow 0.2s,
-    transform 0.2s;
+  transition: border-color 0.2s, color 0.2s, background 0.2s, box-shadow 0.2s, transform 0.2s;
 
   &:hover:not(:disabled),
   &:focus:not(:disabled) {
@@ -121,7 +116,6 @@ export default function LandingPage() {
             </LinkContainer> */}
 
             <HeroPanel>
-
               <HeroArt>
                 <LandingPageRoundArt onEnter={enterUniverse} />
               </HeroArt>
@@ -139,16 +133,10 @@ export default function LandingPage() {
                   The original project was developed by the Dark Forest official team from 2019 to
                   Q1 2022.
                 </p>
-                <p>
-                  Dark Forest Ares is a community-maintained branch by DFArchon team.
-                </p>
+                <p>Dark Forest Ares is a community-maintained branch by DFArchon team.</p>
 
-                <p>
-                  Dark Forest Ares was actively developed from Q1 2023 to Q2 2024.
-                </p>
-                <p>
-                  After that, the DFArchon team ported Dark Forest to the MUD engine.
-                </p>
+                <p>Dark Forest Ares was actively developed from Q1 2023 to Q2 2024.</p>
+                <p>After that, the DFArchon team ported Dark Forest to the MUD engine.</p>
                 <p>
                   Follow the latest updates at{' '}
                   <InlineLink href='https://x.com/darkforest_punk' target='_blank' rel='noreferrer'>
@@ -404,9 +392,7 @@ const HeroTitle = styled.h1`
   font-weight: 700;
   line-height: 1.08;
   white-space: nowrap;
-  text-shadow:
-    0 0 8px rgba(255, 180, 193, 0.5),
-    0 0 20px rgba(255, 59, 59, 0.25);
+  text-shadow: 0 0 8px rgba(255, 180, 193, 0.5), 0 0 20px rgba(255, 59, 59, 0.25);
 `;
 
 const RoundLine = styled.div`
@@ -486,11 +472,7 @@ const GuideLink = styled.a`
   font-family: inherit;
   font-size: ${dfstyles.fontSizeS};
   letter-spacing: 0.02em;
-  transition:
-    border-color 0.2s,
-    color 0.2s,
-    box-shadow 0.2s,
-    transform 0.2s;
+  transition: border-color 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
 
   &:hover {
     color: white;
@@ -553,8 +535,7 @@ const Page = styled.div<{ $entering?: boolean }>`
   max-width: 100vw;
   height: 100%;
   color: white;
-  background:
-    radial-gradient(circle at 50% 34%, rgba(255, 59, 59, 0.16), transparent 28%),
+  background: radial-gradient(circle at 50% 34%, rgba(255, 59, 59, 0.16), transparent 28%),
     radial-gradient(circle at 78% 18%, rgba(255, 180, 193, 0.1), transparent 24%),
     radial-gradient(circle at 20% 82%, rgba(0, 220, 130, 0.08), transparent 22%),
     linear-gradient(180deg, #09070d 0%, #030306 58%, #08050a 100%);
@@ -565,10 +546,7 @@ const Page = styled.div<{ $entering?: boolean }>`
   z-index: ${LandingPageZIndex.BasePage};
   overflow: hidden;
 
-  transition:
-    opacity 0.3s ease-out,
-    filter 0.3s ease-out,
-    transform 0.8s ease-in;
+  transition: opacity 0.3s ease-out, filter 0.3s ease-out, transform 0.8s ease-in;
   ${({ $entering }) =>
     $entering &&
     css`
@@ -581,15 +559,13 @@ const Page = styled.div<{ $entering?: boolean }>`
     content: '';
     position: absolute;
     inset: 0;
-    background-image:
-      linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    background-image: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
     background-size: 44px 44px;
     mask-image: radial-gradient(circle at center, black, transparent 72%);
     opacity: 0.45;
     z-index: 0;
   }
-
 `;
 
 const HallOfFameTitle = styled.div`

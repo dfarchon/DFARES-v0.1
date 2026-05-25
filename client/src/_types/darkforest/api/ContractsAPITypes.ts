@@ -456,6 +456,19 @@ export interface ContractConstants {
   MAX_LEVEL_LIMIT: number[];
   MIN_LEVEL_BIAS: number[];
   ENTRY_FEE: number;
+  BUY_ENERGY_COOLDOWN: number;
+  BUY_ENERGY_LEVEL_FEES: [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number
+  ];
   KARDASHEV_END_TIMESTAMP: number;
   KARDASHEV_PLANET_COOLDOWN: number;
   BLUE_PLANET_COOLDOWN: number;

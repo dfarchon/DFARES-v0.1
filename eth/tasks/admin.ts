@@ -3,6 +3,9 @@ import { fakeHash, mimcHash, modPBigInt, perlin } from '@dfares/hashing';
 import {
   buildContractCallArgs,
   fakeProof,
+  InitSnarkContractCallArgs,
+  initSnarkWasmPath,
+  initSnarkZkeyPath,
   RevealSnarkContractCallArgs,
   revealSnarkWasmPath,
   revealSnarkZkeyPath,
@@ -41,6 +44,30 @@ async function gameResume({}, hre: HardhatRuntimeEnvironment) {
   console.log('admin:resume success');
 }
 
+task('admin:setHalfPrice', 'enable half-price entry fee').setAction(setHalfPrice);
+
+async function setHalfPrice({}, hre: HardhatRuntimeEnvironment) {
+  await hre.run('utils:assertChainId');
+
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  const receipt = await contract.setHalfPrice();
+  await receipt.wait();
+  console.log('admin:setHalfPrice success');
+}
+
+task('admin:setUnHalfPrice', 'disable half-price entry fee').setAction(setUnHalfPrice);
+
+async function setUnHalfPrice({}, hre: HardhatRuntimeEnvironment) {
+  await hre.run('utils:assertChainId');
+
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  const receipt = await contract.setUnHalfPrice();
+  await receipt.wait();
+  console.log('admin:setUnHalfPrice success');
+}
+
 task('admin:setPlanetOwner', 'sets the owner of the given planet to be the given address')
   .addPositionalParam('planetId', 'non-0x-prefixed planet locationId', undefined, types.string)
   .addPositionalParam('address', '0x-prefixed address of a player', undefined, types.string)
@@ -69,6 +96,21 @@ async function deductScore(
   await hre.run('utils:assertChainId');
   const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
   const receipt = await contract.deductScore(address, amount);
+  await receipt.wait();
+}
+
+task('admin:addScore', 'add player score')
+  .addPositionalParam('address', '0x-prefixed address of a player', undefined, types.string)
+  .addPositionalParam('amount', "the add score's amount")
+  .setAction(addScore);
+
+async function addScore(
+  { address, amount }: { address: string; amount: number },
+  hre: HardhatRuntimeEnvironment
+) {
+  await hre.run('utils:assertChainId');
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+  const receipt = await contract.addScore(address, amount);
   await receipt.wait();
 }
 
@@ -104,7 +146,44 @@ async function deductSilver(
   await receipt.wait();
 }
 
-// safeSetOwner
+task(
+  'admin:safeSetOwner',
+  'sets planet owner, initializing the planet first if needed (requires x/y coords for snark args)'
+)
+  .addPositionalParam('address', '0x-prefixed address of the new owner', undefined, types.string)
+  .addPositionalParam('x', 'planet x coordinate', undefined, types.int)
+  .addPositionalParam('y', 'planet y coordinate', undefined, types.int)
+  .addOptionalPositionalParam(
+    'radius',
+    'spawn radius used in init proof (defaults to WORLD_RADIUS_MIN)',
+    undefined,
+    types.int
+  )
+  .setAction(safeSetOwner);
+
+async function safeSetOwner(
+  { address, x, y, radius }: { address: string; x: number; y: number; radius?: number },
+  hre: HardhatRuntimeEnvironment
+) {
+  await hre.run('utils:assertChainId');
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+  const initRadius = radius ?? hre.initializers.WORLD_RADIUS_MIN;
+  const pfArgs = await makeInitProof(
+    x,
+    y,
+    initRadius,
+    hre.initializers.PLANETHASH_KEY,
+    hre.initializers.SPACETYPE_KEY,
+    hre.initializers.PERLIN_LENGTH_SCALE,
+    hre.initializers.PERLIN_MIRROR_X,
+    hre.initializers.PERLIN_MIRROR_Y,
+    hre.initializers.DISABLE_ZK_CHECKS,
+    hre.initializers.PLANET_RARITY
+  );
+  const receipt = await contract.safeSetOwner(address, ...pfArgs);
+  await receipt.wait();
+  console.log(`admin:safeSetOwner success for (${x}, ${y}) -> ${address}`);
+}
 
 task('admin:setWorldRadiusMin', 'change the WORLD_RADIUS_MIN')
   .addPositionalParam('radius', 'the minimum radius of the world', undefined, types.int)
@@ -239,7 +318,7 @@ async function changeBurnPlanetCooldown(
 
   const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
 
-  const receipt = await contract.changeClaimPlanetCooldown(args.cooldown);
+  const receipt = await contract.changeBurnPlanetCooldown(args.cooldown);
   await receipt.wait();
 }
 
@@ -256,6 +335,68 @@ async function changePinkPlanetCooldown(
   const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
 
   const receipt = await contract.changePinkPlanetCooldown(args.cooldown);
+  await receipt.wait();
+}
+
+task('admin:changeActivateArtifactCooldown', 'change activate artifact cooldown')
+  .addPositionalParam('cooldown', 'the cooldown', undefined, types.int)
+  .setAction(changeActivateArtifactCooldown);
+
+async function changeActivateArtifactCooldown(
+  args: { cooldown: number },
+  hre: HardhatRuntimeEnvironment
+) {
+  await hre.run('utils:assertChainId');
+
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  const receipt = await contract.changeActivateArtifactCooldown(args.cooldown);
+  await receipt.wait();
+}
+
+task('admin:changeBuyArtifactCooldown', 'change buy artifact cooldown')
+  .addPositionalParam('cooldown', 'the cooldown', undefined, types.int)
+  .setAction(changeBuyArtifactCooldown);
+
+async function changeBuyArtifactCooldown(
+  args: { cooldown: number },
+  hre: HardhatRuntimeEnvironment
+) {
+  await hre.run('utils:assertChainId');
+
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  const receipt = await contract.changeBuyArtifactCooldown(args.cooldown);
+  await receipt.wait();
+}
+
+task('admin:changeBuyEnergyCooldown', 'change buy energy cooldown')
+  .addPositionalParam('cooldown', 'the cooldown', undefined, types.int)
+  .setAction(changeBuyEnergyCooldown);
+
+async function changeBuyEnergyCooldown(args: { cooldown: number }, hre: HardhatRuntimeEnvironment) {
+  await hre.run('utils:assertChainId');
+
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  const receipt = await contract.changeBuyEnergyCooldown(args.cooldown);
+  await receipt.wait();
+}
+
+task('admin:changeBuyEnergyLevelFees', 'change buy energy level fees')
+  .addPositionalParam('level', 'the planet level', undefined, types.int)
+  .addPositionalParam('fee', 'the fee per second (gwei multiplier)', undefined, types.int)
+  .setAction(changeBuyEnergyLevelFees);
+
+async function changeBuyEnergyLevelFees(
+  args: { level: number; fee: number },
+  hre: HardhatRuntimeEnvironment
+) {
+  await hre.run('utils:assertChainId');
+
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  const receipt = await contract.changeBuyEnergyLevelFees(args.level, args.fee);
   await receipt.wait();
 }
 
@@ -290,6 +431,105 @@ async function setEndTime(args: { endtime: number }, hre: HardhatRuntimeEnvironm
   const receipt3 = await contract.setBurnEndTime(args.endtime);
   await receipt3.wait();
   console.log('alreadt set burnEndTime');
+}
+
+task('admin:setKardashevEndTime', 'change kardashev end time')
+  .addPositionalParam('endtime', 'the endtime', undefined, types.int)
+  .setAction(setKardashevEndTime);
+
+async function setKardashevEndTime(args: { endtime: number }, hre: HardhatRuntimeEnvironment) {
+  await hre.run('utils:assertChainId');
+
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  const receipt = await contract.setKardashevEndTime(args.endtime);
+  await receipt.wait();
+}
+
+task('admin:setKardashevCooldown', 'change kardashev planet cooldown')
+  .addPositionalParam('cooldown', 'the cooldown', undefined, types.int)
+  .setAction(setKardashevCooldown);
+
+async function setKardashevCooldown(args: { cooldown: number }, hre: HardhatRuntimeEnvironment) {
+  await hre.run('utils:assertChainId');
+
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  const receipt = await contract.setKardashevCooldowm(args.cooldown);
+  await receipt.wait();
+}
+
+task('admin:setTransferEnergyCooldown', 'change transfer energy (blue planet) cooldown')
+  .addPositionalParam('cooldown', 'the cooldown', undefined, types.int)
+  .setAction(setTransferEnergyCooldown);
+
+async function setTransferEnergyCooldown(
+  args: { cooldown: number },
+  hre: HardhatRuntimeEnvironment
+) {
+  await hre.run('utils:assertChainId');
+
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  const receipt = await contract.setTransferEnergyCooldown(args.cooldown);
+  await receipt.wait();
+}
+
+task('admin:changeKardashevEffectRadius', 'change kardashev effect radius')
+  .addPositionalParam('level', 'the planet level', undefined, types.int)
+  .addPositionalParam('radius', 'the radius', undefined, types.int)
+  .setAction(changeKardashevEffectRadius);
+
+async function changeKardashevEffectRadius(
+  args: { level: number; radius: number },
+  hre: HardhatRuntimeEnvironment
+) {
+  await hre.run('utils:assertChainId');
+
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  const receipt = await contract.changeKardashevEffectRadius(args.level, args.radius);
+  await receipt.wait();
+}
+
+task('admin:changeKardashevRequireSilver', 'change kardashev require silver amount')
+  .addPositionalParam('level', 'the planet level', undefined, types.int)
+  .addPositionalParam('silver', 'the silver amount', undefined, types.int)
+  .setAction(changeKardashevRequireSilver);
+
+async function changeKardashevRequireSilver(
+  args: { level: number; silver: number },
+  hre: HardhatRuntimeEnvironment
+) {
+  await hre.run('utils:assertChainId');
+
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  const receipt = await contract.changeKardashevRequireSilverAmounts(
+    args.level,
+    Number(args.silver * CONTRACT_PRECISION)
+  );
+  await receipt.wait();
+}
+
+task('admin:changeTransferEnergyRequireSilver', 'change transfer energy require silver amount')
+  .addPositionalParam('level', 'the planet level', undefined, types.int)
+  .addPositionalParam('silver', 'the silver amount', undefined, types.int)
+  .setAction(changeTransferEnergyRequireSilver);
+
+async function changeTransferEnergyRequireSilver(
+  args: { level: number; silver: number },
+  hre: HardhatRuntimeEnvironment
+) {
+  await hre.run('utils:assertChainId');
+
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  const receipt = await contract.changeTransferEnergyRequireSilverAmounts(
+    args.level,
+    Number(args.silver * CONTRACT_PRECISION)
+  );
+  await receipt.wait();
 }
 
 task('admin:setEntryFee', 'change Entry Fee')
@@ -423,9 +663,119 @@ async function makeRevealProof(
   }
 }
 
-//adminGiveSpaceShip
+async function makeInitProof(
+  x: number,
+  y: number,
+  radius: number,
+  planetHashKey: number,
+  spaceTypeKey: number,
+  scale: number,
+  mirrorX: boolean,
+  mirrorY: boolean,
+  zkChecksDisabled: boolean,
+  planetRarity: number
+): Promise<InitSnarkContractCallArgs> {
+  const targetDistFromOriginSquare = (x ** 2 + y ** 2).toString();
 
-//adminInitializePlanet
+  if (zkChecksDisabled) {
+    const location = fakeHash(planetRarity)(x, y).toString();
+    const perlinValue = perlin(
+      { x, y },
+      {
+        key: spaceTypeKey,
+        scale,
+        mirrorX,
+        mirrorY,
+        floor: true,
+      }
+    );
+    const { proof, publicSignals } = fakeProof([
+      location,
+      perlinValue.toString(),
+      radius.toString(),
+      planetHashKey.toString(),
+      spaceTypeKey.toString(),
+      scale.toString(),
+      mirrorX ? '1' : '0',
+      mirrorY ? '1' : '0',
+      targetDistFromOriginSquare,
+    ]);
+    return buildContractCallArgs(proof, publicSignals) as InitSnarkContractCallArgs;
+  } else {
+    const { proof, publicSignals }: SnarkJSProofAndSignals = await snarkjs.groth16.fullProve(
+      {
+        x: modPBigInt(x).toString(),
+        y: modPBigInt(y).toString(),
+        r: radius.toString(),
+        PLANETHASH_KEY: planetHashKey.toString(),
+        SPACETYPE_KEY: spaceTypeKey.toString(),
+        SCALE: scale.toString(),
+        xMirror: mirrorX ? '1' : '0',
+        yMirror: mirrorY ? '1' : '0',
+        targetDistFromOriginSquare,
+      },
+      initSnarkWasmPath,
+      initSnarkZkeyPath
+    );
+
+    return buildContractCallArgs(proof, publicSignals) as InitSnarkContractCallArgs;
+  }
+}
+
+task('admin:adminGiveSpaceShip', 'give a spaceship artifact to a player on a planet')
+  .addPositionalParam('planetId', 'non-0x-prefixed planet locationId', undefined, types.string)
+  .addPositionalParam('address', '0x-prefixed address of the owner', undefined, types.string)
+  .addPositionalParam('artifactType', 'ArtifactType enum value', undefined, types.int)
+  .setAction(adminGiveSpaceShip);
+
+async function adminGiveSpaceShip(
+  { planetId, address, artifactType }: { planetId: string; address: string; artifactType: number },
+  hre: HardhatRuntimeEnvironment
+) {
+  await hre.run('utils:assertChainId');
+
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  const receipt = await contract.adminGiveSpaceShip(
+    BigNumber.from('0x' + planetId),
+    address,
+    artifactType
+  );
+  await receipt.wait();
+  console.log(`admin:adminGiveSpaceShip success on planet 0x${planetId}`);
+}
+
+task('admin:adminInitializePlanet', 'initialize a planet with perlin and distance from origin')
+  .addPositionalParam('planetId', 'non-0x-prefixed planet locationId', undefined, types.string)
+  .addPositionalParam('perlin', 'perlin value at the planet location', undefined, types.int)
+  .addPositionalParam(
+    'distFromOriginSquare',
+    'squared distance from origin (x^2 + y^2)',
+    undefined,
+    types.int
+  )
+  .setAction(adminInitializePlanet);
+
+async function adminInitializePlanet(
+  {
+    planetId,
+    perlin: perlinValue,
+    distFromOriginSquare,
+  }: { planetId: string; perlin: number; distFromOriginSquare: number },
+  hre: HardhatRuntimeEnvironment
+) {
+  await hre.run('utils:assertChainId');
+
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  const receipt = await contract.adminInitializePlanet(
+    BigNumber.from('0x' + planetId),
+    perlinValue,
+    distFromOriginSquare
+  );
+  await receipt.wait();
+  console.log(`admin:adminInitializePlanet success for 0x${planetId}`);
+}
 
 task('admin:setPlanetTransferEnabled', 'resume the game')
   .addPositionalParam(

@@ -572,6 +572,14 @@ class GameUIManager extends EventEmitter {
     return this.gameManager.timeUntilNextBuyArtifactAvailable();
   }
 
+  public getNextBuyEnergyAvailableTimestamp() {
+    return this.gameManager.getNextBuyEnergyAvailableTimestamp();
+  }
+
+  public timeUntilNextBuyEnergyAvailable() {
+    return this.gameManager.timeUntilNextBuyEnergyAvailable();
+  }
+
   public timeUntilNextApplyUnionAvaiable() {
     return this.gameManager.timeUntilNextApplyUnionAvaiable();
   }
@@ -1485,6 +1493,15 @@ class GameUIManager extends EventEmitter {
   public buySpaceship(planet: Planet): void {
     this.terminal.current?.printShellLn(`df.buySpaceship('${planet.locationId}')`);
     this.gameManager.buySpaceship(planet.locationId);
+  }
+
+  public isCurrentlyBuyingEnergy(): boolean {
+    return this.gameManager.getNextBuyEnergyCountdownInfo().currentlyBuyingEnergy;
+  }
+
+  public buyEnergy(planet: Planet, duration: number): void {
+    this.terminal.current?.printShellLn(`df.buyEnergy('${planet.locationId}','${duration}')`);
+    this.gameManager.buyEnergy(planet.locationId, duration);
   }
 
   public donate(amount: number): void {

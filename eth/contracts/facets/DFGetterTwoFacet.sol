@@ -412,7 +412,7 @@ contract DFGetterTwoFacet is WithStorage {
     }
 
     function getLog() public view returns (uint256[] memory ret) {
-        ret = new uint256[](29);
+        ret = new uint256[](31);
         ret[0] = ls().initializePlayerCnt;
         ret[1] = ls().entryCost;
         ret[2] = ls().transferPlanetCnt;
@@ -442,6 +442,8 @@ contract DFGetterTwoFacet is WithStorage {
         ret[26] = ls().buySpaceshipCost;
         ret[27] = ls().donateCnt;
         ret[28] = ls().donateSum;
+        ret[29] = ls().buyEnergyCnt;
+        ret[30] = ls().buyEnergyEarn;
     }
 
     function getPlayerHatSpent(address player, uint256 hatType) public view returns (uint256) {

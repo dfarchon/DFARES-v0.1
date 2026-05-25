@@ -24,7 +24,6 @@ import GameUIManager from '../../Backend/GameLogic/GameUIManager';
 import TutorialManager, { TutorialState } from '../../Backend/GameLogic/TutorialManager';
 import { addAccount, getAccounts } from '../../Backend/Network/AccountManager';
 import { getEthConnection, loadDiamondContract } from '../../Backend/Network/Blockchain';
-import { resolveQuickJoinAccount } from '../../config/quickJoin';
 import {
   callRegisterAndWaitForConfirmation,
   EmailResponse,
@@ -34,7 +33,9 @@ import {
   submitPlayerEmail,
 } from '../../Backend/Network/UtilityServerAPI';
 import { getWhitelistArgs } from '../../Backend/Utils/WhitelistSnarkArgsHelper';
+import { resolveQuickJoinAccount } from '../../config/quickJoin';
 import { ZKArgIdx } from '../../_types/darkforest/api/ContractsAPITypes';
+import { CopyToClipboardButton } from '../Components/CopyToClipboardButton';
 import {
   GameWindowWrapper,
   InitRenderState,
@@ -42,9 +43,8 @@ import {
   TerminalWrapper,
   Wrapper,
 } from '../Components/GameLandingPageComponents';
-import { QuickJoinSettingsModal } from '../Components/QuickJoinSettingsModal';
 import { MythicLabelText } from '../Components/Labels/MythicLabel';
-import { CopyToClipboardButton } from '../Components/CopyToClipboardButton';
+import { QuickJoinSettingsModal } from '../Components/QuickJoinSettingsModal';
 import { TopLevelDivProvider, UIManagerProvider } from '../Utils/AppHooks';
 import { Incompatibility, unsupportedFeatures } from '../Utils/BrowserChecks';
 import { TerminalTextStyle } from '../Utils/TerminalTypes';
@@ -57,10 +57,7 @@ import {
 } from '../Views/UniverseEnterTransition';
 import { BrowserCompatibleState, BrowserIssues } from './components/BrowserIssues';
 import { MiniMap, MiniMapHandle } from './components/MiniMap';
-import {
-  EntryModeChoice,
-  GameLandingEntryOverlay,
-} from './GameLandingEntryOverlay';
+import { EntryModeChoice, GameLandingEntryOverlay } from './GameLandingEntryOverlay';
 
 type EntryMode = 'pending' | EntryModeChoice;
 
@@ -144,7 +141,10 @@ async function awaitConfirmJoinEntryFee(
       const baseEth = weiToEth(baseWei);
       const effectiveEth = weiToEth(effectiveWei);
 
-      terminal.println('Joining this universe costs a one-time entry fee.', TerminalTextStyle.Green);
+      terminal.println(
+        'Joining this universe costs a one-time entry fee.',
+        TerminalTextStyle.Green
+      );
       if (halfPrice && effectiveEth > 0) {
         terminal.print('  Regular: ', TerminalTextStyle.Sub);
         terminal.println(formatEntryFeeEth(baseEth), TerminalTextStyle.Sub);
@@ -417,10 +417,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           err instanceof Error ? err.message : String(err),
           TerminalTextStyle.Red
         );
-        terminalHandle.current?.println(
-          'Refresh the page to try again.',
-          TerminalTextStyle.Red
-        );
+        terminalHandle.current?.println('Refresh the page to try again.', TerminalTextStyle.Red);
         setStep(TerminalPromptStep.TERMINATED);
       }
     })();
@@ -576,9 +573,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           const balance = rawResult ? weiToEth(rawResult) : 0;
           const balanceLabel = balance.toFixed(9) + ' ' + TOKEN_NAME;
           const lowBalanceNote =
-            balance < 0.0001
-              ? ' => low balance, funding steps follow next'
-              : '';
+            balance < 0.0001 ? ' => low balance, funding steps follow next' : '';
 
           if (entryModeRef.current !== 'terminal') {
             terminal.current?.printOption(
@@ -763,7 +758,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
           if (privateKey) {
             terminal.current?.print('    Private Key: ');
             terminal.current?.printElement(
-              <CopyToClipboardButton text={privateKey} label="click to copy private key" />
+              <CopyToClipboardButton text={privateKey} label='click to copy private key' />
             );
           }
 
@@ -802,10 +797,7 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
             },
             TerminalTextStyle.Green
           );
-          terminal.current?.println(
-            ' <= please check this guide',
-            TerminalTextStyle.Pink
-          );
+          terminal.current?.println(' <= please check this guide', TerminalTextStyle.Pink);
 
           terminal.current?.println('');
 
@@ -1643,16 +1635,12 @@ export function GameLandingPage({ match, location }: RouteComponentProps<{ contr
         terminal.current?.println('');
         if (entryModeRef.current !== 'terminal') {
           terminal.current?.printOption('1', 'Enter Universe', { hideKey: true });
-          terminal.current?.printOption(
-            '2',
-            'Enter Universe in SAFE MODE - plugins disabled',
-            { hideKey: true }
-          );
+          terminal.current?.printOption('2', 'Enter Universe in SAFE MODE - plugins disabled', {
+            hideKey: true,
+          });
         } else {
           terminal.current?.println('Press [enter] to enter universe');
-          terminal.current?.println(
-            'Type [2] then [enter] for SAFE MODE - plugins disabled'
-          );
+          terminal.current?.println('Type [2] then [enter] for SAFE MODE - plugins disabled');
         }
         terminal.current?.println('');
         if (entryModeRef.current !== 'terminal') {

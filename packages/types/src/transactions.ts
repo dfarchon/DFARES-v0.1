@@ -34,6 +34,7 @@ export type ContractMethodName =
   | 'blueLocation'
   | 'refreshPlanet'
   | 'buyPlanet'
+  | 'buyEnergy'
   | 'buySpaceship'
   | 'donate'
   | 'addMemberByAdmin'
@@ -342,6 +343,16 @@ export type UnconfirmedBuySpaceship = TxIntent & {
   methodName: 'buySpaceship';
   locationId: LocationId;
   location: WorldLocation;
+};
+
+/**
+ * @hidden
+ */
+export type UnconfirmedBuyEnergy = TxIntent & {
+  methodName: 'buyEnergy';
+  locationId: LocationId;
+  location: WorldLocation;
+  duration: number;
 };
 
 /**

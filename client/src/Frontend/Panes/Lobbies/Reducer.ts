@@ -116,6 +116,11 @@ export type LobbyConfigAction =
       type: 'BUY_ARTIFACT_COOLDOWN';
       value: Initializers['BUY_ARTIFACT_COOLDOWN'] | undefined;
     }
+  | {
+      type: 'BUY_ENERGY_COOLDOWN';
+      value: Initializers['BUY_ENERGY_COOLDOWN'] | undefined;
+    }
+  | { type: 'BUY_ENERGY_LEVEL_FEES'; index: number; value: number | undefined }
   | { type: 'PLANET_TYPE_WEIGHTS'; value: Initializers['PLANET_TYPE_WEIGHTS'] | undefined }
   | { type: 'SILVER_SCORE_VALUE'; value: Initializers['SILVER_SCORE_VALUE'] | undefined }
   | {
@@ -375,7 +380,14 @@ export function lobbyConfigReducer(state: LobbyConfigState, action: LobbyAction)
       update = ofPositiveInteger(action, state);
       break;
     }
-
+    case 'BUY_ENERGY_COOLDOWN': {
+      update = ofPositiveInteger(action, state);
+      break;
+    }
+    case 'BUY_ENERGY_LEVEL_FEES': {
+      update = ofBuyEnergyLevelFees(action, state);
+      break;
+    }
     case 'PLANET_TYPE_WEIGHTS': {
       // TODO: Add this
       update = ofNoop(action, state);
@@ -910,6 +922,28 @@ export function lobbyConfigInit(startingConfig: LobbyInitializers) {
       }
 
       case 'BUY_ARTIFACT_COOLDOWN': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+
+      case 'BUY_ENERGY_COOLDOWN': {
+        const defaultValue = startingConfig[key];
+        state[key] = {
+          currentValue: defaultValue,
+          displayValue: defaultValue,
+          defaultValue,
+          warning: undefined,
+        };
+        break;
+      }
+
+      case 'BUY_ENERGY_LEVEL_FEES': {
         const defaultValue = startingConfig[key];
         state[key] = {
           currentValue: defaultValue,
@@ -2770,6 +2804,66 @@ export function ofPlanetLevelThresholds(
       currentValue,
       displayValue,
       warning: `Level ${index} planet threshold matches or exceeds previous threshold`,
+    };
+  }
+
+  currentValue[index] = value;
+
+  return {
+    ...state[type],
+    currentValue,
+    displayValue,
+    warning: undefined,
+  };
+}
+
+export function ofBuyEnergyLevelFees(
+  { type, index, value }: Extract<LobbyConfigAction, { type: 'BUY_ENERGY_LEVEL_FEES' }>,
+  state: LobbyConfigState
+) {
+  const prevCurrentValue = state[type].currentValue;
+  const prevDisplayValue = state[type].displayValue;
+
+  if (!prevDisplayValue) {
+    return {
+      ...state[type],
+      warning: `Failed to update ${type}`,
+    };
+  }
+
+  if (value === undefined) {
+    return {
+      ...state[type],
+      warning: undefined,
+    };
+  }
+
+  const currentValue = [...prevCurrentValue];
+  const displayValue = [...prevDisplayValue];
+
+  displayValue[index] = value;
+
+  if (typeof value !== 'number') {
+    return {
+      ...state[type],
+      displayValue,
+      warning: `Value must be a number`,
+    };
+  }
+
+  if (value < 0) {
+    return {
+      ...state[type],
+      displayValue,
+      warning: `Value must be positive`,
+    };
+  }
+
+  if (value > SAFE_UPPER_BOUNDS) {
+    return {
+      ...state[type],
+      displayValue,
+      warning: `Value is too large`,
     };
   }
 
