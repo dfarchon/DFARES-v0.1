@@ -43,6 +43,43 @@ export function array6<A>(decoder: decoders.Decoder<A>) {
   );
 }
 
+export type ExactArray23<A> = [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A];
+
+export function exactArray23<A>(decoder: decoders.Decoder<A>) {
+  return decoders.map(
+    decoders.compose(
+      decoders.array(decoder),
+      decoders.predicate((arr) => arr.length === 23, `Must be exactly 23-length`)
+    ),
+    (value) =>
+      [
+        value[0],
+        value[1],
+        value[2],
+        value[3],
+        value[4],
+        value[5],
+        value[6],
+        value[7],
+        value[8],
+        value[9],
+        value[10],
+        value[11],
+        value[12],
+        value[13],
+        value[14],
+        value[15],
+        value[16],
+        value[17],
+        value[18],
+        value[19],
+        value[20],
+        value[21],
+        value[22],
+      ] as ExactArray23<A>
+  );
+}
+
 export type ExactArray10<A> = [A, A, A, A, A, A, A, A, A, A];
 
 export function exactArray10<A>(decoder: decoders.Decoder<A>) {

@@ -110,6 +110,7 @@ export function makeInitArgs(
     BigNumberish,
     BigNumberish,
     BigNumberish,
+    BigNumberish,
     BigNumberish
   ]
 ] {
@@ -129,6 +130,7 @@ export function makeInitArgs(
       PERLIN_LENGTH_SCALE,
       PERLIN_MIRROR_X ? '1' : '0',
       PERLIN_MIRROR_Y ? '1' : '0',
+      spawnRadius * spawnRadius,
     ],
   ];
 }
@@ -146,6 +148,7 @@ export function makeMoveArgs(
   [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
   [BigNumberish, BigNumberish],
   [
+    BigNumberish,
     BigNumberish,
     BigNumberish,
     BigNumberish,
@@ -180,6 +183,7 @@ export function makeMoveArgs(
       PERLIN_LENGTH_SCALE,
       PERLIN_MIRROR_X ? '1' : '0',
       PERLIN_MIRROR_Y ? '1' : '0',
+      (newLoc.distFromOrigin + 1) * (newLoc.distFromOrigin + 1),
     ],
     popMoved,
     silverMoved,
@@ -328,6 +332,7 @@ export async function createArtifactOnPlanet(
     biome: biome.toString(),
     artifactType: type.toString(),
     controller: ZERO_ADDRESS,
+    imageType: 0,
   });
 
   return tokenId;

@@ -234,71 +234,51 @@ library LibGameUtils {
 
     function _randomArtifactTypeAndLevelBonus(
         uint256 artifactSeed,
-        Biome biome,
-        SpaceType spaceType,
+        Biome,
+        SpaceType,
         uint256 planetLevel
     )
         internal
-        pure
+        view
         returns (
             ArtifactType,
             uint256,
             ArtifactRarity
         )
     {
-        uint256 lastByteOfSeed = artifactSeed % 0x1000;
-        uint256 secondLastByteOfSeed = ((artifactSeed - lastByteOfSeed) / 0x1000) % 0x1000;
+        uint256 typeSelectionSeed = uint256(
+            keccak256(abi.encodePacked(artifactSeed, "artifact-type"))
+        );
+        uint256 bonusSeed = (artifactSeed / 0x100) % 0x100;
 
         uint256 bonus = 0;
-        if (secondLastByteOfSeed < 64) {
+        if (bonusSeed < 4) {
             bonus = 2;
-        } else if (secondLastByteOfSeed < 256) {
+        } else if (bonusSeed < 16) {
             bonus = 1;
         }
 
         uint256 level = bonus + planetLevel;
         ArtifactRarity artifactRarity = artifactRarityFromPlanetLevel(level);
         ArtifactType artifactType = ArtifactType.Wormhole;
+        uint256 rarity = uint256(artifactRarity);
+        uint256 enabledArtifactTypeCount = gameConstants().ENABLED_ARTIFACT_TYPE_COUNTS[rarity];
+        require(enabledArtifactTypeCount > 0, "no artifacts enabled for rarity");
 
-        if (artifactRarity == ArtifactRarity.Common || artifactRarity == ArtifactRarity.Rare) {
-            if (lastByteOfSeed < 455) {
-                artifactType = ArtifactType.Wormhole;
-            } else if (lastByteOfSeed < 910) {
-                artifactType = ArtifactType.PlanetaryShield;
-            } else if (lastByteOfSeed < 1365) {
-                artifactType = ArtifactType.PhotoidCannon;
-            } else if (lastByteOfSeed < 1820) {
-                artifactType = ArtifactType.BloomFilter;
-            } else if (lastByteOfSeed < 2275) {
-                artifactType = ArtifactType.BlackDomain;
-            } else if (lastByteOfSeed < 2730) {
-                artifactType = ArtifactType.StellarShield;
-            } else if (lastByteOfSeed < 3185) {
-                artifactType = ArtifactType.Bomb;
-            } else if (lastByteOfSeed < 3640) {
-                artifactType = ArtifactType.Kardashev;
-            } else if (lastByteOfSeed < 4095) {
-                artifactType = ArtifactType.Avatar;
-            } else {
-                artifactType = ArtifactType.Avatar;
-            }
-        } else {
-            if (lastByteOfSeed < 512) {
-                artifactType = ArtifactType.Wormhole;
-            } else if (lastByteOfSeed < 1024) {
-                artifactType = ArtifactType.PlanetaryShield;
-            } else if (lastByteOfSeed < 1536) {
-                artifactType = ArtifactType.PhotoidCannon;
-            } else if (lastByteOfSeed < 2048) {
-                artifactType = ArtifactType.BloomFilter;
-            } else if (lastByteOfSeed < 2560) {
-                artifactType = ArtifactType.BlackDomain;
-            } else if (lastByteOfSeed < 3072) {
-                artifactType = ArtifactType.StellarShield;
-            } else if (lastByteOfSeed < 3584) {
-                artifactType = ArtifactType.Bomb;
-            } else {
-                artifactType = ArtifactType.Kardashev;
+        uint256 selectedArtifactTypeIndex = typeSelectionSeed % enabledArtifactTypeCount;
+        uint256 enabledArtifactTypeIndex;
+        for (
+            uint256 artifactTypeIndex = uint256(ArtifactType.Monolith);
+            artifactTypeIndex <= uint256(ArtifactType.Avatar);
+            artifactTypeIndex++
+        ) {
+            if (gameConstants().ARTIFACTS[rarity][artifactTypeIndex]) {
+                if (enabledArtifactTypeIndex == selectedArtifactTypeIndex) {
+                    artifactType = ArtifactType(artifactTypeIndex);
+                    break;
+                }
+
+                enabledArtifactTypeIndex++;
             }
         }
 

@@ -36,7 +36,7 @@ import {LibGameUtils} from "./libraries/LibGameUtils.sol";
 import {WithStorage, SpaceshipConstants} from "./libraries/LibStorage.sol";
 
 // Type imports
-import {PlanetDefaultStats, Upgrade, UpgradeBranch, InitArgs} from "./DFTypes.sol";
+import {ArtifactRarity, ArtifactType, PlanetDefaultStats, Upgrade, UpgradeBranch, InitArgs} from "./DFTypes.sol";
 
 contract DFInitialize is WithStorage {
     using ERC721MetadataStorage for ERC721MetadataStorage.Layout;
@@ -106,6 +106,8 @@ contract DFInitialize is WithStorage {
         gameConstants().PLANET_TYPE_WEIGHTS = initArgs.PLANET_TYPE_WEIGHTS;
         gameConstants().SILVER_SCORE_VALUE = initArgs.SILVER_SCORE_VALUE;
         gameConstants().ARTIFACT_POINT_VALUES = initArgs.ARTIFACT_POINT_VALUES;
+        gameConstants().ARTIFACTS = initArgs.ARTIFACTS;
+        initializeArtifactTypeCounts(initArgs.ARTIFACTS);
         // Space Junk
         gameConstants().SPACE_JUNK_ENABLED = initArgs.SPACE_JUNK_ENABLED;
         gameConstants().SPACE_JUNK_LIMIT = initArgs.SPACE_JUNK_LIMIT;
@@ -179,6 +181,28 @@ contract DFInitialize is WithStorage {
         gs().unionCreationFee = 0.002 ether;
         gs().unionUpgradeFeePerMember = 0.0005 ether;
         gs().unionRejoinCooldown = 12 hours;
+    }
+
+    function initializeArtifactTypeCounts(bool[23][6] memory artifacts) internal {
+        for (
+            uint256 rarity = uint256(ArtifactRarity.Common);
+            rarity <= uint256(ArtifactRarity.Mythic);
+            rarity++
+        ) {
+            uint256 enabledCount;
+            for (
+                uint256 artifactType = uint256(ArtifactType.Monolith);
+                artifactType <= uint256(ArtifactType.Avatar);
+                artifactType++
+            ) {
+                if (artifacts[rarity][artifactType]) {
+                    enabledCount++;
+                }
+            }
+
+            require(enabledCount > 0, "no artifacts enabled for rarity");
+            gameConstants().ENABLED_ARTIFACT_TYPE_COUNTS[rarity] = enabledCount;
+        }
     }
 
     function initializeDefaults() public {

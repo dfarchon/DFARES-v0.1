@@ -30,15 +30,7 @@ contract DFGetterTwoFacet is WithStorage {
 
         for (uint256 i = startIdx; i < endIdx; i++) {
             Artifact memory artifact = DFArtifactFacet(address(this)).getArtifactAtIndex(i);
-            address owner = address(0);
-
-            try DFArtifactFacet(address(this)).ownerOf(artifact.id) returns (address addr) {
-                owner = addr;
-            } catch Error(string memory) {
-                // artifact is probably burned or owned by 0x0, so owner is 0x0
-            } catch (bytes memory) {
-                // this shouldn't happen
-            }
+            address owner = _getArtifactOwner(artifact.id);
             ret[i - startIdx] = ArtifactWithMetadata({
                 artifact: artifact,
                 upgrade: LibGameUtils._getUpgradeForArtifact(artifact),
@@ -47,6 +39,62 @@ contract DFGetterTwoFacet is WithStorage {
                 locationId: gs().artifactIdToPlanetId[artifact.id],
                 voyageId: gs().artifactIdToVoyageId[artifact.id]
             });
+        }
+    }
+
+    function getArtifactById(uint256 artifactId)
+        public
+        view
+        returns (ArtifactWithMetadata memory ret)
+    {
+        Artifact memory artifact = DFArtifactFacet(address(this)).getArtifact(artifactId);
+        address owner = _getArtifactOwner(artifact.id);
+        ret = ArtifactWithMetadata({
+            artifact: artifact,
+            upgrade: LibGameUtils._getUpgradeForArtifact(artifact),
+            timeDelayedUpgrade: LibGameUtils.timeDelayUpgrade(artifact),
+            owner: owner,
+            locationId: gs().artifactIdToPlanetId[artifact.id],
+            voyageId: gs().artifactIdToVoyageId[artifact.id]
+        });
+    }
+
+    function getArtifactsOnPlanet(uint256 locationId)
+        public
+        view
+        returns (ArtifactWithMetadata[] memory ret)
+    {
+        uint256[] memory artifactIds = gs().planetArtifacts[locationId];
+        ret = bulkGetArtifactsByIds(artifactIds);
+    }
+
+    function bulkGetPlanetArtifacts(uint256[] calldata planetIds)
+        public
+        view
+        returns (ArtifactWithMetadata[][] memory ret)
+    {
+        ret = new ArtifactWithMetadata[][](planetIds.length);
+        for (uint256 i = 0; i < planetIds.length; i++) {
+            ret[i] = getArtifactsOnPlanet(planetIds[i]);
+        }
+    }
+
+    function bulkGetArtifactsByIds(uint256[] memory ids)
+        public
+        view
+        returns (ArtifactWithMetadata[] memory ret)
+    {
+        ret = new ArtifactWithMetadata[](ids.length);
+        for (uint256 i = 0; i < ids.length; i++) {
+            ret[i] = getArtifactById(ids[i]);
+        }
+    }
+
+    function _getArtifactOwner(uint256 artifactId) internal view returns (address owner) {
+        try DFArtifactFacet(address(this)).ownerOf(artifactId) returns (address addr) {
+            owner = addr;
+        } catch {
+            // artifact is probably burned or owned by 0x0, so owner is 0x0
         }
     }
 

@@ -3,14 +3,131 @@ import {
   array6,
   between,
   exactArray10,
+  exactArray23,
+  ExactArray23,
   exactArray4,
   exactArray5,
   exactArray64,
+  Tuple6,
 } from './decoder-helpers';
 
 // Handle Date or ISO8601 strings because the TOML parser converts to Date already
 const dateInSeconds = decoders.map(decoders.either(decoders.date, decoders.iso8601), (val) =>
   Math.floor(val.getTime() / 1000)
+);
+
+const emptyArtifactTypeConfig = () =>
+  [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ] as ExactArray23<boolean>;
+
+type ArtifactConfigRow = Tuple6<boolean>;
+
+type ArtifactConfigRows = {
+  Monolith: ArtifactConfigRow;
+  Colossus: ArtifactConfigRow;
+  Spaceship: ArtifactConfigRow;
+  Pyramid: ArtifactConfigRow;
+  Wormhole: ArtifactConfigRow;
+  PlanetaryShield: ArtifactConfigRow;
+  PhotoidCannon: ArtifactConfigRow;
+  BloomFilter: ArtifactConfigRow;
+  BlackDomain: ArtifactConfigRow;
+  IceLink: ArtifactConfigRow;
+  FireLink: ArtifactConfigRow;
+  Kardashev: ArtifactConfigRow;
+  Bomb: ArtifactConfigRow;
+  StellarShield: ArtifactConfigRow;
+  BlindBox: ArtifactConfigRow;
+  Avatar: ArtifactConfigRow;
+};
+
+const artifactConfigRowsDecoder = decoders.object({
+  Monolith: array6(decoders.boolean),
+  Colossus: array6(decoders.boolean),
+  Spaceship: array6(decoders.boolean),
+  Pyramid: array6(decoders.boolean),
+  Wormhole: array6(decoders.boolean),
+  PlanetaryShield: array6(decoders.boolean),
+  PhotoidCannon: array6(decoders.boolean),
+  BloomFilter: array6(decoders.boolean),
+  BlackDomain: array6(decoders.boolean),
+  IceLink: array6(decoders.boolean),
+  FireLink: array6(decoders.boolean),
+  Kardashev: array6(decoders.boolean),
+  Bomb: array6(decoders.boolean),
+  StellarShield: array6(decoders.boolean),
+  BlindBox: array6(decoders.boolean),
+  Avatar: array6(decoders.boolean),
+});
+
+const artifactTypeIndexByConfigKey: Array<{
+  artifactType: number;
+  configKey: keyof ArtifactConfigRows;
+}> = [
+  { artifactType: 1, configKey: 'Monolith' },
+  { artifactType: 2, configKey: 'Colossus' },
+  { artifactType: 3, configKey: 'Spaceship' },
+  { artifactType: 4, configKey: 'Pyramid' },
+  { artifactType: 5, configKey: 'Wormhole' },
+  { artifactType: 6, configKey: 'PlanetaryShield' },
+  { artifactType: 7, configKey: 'PhotoidCannon' },
+  { artifactType: 8, configKey: 'BloomFilter' },
+  { artifactType: 9, configKey: 'BlackDomain' },
+  { artifactType: 10, configKey: 'IceLink' },
+  { artifactType: 11, configKey: 'FireLink' },
+  { artifactType: 12, configKey: 'Kardashev' },
+  { artifactType: 13, configKey: 'Bomb' },
+  { artifactType: 14, configKey: 'StellarShield' },
+  { artifactType: 15, configKey: 'BlindBox' },
+  { artifactType: 16, configKey: 'Avatar' },
+];
+
+const artifactConfigFromRows = (rows: ArtifactConfigRows) => {
+  const artifactConfigByRarity = [
+    emptyArtifactTypeConfig(),
+    emptyArtifactTypeConfig(),
+    emptyArtifactTypeConfig(),
+    emptyArtifactTypeConfig(),
+    emptyArtifactTypeConfig(),
+    emptyArtifactTypeConfig(),
+  ] as Tuple6<ExactArray23<boolean>>;
+
+  for (const { artifactType, configKey } of artifactTypeIndexByConfigKey) {
+    const artifactConfigRow = rows[configKey];
+    for (let rarity = 0; rarity < artifactConfigByRarity.length; rarity++) {
+      artifactConfigByRarity[rarity][artifactType] = artifactConfigRow[rarity];
+    }
+  }
+
+  return artifactConfigByRarity;
+};
+
+const artifactsDecoder = decoders.either(
+  decoders.map(artifactConfigRowsDecoder, artifactConfigFromRows),
+  array6(exactArray23(decoders.boolean))
 );
 
 export type Initializers = ReturnType<typeof decodeInitializers>;
@@ -60,6 +177,7 @@ export const decodeInitializers = decoders.guard(
     PLANET_TYPE_WEIGHTS: exactArray4(exactArray10(exactArray5(between(decoders.number, 0, 255)))),
     SILVER_SCORE_VALUE: decoders.number,
     ARTIFACT_POINT_VALUES: array6(decoders.number),
+    ARTIFACTS: artifactsDecoder,
     /**
      * Space Junk
      */

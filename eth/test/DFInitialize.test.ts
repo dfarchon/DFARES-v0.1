@@ -36,6 +36,29 @@ describe('DarkForestInit', function () {
     expect(planetData.isHomePlanet).to.be.equal(true);
   });
 
+  it('initializes enabled artifact type counts by rarity', async function () {
+    const constants = await world.contract.getGameConstants();
+
+    expect(constants.ENABLED_ARTIFACT_TYPE_COUNTS[0].toNumber()).to.equal(0);
+    for (let rarity = 1; rarity <= 5; rarity++) {
+      expect(constants.ENABLED_ARTIFACT_TYPE_COUNTS[rarity].toNumber()).to.equal(16);
+    }
+  });
+
+  it('allows admin to update artifact config by rarity and type', async function () {
+    await world.contract.setArtifactEnabled(1, 5, false);
+
+    let constants = await world.contract.getGameConstants();
+    expect(constants.ARTIFACTS[1][5]).to.equal(false);
+    expect(constants.ENABLED_ARTIFACT_TYPE_COUNTS[1].toNumber()).to.equal(15);
+
+    await world.contract.setArtifactEnabled(1, 5, true);
+
+    constants = await world.contract.getGameConstants();
+    expect(constants.ARTIFACTS[1][5]).to.equal(true);
+    expect(constants.ENABLED_ARTIFACT_TYPE_COUNTS[1].toNumber()).to.equal(16);
+  });
+
   it('rejects player trying to initialize a second time', async function () {
     await world.user1Core.initializePlayer(...makeInitArgs(SPAWN_PLANET_1));
 
@@ -75,15 +98,15 @@ describe('DarkForestInit', function () {
   it('rejects player trying to initialize out of init perlin bounds', async function () {
     await expect(
       world.user1Core.initializePlayer(...makeInitArgs(LVL0_PLANET_DEEP_SPACE))
-    ).to.be.revertedWith(
-      'Init not allowed in perlin value greater than or equal to the INIT_PERLIN_MAX'
-    );
+    ).to.be.revertedWith('Only NEBULA');
   });
 
-  it('rejects player trying to initialize inside the valid spawn ring', async function () {
+  it('allows player initialization when spawn radius is above MAX_LEVEL_DIST[1]', async function () {
     await expect(
       world.user1Core.initializePlayer(...makeInitArgs(SPAWN_PLANET_1, INVALID_TOO_CLOSE_SPAWN))
-    ).to.be.revertedWith('Player can only spawn at the universe rim');
+    )
+      .to.emit(world.contract, 'PlayerInitialized')
+      .withArgs(world.user1.address, SPAWN_PLANET_1.id.toString());
   });
 
   it('changes the spawn radius as the world grows', async function () {

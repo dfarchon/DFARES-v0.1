@@ -358,16 +358,8 @@ export async function deployAndCut(
   return [diamond, diamondInit, initReceipt] as const;
 }
 
-export async function deployGetterOneFacet(
-  {},
-  { LibGameUtils }: Libraries,
-  hre: HardhatRuntimeEnvironment
-) {
-  const factory = await hre.ethers.getContractFactory('DFGetterOneFacet', {
-    libraries: {
-      LibGameUtils,
-    },
-  });
+export async function deployGetterOneFacet({}, {}: Libraries, hre: HardhatRuntimeEnvironment) {
+  const factory = await hre.ethers.getContractFactory('DFGetterOneFacet');
   const contract = await factory.deploy();
   console.log('------ tx:', contract.address, ' ------');
   await contract.deployTransaction.wait();

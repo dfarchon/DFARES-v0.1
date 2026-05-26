@@ -2,6 +2,32 @@ import { decodeInitializers } from '@dfares/settings';
 import * as settings from '../../settings';
 import { TestLocation } from './TestLocation';
 
+const DEFAULT_ARTIFACT_CONFIG_ROW = [
+  false,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+];
+
 const defaultInitializerValues = {
   START_PAUSED: false,
   ADMIN_CAN_ADD_PLANETS: true,
@@ -17,6 +43,9 @@ const defaultInitializerValues = {
   PERLIN_MIRROR_Y: false,
   PERLIN_LENGTH_SCALE: 8192,
   MAX_NATURAL_PLANET_LEVEL: 9,
+  MAX_ARTIFACT_PER_PLANET: 5,
+  MAX_SENDING_PLANET: 8,
+  MAX_RECEIVING_PLANET: 8,
   TIME_FACTOR_HUNDREDTHS: 100,
   PERLIN_THRESHOLD_1: 13,
   PERLIN_THRESHOLD_2: 15,
@@ -29,6 +58,7 @@ const defaultInitializerValues = {
   PLANET_RARITY: 16384,
   PLANET_TRANSFER_ENABLED: true,
   PHOTOID_ACTIVATION_DELAY: 60 * 60 * 12,
+  STELLAR_ACTIVATION_DELAY: 0,
   SPAWN_RIM_AREA: 7234560000,
   LOCATION_REVEAL_COOLDOWN: 60 * 60 * 24,
   CLAIM_PLANET_COOLDOWN: 60 * 60 * 3,
@@ -114,6 +144,14 @@ const defaultInitializerValues = {
   ],
   SILVER_SCORE_VALUE: 100,
   ARTIFACT_POINT_VALUES: [0, 2000, 10000, 200000, 3000000, 20000000],
+  ARTIFACTS: [
+    Array(23).fill(false),
+    [...DEFAULT_ARTIFACT_CONFIG_ROW],
+    [...DEFAULT_ARTIFACT_CONFIG_ROW],
+    [...DEFAULT_ARTIFACT_CONFIG_ROW],
+    [...DEFAULT_ARTIFACT_CONFIG_ROW],
+    [...DEFAULT_ARTIFACT_CONFIG_ROW],
+  ],
   SPACE_JUNK_ENABLED: true,
   SPACE_JUNK_LIMIT: 1000,
   PLANET_LEVEL_JUNK: [20, 25, 30, 35, 40, 45, 50, 55, 60, 65],
@@ -133,6 +171,7 @@ const defaultInitializerValues = {
     CRESCENT: true,
     TITAN: true,
     WHALE: true,
+    PINKSHIP: true,
   },
   ROUND_END_REWARDS_BY_RANK: [
     5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

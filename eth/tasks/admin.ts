@@ -18,6 +18,69 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types';
 // @ts-ignore
 import * as snarkjs from 'snarkjs';
 
+const ARTIFACT_RARITY_BY_NAME: Record<string, number> = {
+  common: 1,
+  rare: 2,
+  epic: 3,
+  legendary: 4,
+  mythic: 5,
+};
+
+const ARTIFACT_TYPE_BY_NAME: Record<string, number> = {
+  monolith: 1,
+  colossus: 2,
+  spaceship: 3,
+  pyramid: 4,
+  wormhole: 5,
+  planetaryshield: 6,
+  photoidcannon: 7,
+  bloomfilter: 8,
+  blackdomain: 9,
+  icelink: 10,
+  firelink: 11,
+  kardashev: 12,
+  bomb: 13,
+  stellarshield: 14,
+  blindbox: 15,
+  avatar: 16,
+};
+
+function normalizeConfigKey(value: string) {
+  return value.replace(/[\s_-]/g, '').toLowerCase();
+}
+
+function parseArtifactRarity(value: string) {
+  const numericValue = Number(value);
+  if (Number.isInteger(numericValue) && numericValue >= 1 && numericValue <= 5) {
+    return numericValue;
+  }
+
+  const rarity = ARTIFACT_RARITY_BY_NAME[normalizeConfigKey(value)];
+  if (rarity === undefined) {
+    throw new Error(`Unknown artifact rarity: ${value}`);
+  }
+  return rarity;
+}
+
+function parseArtifactType(value: string) {
+  const numericValue = Number(value);
+  if (Number.isInteger(numericValue) && numericValue >= 1 && numericValue <= 16) {
+    return numericValue;
+  }
+
+  const artifactType = ARTIFACT_TYPE_BY_NAME[normalizeConfigKey(value)];
+  if (artifactType === undefined) {
+    throw new Error(`Unknown artifact type: ${value}`);
+  }
+  return artifactType;
+}
+
+function parseBoolean(value: string) {
+  if (value === 'true') return true;
+  if (value === 'false') return false;
+  throw new Error(`Expected true or false, got: ${value}`);
+}
+
 task('admin:pause', 'pause the game').setAction(gamePause);
 
 async function gamePause({}, hre: HardhatRuntimeEnvironment) {
@@ -368,6 +431,58 @@ async function changeBuyArtifactCooldown(
 
   const receipt = await contract.changeBuyArtifactCooldown(args.cooldown);
   await receipt.wait();
+}
+
+task('admin:setArtifactEnabled', 'enable or disable one artifact type for one rarity')
+  .addPositionalParam(
+    'rarity',
+    'rarity name or id: Common/Rare/Epic/Legendary/Mythic',
+    undefined,
+    types.string
+  )
+  .addPositionalParam(
+    'artifactType',
+    'artifact type name or id, Monolith through Avatar',
+    undefined,
+    types.string
+  )
+  .addPositionalParam('enabled', 'true or false', undefined, types.string)
+  .setAction(setArtifactEnabled);
+
+async function setArtifactEnabled(
+  { rarity, artifactType, enabled }: { rarity: string; artifactType: string; enabled: string },
+  hre: HardhatRuntimeEnvironment
+) {
+  await hre.run('utils:assertChainId');
+
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+  const parsedRarity = parseArtifactRarity(rarity);
+  const parsedArtifactType = parseArtifactType(artifactType);
+  const parsedEnabled = parseBoolean(enabled);
+
+  const receipt = await (contract as any).setArtifactEnabled(
+    parsedRarity,
+    parsedArtifactType,
+    parsedEnabled
+  );
+  await receipt.wait();
+  console.log(
+    `admin:setArtifactEnabled success rarity=${parsedRarity} artifactType=${parsedArtifactType} enabled=${parsedEnabled}`
+  );
+}
+
+task(
+  'admin:setArtifactsFromConfig',
+  'replace artifact config from current darkforest.toml'
+).setAction(setArtifactsFromConfig);
+
+async function setArtifactsFromConfig({}, hre: HardhatRuntimeEnvironment) {
+  await hre.run('utils:assertChainId');
+
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+  const receipt = await (contract as any).setArtifactConfig(hre.initializers.ARTIFACTS);
+  await receipt.wait();
+  console.log('admin:setArtifactsFromConfig success');
 }
 
 task('admin:changeBuyEnergyCooldown', 'change buy energy cooldown')

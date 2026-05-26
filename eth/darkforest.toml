@@ -23,7 +23,7 @@ PERLIN_LENGTH_SCALE = 8192 #16384 # must be a power of two no greater than 16384
 #############
 # Artifacts #
 #############
-TOKEN_MINT_END_TIMESTAMP = 2024-08-17T14:00:00.000Z
+TOKEN_MINT_END_TIMESTAMP = 2026-06-06T13:00:00.000Z
 ARTIFACT_POINT_VALUES = [
   0,
   2000,
@@ -32,7 +32,6 @@ ARTIFACT_POINT_VALUES = [
   3000000,
   20000000
 ]
-
 # ARTIFACT_POINT_VALUES = [
 #   0,
 #   0,
@@ -126,7 +125,7 @@ PLANET_RARITY =  16384
 SILVER_SCORE_VALUE = 100
 LOCATION_REVEAL_COOLDOWN = 86400 # seconds
 CLAIM_PLANET_COOLDOWN = 14400 # seconds
-CLAIM_END_TIMESTAMP = 2024-08-17T14:00:00.000Z
+CLAIM_END_TIMESTAMP = 2026-06-06T13:00:00.000Z
 
 # NOTE: leave this config, but don't work in contract
 ACTIVATE_ARTIFACT_COOLDOWN = 600
@@ -154,7 +153,7 @@ BUY_ENERGY_LEVEL_FEES = [
 ]
 
 
-BURN_END_TIMESTAMP = 2024-08-17T14:00:00.000Z
+BURN_END_TIMESTAMP = 2026-06-06T13:00:00.000Z
 BURN_PLANET_COOLDOWN = 7200 # seconds
 PINK_PLANET_COOLDOWN = 7200 #seconds
 
@@ -185,7 +184,7 @@ BURN_PLANET_REQUIRE_SILVER_AMOUNTS = [
   150000
 ]
 
-KARDASHEV_END_TIMESTAMP = 2024-08-17T14:00:00.000Z
+KARDASHEV_END_TIMESTAMP = 2026-06-06T13:00:00.000Z
 KARDASHEV_PLANET_COOLDOWN =  7200 # seconds
 BLUE_PLANET_COOLDOWN = 7200 #seconds
 
@@ -372,6 +371,25 @@ TITAN = false
 CRESCENT = false
 WHALE = false
 PINKSHIP = false
+
+# Each row is [Unknown, Common, Rare, Epic, Legendary, Mythic].
+[initializers.ARTIFACTS]
+Monolith = [false, false, false, false, false, false]
+Colossus = [false, false, false, false, false, false]
+Spaceship = [false, false, false, false, false, false]
+Pyramid = [false, false, false, false, false, false]
+Wormhole = [false, true, true, true, true, true]
+PlanetaryShield = [false, true, true, true, true, true]
+PhotoidCannon = [false, true, true, true, true, true]
+BloomFilter = [false, true, true, true, true, true]
+BlackDomain = [false, true, true, true, true, true]
+IceLink = [false, false, false, false, false, false]
+FireLink = [false, false, false, false, false, false]
+Kardashev = [false, true, true, true, true, true]
+Bomb = [false, true, true, true, true, true]
+StellarShield = [false, true, true, true, true, true]
+BlindBox = [false, false, false, false, false, false]
+Avatar = [false, false, false, false, false, false]
 
 
 

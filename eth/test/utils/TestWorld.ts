@@ -75,6 +75,9 @@ export async function initializeWorld({
 
   const contract = await hre.ethers.getContractAt('DarkForest', diamond.address);
 
+  // Most legacy test locations are near the map center; disable inner-radius gating in tests.
+  await contract.adminSetInnerRadius(1);
+
   await deployer.sendTransaction({
     to: contract.address,
     value: utils.parseEther('0.5'), // good for about (100eth / 0.5eth/test) = 200 tests

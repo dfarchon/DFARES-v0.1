@@ -125,6 +125,7 @@ export function CreateLobby({ match }: RouteComponentProps<{ contract: string }>
               config.ARTIFACT_POINT_VALUES[ArtifactRarity.Legendary],
               config.ARTIFACT_POINT_VALUES[ArtifactRarity.Mythic],
             ],
+            ARTIFACTS: config.ARTIFACTS,
             PLANET_TRANSFER_ENABLED: config.PLANET_TRANSFER_ENABLED,
             SPACE_JUNK_ENABLED: config.SPACE_JUNK_ENABLED,
             SPACE_JUNK_LIMIT: config.SPACE_JUNK_LIMIT,

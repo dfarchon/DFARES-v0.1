@@ -445,6 +445,7 @@ struct InitArgs {
     uint8[5][10][4] PLANET_TYPE_WEIGHTS; // spaceType (enum 0-3) -> planetLevel (0-7) -> planetType (enum 0-4)
     uint256 SILVER_SCORE_VALUE;
     uint256[6] ARTIFACT_POINT_VALUES;
+    bool[23][6] ARTIFACTS; // stored as ARTIFACTS[rarity][artifactType] -> enabled
     uint256 PHOTOID_ACTIVATION_DELAY;
     uint256 STELLAR_ACTIVATION_DELAY;
     // Space Junk

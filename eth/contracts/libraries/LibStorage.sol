@@ -178,6 +178,8 @@ struct GameConstants {
     uint8[5][10][4] PLANET_TYPE_WEIGHTS; // spaceType (enum 0-3) -> planetLevel (0-9) -> planetType (enum 0-4)
     uint256 SILVER_SCORE_VALUE;
     uint256[6] ARTIFACT_POINT_VALUES;
+    bool[23][6] ARTIFACTS; // stored as ARTIFACTS[rarity][artifactType] -> enabled
+    uint256[6] ENABLED_ARTIFACT_TYPE_COUNTS;
     // Space Junk
     bool SPACE_JUNK_ENABLED;
     /**

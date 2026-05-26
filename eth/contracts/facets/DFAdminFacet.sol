@@ -11,7 +11,7 @@ import {LibArtifactUtils} from "../libraries/LibArtifactUtils.sol";
 import {WithStorage} from "../libraries/LibStorage.sol";
 
 // Type imports
-import {SpaceType, DFPInitPlanetArgs, AdminCreatePlanetArgs, Artifact, ArtifactType, Player, Planet} from "../DFTypes.sol";
+import {SpaceType, DFPInitPlanetArgs, AdminCreatePlanetArgs, Artifact, ArtifactType, ArtifactRarity, Player, Planet} from "../DFTypes.sol";
 
 contract DFAdminFacet is WithStorage {
     event AdminOwnershipChanged(uint256 loc, address newOwner);
@@ -21,6 +21,8 @@ contract DFAdminFacet is WithStorage {
     event HalfPriceChanged(bool halfPrice);
     event WorldRadiusUpdated(uint256 radius);
     event InnerRadiusUpdated(uint256 radius);
+    event ArtifactConfigUpdated(ArtifactRarity rarity, ArtifactType artifactType, bool enabled);
+    event ArtifactConfigUpdatedAll();
 
     /////////////////////////////
     /// Administrative Engine ///
@@ -170,6 +172,73 @@ contract DFAdminFacet is WithStorage {
 
     function changeBuyArtifactCooldown(uint256 newCooldown) public onlyAdmin {
         gameConstants().BUY_ARTIFACT_COOLDOWN = newCooldown;
+    }
+
+    function setArtifactEnabled(
+        ArtifactRarity rarity,
+        ArtifactType artifactType,
+        bool enabled
+    ) public onlyAdmin {
+        _requireConfigurableArtifactRarity(rarity);
+        _requireConfigurableArtifactType(artifactType);
+
+        uint256 rarityIndex = uint256(rarity);
+        uint256 artifactTypeIndex = uint256(artifactType);
+        bool currentEnabled = gameConstants().ARTIFACTS[rarityIndex][artifactTypeIndex];
+
+        if (currentEnabled == enabled) {
+            emit ArtifactConfigUpdated(rarity, artifactType, enabled);
+            return;
+        }
+
+        if (enabled) {
+            gameConstants().ENABLED_ARTIFACT_TYPE_COUNTS[rarityIndex]++;
+        } else {
+            require(
+                gameConstants().ENABLED_ARTIFACT_TYPE_COUNTS[rarityIndex] > 1,
+                "must keep one artifact enabled"
+            );
+            gameConstants().ENABLED_ARTIFACT_TYPE_COUNTS[rarityIndex]--;
+        }
+
+        gameConstants().ARTIFACTS[rarityIndex][artifactTypeIndex] = enabled;
+        emit ArtifactConfigUpdated(rarity, artifactType, enabled);
+    }
+
+    function setArtifactConfig(bool[23][6] memory artifacts) public onlyAdmin {
+        uint256[6] memory enabledArtifactTypeCounts;
+
+        for (uint256 rarity = 0; rarity < 6; rarity++) {
+            for (uint256 artifactType = 0; artifactType < 23; artifactType++) {
+                if (!artifacts[rarity][artifactType]) {
+                    continue;
+                }
+
+                require(
+                    rarity >= uint256(ArtifactRarity.Common) &&
+                        rarity <= uint256(ArtifactRarity.Mythic),
+                    "invalid artifact rarity"
+                );
+                require(
+                    artifactType >= uint256(ArtifactType.Monolith) &&
+                        artifactType <= uint256(ArtifactType.Avatar),
+                    "invalid artifact type"
+                );
+                enabledArtifactTypeCounts[rarity]++;
+            }
+        }
+
+        for (
+            uint256 rarity = uint256(ArtifactRarity.Common);
+            rarity <= uint256(ArtifactRarity.Mythic);
+            rarity++
+        ) {
+            require(enabledArtifactTypeCounts[rarity] > 0, "no artifacts enabled for rarity");
+        }
+
+        gameConstants().ARTIFACTS = artifacts;
+        gameConstants().ENABLED_ARTIFACT_TYPE_COUNTS = enabledArtifactTypeCounts;
+        emit ArtifactConfigUpdatedAll();
     }
 
     function changeBuyEnergyCooldown(uint256 newCooldown) public onlyAdmin {
@@ -323,5 +392,19 @@ contract DFAdminFacet is WithStorage {
             player.score = score;
             player.finalRank = rank;
         }
+    }
+
+    function _requireConfigurableArtifactRarity(ArtifactRarity rarity) private pure {
+        require(
+            rarity >= ArtifactRarity.Common && rarity <= ArtifactRarity.Mythic,
+            "invalid artifact rarity"
+        );
+    }
+
+    function _requireConfigurableArtifactType(ArtifactType artifactType) private pure {
+        require(
+            artifactType >= ArtifactType.Monolith && artifactType <= ArtifactType.Avatar,
+            "invalid artifact type"
+        );
     }
 }

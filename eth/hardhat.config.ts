@@ -170,7 +170,7 @@ const config: HardhatUserConfig = {
           balance: '100000000000000000000000',
         },
       ],
-      blockGasLimit: 16777215,
+      blockGasLimit: 100000000,
       mining: {
         auto: false,
         interval: 1000,

@@ -253,13 +253,6 @@ class BaseGameManager extends EventEmitter {
   protected halfPrice: boolean;
 
   /**
-   * @todo change this to the correct timestamp each round.
-   */
-  protected readonly endTimeSeconds: number = new Date('2024-08-17T14:00:00.000Z').getTime() / 1000;
-  // protected readonly endTimeSeconds: number = 1715526000;
-  //1948939200; // new Date("2031-10-05T04:00:00.000Z").getTime() / 1000
-
-  /**
    * An interface to the blockchain that is a little bit lower-level than {@link ContractsAPI}. It
    * allows us to do basic operations such as wait for a transaction to complete, check the player's
    * address and balance, etc.
@@ -975,7 +968,7 @@ class BaseGameManager extends EventEmitter {
    * in seconds from the epoch.
    */
   public getEndTimeSeconds(): number {
-    return this.endTimeSeconds;
+    return this.contractConstants.TOKEN_MINT_END_TIMESTAMP;
   }
 
   /**
@@ -1678,7 +1671,7 @@ class BaseGameManager extends EventEmitter {
   }
 
   protected checkGameHasEnded(): boolean {
-    if (Date.now() / 1000 > this.endTimeSeconds) {
+    if (Date.now() / 1000 > this.getEndTimeSeconds()) {
       this.terminal.current?.println('[ERROR] Game has ended.');
       return true;
     }

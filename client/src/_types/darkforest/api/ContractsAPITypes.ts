@@ -196,6 +196,41 @@ export type PlanetTypeWeightsBySpaceType = [
   PlanetTypeWeightsByLevel
 ];
 
+export type ArtifactTypeConfig = [
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean
+];
+
+export type ArtifactConfigByRarity = [
+  ArtifactTypeConfig,
+  ArtifactTypeConfig,
+  ArtifactTypeConfig,
+  ArtifactTypeConfig,
+  ArtifactTypeConfig,
+  ArtifactTypeConfig
+];
+
 export interface ContractConstants {
   //SnarkConstants
   DISABLE_ZK_CHECKS: boolean;
@@ -267,6 +302,8 @@ export interface ContractConstants {
   SILVER_SCORE_VALUE: number;
 
   ARTIFACT_POINT_VALUES: ArtifactPointValues;
+  ARTIFACTS: ArtifactConfigByRarity;
+  ENABLED_ARTIFACT_TYPE_COUNTS: number[];
   // Space Junk
   SPACE_JUNK_ENABLED: boolean;
   /**
