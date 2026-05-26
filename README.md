@@ -1,106 +1,93 @@
-# Dark Forest ARES
+# Dark Forest Ares
 
-A modified version of Dark Forest maintained by DF community.
+![node](https://img.shields.io/badge/node-16-43853d)
+![yarn](https://img.shields.io/badge/yarn-v1-2c8ebb)
+![typescript](https://img.shields.io/badge/typescript-4.5-3178c6)
+![hardhat](https://img.shields.io/badge/hardhat-2.6.8-f5c542)
+![react](https://img.shields.io/badge/react-17.0.2-61dafb)
+![stack](https://img.shields.io/badge/stack-Solidity%20%2F%20SNARKs%20%2F%20React-6f42c1)
+![status](https://img.shields.io/badge/status-active%20development-2ea44f)
+![license](https://img.shields.io/badge/license-GPL--3.0-555555)
 
-To run this project you will need to be on Node 14 OR Node 16.
+An actively developed community branch of the first fully onchain ZK war game.
 
-## use ganache
+**Zero-knowledge exploration. Onchain strategy. Endless space.**
 
-seems faster & can store blocks
+---
 
+Dark Forest is a fully onchain ZK war game of exploration, strategy, and
+conquest. The original project was developed by the Dark Forest official team
+from 2019 to Q1 2022.
+
+Dark Forest Ares is a community-maintained branch by the DFArchon team. The
+original Ares line ran from Q1 2023 to Q2 2024, and the project is now active
+again with a new 2026 test round.
+
+Follow the latest updates at [x.com/darkforest_punk](https://x.com/darkforest_punk).
+
+## Launch a Local Universe
+
+Use Node.js 16.
+
+```sh
+yarn
 ```
-yarn // if meet error run npm install instead
+
+If dependency installation fails, try `npm install` once, then continue with
+Yarn.
+
+Run the local universe with Ganache. It is faster for daily development and
+keeps blocks on disk between restarts.
+
+```sh
 yarn workspace eth ganache
 yarn workspace eth hardhat:dev deploy
 yarn workspace client start:dev
 ```
 
-## deploy on RedStone
+Open `http://localhost:8081`.
 
-open packages/constants/src/index.ts
+## Stack
 
-set GAS_ADJUST_DELTA value '0.00000005'
+`Solidity` / `Hardhat` / `TypeScript` / `React` / `WebGL` / `SNARKs`
 
-run `yarn`
+Dark Forest Ares is organized as a full onchain game stack:
 
-Notice: if daily localtest, please set GAS_ADJUST_DELTA value '1', then run `yarn`
+- `circuits/` defines the zero-knowledge circuits for hidden movement and
+  exploration. Players produce proofs from these circuits; the contracts verify
+  those proofs before accepting state changes onchain.
+- `eth/` contains the Solidity universe, Hardhat deployment flow, tests, and
+  admin tasks. It is the settlement layer for every valid proof-backed action.
+- `packages/` contains shared TypeScript modules for constants, types, game
+  logic, rendering, settings, hashing, and SNARK interfaces.
+- `client/` contains the browser game client, UI, plugins, storage, networking,
+  and WebGL renderer.
 
-## local development
+The result is a self-contained Dark Forest universe: contracts define the world,
+shared packages keep game rules consistent, and the client turns hidden onchain
+state into playable strategy.
 
-### Install dependencies
+## Ares Versions
 
-- We use `yarn` to manage packages. Run `yarn` at the top level to automatically install all dependencies from subfolders. This will also run the monorepo's `prepare` script, which compiles things like TypeScript or Solidity code.
+Dark Forest Ares evolved across four community rounds, then returned to active
+development with a new 2026 test round.
 
-### Running the project
+- `2023 May` / `v0.1.1` - introduced Fire Link, Ice Link, Stellar Shield, and
+  Avatar; added artifact purchasing; added cooldowns for artifact purchases and
+  activations.
+- `2023 Nov` / `v0.1.2` - introduced the Pink Bomb; upgraded the ZK circuit so
+  central planets can reach higher levels while hiding exact coordinates; ranked
+  players higher for claiming planets closer to the universe center.
+- `2024 May` / `v0.1.3` - introduced the Kardashev artifact for blue-zone
+  resource mobilization; added purchases for planets, artifacts, and skins;
+  introduced sponsor-backed bounties.
+- `2024 Aug` / `v0.1.4` - introduced the Union system for cooperative energy
+  support; added a dynamically shrinking inner radius to slow early center
+  capture and keep the round competitive.
+- `2026 Jun` / `v0.1.5` - brings Ares back as a modern test round with
+  configurable artifact rules, buy-energy flow, quick-join settings, and
+  smoother transaction UX.
 
-- Run `yarn workspace eth start` which starts the hardhat blockchain and deploys the game contracts.
-- Run `yarn workspace client start:dev` to load the webclient.
-- Run `yarn watch` to start a typescript watcher to incrementally rebuild changed dependencies.
+## License
 
-You can import the private key of one of the accounts `hardhat node` created and funded, which are printed when you started the node such as:
-
-```
-Account #2: 0x3097403b64fe672467345bf159f4c9c5464bd89e (100 ETH)
-Private Key: 0x67195c963ff445314e667112ab22f4a7404bad7f9746564eb409b9bb8c6aed32
-```
-
-If you wish to restart the game from scratch, you will need to clear local storage. To do this in Chrome or Brave Browser, open the inspector, navigate to the "Application" tab, click "Clear storage" on the left pane, and click "Clear site data" under the circle that appears in the main inspector panel. Then hard refresh the website.
-
-## Contract Addresses
-
-Both localhost development and production contract addresses are stored in [`@dfares/contracts` package](./packages/contracts). If you deploy contracts locally in a fresh node, this file will never change. If the file does change **do not** check in this file, as you probably have a `hardhat node` process running in the background.
-
-Production deploys **must** check in this file, but those will likely be done from CI and committed on a separate (non-development) branch.
-
-# Workspaces & Packages
-
-The Dark Forest monorepo is managed using [yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces). To add a new project to the monorepo, you must add it to the `workspaces` array inside the root `package.json`.
-
-**Note:** We use globs for anything in `packages/` so you don't need to update the workspaces for a new package.
-
-The `packages/` directory is a place to store workspace packages that should be published to something like the https://npmjs.com registry, which allows players to build plugins, game clients, etc using the same code that Dark Forest itself uses.
-
-To add a new package, create a new directory inside the `packages/` directory. The package name for anything in `packages/` should be prefixed with `@dfares/` to be published to our scope.
-
-## circom and snarkjs
-
-If you are modifying anything SNARK-related, you may be interested in rebuilding circuits / redoing setup. Run `yarn workspace eth circom:dev` or `yarn workspace eth circom:prod` respectively to rebuild the `wasm` and `zkey` files. Then `yarn workspace eth compile` as usual will build and refresh the `Verifier.sol`.
-
-## Thegraph
-
-To run a local copy of thegraph make sure docker is installed and running, `yarn workspace eth start --subgraph df` OR if you already have your contracts deployed and running run `yarn workspace eth hardhat:dev subgraph:deploy --name df` and find your local hosted explorer at `http://localhost:8000/subgraphs/name/df`
-
-## Add Artifact
-
-- contracts\DFTypes.sol
-- contracts\libraries\LibArtifactUtils.sol
-  artifact logic & cooldown
-- eth\contracts\libraries\LibGameUtils.sol
-  random find
-
-packages modified needed yarn build
-
-- packages\types\src\artifact.ts
-  enum types
-- packages\constants\src\index.ts
-  constants of artifacts
-- packages\renderer\TextureManager.ts
-  artifact icon
-- packages\renderer\src\UIRenderer.ts
-  artifact ui effects
-- packages\renderer\src\Renderer.ts
-  render methods extra artifact properties
-- packages\renderer\src\Overlay2DRenderer.ts
-  render hats
-- packages\gamelogic\src\artifact.ts
-  artifact frontend properties like cooldown
-
-- packages\renderer\src\EngineConsts.ts
-  colors
-
-- client\src\Frontend\Panes\ManagePlanetArtifacts\ArtifactActions.tsx
-  some special activate effects
-- client\src\Backend\GameLogic\GameUIManager.ts
-  activating logic
-- client\src\Backend\GameLogic\GameManager.ts
-  activating artifact tx infos
+GPL-3.0
