@@ -515,6 +515,39 @@ async function changeBuyEnergyLevelFees(
   await receipt.wait();
 }
 
+task('admin:changeBuyEnergyLevelFeesBatch', 'change all buy energy level fees')
+  .addParam(
+    'fees',
+    'comma-separated fee list for levels 0-9, e.g. 100,100,100,100,150,150,150,200,200,200',
+    undefined,
+    types.string
+  )
+  .setAction(changeBuyEnergyLevelFeesBatch);
+
+async function changeBuyEnergyLevelFeesBatch(args: { fees: string }, hre: HardhatRuntimeEnvironment) {
+  await hre.run('utils:assertChainId');
+
+  const fees = args.fees.split(',').map((fee) => {
+    const parsedFee = Number(fee.trim());
+    if (!Number.isInteger(parsedFee) || parsedFee < 0) {
+      throw new Error(`Invalid buy energy fee: ${fee}`);
+    }
+    return parsedFee;
+  });
+
+  if (fees.length !== 10) {
+    throw new Error(`Expected exactly 10 buy energy fees, got ${fees.length}`);
+  }
+
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  for (let level = 0; level < fees.length; level++) {
+    console.log(`Setting BUY_ENERGY_LEVEL_FEES[${level}] = ${fees[level]}`);
+    const receipt = await contract.changeBuyEnergyLevelFees(level, fees[level]);
+    await receipt.wait();
+  }
+}
+
 task('admin:withdraw', 'withdraw all the ether in game contract').setAction(withdraw);
 
 async function withdraw(args: {}, hre: HardhatRuntimeEnvironment) {

@@ -164,13 +164,14 @@ contract DFTradeFacet is WithStorage {
         );
 
         Planet storage planet = gs().planets[locationId];
+        uint256 planetLevel = planet.planetLevel;
         require(planet.population > 0, "planet has no energy to grow from");
         require(planet.population < planet.populationCap, "already at cap");
         require(planet.pausers == 0, "planet is paused");
         require(planet.populationGrowth > 0, "no energy growth");
         require(duration > 0, "duration must be greater than 0");
 
-        uint256 baseFeePerSecond = gameConstants().BUY_ENERGY_LEVEL_FEES[planet.planetLevel];
+        uint256 baseFeePerSecond = gameConstants().BUY_ENERGY_LEVEL_FEES[planetLevel];
         uint256 fee = baseFeePerSecond * duration;
         fee = fee * 1 gwei;
         if (gs().halfPrice) fee = fee / 2;
@@ -195,6 +196,8 @@ contract DFTradeFacet is WithStorage {
         ls().playerLog[msg.sender].buyEnergyCnt++;
         ls().buyEnergyEarn += fee;
         ls().playerLog[msg.sender].buyEnergyCost += fee;
+        ls().buyEnergyCntByLevel[planetLevel]++;
+        ls().playerBuyEnergyCntByLevel[msg.sender][planetLevel]++;
     }
 
     function buySpaceship(uint256 locationId, ArtifactType artifactType) public payable notPaused {

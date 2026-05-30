@@ -140,16 +140,16 @@ BUY_ENERGY_COOLDOWN = 60 # seconds
 # Total fee = BUY_ENERGY_LEVEL_FEES[level] * durationSeconds * 1 gwei.
 # Buys `durationSeconds` of natural population growth, not a fill-to-cap.
 BUY_ENERGY_LEVEL_FEES = [
-  10,
-  20,
-  40,
-  80,
-  160,
-  320,
-  640,
-  1280,
-  2560,
-  5120
+  150,
+  150,
+  150,
+  150,
+  300,
+  300,
+  450,
+  600,
+  750,
+  900
 ]
 
 

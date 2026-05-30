@@ -650,6 +650,49 @@ async function analysisGameLog({}, hre: HardhatRuntimeEnvironment) {
   console.log('                 donate Cnt:', donateCnt);
 }
 
+task('game:analysisBuyEnergyByLevel', 'analysis buyEnergy counts by planet level')
+  .addOptionalParam(
+    'playerAddress',
+    'optional player address to include per-player buyEnergy counts',
+    undefined,
+    types.string
+  )
+  .setAction(analysisBuyEnergyByLevel);
+
+async function analysisBuyEnergyByLevel(
+  { playerAddress }: { playerAddress?: string },
+  hre: HardhatRuntimeEnvironment
+) {
+  await hre.run('utils:assertChainId');
+  const contract = await hre.ethers.getContractAt('DarkForest', hre.contracts.CONTRACT_ADDRESS);
+
+  if (playerAddress !== undefined && !hre.ethers.utils.isAddress(playerAddress)) {
+    throw new Error(`Invalid player address: ${playerAddress}`);
+  }
+
+  const globalCounts = await contract.getBuyEnergyCntByLevels();
+  const playerCounts =
+    playerAddress === undefined
+      ? undefined
+      : await contract.getPlayerBuyEnergyCntByLevels(playerAddress);
+
+  console.log('buyEnergy counts by planet level');
+  if (playerAddress !== undefined) {
+    console.log('player:', playerAddress.toLocaleLowerCase());
+  }
+
+  for (let level = 0; level < globalCounts.length; level++) {
+    const globalCount = globalCounts[level].toString();
+    if (playerCounts === undefined) {
+      console.log(`level ${level}: ${globalCount}`);
+    } else {
+      console.log(
+        `level ${level}: global=${globalCount}, player=${playerCounts[level].toString()}`
+      );
+    }
+  }
+}
+
 task('game:getPlayerHatSpent', 'get player log')
   .addPositionalParam(
     'playerAddress',

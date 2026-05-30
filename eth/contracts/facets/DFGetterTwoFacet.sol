@@ -494,6 +494,60 @@ contract DFGetterTwoFacet is WithStorage {
         ret[30] = ls().buyEnergyEarn;
     }
 
+    function getBuyEnergyCntByLevel(uint256 level) public view returns (uint256) {
+        require(level < 10, "invalid planet level");
+        return ls().buyEnergyCntByLevel[level];
+    }
+
+    function getBuyEnergyCntByLevels() public view returns (uint256[10] memory ret) {
+        for (uint256 i = 0; i < ret.length; i++) {
+            ret[i] = ls().buyEnergyCntByLevel[i];
+        }
+    }
+
+    function bulkGetBuyEnergyCntByLevel(uint256[] memory levels)
+        public
+        view
+        returns (uint256[] memory ret)
+    {
+        ret = new uint256[](levels.length);
+        for (uint256 i = 0; i < levels.length; i++) {
+            require(levels[i] < 10, "invalid planet level");
+            ret[i] = ls().buyEnergyCntByLevel[levels[i]];
+        }
+    }
+
+    function getPlayerBuyEnergyCntByLevel(address player, uint256 level)
+        public
+        view
+        returns (uint256)
+    {
+        require(level < 10, "invalid planet level");
+        return ls().playerBuyEnergyCntByLevel[player][level];
+    }
+
+    function getPlayerBuyEnergyCntByLevels(address player)
+        public
+        view
+        returns (uint256[10] memory ret)
+    {
+        for (uint256 i = 0; i < ret.length; i++) {
+            ret[i] = ls().playerBuyEnergyCntByLevel[player][i];
+        }
+    }
+
+    function bulkGetPlayerBuyEnergyCntByLevel(address player, uint256[] memory levels)
+        public
+        view
+        returns (uint256[] memory ret)
+    {
+        ret = new uint256[](levels.length);
+        for (uint256 i = 0; i < levels.length; i++) {
+            require(levels[i] < 10, "invalid planet level");
+            ret[i] = ls().playerBuyEnergyCntByLevel[player][levels[i]];
+        }
+    }
+
     function getPlayerHatSpent(address player, uint256 hatType) public view returns (uint256) {
         return ls().playerHatSpent[player][hatType];
     }

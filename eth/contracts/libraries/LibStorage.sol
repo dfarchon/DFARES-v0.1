@@ -148,6 +148,8 @@ struct LogStorage {
     mapping(uint256 => mapping(address => bool)) hatPlayerInList; // hatType => address => bool
     mapping(uint256 => address[]) hatPlayerAccounts; // hatType => address []
     mapping(uint256 => mapping(address => uint256)) hatPlayerSpent; // hatType => address => ETH amount;
+    uint256[10] buyEnergyCntByLevel;
+    mapping(address => mapping(uint256 => uint256)) playerBuyEnergyCntByLevel;
 }
 
 // Game config
