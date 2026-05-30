@@ -162,7 +162,7 @@ export const BLOCK_EXPLORER_URL = 'https://mega.etherscan.io' as const;
  * The URL to the bridge for the chain being used. Prepended to transaction links, etc
  */
 
-export const BLOCKCHAIN_BRIDGE = 'https://relay.link/bridge/megaeth/' as const;
+export const BLOCKCHAIN_BRIDGE = 'https://rabbithole.megaeth.com/bridge/' as const;
 /**
  * The amount of time between gas price refreshes when fetching prices from the oracle.
  */

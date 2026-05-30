@@ -140,15 +140,15 @@ function TutorialPaneContent({ tutorialState }: { tutorialState: TutorialState }
   } else if (tutorialState === TutorialState.HowToGetScore) {
     return (
       <div className='tutzoom'>
-        <White>Race to Center</White>
+        <White>Two Scores</White>
         <br />
         <div>
-          Players can claim one planet and their score will update to reflect how far away it is
-          from the center of the universe.
+          Your regular score increases by withdrawing silver from Spacetime Rips and minting
+          artifacts from Foundries.
         </div>
         <div>
-          Be careful though, as if the planet is destroyed, then its score wont count, and your
-          score will update to your next closest claimed planet.
+          Your claim score comes from the closest planet you have claimed to the center of the
+          universe.
         </div>
 
         <div>
@@ -185,8 +185,9 @@ function TutorialPaneContent({ tutorialState }: { tutorialState: TutorialState }
         score via Capture Zones. Hover over the 'Capture Zone' section in the top bar for more info
         about capture zones. */}
         <div>
-          Please note, that only planets of level 3+ can be claimed for score. You will need to
-          fight for the closest planets, or maybe considering destroying your enemies planets!
+          Send silver to Spacetime Rips to withdraw it for score, and prospect Foundries to mint
+          artifacts for rarity-based score. Claim level 3+ planets to record a distance-based claim
+          score.
         </div>
         <div>
           <Btn

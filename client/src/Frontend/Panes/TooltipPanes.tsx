@@ -87,9 +87,17 @@ export function RankTooltipPane() {
 export function ScoreTooltipPane() {
   return (
     <>
-      Your score is dependent on how close you can get to the center (0,0) of the universe. You need
-      to <White> claim your planet (3+ level) </White> to get the <ScoreLabel />. Check out the{' '}
-      <White>Help Pane</White> for more info on scoring.
+      <White>score</White> increases when you withdraw silver from Spacetime Rips and mint artifacts
+      from Foundries. Check out the <White>Help Pane</White> for more info on scoring.
+    </>
+  );
+}
+
+export function ClaimScoreTooltipPane() {
+  return (
+    <>
+      <White>claim score</White> is your closest claimed planet's distance from the center of the
+      universe.
     </>
   );
 }
@@ -564,6 +572,7 @@ export function TooltipContent({ name }: { name: TooltipName | undefined }) {
   if (name === TooltipName.SelectedSilver) return <SelectedSilverTooltipPane />;
   if (name === TooltipName.Rank) return <RankTooltipPane />;
   if (name === TooltipName.Score) return <ScoreTooltipPane />;
+  if (name === TooltipName.ClaimScore) return <ClaimScoreTooltipPane />;
   if (name === TooltipName.PlayerSilver) return <PlayerSilverTooltipPane />;
   if (name === TooltipName.MiningPause) return <MiningPauseTooltipPane />;
   if (name === TooltipName.MiningTarget) return <MiningTargetTooltipPane />;

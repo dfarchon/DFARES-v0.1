@@ -77,6 +77,7 @@ export const TooltipName = {
   SelectedSilver: 'SelectedSilver' as TooltipName,
   Rank: 'Rank' as TooltipName,
   Score: 'Score' as TooltipName,
+  ClaimScore: 'ClaimScore' as TooltipName,
   PlayerSilver: 'PlayerSilver' as TooltipName,
   MiningPause: 'MiningPause' as TooltipName,
   MiningTarget: 'MiningTarget' as TooltipName,

@@ -632,10 +632,9 @@ export class ContractsAPI extends EventEmitter {
   }
 
   /**
-   * If this player has a claimed planet, their score is the distance between the claimed planet and
-   * the center. If this player does not have a claimed planet, then the score is undefined.
+   * If this player has a valid claimed planet, return the closest distance to the center.
    */
-  async getScoreV3(address: EthAddress | undefined): Promise<number | undefined> {
+  async getClaimDistanceScore(address: EthAddress | undefined): Promise<number | undefined> {
     if (address === undefined) return undefined;
 
     const score = await this.makeCall<EthersBN>(this.contract.getScore, [address]);
@@ -647,6 +646,10 @@ export class ContractsAPI extends EventEmitter {
     }
 
     return score.toNumber();
+  }
+
+  async getScoreV3(address: EthAddress | undefined): Promise<number | undefined> {
+    return this.getClaimDistanceScore(address);
   }
 
   async getConstants(): Promise<ContractConstants> {
@@ -1160,7 +1163,7 @@ export class ContractsAPI extends EventEmitter {
       [playerId]
     );
 
-    const scoreFromBlockchain = await this.getScoreV3(playerId);
+    const claimDistanceScore = await this.getClaimDistanceScore(playerId);
     if (!rawPlayer.isInitialized) return undefined;
 
     const player = decodePlayer(rawPlayer);
@@ -1170,7 +1173,7 @@ export class ContractsAPI extends EventEmitter {
     player.lastActivateArtifactTimestamp = lastActivateArtifactTimestamp.toNumber();
     player.lastBuyArtifactTimestamp = lastBuyArtifactTimestamp.toNumber();
 
-    player.score = scoreFromBlockchain;
+    player.claimDistanceScore = claimDistanceScore;
     return player;
   }
 

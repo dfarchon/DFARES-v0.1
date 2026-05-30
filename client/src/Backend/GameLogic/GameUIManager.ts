@@ -1456,6 +1456,10 @@ class GameUIManager extends EventEmitter {
     return this.gameManager.getPlayerScore(player);
   }
 
+  public getPlayerClaimDistanceScore(player: EthAddress): number | undefined {
+    return this.gameManager.getPlayerClaimDistanceScore(player);
+  }
+
   public getPlayerActivateArtifactAmount(player: EthAddress): number | undefined {
     return this.gameManager.getPlayerActivateArtifactAmount(player);
   }

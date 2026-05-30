@@ -26,6 +26,7 @@ export function decodePlayer(rawPlayer: RawPlayer): Player {
     lastActivateArtifactTimestamp: rawPlayer.lastRevealTimestamp.toNumber(),
     lastBuyArtifactTimestamp: rawPlayer.lastRevealTimestamp.toNumber(),
     lastBuyEnergyTimestamp: rawPlayer.lastBuyEnergyTimestamp.toNumber(),
+    // Contract Player.score is the accumulated silver-withdrawal and artifact-minting score.
     score: rawPlayer.score.toNumber(),
     rank: undefined,
     spaceJunk: rawPlayer.spaceJunk.toNumber(),

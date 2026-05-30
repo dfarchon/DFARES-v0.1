@@ -27,6 +27,10 @@ const Numbers = styled.div`
   display: inline-block;
 `;
 
+function formatScore(score: number | null | undefined): string {
+  return typeof score === 'number' ? score.toLocaleString() : 'n/a';
+}
+
 function BoardPlacement({ account }: { account: EthAddress | undefined }) {
   const uiManager = useUIManager();
   const player = usePlayer(uiManager, account);
@@ -36,15 +40,7 @@ function BoardPlacement({ account }: { account: EthAddress | undefined }) {
   if (!player.value) {
     content = <Sub>n/a</Sub>;
   } else {
-    let formattedScore = 'n/a';
-
-    if (
-      player.value.score !== undefined &&
-      player.value.score !== null &&
-      player.value.lastClaimTimestamp !== 0
-    ) {
-      formattedScore = player.value.score.toLocaleString();
-    }
+    const formattedScore = formatScore(player.value.score);
 
     content = (
       <Sub>
@@ -58,7 +54,7 @@ function BoardPlacement({ account }: { account: EthAddress | undefined }) {
   return <Numbers>{content}</Numbers>;
 }
 
-function PlayerSilver({ account }: { account: EthAddress | undefined }) {
+function ClaimDistanceScore({ account }: { account: EthAddress | undefined }) {
   const uiManager = useUIManager();
   const player = usePlayer(uiManager, account);
 
@@ -67,15 +63,12 @@ function PlayerSilver({ account }: { account: EthAddress | undefined }) {
   if (!player.value) {
     content = <Sub>n/a</Sub>;
   } else {
-    let formattedSilver = '0';
+    const formattedClaimDistanceScore = formatScore(player.value.claimDistanceScore);
 
-    if (player.value.silver !== undefined && player.value.silver !== null) {
-      formattedSilver = player.value.silver.toLocaleString();
-    }
     content = (
       <Sub>
-        <TooltipTrigger name={TooltipName.PlayerSilver}>
-          silver: <Text>{formattedSilver}</Text>
+        <TooltipTrigger name={TooltipName.ClaimScore}>
+          claim score: <Text>{formattedClaimDistanceScore}</Text>
         </TooltipTrigger>
       </Sub>
     );
@@ -255,7 +248,7 @@ export function TopBar({ twitterVerifyHook }: { twitterVerifyHook: Hook<boolean>
           </>
         )}
         <BoardPlacement account={account} />
-        <PlayerSilver account={account} />
+        <ClaimDistanceScore account={account} />
       </AlignCenterHorizontally>
       <AlignCenterHorizontally style={{ justifyContent: 'space-around', width: '100%' }}>
         {captureZones}

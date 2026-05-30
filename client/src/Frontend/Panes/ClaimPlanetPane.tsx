@@ -6,7 +6,6 @@ import React from 'react';
 import { Btn } from '../Components/Btn';
 import { EmSpacer } from '../Components/CoreUI';
 import { AccountLabel } from '../Components/Labels/Labels';
-import { MythicLabelText } from '../Components/Labels/MythicLabel';
 import { LoadingSpinner } from '../Components/LoadingSpinner';
 import { TimeUntil } from '../Components/TimeUntil';
 import { usePlanet, usePlayer, useUIManager } from '../Utils/AppHooks';
@@ -28,9 +27,6 @@ export function ClaimPlanetPane({
 
   if (!planetId || !planet || !isLocatable(planet) || !player.value) return <></>;
 
-  const center = { x: 0, y: 0 };
-  const distanceFromCenter = Math.floor(gameManager.getDistCoords(planet.location.coords, center));
-  const currentPlayerScore = player.value.lastClaimTimestamp === 0 ? 'n/a' : player.value.score;
   // const isClaimingThisPlanetNow = !!planet?.unconfirmedClaim;
   const isClaimingThisPlanetNow = !!planet?.transactions?.hasTransaction(isUnconfirmedClaimTx);
 
@@ -56,10 +52,6 @@ export function ClaimPlanetPane({
     !planetIsLargeEnough ||
     claimedByThisPlayer ||
     isClaimingNow;
-  const isCloserThanPlayersCurrentClosest =
-    typeof currentPlayerScore !== 'number'
-      ? true
-      : currentPlayerScore && currentPlayerScore > distanceFromCenter;
 
   let description = <></>;
   let claimButtonContent = <></>;
@@ -78,7 +70,7 @@ export function ClaimPlanetPane({
     description = (
       <>
         This planet is claimed by <AccountLabel ethAddress={existingClaim.claimer} />! You can claim
-        it for yourself, making it count towards your score, and not theirs.
+        it for yourself.
         <EmSpacer height={1} />
       </>
     );
@@ -89,21 +81,19 @@ export function ClaimPlanetPane({
         <EmSpacer height={1} />
       </>
     );
-  } else if (typeof currentPlayerScore !== 'number') {
+  } else if (player.value.lastClaimTimestamp === 0) {
     description = (
       <>
-        You haven't claimed a planet yet. Claiming this planet gets you on the board!
+        You haven't claimed a planet yet. Claiming this planet records its distance from the center
+        as your claim score.
         <EmSpacer height={1} />
       </>
     );
   } else {
     description = (
       <>
-        Your current closest planet is{' '}
-        <MythicLabelText text={currentPlayerScore.toLocaleString()} /> away from the center. This
-        planet is {isCloserThanPlayersCurrentClosest ? 'closer to' : 'further away from'} the center
-        than your closet planet.
-        {isCloserThanPlayersCurrentClosest && ' Claim it to move up on the leaderboard!'}
+        Claiming this planet can update your claim score, while your regular score still comes from
+        withdrawing silver and minting artifacts.
         <EmSpacer height={1} />
       </>
     );
@@ -137,8 +127,7 @@ export function ClaimPlanetPane({
 
   return (
     <>
-      This planet is <MythicLabelText text={distanceFromCenter.toLocaleString()} /> away from the
-      center!
+      Claim score is based on claimed planet distance from the center.
       <EmSpacer height={1} />
       {description}
       {cooldownContent}

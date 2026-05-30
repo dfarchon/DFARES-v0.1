@@ -23,7 +23,14 @@ export type Player = {
   lastBuyEnergyTimestamp: number;
   lastKardashevTimestamp: number;
 
+  /**
+   * Accumulated score from withdrawing silver and minting artifacts.
+   */
   score?: number;
+  /**
+   * Distance-to-center score from claimed planets.
+   */
+  claimDistanceScore?: number;
   rank?: number;
 
   spaceJunk: number;

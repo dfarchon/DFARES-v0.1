@@ -97,6 +97,7 @@ import BaseGameManager, { GameManagerEvent } from './BaseGameManager';
 import { getBuyEnergyFeeWei } from './BuyEnergyUtils';
 import { ContractsAPI, makeContractsAPI } from './ContractsAPI';
 import { InitialGameStateDownloader } from './InitialGameStateDownloader';
+import { comparePlayersByScore, getEffectiveScore } from './ScoreUtils';
 
 class Round4GameManager extends BaseGameManager {
   /**
@@ -740,6 +741,28 @@ class Round4GameManager extends BaseGameManager {
     else return result;
   }
 
+  private refreshKnownClaimDistanceScores(): void {
+    for (const player of this.players.values()) {
+      player.claimDistanceScore = undefined;
+    }
+
+    for (const planet of this.getAllPlanets()) {
+      if (!isLocatable(planet)) continue;
+      if (planet.destroyed || planet.frozen) continue;
+      if (planet.planetLevel < 3) continue;
+      if (!planet.location?.coords) continue;
+      if (planet.claimer === EMPTY_ADDRESS) continue;
+      if (planet.claimer === undefined) continue;
+
+      const player = this.players.get(planet.claimer);
+      if (!player) continue;
+
+      const score = Math.floor(df.getDistCoords(planet.location.coords, { x: 0, y: 0 }));
+      player.claimDistanceScore =
+        player.claimDistanceScore === undefined ? score : Math.min(player.claimDistanceScore, score);
+    }
+  }
+
   public async hardRefreshUnion(unionId?: UnionId): Promise<void> {
     if (!unionId) return;
 
@@ -813,6 +836,7 @@ class Round4GameManager extends BaseGameManager {
           }
         }
 
+        this.refreshKnownClaimDistanceScores();
         this.playersUpdated$.publish();
       } catch (e) {
         // @todo - what do we do if we can't connect to the webserver? in general this should be a
@@ -833,73 +857,28 @@ class Round4GameManager extends BaseGameManager {
         //   if (cnt === 0) player.score = score;
         // }
 
-        const knownScoringPlanets = [];
-        for (const planet of this.getAllPlanets()) {
-          if (!isLocatable(planet)) continue;
-          if (planet.destroyed || planet.frozen) continue;
-          if (planet.planetLevel < 3) continue;
-          if (!planet?.location?.coords) continue;
-          if (planet.claimer === EMPTY_ADDRESS) continue;
-          if (planet.claimer === undefined) continue;
-          knownScoringPlanets.push({
-            locationId: planet.locationId,
-            claimer: planet.claimer,
-            score: Math.floor(df.getDistCoords(planet.location.coords, { x: 0, y: 0 })),
-          });
+        const playersFromBlockchain = await this.contractsAPI.getPlayers();
+        for (const [address, playerFromBlockchain] of playersFromBlockchain) {
+          const localPlayer = this.players.get(address);
+          if (localPlayer?.twitter) {
+            playerFromBlockchain.twitter = localPlayer.twitter;
+          }
+          this.players.set(address, playerFromBlockchain);
         }
 
-        // console.log('knownScoringPlanets');
-        // console.log(knownScoringPlanets);
-
-        const cntMap = new Map<string, number>();
-        const haveScorePlayersMap = new Map<string, boolean>();
-
-        for (const planet of knownScoringPlanets) {
-          const claimer = planet.claimer;
-          if (claimer === undefined) continue;
-          const player = this.players.get(claimer);
-          if (player === undefined) continue;
-
-          const cnt = cntMap.get(claimer);
-          let cntNextValue = undefined;
-
-          if (cnt === undefined || cnt === 0) {
-            cntNextValue = 1;
-          } else {
-            cntNextValue = cnt + 1;
-          }
-          cntMap.set(claimer, cntNextValue);
-
-          if (player.score === undefined || cntNextValue === 1) {
-            player.score = planet.score;
-            haveScorePlayersMap.set(claimer, true);
-          } else {
-            player.score = Math.min(player.score, planet.score);
-            haveScorePlayersMap.set(claimer, true);
-          }
-        }
-        for (const playerItem of df.getAllPlayers()) {
-          const result = haveScorePlayersMap.get(playerItem.address);
-
-          const player = this.players.get(playerItem.address);
-          if (player === undefined) continue;
-
-          if (result === false || result === undefined) {
-            player.score = undefined;
-          }
-        }
+        this.refreshKnownClaimDistanceScores();
 
         const scoredPlayers = df
           .getAllPlayers()
-          .filter((player) => player.score !== undefined && player.score !== null)
-          .sort((a, b) => (a.score as number) - (b.score as number));
+          .filter((player) => getEffectiveScore(player) !== undefined)
+          .sort(comparePlayersByScore);
 
         for (let i = 0; i < scoredPlayers.length; i++) {
           const rank = i + 1;
           const player = this.players.get(scoredPlayers[i].address);
           if (!player) continue;
           player.rank = rank;
-          console.log(player.address, player.score, rank);
+          console.log(player.address, getEffectiveScore(player), rank);
         }
 
         this.playersUpdated$.publish();

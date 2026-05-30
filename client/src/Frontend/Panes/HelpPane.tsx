@@ -50,7 +50,6 @@ export function HelpPane({ visible, onClose }: { visible: boolean; onClose: () =
 
   const silverScoreValue = uiManager.getSilverScoreValue();
   const artifactPointValues = uiManager.getArtifactPointValues();
-  const captureZonePointValues = uiManager.getCaptureZonePointValues();
 
   const DFArchonLinks = {
     twitter: 'https://twitter.com/DFArchon',
@@ -162,6 +161,30 @@ export function HelpPane({ visible, onClose }: { visible: boolean; onClose: () =
             Win Conditions/Prizes
           </Link>{' '}
           to know the prizes.
+        </Section>
+
+        <Section>
+          <SectionHeader>Scoring Values</SectionHeader>
+          The top bar shows two score values. Regular score comes from withdrawing silver and
+          minting artifacts. Claim score comes from your closest claimed planet's distance from the
+          center of the universe.
+          <br />
+          <br />
+          Withdrawing silver from a Spacetime Rip converts silver into regular score. Each single
+          silver withdrawn increases your score by {silverScoreValue / 100}.
+          <br />
+          <br />
+          Minting an artifact from a Foundry increases your score based on its rarity:
+          <br />
+          Common: {artifactPointValues[1]}
+          <br />
+          Rare: {artifactPointValues[2]}
+          <br />
+          Epic: {artifactPointValues[3]}
+          <br />
+          Legendary: {artifactPointValues[4]}
+          <br />
+          Mythic: {artifactPointValues[5]}
         </Section>
 
         <Section>
