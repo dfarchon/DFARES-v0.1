@@ -165,6 +165,7 @@ contract DFTradeFacet is WithStorage {
 
         Planet storage planet = gs().planets[locationId];
         uint256 planetLevel = planet.planetLevel;
+        require(planetLevel >= 3, "planet level too low to buy energy");
         require(planet.population > 0, "planet has no energy to grow from");
         require(planet.population < planet.populationCap, "already at cap");
         require(planet.pausers == 0, "planet is paused");

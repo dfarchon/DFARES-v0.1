@@ -13,6 +13,7 @@ export function planetCanBuyEnergy(
     account &&
     isLocatable(planet) &&
     planet.owner === account &&
+    planet.planetLevel >= 3 &&
     planet.energyGrowth > 0 &&
     planet.energy > 0 &&
     planet.energy < planet.energyCap

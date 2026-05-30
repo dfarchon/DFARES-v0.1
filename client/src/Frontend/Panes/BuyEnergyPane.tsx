@@ -85,6 +85,7 @@ export function BuyEnergyPane({
 
   const planetLocatable = planet && isLocatable(planet);
   const planetOwnerCheckPassed = planet && planet.owner === account;
+  const planetLevelCheckPassed = planet && planet.planetLevel >= 3;
   const canBuyEnergy = planetCanBuyEnergy(planet, account);
 
   const contractConstants = uiManager.contractConstants;
@@ -125,6 +126,8 @@ export function BuyEnergyPane({
     buttonContent = <>No Planet Selected</>;
   } else if (!planetOwnerCheckPassed) {
     buttonContent = <>You should choose a planet that belongs to you</>;
+  } else if (!planetLevelCheckPassed) {
+    buttonContent = <>Level 0-2 planets cannot buy energy</>;
   } else if (!canBuyEnergy) {
     buttonContent = <>This planet cannot buy energy</>;
   } else if (!balanceCheckPassed) {
