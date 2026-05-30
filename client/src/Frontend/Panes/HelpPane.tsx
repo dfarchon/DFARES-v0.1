@@ -1,4 +1,10 @@
-import { BLOCK_EXPLORER_URL, PLAYER_GUIDE, WIN_CONDITION_AND_PRIZES } from '@dfares/constants';
+import {
+  BLOCKCHAIN_NAME,
+  BLOCK_EXPLORER_URL,
+  GAME_VERSION_INTRO,
+  PLAYER_GUIDE,
+  WIN_CONDITION_AND_PRIZES,
+} from '@dfares/constants';
 import { ModalName } from '@dfares/types';
 import React from 'react';
 import styled from 'styled-components';
@@ -101,19 +107,14 @@ export function HelpPane({ visible, onClose }: { visible: boolean; onClose: () =
       <HelpContent>
         {uiManager.isRoundOver() && (
           <Section>
-            <SectionHeader>Round 4: Union Complete</SectionHeader>
-            Dark Forest Ares v0.1 Round 4 is now complete! Scores are being compiled and winners
-            will be announced shortly. Also, Artifacts will no longer be mintable. Thanks for
-            playing!
+            <SectionHeader>{GAME_VERSION_INTRO} Complete</SectionHeader>
+            Dark Forest Ares {GAME_VERSION_INTRO} is now complete! Scores are being compiled and
+            winners will be announced shortly. Also, Artifacts will no longer be mintable. Thanks
+            for playing!
           </Section>
         )}
         <Section>
-          <SectionHeader>Hotkeys Intro</SectionHeader>
-          <Table data={data} />
-        </Section>
-
-        <Section>
-          <SectionHeader>Dark Forest Ares v0.1 Round 4: Union</SectionHeader>
+          <SectionHeader>Dark Forest Ares {GAME_VERSION_INTRO}</SectionHeader>
           {/* The game is a vast universe, obfuscated by zero-knowledge cryptography. Your{' '}
           <White>explorer</White> (bottom left) explores the universe, searching for{' '}
           <White>Planets</White> and other players.
@@ -130,7 +131,7 @@ export function HelpPane({ visible, onClose }: { visible: boolean; onClose: () =
           <div>
             Please read{' '}
             <Link to={PLAYER_GUIDE} color='pink'>
-              DFAres Round 4 Guide
+              DFAres {GAME_VERSION_INTRO} Guide
             </Link>{' '}
             to know how to play.
           </div>
@@ -139,9 +140,9 @@ export function HelpPane({ visible, onClose }: { visible: boolean; onClose: () =
             <Link to='https://twitter.com/DFArchon' color={dfstyles.colors.dfpink}>
               DFArchon team
             </Link>{' '}
-            host <Pink>Dark Forest Ares</Pink> Round 4 on{' '}
-            <Link to={BLOCK_EXPLORER_URL} color={'rgb(243,66,66)'}>
-              Redstone
+            host <Pink>Dark Forest Ares</Pink> {GAME_VERSION_INTRO} on{' '}
+            <Link to={BLOCK_EXPLORER_URL} color={dfstyles.colors.dfgreen}>
+              {BLOCKCHAIN_NAME}
             </Link>
             .
           </div>
@@ -185,6 +186,11 @@ export function HelpPane({ visible, onClose }: { visible: boolean; onClose: () =
           Legendary: {artifactPointValues[4]}
           <br />
           Mythic: {artifactPointValues[5]}
+        </Section>
+
+        <Section>
+          <SectionHeader>Hotkeys Intro</SectionHeader>
+          <Table data={data} />
         </Section>
 
         <Section>
